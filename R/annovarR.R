@@ -1,0 +1,25 @@
+#' annovarR is an efficient software tool to utilize update-to-date information to 
+#' functionally annotate genetic variants detected from diverse genomes based on ANNOVAR.
+#' 
+#' @author
+#' Li Jianfeng \url{lee_jianfeng@sjtu.edu.cn}
+#' @seealso
+#' Useful links:
+#'
+#' \url{https://github.com/Miachol/annovarR} 
+#'
+#' Report bugs at \url{https://github.com/Miachol/annovarR/issues} 
+#'
+#' @docType package
+#' @name annovarR
+#' @import stringr RSQLite DBI data.table futile.logger
+#' @importFrom utils packageVersion
+NULL
+
+.onAttach <- function(libname, pkgname) {
+  op <- options()
+  # msg <- sprintf('annovarR %s \n', packageVersion('annovarR')) msg <-
+  # sprintf('%s Documentation: ?annovarR, example(annovarR) and
+  # browseVignettes(\'annovarR\')', msg) packageStartupMessage(msg)
+  invisible()
+}
