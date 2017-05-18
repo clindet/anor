@@ -3,7 +3,7 @@
 #' @param dat.list A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))
 #' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param builder Genome version, hg19, hg38, mm10 and others
-#' @param database.dir The dir of the databases
+#' @param database.dir Dir of the databases
 #' @param db.col.order Using the index, you can rename the database table, and can be matched using matched.cols. 
 #' @param index.col Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
 #' @param matched.cols Using the selected cols to match data with selected partial data by index.col limited.
@@ -25,7 +25,8 @@
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
-#' x <- annotation.pos.utils(dat.list, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
+#' x <- annotation.pos.utils(dat.list, 'avsnp147', database.dir = database.dir, 
+#' return.col.names = 'avSNP147')
 annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.col = c("chr", 
     "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), return.col.index = 6, 
@@ -43,10 +44,10 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
   dat.list <- format.dat.fun(dat.list)
   db.path <- setdb.fun(name, builder, database.dir, db.type)
   db <- db.path
+  table.name <- set.table.fun(name, builder)
   info.msg(sprintf("Setting up connection: %s sqlite databse.", db.path), verbose = verbose)
   db <- connect.db(db, db.type)
-  table.name <- set.table.fun(name, builder)
-  tb.colnames <- db.tb.colnames(db, table.name)
+  tb.colnames <- db.tb.colnames(db.path, table.name, db.type)
   info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
   params = dat.list[names(dat.list) %in% index.col]
   index.col.order <- match(names(dat.list), index.col)
@@ -61,7 +62,7 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
   tb.colnames <- colnames(selected.db.tb)
   info.msg("After sync, the colnames is %s", paste0(tb.colnames, collapse = ", "), 
     verbose = verbose)
-  print.vb(selected.db.tb, verbose = verbose)
+  print.vb(head(selected.db.tb), verbose = verbose)
   input.index <- get.input.index(dat.list, matched.cols)
   ref.index <- get.ref.index(selected.db.tb, matched.cols)
   info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", db.path), 
@@ -83,7 +84,9 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
 #' @param dat.list A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))
 #' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param builder Genome version, hg19, hg38, mm10 and others
-#' @param verbose Logical indicating wheather print the extra log infomation
+#' @param database.dir Dir of the databases
+#' @param db.type Setting the database type (sqlite or txt)
+#' @param ... Other parametes see ?annotation.pos.utils
 #' @export
 #' @examples
 #' chr <- c('chr1', 'chr2', 'chr1')
@@ -95,8 +98,14 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
 #' database.dir <- dirname(database)
 #' dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation(dat.list, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
-annotation <- function() {
-  
+annotation <- function(dat.list = list(), name = "", builder = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", 
+  ""), db.type = "sqlite", ...) {
+  result <- NULL
+  func <- get.annotation.func(name)
+  func <- eval(parse(text = func))
+  text <- "result <- func(dat.list = dat.list, name = name, builder = builder, database.dir = database.dir, db.type = db.type, ...)"
+  eval(parse(text = text))
+  return(result)
 }
 
 annotation.snp <- function(dat.list, name, return.col.names = "", ...) {

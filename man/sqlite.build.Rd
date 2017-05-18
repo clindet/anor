@@ -26,7 +26,7 @@ sqlite.build(filename, db, table.name, new.colnames = NULL,
 Build annovarR database in sqlite
 }
 \examples{
-test.dat <- system.file('extdata', 'sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 x <- sqlite.build(filename = test.dat, db = test.sqlite, 'snp_test')
 unlink(test.sqlite)

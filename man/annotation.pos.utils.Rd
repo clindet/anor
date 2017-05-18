@@ -19,7 +19,7 @@ annotation.pos.utils(dat.list = list(), name = "", builder = "hg19",
 
 \item{builder}{Genome version, hg19, hg38, mm10 and others}
 
-\item{database.dir}{The dir of the databases}
+\item{database.dir}{Dir of the databases}
 
 \item{db.col.order}{Using the index, you can rename the database table, and can be matched using matched.cols.}
 
@@ -52,8 +52,9 @@ start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
 ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
-database <- system.file('extdata', 'hg19_avsnp147.sqlite', package = 'annovarR')
+database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
 database.dir <- dirname(database)
 dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
-x <- annotation.pos.utils(dat.list, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
+x <- annotation.pos.utils(dat.list, 'avsnp147', database.dir = database.dir, 
+return.col.names = 'avSNP147')
 }

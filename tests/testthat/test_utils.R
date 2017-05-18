@@ -5,3 +5,9 @@ test_that("select.dat", {
   expect_that(colnames(x), equals(paste0("V", 1:6)))
   expect_that(x[1, 2], equals(13496008))
 })
+
+
+test_that("get.annotation.func", {
+  x <- get.annotation.func("cosmic70")
+  expect_that(x, equals("annotation.cosmic"))
+})

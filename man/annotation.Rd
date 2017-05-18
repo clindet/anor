@@ -4,7 +4,8 @@
 \alias{annotation}
 \title{Annotation function}
 \usage{
-annotation()
+annotation(dat.list = list(), name = "", builder = "hg19",
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = "sqlite", ...)
 }
 \arguments{
 \item{dat.list}{A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -13,7 +14,11 @@ annotation()
 
 \item{builder}{Genome version, hg19, hg38, mm10 and others}
 
-\item{verbose}{Logical indicating wheather print the extra log infomation}
+\item{database.dir}{Dir of the databases}
+
+\item{db.type}{Setting the database type (sqlite or txt)}
+
+\item{...}{Other parametes see ?annotation.pos.utils}
 }
 \description{
 Annotation function
@@ -24,7 +29,7 @@ start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
 ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
-database <- system.file('extdata', 'hg19_avsnp147.sqlite', package = 'annovarR')
+database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
 database.dir <- dirname(database)
 dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation(dat.list, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')

@@ -18,7 +18,7 @@ Drop search index of annovarR database table in sqlite
 }
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-test.dat <- system.file('extdata', 'sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 x <- sqlite.build(filename = test.dat, db = test.sqlite, table.name = 'snp_test')
 x <- sqlite.index(db = test.sqlite, table.name = 'snp_test', index = 'index4', cols = c('V1', 'V2'))
 x <- drop.sqlite.index(db = test.sqlite, index = 'index4')

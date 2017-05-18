@@ -12,7 +12,7 @@
 #'
 #' @docType package
 #' @name annovarR
-#' @import stringr RSQLite DBI data.table futile.logger
+#' @import stringr RSQLite DBI data.table futile.logger configr
 #' @importFrom utils packageVersion
 NULL
 

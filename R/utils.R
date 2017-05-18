@@ -28,13 +28,11 @@ format.db.tb <- function(db.tb) {
   return(db.tb)
 }
 
-db.tb.colnames <- function(db, table.name, db.type = "sqlite") {
+db.tb.colnames <- function(db.path, table.name, db.type = "sqlite") {
   if (db.type == "sqlite") {
-    sql <- sprintf("PRAGMA table_info([%s])", table.name)
-    table.info <- dbGetQuery(db, sql)
-    tb.colnames <- table.info[, "name"]
+    tb.colname <- sqlite.tb.colnames(db.path, table.name)
   } else if (db.type == "txt") {
-    table.dat <- as.data.frame(fread(db, nrows = 1))
+    table.dat <- as.data.frame(fread(db.path, nrows = 1))
     tb.colnames <- colnames(table.dat)
   }
 }
@@ -147,4 +145,24 @@ convert.1000g.name <- function(name) {
   region <- str_extract(name, "_[a-z]*")
   region <- toupper(str_replace(region, "_", ""))
   return(list(name = name, month = month, year = year, region = region))
+}
+
+
+get.annotation.func <- function(name, cfg = NULL) {
+  all.supported.db <- show.cfg.databses(cfg)
+  name <- tolower(name)
+  if (!(name %in% all.supported.db)) {
+    stop(sprintf("%s not be supported.", name))
+  }
+  if (is.null(cfg)) {
+    cfg <- system.file("extdata", "config/databases.toml", package = "annovarR")
+  }
+  config <- configr::read.config(cfg)
+  config <- config[names(config) != "Title"]
+  index <- lapply(config, function(x) {
+    name %in% x[["versions"]]
+  })
+  index <- unlist(index)
+  config <- config[[names(config)[index]]]
+  return(config$func)
 }
