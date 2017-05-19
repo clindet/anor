@@ -30,7 +30,7 @@ show.cfg.databses <- function(cfg = NULL) {
   }
   config <- configr::read.config(cfg)
   config <- config[names(config) != "Title"]
-  return(unname(unlist(lapply(config, function(x) x[2]))))
+  return(unname(unlist(lapply(config, function(x) x["versions"]))))
 }
 
 #' Get colnames of table of database in sqlite

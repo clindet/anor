@@ -3,16 +3,25 @@ Title = "annovarR configuration file"
 [avsnp]
 versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147"]
 func = "annotation.snp"
+need.cols = ["chr", "start", "end", "ref", "alt"]
 
 [cosmic]
 versions = ["cosmic70", "cosmic81"]
 func = "annotation.cosmic"
+need.cols = ["chr", "start", "end", "ref", "alt"]
 
 [1000g]
 versions = ["1000g2015aug_all", "1000g2015aug_afr", "1000g2015aug_amr", 
             "1000g2015aug_eas", "1000g2015aug_eur", "1000g2015aug_sas"]
 func = "annotation.1000g"
+need.cols = ["chr", "start", "end", "ref", "alt"]
 
 [radar]
 versions = ["radar2"]
 func = "annotation.radar2"
+need.cols = ["chr", "start"]
+
+[darned]
+versions = ["darned"]
+func = "annotation.darned"
+need.cols = ["chr", "start"]

@@ -153,3 +153,12 @@ annotation.radar2 <- function(dat.list, name, return.col.index = 7, return.col.n
   annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, return.col.index = return.col.index,
                        db.col.order = db.col.order, matched.cols = matched.cols, ...)
 }
+
+annotation.darned <- function(dat.list, name, return.col.index = 5, return.col.names = "", db.col.order = 1:2, 
+                              matched.cols = c('chr', 'start'), ...) {
+  if (return.col.names == "" && return.col.index == 5) {
+    return.col.names <- "DARNED.in.rna"
+  }
+  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, return.col.index = return.col.index,
+                       db.col.order = db.col.order, matched.cols = matched.cols, ...)
+}
