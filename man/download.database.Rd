@@ -5,8 +5,8 @@
 \title{Download annovarR databases}
 \usage{
 download.database(name = c(), version = c(), database.dir = c(),
-  cfg = system.file("extdata", "config/download.toml", package = "annovarR"),
-  verbose = FALSE, ...)
+  database.cfg = system.file("extdata", "config/download.toml", package =
+  "annovarR"), verbose = FALSE, ...)
 }
 \arguments{
 \item{name}{Name of download eg. cosmic, avsnp, 1000g}
@@ -15,7 +15,7 @@ download.database(name = c(), version = c(), database.dir = c(),
 
 \item{database.dir}{Dir of the databases}
 
-\item{cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of annovarR databases infomation}
 
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 

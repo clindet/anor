@@ -125,7 +125,7 @@ test_that("annotation:snp", {
 
 
 test_that("annotation:RNA-editing", {
-  #RADAR2
+  # RADAR2
   chr <- c("1", "6", "1")
   start <- c("206256301", "116991832", "10020")
   database <- system.file("extdata", "demo/hg19_RADAR2.sqlite", package = "annovarR")
@@ -137,8 +137,8 @@ test_that("annotation:RNA-editing", {
   expect_that(x[1, 1], equals("no"))
   expect_that(x[2, 1], equals("no"))
   expect_that(is.na(x[3, 1]), equals(TRUE))
-
-  #DAREND
+  
+  # DAREND
   chr <- c("4", "4", "1")
   start <- c("250721", "475468", "10020")
   database <- system.file("extdata", "demo/hg19_DARNED.sqlite", package = "annovarR")
@@ -149,5 +149,22 @@ test_that("annotation:RNA-editing", {
   x[, 1] <- as.character(x[, 1])
   expect_that(x[1, 1], equals("I"))
   expect_that(x[2, 1], equals("I"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+})
+
+test_that("annotation.normal.pool", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("13183511", "13183528", "10020")
+  end <- c("13183511", "13183528", "10020")
+  ref <- c("T", "A", "A")
+  alt <- c("C", "C", "-")
+  database <- system.file("extdata", "demo/hg19_normal2016sih_wes_ball.txt", package = "annovarR")
+  database.dir <- dirname(database)
+  dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat.list = dat.list, name = "2016sih_wes_ball", database.dir = database.dir)
+  expect_that(colnames(x), equals("2016sih_wes_ball"))
+  x[, 1] <- as.numeric(x[, 1])
+  expect_that(x[1, 1], equals(1))
+  expect_that(x[2, 1], equals(1))
   expect_that(is.na(x[3, 1]), equals(TRUE))
 })

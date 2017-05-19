@@ -148,16 +148,14 @@ convert.1000g.name <- function(name) {
 }
 
 
-get.annotation.func <- function(name, cfg = NULL) {
-  all.supported.db <- show.cfg.databses(cfg)
+get.annotation.func <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
+  package = "annovarR")) {
+  all.supported.db <- get.annotation.names(database.cfg)
   name <- tolower(name)
   if (!(name %in% all.supported.db)) {
     stop(sprintf("%s not be supported.", name))
   }
-  if (is.null(cfg)) {
-    cfg <- system.file("extdata", "config/databases.toml", package = "annovarR")
-  }
-  config <- configr::read.config(cfg)
+  config <- configr::read.config(database.cfg)
   config <- config[names(config) != "Title"]
   index <- lapply(config, function(x) {
     name %in% x[["versions"]]

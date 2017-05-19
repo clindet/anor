@@ -17,20 +17,39 @@ sqlite.head <- function(db.path, table.name, n = 10) {
   return(nlines)
 }
 
-#' Show all annovarR supported databases 
+#' Get all annovarR supported databases 
 #'
-#' @param cfg annovarR configuration file
+#' @param database.cfg Configuration file of annovarR databases infomation
 #' @export
 #' @examples
 #' cfg <- system.file('extdata', 'config/config.toml', package = 'annovarR')
-#' show.cfg.databses() 
-show.cfg.databses <- function(cfg = NULL) {
-  if (is.null(cfg)) {
-    cfg <- system.file("extdata", "config/databases.toml", package = "annovarR")
-  }
-  config <- configr::read.config(cfg)
+#' get.annotation.names(cfg) 
+get.annotation.names <- function(database.cfg = system.file("extdata", "config/databases.toml", 
+  package = "annovarR")) {
+  config <- configr::read.config(file = database.cfg)
   config <- config[names(config) != "Title"]
   return(unname(unlist(lapply(config, function(x) x["versions"]))))
+}
+
+#' Get annovarR default databases type [sqlite, txt]
+#'
+#' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
+#' @param database.cfg Configuration file of annovarR databases infomation
+#' @export
+#' @examples
+#' get.annotation.dbtype('avsnp147') 
+get.annotation.dbtype <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
+  package = "annovarR")) {
+  name <- tolower(name) 
+  config <- configr::read.config(database.cfg)
+  config <- config[names(config) != "Title"]
+  index <- lapply(config, function(x) {
+    name %in% x[["versions"]]
+  })
+  index <- unlist(index)
+  config <- config[[names(config)[index]]]
+  index <- name == config$versions
+  return(config$default.dbtype[index])
 }
 
 #' Get colnames of table of database in sqlite
