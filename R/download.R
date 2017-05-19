@@ -14,6 +14,8 @@ download.database <- function(name = c(), version = c(), database.dir = c(), cfg
   if ((length(database.dir) == 1) && (length(name) > length(database.dir))) {
     database.dir <- rep(database.dir, length(name))
   }
-  install.bioinfo(name = name, version = version, destdir = database.dir, github.cfg = "/dev/null", 
+  github.cfg.null <- tempfile()
+  file.create(github.cfg.null)
+  install.bioinfo(name = name, version = version, destdir = database.dir, github.cfg = github.cfg.null, 
     nongithub.cfg = cfg, download.only = TRUE, verbose = verbose, ...)
 }
