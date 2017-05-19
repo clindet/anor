@@ -6,7 +6,7 @@
 #' @param new.colnames New colnames of table, default is to retain the original
 #' @param overwrite Ligical indicating wheather overwrite sqlite database
 #' @param verbose Ligical indicating wheather show the log message
-#' @param ... Other parameters be used in fread function
+#' @param ... Other parameters be used in \code{\link[data.table]{fread}}
 #' @export
 #' @examples
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
@@ -54,7 +54,7 @@ sqlite.build <- function(filename, db, table.name, new.colnames = NULL, overwrit
 #' @param index Index name in sqlite 
 #' @param cols Colnames needed to be index
 #' @param verbose Ligical indicating wheather show the log message
-#' @param ... Other parameters be used in fread function
+#' @param ... Other parameters be used in \code{\link[data.table]{fread}}
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())

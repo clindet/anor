@@ -86,7 +86,7 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
 #' @param builder Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases
 #' @param db.type Setting the database type (sqlite or txt)
-#' @param ... Other parametes see ?annotation.pos.utils
+#' @param ... Other parametes see \code{\link{annotation.pos.utils}}
 #' @export
 #' @examples
 #' chr <- c('chr1', 'chr2', 'chr1')

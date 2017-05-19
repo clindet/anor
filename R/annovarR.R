@@ -12,8 +12,8 @@
 #'
 #' @docType package
 #' @name annovarR
-#' @import stringr RSQLite DBI data.table futile.logger configr
-#' @importFrom utils packageVersion
+#' @import stringr RSQLite DBI data.table futile.logger configr BioInstaller
+#' @importFrom utils packageVersion head
 NULL
 
 .onAttach <- function(libname, pkgname) {

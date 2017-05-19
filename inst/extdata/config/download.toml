@@ -1,0 +1,39 @@
+title = "annovarR download configuration file (Using BioInstaller)"
+
+[avsnp]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
+decompress = false
+version_newest = "hg19_avsnp147"
+version_available = ["hg19_avsnp138", "hg19_avsnp142", "hg19_avsnp144", "hg19_avsnp147"]
+after_failure = "echo 'fail!'"
+after_success = "echo 'successful!'"
+make_dir = ["./"]
+bin_dir = ["./"]
+
+[cosmic]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
+decompress = false
+version_newest = "hg19_cosmic81"
+version_available = ["hg19_cosmic70", "hg19_cosmic81"]
+after_failure = "echo 'fail!'"
+after_success = "echo 'successful!'"
+make_dir = ["./"]
+bin_dir = ["./"]
+
+[1000g]
+source_url = [
+              "http://bioinfo.rjh.com.cn/download/annovarR/humandb/@>@str_replace('{{version}}', '-.*', '')@<@_AMR.sites.@>@str_replace('{{version}}', '.*-', '')@<@.sqlite",
+              "http://bioinfo.rjh.com.cn/download/annovarR/humandb/@>@str_replace('{{version}}', '-.*', '')@<@_ALL.sites.@>@str_replace('{{version}}', '.*-', '')@<@.sqlite",
+              "http://bioinfo.rjh.com.cn/download/annovarR/humandb/@>@str_replace('{{version}}', '-.*', '')@<@_AFR.sites.@>@str_replace('{{version}}', '.*-', '')@<@.sqlite",
+              "http://bioinfo.rjh.com.cn/download/annovarR/humandb/@>@str_replace('{{version}}', '-.*', '')@<@_EAS.sites.@>@str_replace('{{version}}', '.*-', '')@<@.sqlite",
+              "http://bioinfo.rjh.com.cn/download/annovarR/humandb/@>@str_replace('{{version}}', '-.*', '')@<@_EUR.sites.@>@str_replace('{{version}}', '.*-', '')@<@.sqlite",
+              "http://bioinfo.rjh.com.cn/download/annovarR/humandb/@>@str_replace('{{version}}', '-.*', '')@<@_SAS.sites.@>@str_replace('{{version}}', '.*-', '')@<@.sqlite"]
+decompress = [false, false, false, false, false, false]
+version_newest = "hg19-2015_08"
+version_available = ["hg19-2015_08", "hg19-2014_10"]
+after_failure = "echo 'fail!'"
+after_success = "echo 'successful!'"
+make_dir = ["./"]
+bin_dir = ["./"]
+
+[avsnp.install]

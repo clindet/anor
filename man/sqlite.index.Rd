@@ -17,7 +17,7 @@ sqlite.index(db, table.name, index, cols, verbose = FALSE)
 
 \item{verbose}{Ligical indicating wheather show the log message}
 
-\item{...}{Other parameters be used in fread function}
+\item{...}{Other parameters be used in \code{\link[data.table]{fread}}}
 }
 \description{
 Generate search index of annovarR database table in sqlite

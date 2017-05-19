@@ -20,7 +20,7 @@ sqlite.build(filename, db, table.name, new.colnames = NULL,
 
 \item{verbose}{Ligical indicating wheather show the log message}
 
-\item{...}{Other parameters be used in fread function}
+\item{...}{Other parameters be used in \code{\link[data.table]{fread}}}
 }
 \description{
 Build annovarR database in sqlite

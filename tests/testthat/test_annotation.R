@@ -14,7 +14,8 @@ test_that("annotation.pos.utils", {
   expect_that(x[1, 1], equals("rs775809821"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
-  x <- annotation.pos.utils(dat.list, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147", db.type = "txt")
+  x <- annotation.pos.utils(dat.list, "avsnp147", database.dir = database.dir, 
+    return.col.names = "avSNP147", db.type = "txt")
   expect_that(colnames(x), equals("avSNP147"))
   x[, 1] <- as.character(x[, 1])
   expect_that(x[1, 1], equals("rs775809821"))

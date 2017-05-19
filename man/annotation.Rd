@@ -18,7 +18,7 @@ annotation(dat.list = list(), name = "", builder = "hg19",
 
 \item{db.type}{Setting the database type (sqlite or txt)}
 
-\item{...}{Other parametes see ?annotation.pos.utils}
+\item{...}{Other parametes see \code{\link{annotation.pos.utils}}}
 }
 \description{
 Annotation function
