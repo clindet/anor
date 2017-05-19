@@ -122,3 +122,32 @@ test_that("annotation:snp", {
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
 })
+
+
+test_that("annotation:RNA-editing", {
+  #RADAR2
+  chr <- c("1", "6", "1")
+  start <- c("206256301", "116991832", "10020")
+  database <- system.file("extdata", "demo/hg19_RADAR2.sqlite", package = "annovarR")
+  database.dir <- dirname(database)
+  dat.list <- list(chr = chr, start = start)
+  x <- annotation(dat.list = dat.list, name = "RADAR2", database.dir = database.dir)
+  expect_that(colnames(x), equals("RADAR2.is.alu"))
+  x[, 1] <- as.character(x[, 1])
+  expect_that(x[1, 1], equals("no"))
+  expect_that(x[2, 1], equals("no"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+
+  #DAREND
+  chr <- c("4", "4", "1")
+  start <- c("250721", "475468", "10020")
+  database <- system.file("extdata", "demo/hg19_DARNED.sqlite", package = "annovarR")
+  database.dir <- dirname(database)
+  dat.list <- list(chr = chr, start = start)
+  x <- annotation(dat.list = dat.list, name = "DARNED", database.dir = database.dir)
+  expect_that(colnames(x), equals("DARNED.in.rna"))
+  x[, 1] <- as.character(x[, 1])
+  expect_that(x[1, 1], equals("I"))
+  expect_that(x[2, 1], equals("I"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+})
