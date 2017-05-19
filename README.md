@@ -4,3 +4,20 @@ annovarR package
 ==============
 
 [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) is an efficient software tool to utilize update-to-date information to functionally annotate genetic variants detected from diverse genomes. Based on several databases of ANNOVAR, annovarR can be used to annotate the genetic variants in R.
+
+annovarR can be extend easily that the sqlite or plain text file as the refference database. More databases will be supported in the future.
+
+## Support Summary
+
+**dbSNP**
+
+- avsnp138, avsnp142, avsnp144, avsnp147
+
+**Cosmic**
+
+- cosmic70, cosmic81
+
+**1000 Genome Project**
+
+- 1000g2015aug_all, 1000g2015aug_afr, 1000g2015aug_amr, 1000g2015aug_eas, 1000g2015aug_eur, 1000g2015aug_sas
+
