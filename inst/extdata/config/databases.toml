@@ -12,3 +12,7 @@ func = "annotation.cosmic"
 versions = ["1000g2015aug_all", "1000g2015aug_afr", "1000g2015aug_amr", 
             "1000g2015aug_eas", "1000g2015aug_eur", "1000g2015aug_sas"]
 func = "annotation.1000g"
+
+[radar]
+versions = ["radar2"]
+func = "annotation.radar2"

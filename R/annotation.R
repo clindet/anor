@@ -144,3 +144,12 @@ annotation.1000g <- function(dat.list, name, return.col.index = 7, ...) {
     set.table.fun = set.1000g.table, format.db.tb.fun = reform.1000g, return.col.index = return.col.index, 
     ...)
 }
+
+annotation.radar2 <- function(dat.list, name, return.col.index = 7, return.col.names = "", db.col.order = 1:2, 
+                              matched.cols = c('chr', 'start'), ...) {
+  if (return.col.names == "" && return.col.index == 7) {
+    return.col.names <- "RADAR2.is.alu"
+  }
+  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, return.col.index = return.col.index,
+                       db.col.order = db.col.order, matched.cols = matched.cols, ...)
+}
