@@ -25,5 +25,6 @@ download.database(name = c(), version = c(), database.dir = c(),
 Download annovarR databases
 }
 \examples{
-download.database('1000g', database.dir = sprintf('\%s/databases/', tempdir()), show.all.versions = TRUE)
+download.database('1000g', database.dir = sprintf('\%s/databases/', tempdir()), 
+show.all.versions = TRUE)
 }

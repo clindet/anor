@@ -82,10 +82,12 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
 #' Annotation function
 #'
 #' @param dat.list A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))
-#' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
+#' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.
 #' @param builder Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases
 #' @param db.type Setting the database type (sqlite or txt)
+#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param func Function to anntate the dat.list data, default is to search the function in extdata/database.toml
 #' @param ... Other parametes see \code{\link{annotation.pos.utils}}
 #' @export
 #' @examples
@@ -100,86 +102,39 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
 #' x <- annotation(dat.list, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
 annotation <- function(dat.list = list(), name = "", builder = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", 
   ""), db.type = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
-  package = "annovarR"), ...) {
+  package = "annovarR"), func = NULL, ...) {
   result <- NULL
   if (is.null(db.type)) {
     db.type <- get.annotation.dbtype(name, database.cfg = database.cfg)
   }
-  func <- get.annotation.func(name, database.cfg = database.cfg)
-  func <- eval(parse(text = func))
+  if (is.null(func)) {
+    func <- get.annotation.func(name, database.cfg = database.cfg)
+    func <- eval(parse(text = func))
+  }
   text <- "result <- func(dat.list = dat.list, name = name, builder = builder, database.dir = database.dir, db.type = db.type, ...)"
   eval(parse(text = text))
   return(result)
 }
 
-annotation.snp <- function(dat.list, name, return.col.names = "", ...) {
-  if (return.col.names == "") {
-    return.col.names <- str_replace(name, "avsnp", "avSNP")
-  }
-  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
-    ...)
-}
-
-annotation.cosmic <- function(dat.list, name, return.col.names = "", ...) {
-  if (return.col.names == "") {
-    return.col.names <- str_replace(name, "cosmic", "COSMIC_")
-  }
-  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
-    ...)
-}
-
-annotation.1000g <- function(dat.list, name, return.col.index = 7, ...) {
-  set.1000g.db <- function(name, builder, database.dir, db.type = "sqlite") {
-    list.1000g <- convert.1000g.name(name)
-    if (db.type == "sqlite") {
-      db <- sprintf("%s/%s_%s.sites.%s_%s.sqlite", database.dir, builder, list.1000g$region, 
-        list.1000g$year, list.1000g$month)
-    } else if (db.type == "txt") {
-      db <- sprintf("%s/%s_%s.sites.%s_%s.txt", database.dir, builder, list.1000g$region, 
-        list.1000g$year, list.1000g$month)
+annotation.auto <- function(dat.list, name, return.col.names = NULL, return.col.index = NULL, 
+  db.col.order = NULL, matched.cols = NULL, setdb.fun = NULL, set.table.fun = NULL, 
+  format.db.tb.fun = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
+    package = "annovarR"), ...) {
+  auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
+    "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun")
+  para.values <- list()
+  for (item in auto.parameters) {
+    item.value <- eval(parse(text = item))
+    if (is.null(item.value)) {
+      para.values[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
+        coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
+    } else {
+      para.values[[item]] <- item.value
     }
   }
-  set.1000g.table <- function(name, builder) {
-    list.1000g <- convert.1000g.name(name)
-    table <- sprintf("%s_%s.sites.%s_%s", builder, list.1000g$region, list.1000g$year, 
-      list.1000g$month)
-  }
-  annotation.pos.utils(dat.list = dat.list, name = name, setdb.fun = set.1000g.db, 
-    set.table.fun = set.1000g.table, format.db.tb.fun = reform.1000g, return.col.index = return.col.index, 
+  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = para.values[["return.col.names"]], 
+    return.col.index = para.values[["return.col.index"]], db.col.order = para.values[["db.col.order"]], 
+    matched.cols = para.values[["matched.cols"]], setdb.fun = eval(parse(text = para.values[["setdb.fun"]])), 
+    set.table.fun = eval(parse(text = para.values[["set.table.fun"]])), format.db.tb.fun = eval(parse(text = para.values[["format.db.tb.fun"]])), 
     ...)
-}
-
-annotation.radar2 <- function(dat.list, name, return.col.index = 7, return.col.names = "", 
-  db.col.order = 1:2, matched.cols = c("chr", "start"), ...) {
-  if (return.col.names == "" && return.col.index == 7) {
-    return.col.names <- "RADAR2.is.alu"
-  }
-  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
-    return.col.index = return.col.index, db.col.order = db.col.order, matched.cols = matched.cols, 
-    ...)
-}
-
-annotation.darned <- function(dat.list, name, return.col.index = 5, return.col.names = "", 
-  db.col.order = 1:2, matched.cols = c("chr", "start"), ...) {
-  if (return.col.names == "" && return.col.index == 5) {
-    return.col.names <- "DARNED.in.rna"
-  }
-  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
-    return.col.index = return.col.index, db.col.order = db.col.order, matched.cols = matched.cols, 
-    ...)
-}
-
-annotation.normal.pool <- function(dat.list, name, return.col.names = "", ...) {
-  if (return.col.names == "") {
-    return.col.names <- name
-  }
-  set.normal.pool.db <- function(name, builder, database.dir, db.type = "txt") {
-    if (db.type == "sqlite") {
-      db <- sprintf("%s/%s_normal%s.sqlite", database.dir, builder, name)
-    } else if (db.type == "txt") {
-      db <- sprintf("%s/%s_normal%s.txt", database.dir, builder, name)
-    }
-  }
-  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
-    setdb.fun = set.normal.pool.db, ...)
 }

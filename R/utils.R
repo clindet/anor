@@ -24,10 +24,6 @@ format.cols <- function(dat.list) {
   return(dat.list)
 }
 
-format.db.tb <- function(db.tb) {
-  return(db.tb)
-}
-
 db.tb.colnames <- function(db.path, table.name, db.type = "sqlite") {
   if (db.type == "sqlite") {
     tb.colname <- sqlite.tb.colnames(db.path, table.name)
@@ -35,15 +31,6 @@ db.tb.colnames <- function(db.path, table.name, db.type = "sqlite") {
     table.dat <- as.data.frame(fread(db.path, nrows = 1))
     tb.colnames <- colnames(table.dat)
   }
-}
-
-set.db <- function(name, builder, database.dir, db.type) {
-  if (db.type == "sqlite") {
-    db.path <- sprintf("%s/%s_%s.%s", database.dir, builder, name, db.type)
-  } else if (db.type == "txt") {
-    db.path <- sprintf("%s/%s_%s.%s", database.dir, builder, name, db.type)
-  }
-  return(db.path)
 }
 
 connect.db <- function(db, db.type = "sqlite") {
@@ -59,9 +46,6 @@ disconnect.db <- function(db, db.type = "sqlite") {
   }
 }
 
-set.table <- function(name, builder) {
-  table.name <- paste0(builder, "_", name)
-}
 
 get.input.index <- function(dat.list, matched.cols) {
   return(get.index(dat.list, matched.cols))
@@ -132,7 +116,6 @@ return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col
   return(result)
 }
 
-
 convert.1000g.name <- function(name) {
   month.hash <- list(jan = "01", feb = "02", mar = "03", apr = "04", may = "05", 
     jun = "06", jul = "07", aug = "08", sep = "09", oct = "10", nov = "11", dec = "12")
@@ -163,4 +146,22 @@ get.annotation.func <- function(name, database.cfg = system.file("extdata", "con
   index <- unlist(index)
   config <- config[[names(config)[index]]]
   return(config$func)
+}
+
+get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
+  package = "annovarR"), key = "", coincident = FALSE, extra.list = list(), rcmd.parse = TRUE) {
+  name <- tolower(name)
+  config <- configr::read.config(database.cfg, extra.list = extra.list, rcmd.parse = rcmd.parse)
+  config <- config[names(config) != "Title"]
+  index <- lapply(config, function(x) {
+    name %in% x[["versions"]]
+  })
+  index <- unlist(index)
+  config <- config[[names(config)[index]]]
+  if (coincident) {
+    return(config[[key]])
+  } else {
+    index <- name == config$versions
+    return(config[[key]][index])
+  }
 }

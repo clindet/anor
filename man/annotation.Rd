@@ -5,20 +5,24 @@
 \title{Annotation function}
 \usage{
 annotation(dat.list = list(), name = "", builder = "hg19",
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = "sqlite",
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL,
   database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"), ...)
+  "annovarR"), func = NULL, ...)
 }
 \arguments{
 \item{dat.list}{A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))}
 
-\item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
+\item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.}
 
 \item{builder}{Genome version, hg19, hg38, mm10 and others}
 
 \item{database.dir}{Dir of the databases}
 
 \item{db.type}{Setting the database type (sqlite or txt)}
+
+\item{database.cfg}{Configuration file of annovarR databases infomation}
+
+\item{func}{Function to anntate the dat.list data, default is to search the function in extdata/database.toml}
 
 \item{...}{Other parametes see \code{\link{annotation.pos.utils}}}
 }

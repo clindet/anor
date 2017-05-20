@@ -3,36 +3,102 @@ Title = "annovarR configuration file"
 [avsnp]
 versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite"]
-func = "annotation.snp"
+func = "annotation.auto"
+
+# annotation.auto used parameters
 need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "@>@str_replace('{{name}}', 'avsnp', 'avSNP')@<@"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
 
 [cosmic]
 versions = ["cosmic70", "cosmic81"]
-func = "annotation.cosmic"
-need.cols = ["chr", "start", "end", "ref", "alt"]
+func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
+
+# annotation.auto used parameters of cosmic database parse
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "@>@str_replace('{{name}}', 'cosmic', 'COSMIC_')@<@"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
 
 [1000g]
 versions = ["1000g2015aug_all", "1000g2015aug_afr", "1000g2015aug_amr", 
             "1000g2015aug_eas", "1000g2015aug_eur", "1000g2015aug_sas"]
-func = "annotation.1000g"
-need.cols = ["chr", "start", "end", "ref", "alt"]
+func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
+
+# annotation.auto used parameters of 1000g database parse
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 7
+format.dat.fun = "format.cols"
+setdb.fun = "set.1000g.db"
+set.table.fun = "set.1000g.table"
+format.db.tb.fun = "format.1000g.db.tb"
 
 [radar]
 versions = ["radar2"]
-func = "annotation.radar2"
-need.cols = ["chr", "start"]
+func = "annotation.auto"
 default.dbtype = ["sqlite"]
+
+# annotation.auto used parameters of RADAR2 database parse
+need.cols = ["chr", "start"]
+return.col.names = "RADAR2.is.alu"
+db.col.order = [1, 2]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start"]
+return.col.index = 7
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
 
 [darned]
 versions = ["darned"]
-func = "annotation.darned"
-need.cols = ["chr", "start"]
+func = "annotation.auto"
 default.dbtype = ["sqlite"]
+
+# annotation.auto used parameters of RADAR2 database parse
+need.cols = ["chr", "start"]
+return.col.names = "DARNED.in.rna"
+db.col.order = [1, 2]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start"]
+return.col.index = 5
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
 
 [normal_pool]
 versions = ['2016sih_wes_ball', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
-func = "annotation.normal.pool"
-need.cols = ["chr", "start", "end", "ref", "alt"]
+func = "annotation.auto"
 default.dbtype = ["txt", "txt", "txt", "txt"]
+
+# annotation.auto used parameters of normal pool database parse
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.sih.normal.pool.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"

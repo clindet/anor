@@ -8,7 +8,8 @@
 #' @param ... Other parameters pass to \code{\link[BioInstaller]{install.bioinfo}}
 #' @export
 #' @examples
-#' download.database('1000g', database.dir = sprintf('%s/databases/', tempdir()), show.all.versions = TRUE)
+#' download.database('1000g', database.dir = sprintf('%s/databases/', tempdir()), 
+#' show.all.versions = TRUE)
 download.database <- function(name = c(), version = c(), database.dir = c(), database.cfg = system.file("extdata", 
   "config/download.toml", package = "annovarR"), verbose = FALSE, ...) {
   if ((length(database.dir) == 1) && (length(name) > length(database.dir))) {
@@ -16,6 +17,6 @@ download.database <- function(name = c(), version = c(), database.dir = c(), dat
   }
   github.cfg.null <- tempfile()
   file.create(github.cfg.null)
-  install.bioinfo(name = name, version = version, destdir = database.dir, github.database.cfg = github.database.cfg.null, 
-    nongithub.cfg = cfg, download.only = TRUE, verbose = verbose, ...)
+  install.bioinfo(name = name, version = version, destdir = database.dir, github.database.cfg = github.cfg.null, 
+    nongithub.cfg = database.cfg, download.only = TRUE, verbose = verbose, ...)
 }

@@ -40,16 +40,8 @@ get.annotation.names <- function(database.cfg = system.file("extdata", "config/d
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.dbtype <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR")) {
-  name <- tolower(name) 
-  config <- configr::read.config(database.cfg)
-  config <- config[names(config) != "Title"]
-  index <- lapply(config, function(x) {
-    name %in% x[["versions"]]
-  })
-  index <- unlist(index)
-  config <- config[[names(config)[index]]]
-  index <- name == config$versions
-  return(config$default.dbtype[index])
+  dbtype <- get.cfg.value.by.name(name, database.cfg, "default.dbtype")
+  return(dbtype)
 }
 
 #' Get colnames of table of database in sqlite

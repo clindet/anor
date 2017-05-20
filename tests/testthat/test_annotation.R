@@ -32,7 +32,7 @@ test_that("annotation.snp", {
   database <- system.file("extdata", "demo/hg19_avsnp147.sqlite", package = "annovarR")
   database.dir <- dirname(database)
   dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation.snp(dat.list = dat.list, name = "avsnp147", database.dir = database.dir)
+  x <- annotation(dat.list = dat.list, name = "avsnp147", database.dir = database.dir)
   expect_that(colnames(x), equals("avSNP147"))
   x[, 1] <- as.character(x[, 1])
   expect_that(x[1, 1], equals("rs775809821"))
@@ -49,7 +49,7 @@ test_that("annotation.cosmic", {
   database <- system.file("extdata", "demo/hg19_cosmic81.sqlite", package = "annovarR")
   database.dir <- dirname(database)
   dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation.cosmic(dat.list = dat.list, name = "cosmic81", database.dir = database.dir)
+  x <- annotation(dat.list = dat.list, name = "cosmic81", database.dir = database.dir)
   expect_that(colnames(x), equals("COSMIC_81"))
   x[, 1] <- as.character(x[, 1])
   expect_that(x[1, 1], equals("ID=COSM4732228;OCCURENCE=1(large_intestine)"))
@@ -66,27 +66,11 @@ test_that("annotation.1000g", {
   database <- system.file("extdata", "demo/hg19_ALL.sites.2015_08.sqlite", package = "annovarR")
   database.dir <- dirname(database)
   dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation.1000g(dat.list = dat.list, name = "1000g2015aug_all", database.dir = database.dir)
-  expect_that(colnames(x), equals("frq"))
-  x <- annotation.1000g(dat.list = dat.list, name = "1000g2015aug_all", database.dir = database.dir, 
-    return.col.names = "1000g2015aug_all")
-  expect_that(colnames(x), equals("1000g2015aug_all"))
-})
-
-test_that("annotation:1000g", {
-  chr <- c("chr1", "chr2", "chr1")
-  start <- c("10177", "10177", "10020")
-  end <- c("10177", "10177", "10020")
-  ref <- c("-", "A", "A")
-  alt <- c("C", "AC", "-")
-  database <- system.file("extdata", "demo/hg19_ALL.sites.2015_08.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
-  dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat.list = dat.list, name = "1000g2015aug_all", database.dir = database.dir)
-  expect_that(colnames(x), equals("frq"))
-  x <- annotation(dat.list = dat.list, name = "1000g2015aug_all", database.dir = database.dir, 
-    return.col.names = "1000g2015aug_all")
   expect_that(colnames(x), equals("1000g2015aug_all"))
+  x <- annotation(dat.list = dat.list, name = "1000g2015aug_all", database.dir = database.dir, 
+    return.col.names = "1000g2015aug_all_frq")
+  expect_that(colnames(x), equals("1000g2015aug_all_frq"))
 })
 
 test_that("annotation:cosmic", {
@@ -158,7 +142,7 @@ test_that("annotation.normal.pool", {
   end <- c("13183511", "13183528", "10020")
   ref <- c("T", "A", "A")
   alt <- c("C", "C", "-")
-
+  
   database <- system.file("extdata", "demo/hg19_normal2016sih_wes_ball.txt", package = "annovarR")
   database.dir <- dirname(database)
   dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
