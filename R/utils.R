@@ -119,7 +119,6 @@ return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col
 convert.1000g.name <- function(name) {
   month.hash <- list(jan = "01", feb = "02", mar = "03", apr = "04", may = "05", 
     jun = "06", jul = "07", aug = "08", sep = "09", oct = "10", nov = "11", dec = "12")
-  name <- tolower(name)
   month <- str_extract(name, names(month.hash))
   month <- month[!is.na(month)]
   month <- month.hash[month]
@@ -134,7 +133,6 @@ convert.1000g.name <- function(name) {
 get.annotation.func <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR")) {
   all.supported.db <- get.annotation.names(database.cfg)
-  name <- tolower(name)
   if (!(name %in% all.supported.db)) {
     stop(sprintf("%s not be supported.", name))
   }
@@ -150,7 +148,6 @@ get.annotation.func <- function(name, database.cfg = system.file("extdata", "con
 
 get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR"), key = "", coincident = FALSE, extra.list = list(), rcmd.parse = TRUE) {
-  name <- tolower(name)
   config <- configr::read.config(database.cfg, extra.list = extra.list, rcmd.parse = rcmd.parse)
   config <- config[names(config) != "Title"]
   index <- lapply(config, function(x) {

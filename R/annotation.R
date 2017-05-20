@@ -120,6 +120,13 @@ annotation.auto <- function(dat.list, name, return.col.names = NULL, return.col.
   db.col.order = NULL, matched.cols = NULL, setdb.fun = NULL, set.table.fun = NULL, 
   format.db.tb.fun = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
     package = "annovarR"), ...) {
+  
+  supported.auto.names <- get.annotation.names(database.cfg = database.cfg)
+  if (!name %in% supported.auto.names) {
+    stop(sprintf("%s not be supprted by annotation.auto, please check the name and %s.", 
+      name, database.cfg))
+  }
+  
   auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
     "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun")
   para.values <- list()

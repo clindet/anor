@@ -40,7 +40,7 @@ get.annotation.names <- function(database.cfg = system.file("extdata", "config/d
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.dbtype <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR")) {
-  dbtype <- get.cfg.value.by.name(name, database.cfg, "default.dbtype")
+  dbtype <- get.cfg.value.by.name(name, database.cfg, key = "default.dbtype")
   return(dbtype)
 }
 

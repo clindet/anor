@@ -53,7 +53,7 @@ set.table.fun = "set.1000g.table"
 format.db.tb.fun = "format.1000g.db.tb"
 
 [radar]
-versions = ["radar2"]
+versions = ["RADAR2"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
@@ -70,7 +70,7 @@ set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
 
 [darned]
-versions = ["darned"]
+versions = ["DARNED"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
@@ -87,9 +87,9 @@ set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
 
 [normal_pool]
-versions = ['2016sih_wes_ball', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
+versions = ['2016sih_wes_ball', '2016sih_wes_tall', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
 func = "annotation.auto"
-default.dbtype = ["txt", "txt", "txt", "txt"]
+default.dbtype = ["txt", "txt", "txt", "txt", "txt"]
 
 # annotation.auto used parameters of normal pool database parse
 need.cols = ["chr", "start", "end", "ref", "alt"]
