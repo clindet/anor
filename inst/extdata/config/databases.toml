@@ -32,7 +32,7 @@ need.cols = ["chr", "start"]
 default.dbtype = ["sqlite"]
 
 [normal_pool]
-versions = ['2016sih_wes_ball']
+versions = ['2016sih_wes_ball', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
 func = "annotation.normal.pool"
 need.cols = ["chr", "start", "end", "ref", "alt"]
-default.dbtype = ["txt"]
+default.dbtype = ["txt", "txt", "txt", "txt"]
