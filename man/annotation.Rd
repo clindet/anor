@@ -5,7 +5,9 @@
 \title{Annotation function}
 \usage{
 annotation(dat.list = list(), name = "", builder = "hg19",
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = "sqlite", ...)
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = "sqlite",
+  database.cfg = system.file("extdata", "config/databases.toml", package =
+  "annovarR"), ...)
 }
 \arguments{
 \item{dat.list}{A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))}

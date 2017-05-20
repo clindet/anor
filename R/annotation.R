@@ -99,9 +99,13 @@ annotation.pos.utils <- function(dat.list = list(), name = "", builder = "hg19",
 #' dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation(dat.list, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
 annotation <- function(dat.list = list(), name = "", builder = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", 
-  ""), db.type = "sqlite", ...) {
+  ""), db.type = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
+  package = "annovarR"), ...) {
   result <- NULL
-  func <- get.annotation.func(name)
+  if (is.null(db.type)) {
+    db.type <- get.annotation.dbtype(name, database.cfg = database.cfg)
+  }
+  func <- get.annotation.func(name, database.cfg = database.cfg)
   func <- eval(parse(text = func))
   text <- "result <- func(dat.list = dat.list, name = name, builder = builder, database.dir = database.dir, db.type = db.type, ...)"
   eval(parse(text = text))
@@ -145,20 +149,37 @@ annotation.1000g <- function(dat.list, name, return.col.index = 7, ...) {
     ...)
 }
 
-annotation.radar2 <- function(dat.list, name, return.col.index = 7, return.col.names = "", db.col.order = 1:2, 
-                              matched.cols = c('chr', 'start'), ...) {
+annotation.radar2 <- function(dat.list, name, return.col.index = 7, return.col.names = "", 
+  db.col.order = 1:2, matched.cols = c("chr", "start"), ...) {
   if (return.col.names == "" && return.col.index == 7) {
     return.col.names <- "RADAR2.is.alu"
   }
-  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, return.col.index = return.col.index,
-                       db.col.order = db.col.order, matched.cols = matched.cols, ...)
+  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
+    return.col.index = return.col.index, db.col.order = db.col.order, matched.cols = matched.cols, 
+    ...)
 }
 
-annotation.darned <- function(dat.list, name, return.col.index = 5, return.col.names = "", db.col.order = 1:2, 
-                              matched.cols = c('chr', 'start'), ...) {
+annotation.darned <- function(dat.list, name, return.col.index = 5, return.col.names = "", 
+  db.col.order = 1:2, matched.cols = c("chr", "start"), ...) {
   if (return.col.names == "" && return.col.index == 5) {
     return.col.names <- "DARNED.in.rna"
   }
-  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, return.col.index = return.col.index,
-                       db.col.order = db.col.order, matched.cols = matched.cols, ...)
+  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
+    return.col.index = return.col.index, db.col.order = db.col.order, matched.cols = matched.cols, 
+    ...)
+}
+
+annotation.normal.pool <- function(dat.list, name, return.col.names = "", ...) {
+  if (return.col.names == "") {
+    return.col.names <- name
+  }
+  set.normal.pool.db <- function(name, builder, database.dir, db.type = "txt") {
+    if (db.type == "sqlite") {
+      db <- sprintf("%s/%s_normal%s.sqlite", database.dir, builder, name)
+    } else if (db.type == "txt") {
+      db <- sprintf("%s/%s_normal%s.txt", database.dir, builder, name)
+    }
+  }
+  annotation.pos.utils(dat.list = dat.list, name = name, return.col.names = return.col.names, 
+    setdb.fun = set.normal.pool.db, ...)
 }

@@ -8,8 +8,13 @@ test_that("sqlite.head", {
 
 
 
-test_that("show.cfg.databses", {
+test_that("get.cfg", {
   cfg <- system.file("extdata", "config/config.toml", package = "annovarR")
-  x <- show.cfg.databses()
+  x <- get.annotation.names()
   expect_that("avsnp138" %in% x, equals(TRUE))
+  
+  x <- get.annotation.dbtype("avsnp147")
+  expect_that(x, equals("sqlite"))
+  x <- get.annotation.dbtype("2016sih_wes_ball")
+  expect_that(x, equals("txt"))
 })
