@@ -2,15 +2,15 @@
 % Please edit documentation in R/annotation.R
 \name{annotation}
 \alias{annotation}
-\title{Annotation function}
+\title{Annotation function (single name)}
 \usage{
-annotation(dat.list = list(), name = "", builder = "hg19",
+annotation(dat = data.table(), name = "", builder = "hg19",
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL,
   database.cfg = system.file("extdata", "config/databases.toml", package =
   "annovarR"), func = NULL, ...)
 }
 \arguments{
-\item{dat.list}{A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))}
+\item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
 
 \item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.}
 
@@ -22,14 +22,15 @@ annotation(dat.list = list(), name = "", builder = "hg19",
 
 \item{database.cfg}{Configuration file of annovarR databases infomation}
 
-\item{func}{Function to anntate the dat.list data, default is to search the function in extdata/database.toml}
+\item{func}{Function to anntate the dat data, default is to search the function in extdata/database.toml}
 
 \item{...}{Other parametes see \code{\link{annotation.pos.utils}}}
 }
 \description{
-Annotation function
+Annotation function (single name)
 }
 \examples{
+library(data.table)
 chr <- c('chr1', 'chr2', 'chr1')
 start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
@@ -37,6 +38,6 @@ ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
 database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
 database.dir <- dirname(database)
-dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
-x <- annotation(dat.list, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
+dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+x <- annotation(dat, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
 }

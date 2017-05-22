@@ -11,7 +11,7 @@
 #' sqlite.head(test.sqlite, 'snp_test')
 sqlite.head <- function(db.path, table.name, n = 10) {
   sqlite.db <- dbConnect(RSQLite::SQLite(), db.path)
-  sql <- sprintf("SELECT * FROM %s LIMIT %s", table.name, n)
+  sql <- sprintf("SELECT * FROM '%s' LIMIT %s", table.name, n)
   nlines <- dbGetQuery(sqlite.db, sql)
   dbDisconnect(sqlite.db)
   return(nlines)

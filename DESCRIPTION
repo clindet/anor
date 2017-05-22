@@ -19,6 +19,6 @@ Imports:
     DBI (>= 0.6-1),
     data.table (>= 1.10.4),
     RSQLite (>= 1.1-2),
-    futile.logger (>= 1.4.3)
+    futile.logger (>= 1.4.3),
 RoxygenNote: 6.0.1
 Suggests: testthat

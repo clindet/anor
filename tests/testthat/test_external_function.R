@@ -1,7 +1,8 @@
 filename = system.file("extdata", "demo/hg19_ALL.sites.2015_08.txt", package = "annovarR")
 
-test_that("reform.1000g", {
-  x <- reform.1000g(filename = filename)
+test_that("format.1000g.db.tb", {
+  x <- format.1000g.db.tb(filename = filename)
+  x <- as.data.frame(x)
   cnames <- c("chr", "start", "end", "ref", "alt", "rs", "frq")
   expect_that(colnames(x), equals(cnames))
   expect_that(x["5", "end"], equals(10352))

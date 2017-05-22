@@ -1,5 +1,15 @@
 # annovarR default function: setdb.fun, set.table.fun, format.db.tb.fun You can
 # re-write this R source file
+format.cols <- function(dat.list) {
+  dat.list <- dat.list
+  if ("chr" %in% names(dat.list)) {
+    if (str_detect(dat.list[["chr"]][1], "chr|Chr")) {
+      dat.list$chr <- str_replace(as.character(dat.list$chr), "chr|Chr", "")
+    }
+  }
+  return(dat.list)
+}
+
 set.db <- function(name, builder, database.dir, db.type) {
   if (db.type == "sqlite") {
     db.path <- sprintf("%s/%s_%s.%s", database.dir, builder, name, db.type)
@@ -37,7 +47,6 @@ format.1000g.db.tb <- function(dat = "", filename = "", ...) {
   if (filename != "") {
     dat <- fread(filename, ...)
   }
-  dat <- as.data.frame(dat)
   end <- as.numeric(dat$V2)
   have.num <- str_detect(dat$V4, "[0-9]")
   end[have.num] <- end[have.num] + as.numeric(str_extract(dat$V4[have.num], "[0-9]*"))

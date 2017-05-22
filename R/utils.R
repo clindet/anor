@@ -10,25 +10,12 @@ print.vb <- function(x, verbose = FALSE, ...) {
   }
 }
 
-format.cols <- function(dat.list) {
-  dat.list <- dat.list
-  if ("chr" %in% names(dat.list)) {
-    dat.list$chr <- str_replace(as.character(dat.list$chr), "chr", "")
-  }
-  if ("start" %in% names(dat.list)) {
-    dat.list$start <- as.numeric(dat.list$start)
-  }
-  if ("end" %in% names(dat.list)) {
-    dat.list$end <- as.numeric(dat.list$end)
-  }
-  return(dat.list)
-}
 
 db.tb.colnames <- function(db.path, table.name, db.type = "sqlite") {
   if (db.type == "sqlite") {
     tb.colname <- sqlite.tb.colnames(db.path, table.name)
   } else if (db.type == "txt") {
-    table.dat <- as.data.frame(fread(db.path, nrows = 1))
+    table.dat <- fread(db.path, nrows = 1)
     tb.colnames <- colnames(table.dat)
   }
 }
@@ -78,6 +65,9 @@ sync.colnames <- function(result, col.order, col.names) {
 
 select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
   select.cols = "*", verbose = FALSE) {
+  params <- lapply(params, function(x) {
+    as.character(x)
+  })
   if (db.type == "sqlite") {
     sql <- sprintf("SELECT %s FROM \"%s\"", select.cols, table.name)
     if (length(cols) == 0) {
@@ -87,27 +77,50 @@ select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "s
       count <- 1
       for (i in 1:length(params)) {
         if (i < length(params)) {
-          sql.plus <- sprintf("\"%s\" == :x%s AND ", cols[i], i)
+          sql.plus <- sprintf("\"%s\"==:x%s AND ", cols[i], i)
           sql <- paste0(sql, sql.plus)
         } else {
-          sql.plus <- sprintf("\"%s\" == :x%s", cols[i], i)
+          sql.plus <- sprintf("\"%s\"==:x%s", cols[i], i)
           sql <- paste0(sql, sql.plus)
         }
       }
     }
+    info.msg(sprintf("Input %s colnum type:%s", paste0(names(params), collapse = ","), 
+      paste0(sapply(params, typeof), collapse = ",")), verbose = verbose)
+    print.vb(lapply(params, head), verbose = verbose)
     params <- unname(params)
     info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
     result <- dbGetQuery(db, sql, params = params)
     info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
+    result <- as.data.table(result)
   } else if (db.type == "txt") {
-    result <- as.data.frame(fread(db))
+    result <- fread(db)
+    result <- lapply(result, function(x) {
+      as.character(x)
+    })
+    params <- lapply(params, function(x) {
+      as.character(x)
+    })
+    result <- as.data.table(result)
+    params <- as.data.table(params)
+    index <- match(colnames(result), names(params))
+    index <- index[!is.na(index)]
+    colnames(result)[index] <- names(params)
+    keys <- paste0(names(params), collapse = ", ")
+    text <- sprintf("setkey(result, %s)", keys)
+    eval(parse(text = text))
+    params <- as.data.table(params)
+    keys <- paste0(names(params), collapse = ", ")
+    text <- sprintf("setkey(params, %s)", keys)
+    eval(parse(text = text))
+    result <- merge(result, params)
   }
   return(result)
 }
 
 return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col.names) {
   result <- rep(NA, length(dat.list[[1]]))
-  result <- data.frame(result)
+  result <- as.data.table(result)
   if (return.col.names != "") {
     colnames(result) <- return.col.names
   } else {
@@ -162,3 +175,4 @@ get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "c
     return(config[[key]][index])
   }
 }
+

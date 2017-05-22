@@ -4,8 +4,8 @@
 \alias{annotation.pos.utils}
 \title{A position annotation utils that can be used to write a yourself annotation function}
 \usage{
-annotation.pos.utils(dat.list = list(), name = "", builder = "hg19",
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5,
+annotation.pos.utils(dat = data.table(), name = "", builder = "hg19",
+  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5,
   index.col = c("chr", "start"), matched.cols = c("chr", "start", "end",
   "ref", "alt"), return.col.index = 6, return.col.names = "",
   format.dat.fun = format.cols, setdb.fun = set.db,
@@ -13,7 +13,7 @@ annotation.pos.utils(dat.list = list(), name = "", builder = "hg19",
   db.type = "sqlite", verbose = FALSE)
 }
 \arguments{
-\item{dat.list}{A list including all of your data, eg. list(chr=c(1,2,3), start=c(1111,1112,1113))}
+\item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
 
 \item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
 
@@ -31,7 +31,7 @@ annotation.pos.utils(dat.list = list(), name = "", builder = "hg19",
 
 \item{return.col.names}{Setting the returned colnum names}
 
-\item{format.dat.fun}{A function to process input data. eg. as.numeric(dat.list$start); as.character(dat.list$chr)}
+\item{format.dat.fun}{A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)}
 
 \item{setdb.fun}{A function to process the name, builder, database.dir and get the database path}
 
@@ -47,6 +47,7 @@ annotation.pos.utils(dat.list = list(), name = "", builder = "hg19",
 A position annotation utils that can be used to write a yourself annotation function
 }
 \examples{
+library(data.table)
 chr <- c('chr1', 'chr2', 'chr1')
 start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
@@ -54,7 +55,7 @@ ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
 database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
 database.dir <- dirname(database)
-dat.list <- list(chr = chr, start = start, end = end, ref = ref, alt = alt)
-x <- annotation.pos.utils(dat.list, 'avsnp147', database.dir = database.dir, 
+dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+x <- annotation.pos.utils(dat, 'avsnp147', database.dir = database.dir, 
 return.col.names = 'avSNP147')
 }
