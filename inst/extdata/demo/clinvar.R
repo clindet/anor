@@ -1,0 +1,13 @@
+options(stringsAsFactors = F)
+library(stringr)
+library(annovarR)
+i <- "hg19_clinvar_20170130.txt"
+cat(sprintf('File:%s', i), sep = "\n")
+db <- str_replace(i, fixed(".txt"), "")
+cat(sprintf('DB:%s', db), sep = "\n")
+cat(sprintf('Dat:%s', i), sep = "\n")
+db.sqlite <- paste0(db, ".sqlite")
+unlink(db.sqlite)
+sqlite.build(i, db.sqlite, db, verbose = T)
+cols <- c('#Chr', 'Start')
+sqlite.index(db.sqlite, db, "chr_start_index", cols, verbose = T)

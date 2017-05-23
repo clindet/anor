@@ -102,3 +102,37 @@ format.dat.fun = "format.cols"
 setdb.fun = "set.sih.normal.pool.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
+
+[clinvar]
+versions = ["clinvar_20170130"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+# annotation.auto used parameters of normal pool database parse
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[intervar]
+versions = ["intervar_20170202"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+# annotation.auto used parameters of normal pool database parse
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"

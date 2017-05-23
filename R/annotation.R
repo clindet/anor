@@ -166,7 +166,8 @@ annotation <- function(dat = data.table(), name = "", builder = "hg19", database
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-#' x <- annotation.merge(dat, c('avsnp147', 'avsnp144'), database.dir = database.dir)
+#' x <- annotation.merge(dat = dat, names = c('avsnp147', '1000g2015aug_all'), 
+#' database.dir = database.dir)
 annotation.merge <- function(names, ...) {
   result.list <- lapply(names, function(x) {
     annotation(name = x, ...)
