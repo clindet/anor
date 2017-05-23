@@ -1,7 +1,7 @@
 Package: annovarR
 Type: Package
 Title: Genomic annotation tool using ANNOVAR and other database
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: person("Jianfeng", "Li", email = "lee_jianfeng@sjtu.edu.cn", role = c("aut", "cre"))
 Description: 
     annovarR is an efficient software tool to utilize update-to-date information to functionally annotate genetic variants detected from diverse genomes based on ANNOVAR.
@@ -14,8 +14,8 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     stringr (>= 1.2.0),
-    configr (>= 0.2.3),
-    BioInstaller (>= 0.1.4),
+    configr (>= 0.2.2),
+    BioInstaller (>= 0.1.1),
     DBI (>= 0.6-1),
     data.table (>= 1.10.4),
     RSQLite (>= 1.1-2),

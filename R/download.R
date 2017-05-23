@@ -17,6 +17,6 @@ download.database <- function(name = c(), version = c(), database.dir = c(), dat
   }
   github.cfg.null <- tempfile()
   file.create(github.cfg.null)
-  install.bioinfo(name = name, version = version, destdir = database.dir, github.database.cfg = github.cfg.null, 
+  install.bioinfo(name = name, version = version, destdir = database.dir, github.cfg = github.cfg.null, 
     nongithub.cfg = database.cfg, download.only = TRUE, verbose = verbose, ...)
 }

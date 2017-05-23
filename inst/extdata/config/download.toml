@@ -5,20 +5,12 @@ source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sq
 decompress = false
 version_newest = "hg19_avsnp147"
 version_available = ["hg19_avsnp138", "hg19_avsnp142", "hg19_avsnp144", "hg19_avsnp147"]
-after_failure = "echo 'fail!'"
-after_success = "echo 'successful!'"
-make_dir = ["./"]
-bin_dir = ["./"]
 
 [cosmic]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
 decompress = false
 version_newest = "hg19_cosmic81"
 version_available = ["hg19_cosmic70", "hg19_cosmic81"]
-after_failure = "echo 'fail!'"
-after_success = "echo 'successful!'"
-make_dir = ["./"]
-bin_dir = ["./"]
 
 [1000g]
 source_url = [
@@ -31,9 +23,33 @@ source_url = [
 decompress = [false, false, false, false, false, false]
 version_newest = "hg19-2015_08"
 version_available = ["hg19-2015_08", "hg19-2014_10"]
-after_failure = "echo 'fail!'"
-after_success = "echo 'successful!'"
-make_dir = ["./"]
-bin_dir = ["./"]
 
-[avsnp.install]
+[radar]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
+decompress = false
+version_newest = "hg19_RADAR2"
+version_available = ["hg19_RADAR2"]
+
+[darned]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
+decompress = false
+version_newest = "hg19_DARNED"
+version_available = ["hg19_DARNED"]
+
+[normal_pool]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/@>@str_replace('{{version}}', '_', '_normal')@<@.txt"
+decompress = false
+version_newest = "hg19_2016sih_wes_ball"
+version_available = ['hg19_2016sih_wes_ball', 'hg19_2016sih_wes_tall', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
+
+[clinvar]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
+decompress = false
+version_newest = "hg19_clinvar_20170130"
+version_available = ["hg19_clinvar_20170130"]
+
+[intervar]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
+decompress = false
+version_newest = "hg19_intervar_20170202"
+version_available = ["hg19_intervar_20170202"]
