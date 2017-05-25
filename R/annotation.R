@@ -53,7 +53,7 @@ annotation.pos.utils <- function(dat = data.table(), name = "", builder = "hg19"
   db <- db.path
   info.msg(sprintf("Database path:%s", db.path))
   table.name <- set.table.fun(name, builder)
-  info.msg(sprintf("Setting up connection: %s sqlite databse.", db.path), verbose = verbose)
+  info.msg(sprintf("Setting up connection: %s databse.", db.path), verbose = verbose)
   db <- connect.db(db, db.type)
   tb.colnames <- db.tb.colnames(db.path, table.name, db.type)
   info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)

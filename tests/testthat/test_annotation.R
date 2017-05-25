@@ -22,6 +22,7 @@ test_that("annotation.pos.utils", {
   expect_that(x[1, 1], equals("rs775809821"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
+  
 })
 
 test_that("annotation.snp", {
@@ -40,6 +41,18 @@ test_that("annotation.snp", {
   expect_that(x[1, 1], equals("rs775809821"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
+  
+  dat$start[1] <- "10177"
+  dat$end[1] <- "10177"
+  dat$ref[1] <- "-"
+  dat$alt[1] <- "C"
+  x <- annotation(dat, "avsnp147.common", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x), equals("avSNP147.common"))
+  x[, 1] <- as.character(x[, 1])
+  expect_that(x[1, 1], equals("rs367896724"))
+  expect_that(is.na(x[2, 1]), equals(TRUE))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 test_that("annotation.cosmic", {

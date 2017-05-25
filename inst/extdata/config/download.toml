@@ -4,7 +4,7 @@ title = "annovarR download configuration file (Using BioInstaller)"
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"
 decompress = false
 version_newest = "hg19_avsnp147"
-version_available = ["hg19_avsnp138", "hg19_avsnp142", "hg19_avsnp144", "hg19_avsnp147"]
+version_available = ["hg19_avsnp138", "hg19_avsnp142", "hg19_avsnp144", "hg19_avsnp147", "hg19_avsnp147.common.sqlite"]
 
 [cosmic]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{version}}.sqlite"

@@ -1,8 +1,8 @@
 Title = "annovarR configuration file"
 
 [avsnp]
-versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147"]
-default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite"]
+versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp147.common"]
+default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 
 # annotation.auto used parameters
