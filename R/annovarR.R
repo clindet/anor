@@ -13,6 +13,7 @@
 #' @docType package
 #' @name annovarR
 #' @import stringr RSQLite DBI data.table futile.logger configr BioInstaller
+#' @importFrom stringi stri_rand_strings
 #' @importFrom utils packageVersion head
 NULL
 

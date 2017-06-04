@@ -10,16 +10,16 @@ format.cols <- function(dat.list) {
   return(dat.list)
 }
 
-set.db <- function(name, builder, database.dir, db.type) {
+set.db <- function(name, buildver, database.dir, db.type) {
   if (db.type == "sqlite") {
-    db.path <- sprintf("%s/%s_%s.%s", database.dir, builder, name, db.type)
+    db.path <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
   } else if (db.type == "txt") {
-    db.path <- sprintf("%s/%s_%s.%s", database.dir, builder, name, db.type)
+    db.path <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
   }
   return(db.path)
 }
-set.table <- function(name, builder) {
-  table.name <- paste0(builder, "_", name)
+set.table <- function(name, buildver) {
+  table.name <- paste0(buildver, "_", name)
 }
 
 format.db.tb <- function(db.tb) {
@@ -27,19 +27,19 @@ format.db.tb <- function(db.tb) {
 }
 
 # 1000G needed functions to set database name and table name
-set.1000g.db <- function(name, builder, database.dir, db.type = "sqlite") {
+set.1000g.db <- function(name, buildver, database.dir, db.type = "sqlite") {
   list.1000g <- convert.1000g.name(name)
   if (db.type == "sqlite") {
-    db <- sprintf("%s/%s_%s.sites.%s_%s.sqlite", database.dir, builder, list.1000g$region, 
+    db <- sprintf("%s/%s_%s.sites.%s_%s.sqlite", database.dir, buildver, list.1000g$region, 
       list.1000g$year, list.1000g$month)
   } else if (db.type == "txt") {
-    db <- sprintf("%s/%s_%s.sites.%s_%s.txt", database.dir, builder, list.1000g$region, 
+    db <- sprintf("%s/%s_%s.sites.%s_%s.txt", database.dir, buildver, list.1000g$region, 
       list.1000g$year, list.1000g$month)
   }
 }
-set.1000g.table <- function(name, builder) {
+set.1000g.table <- function(name, buildver) {
   list.1000g <- convert.1000g.name(name)
-  table <- sprintf("%s_%s.sites.%s_%s", builder, list.1000g$region, list.1000g$year, 
+  table <- sprintf("%s_%s.sites.%s_%s", buildver, list.1000g$region, list.1000g$year, 
     list.1000g$month)
 }
 
@@ -73,10 +73,10 @@ format.1000g.db.tb <- function(dat = "", filename = "", ...) {
 
 
 # Sih Normal Pool needed functions to set database name and table name
-set.sih.normal.pool.db <- function(name, builder, database.dir, db.type = "txt") {
+set.sih.normal.pool.db <- function(name, buildver, database.dir, db.type = "txt") {
   if (db.type == "sqlite") {
-    db <- sprintf("%s/%s_normal%s.sqlite", database.dir, builder, name)
+    db <- sprintf("%s/%s_normal%s.sqlite", database.dir, buildver, name)
   } else if (db.type == "txt") {
-    db <- sprintf("%s/%s_normal%s.txt", database.dir, builder, name)
+    db <- sprintf("%s/%s_normal%s.txt", database.dir, buildver, name)
   }
 }

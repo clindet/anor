@@ -4,18 +4,28 @@
 \alias{download.database}
 \title{Download annovarR databases}
 \usage{
-download.database(name = c(), version = c(), database.dir = c(),
-  database.cfg = system.file("extdata", "config/download.toml", package =
-  "annovarR"), verbose = FALSE, ...)
+download.database(name = c(), version = c(), buildver = "hg19",
+  database.dir = c(), database.cfg = system.file("extdata",
+  "config/download.toml", package = "annovarR"), show.all.versions = FALSE,
+  show.all.names = FALSE, show.all.buildvers = FALSE, verbose = FALSE,
+  ...)
 }
 \arguments{
 \item{name}{Name of download eg. cosmic, avsnp, 1000g}
 
 \item{version}{Version of download database}
 
+\item{buildver}{Genome version, e.g hg19, hg38, mm10}
+
 \item{database.dir}{Dir of the databases}
 
 \item{database.cfg}{Configuration file of annovarR databases infomation}
+
+\item{show.all.versions}{Logical indicating wheather show all avaliable versions}
+
+\item{show.all.names}{Logical indicating wheather show all avaliable name}
+
+\item{show.all.buildvers}{Logical indicating wheather show all avaliable buildver}
 
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 

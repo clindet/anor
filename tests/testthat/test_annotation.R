@@ -1,4 +1,4 @@
-test_that("annotation.pos.utils", {
+test_that("annotation.cols.match", {
   chr <- c("chr1", "chr2", "chr1")
   start <- c("10020", "10020", "10020")
   end <- c("10020", "10020", "10020")
@@ -7,14 +7,14 @@ test_that("annotation.pos.utils", {
   database <- system.file("extdata", "demo/hg19_avsnp147.sqlite", package = "annovarR")
   database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation.pos.utils(dat, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147")
+  x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("avSNP147"))
   x[, 1] <- as.character(x[, 1])
   expect_that(x[1, 1], equals("rs775809821"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
-  x <- annotation.pos.utils(dat, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147", 
+  x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147", 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("avSNP147"))
@@ -262,7 +262,8 @@ test_that("REDIportal", {
   database <- system.file("extdata", "demo/hg19_REDIportal.txt", package = "annovarR")
   database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, ref = ref, alt = alt)
-  x <- annotation(dat = dat, name = "REDIportal", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, name = "REDIportal", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("REDIportal"))
   expect_that(x[1, 1], equals("R"))

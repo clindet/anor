@@ -2,7 +2,7 @@
 #'
 #' @param dat A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))
 #' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
-#' @param builder Genome version, hg19, hg38, mm10 and others
+#' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases
 #' @param db.col.order Using the index, you can rename the database table, and can be matched using matched.cols. 
 #' @param index.col Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
@@ -10,8 +10,8 @@
 #' @param return.col.index Setting the colnums need be returned
 #' @param return.col.names Setting the returned colnum names
 #' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
-#' @param setdb.fun A function to process the name, builder, database.dir and get the database path
-#' @param set.table.fun A function to process the name, builder and get the final table name
+#' @param setdb.fun A function to process the name, buildver, database.dir and get the database path
+#' @param set.table.fun A function to process the name, buildver and get the final table name
 #' @param format.db.tb.fun A function to process the selected database table that can be used to matched with your data
 #' @param db.type Setting the database type (sqlite or txt)
 #' @param verbose Logical indicating wheather print the extra log infomation
@@ -26,9 +26,9 @@
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-#' x <- annotation.pos.utils(dat, 'avsnp147', database.dir = database.dir, 
+#' x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
 #' return.col.names = 'avSNP147')
-annotation.pos.utils <- function(dat = data.table(), name = "", builder = "hg19", 
+annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5, index.col = c("chr", 
     "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), return.col.index = 6, 
   return.col.names = "", format.dat.fun = format.cols, setdb.fun = set.db, set.table.fun = set.table, 
@@ -45,14 +45,14 @@ annotation.pos.utils <- function(dat = data.table(), name = "", builder = "hg19"
   info.msg("Formating the input data.", verbose = verbose)
   dat <- format.dat.fun(dat)
   print.vb(dat, verbose = verbose)
-  db.path <- setdb.fun(name, builder, database.dir, db.type)
+  db.path <- setdb.fun(name, buildver, database.dir, db.type)
   if (!file.exists(db.path)) {
     stop(sprintf("%s database not existed, please check the database dir or setdb.fun function again.", 
       db.path))
   }
   db <- db.path
   info.msg(sprintf("Database path:%s", db.path))
-  table.name <- set.table.fun(name, builder)
+  table.name <- set.table.fun(name, buildver)
   info.msg(sprintf("Setting up connection: %s databse.", db.path), verbose = verbose)
   db <- connect.db(db, db.type)
   tb.colnames <- db.tb.colnames(db.path, table.name, db.type)
@@ -117,12 +117,12 @@ annotation.pos.utils <- function(dat = data.table(), name = "", builder = "hg19"
 #'
 #' @param dat A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))
 #' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.
-#' @param builder Genome version, hg19, hg38, mm10 and others
+#' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases
 #' @param db.type Setting the database type (sqlite or txt)
 #' @param database.cfg Configuration file of annovarR databases infomation
 #' @param func Function to anntate the dat data, default is to search the function in extdata/database.toml
-#' @param ... Other parametes see \code{\link{annotation.pos.utils}}
+#' @param ... Other parametes see \code{\link{annotation.cols.match}}
 #' @export
 #' @examples
 #' library(data.table)
@@ -135,7 +135,7 @@ annotation.pos.utils <- function(dat = data.table(), name = "", builder = "hg19"
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation(dat, 'avsnp147', database.dir = database.dir, return.col.names = 'avSNP147')
-annotation <- function(dat = data.table(), name = "", builder = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", 
+annotation <- function(dat = data.table(), name = "", buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", 
   ""), db.type = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR"), func = NULL, ...) {
   result <- NULL
@@ -146,7 +146,7 @@ annotation <- function(dat = data.table(), name = "", builder = "hg19", database
     func <- get.annotation.func(name, database.cfg = database.cfg)
     func <- eval(parse(text = func))
   }
-  text <- "result <- func(dat = dat, name = name, builder = builder, database.dir = database.dir, db.type = db.type, ...)"
+  text <- "result <- func(dat = dat, name = name, buildver = buildver, database.dir = database.dir, db.type = db.type, ...)"
   eval(parse(text = text))
   return(result)
 }
@@ -203,7 +203,7 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
       para.values[[item]] <- item.value
     }
   }
-  annotation.pos.utils(dat = dat, name = name, return.col.names = para.values[["return.col.names"]], 
+  annotation.cols.match(dat = dat, name = name, return.col.names = para.values[["return.col.names"]], 
     return.col.index = para.values[["return.col.index"]], db.col.order = para.values[["db.col.order"]], 
     matched.cols = para.values[["matched.cols"]], setdb.fun = eval(parse(text = para.values[["setdb.fun"]])), 
     set.table.fun = eval(parse(text = para.values[["set.table.fun"]])), format.db.tb.fun = eval(parse(text = para.values[["format.db.tb.fun"]])), 

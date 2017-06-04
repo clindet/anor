@@ -1,7 +1,7 @@
 Package: annovarR
 Type: Package
 Title: Genomic annotation tool using ANNOVAR and other database
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Jianfeng", "Li", email = "lee_jianfeng@sjtu.edu.cn", role = c("aut", "cre"))
 Description: 
     annovarR is an efficient software tool to utilize update-to-date information to functionally annotate genetic variants detected from diverse genomes based on ANNOVAR.
@@ -20,5 +20,6 @@ Imports:
     data.table (>= 1.10.4),
     RSQLite (>= 1.1-2),
     futile.logger (>= 1.4.3),
+    stringi (>= 1.1.5)
 RoxygenNote: 6.0.1
 Suggests: testthat

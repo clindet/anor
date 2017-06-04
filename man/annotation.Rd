@@ -4,7 +4,7 @@
 \alias{annotation}
 \title{Annotation function (single name)}
 \usage{
-annotation(dat = data.table(), name = "", builder = "hg19",
+annotation(dat = data.table(), name = "", buildver = "hg19",
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL,
   database.cfg = system.file("extdata", "config/databases.toml", package =
   "annovarR"), func = NULL, ...)
@@ -14,7 +14,7 @@ annotation(dat = data.table(), name = "", builder = "hg19",
 
 \item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.}
 
-\item{builder}{Genome version, hg19, hg38, mm10 and others}
+\item{buildver}{Genome version, hg19, hg38, mm10 and others}
 
 \item{database.dir}{Dir of the databases}
 
@@ -24,7 +24,7 @@ annotation(dat = data.table(), name = "", builder = "hg19",
 
 \item{func}{Function to anntate the dat data, default is to search the function in extdata/database.toml}
 
-\item{...}{Other parametes see \code{\link{annotation.pos.utils}}}
+\item{...}{Other parametes see \code{\link{annotation.cols.match}}}
 }
 \description{
 Annotation function (single name)

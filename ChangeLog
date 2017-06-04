@@ -1,0 +1,5 @@
+2017-06-04 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+		
+		* ANNOVAR databases download full supported
+		* download.database use buildver
+		* Unit test of download.database
