@@ -20,6 +20,8 @@ Imports:
     data.table (>= 1.10.4),
     RSQLite (>= 1.1-2),
     futile.logger (>= 1.4.3),
-    stringi (>= 1.1.5)
+    stringi (>= 1.1.5),
+    RMySQL (>= 0.10.11),
+    methods,
 RoxygenNote: 6.0.1
 Suggests: testthat

@@ -361,13 +361,13 @@ description = "alternative allele frequency data in 1000 Genomes Project"
 other = "hg19"
 
 [avsnp]
-source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.gz"
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "avsnp147"
 version_available = ["avsnp147", "avsnp144", "avsnp142", "avsnp138"]
 buildver_available = "hg19"
 
 [cosmic]
-source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.gz"
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "cosmic81"
 version_available = ["cosmic70", "cosmic81"]
 buildver_available = "hg19"
@@ -378,13 +378,13 @@ version_newest = "1000g2015aug"
 version_available = ["1000g2015aug", "1000g2014oct"]
 
 [radar]
-source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.gz"
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "RADAR2"
 version_available = ["RADAR2"]
 buildver_available = "hg19"
 
 [darned]
-source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.gz"
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "DARNED"
 version_available = ["DARNED"]
 buildver_available = "hg19"
@@ -397,13 +397,13 @@ version_available = ['2016sih_wes_ball', '2016sih_wes_tall', '2016sih_wes_nkt', 
 buildver_available = "hg19"
 
 [clinvar]
-source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.gz"
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "clinvar_20170130"
 version_available = ["clinvar_20170130"]
 buildver_available = "hg19"
 
 [intervar]
-source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.gz"
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "intervar_20170202"
 version_available = ["intervar_20170202"]
 buildver_available = "hg19"

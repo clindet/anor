@@ -4,12 +4,11 @@
 \alias{sqlite.index}
 \title{Generate search index of annovarR database table in sqlite}
 \usage{
-sqlite.index(db, table.name, index, cols, verbose = FALSE)
+sqlite.index(sqlite.connect.params = list(sqlite.path = "", table.name = ""),
+  index = "", cols = c(), verbose = FALSE, ...)
 }
 \arguments{
-\item{db}{Output path of sqlite database}
-
-\item{table.name}{Table name in sqlite}
+\item{sqlite.connect.params}{Connect to sqlite database params [sqlite.path, table.name]}
 
 \item{index}{Index name in sqlite}
 
@@ -17,7 +16,7 @@ sqlite.index(db, table.name, index, cols, verbose = FALSE)
 
 \item{verbose}{Ligical indicating wheather show the log message}
 
-\item{...}{Other parameters be used in \code{\link[data.table]{fread}}}
+\item{...}{Other parameters be used in dbSendQuery}
 }
 \description{
 Generate search index of annovarR database table in sqlite
@@ -25,7 +24,9 @@ Generate search index of annovarR database table in sqlite
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-x <- sqlite.build(filename = test.dat, db = test.sqlite, table.name = 'snp_test')
-x <- sqlite.index(db = test.sqlite, table.name = 'snp_test', index = 'index4', cols = c('V1', 'V2'))
+x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+table.name = 'snp_test'))
+x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
+index = 'index4', cols = c('V1', 'V2'))
 unlink(test.sqlite)
 }

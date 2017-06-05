@@ -4,15 +4,18 @@
 \alias{sqlite.build}
 \title{Build annovarR database in sqlite}
 \usage{
-sqlite.build(filename, db, table.name, new.colnames = NULL,
-  overwrite = TRUE, verbose = FALSE, ...)
+sqlite.build(filename = "", sqlite.connect.params = list(sqlite.path = "",
+  table.name = ""), dat = data.table(), fread.params = list(),
+  new.colnames = NULL, overwrite = TRUE, verbose = FALSE, ...)
 }
 \arguments{
-\item{filename}{Path of raw data}
+\item{filename}{Path of raw data, will be read by fread}
 
-\item{db}{Output path of sqlite database}
+\item{sqlite.connect.params}{Connect to sqlite database params [sqlite.path, table.name]}
 
-\item{table.name}{Table name in sqlite}
+\item{dat}{Object of data.table, as the input data to build database (optional)}
+
+\item{fread.params}{Other parameters be used in \code{\link[data.table]{fread}}}
 
 \item{new.colnames}{New colnames of table, default is to retain the original}
 
@@ -20,7 +23,7 @@ sqlite.build(filename, db, table.name, new.colnames = NULL,
 
 \item{verbose}{Ligical indicating wheather show the log message}
 
-\item{...}{Other parameters be used in \code{\link[data.table]{fread}}}
+\item{...}{Other parameters be used in dbWriteTable}
 }
 \description{
 Build annovarR database in sqlite
@@ -28,6 +31,7 @@ Build annovarR database in sqlite
 \examples{
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-x <- sqlite.build(filename = test.dat, db = test.sqlite, 'snp_test')
+x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+table.name = 'snp_test'))
 unlink(test.sqlite)
 }

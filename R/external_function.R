@@ -10,16 +10,31 @@ format.cols <- function(dat.list) {
   return(dat.list)
 }
 
-set.db <- function(name, buildver, database.dir, db.type) {
+set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", mysql.connect.params = list(), 
+  sqlite.connect.params = list()) {
   if (db.type == "sqlite") {
-    db.path <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
+    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
   } else if (db.type == "txt") {
-    db.path <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
+    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
+  } else if (db.type == "mysql") {
+    if (is.null(sqlite.connect.params$dbname)) {
+      dbname <- sprintf("%s_%s", buildver, name)
+    } else {
+      dbname <- mysql.connect.params[["dbname"]]
+    }
   }
-  return(db.path)
+  return(dbname)
 }
-set.table <- function(name, buildver) {
-  table.name <- paste0(buildver, "_", name)
+# Default set table name function
+set.table <- function(name = "", buildver = "", db.type = "sqlite", mysql.connect.params = list(), 
+  sqlite.connect.params = list()) {
+  if (db.type == "sqlite") {
+    table.name <- paste0(buildver, "_", name)
+  } else if (db.type == "txt") {
+    table.name <- paste0(buildver, "_", name)
+  } else if (db.type == "mysql") {
+    table.name <- paste0(buildver, "_", name)
+  }
 }
 
 format.db.tb <- function(db.tb) {

@@ -1,68 +1,64 @@
+# Add verbose to decide wheather using flog.info infomation
 info.msg <- function(msg, verbose = FALSE, ...) {
   if (verbose) {
     flog.info(msg, ...)
   }
 }
 
+# Add verbose to decide wheather print infomation
 print.vb <- function(x, verbose = FALSE, ...) {
   if (verbose) {
     print(x)
   }
 }
 
-
-db.tb.colnames <- function(db.path, table.name, db.type = "sqlite") {
+# Show colnames of table in database or text file
+db.tb.colnames <- function(dbname = "", table.name = "", db.type = "sqlite", mysql.connect.params = list()) {
   if (db.type == "sqlite") {
-    tb.colname <- sqlite.tb.colnames(db.path, table.name)
+    tb.colname <- sqlite.tb.colnames(list(sqlite.path = dbname, table.name = table.name))
   } else if (db.type == "txt") {
-    table.dat <- fread(db.path, nrows = 1)
+    table.dat <- fread(dbname, nrows = 1)
     tb.colnames <- colnames(table.dat)
+  } else if (db.type == "mysql") {
+    params <- list(dbname = dbname, table.name = table.name)
+    params <- config.list.merge(params, mysql.connect.params)
+    tb.colname <- do.call(mysql.tb.colnames, params)
   }
 }
 
-connect.db <- function(db, db.type = "sqlite") {
+# Connect API for sqlite and mysql database, text file will return db
+connect.db <- function(database, db.type = "sqlite", sqlite.connect.params = list(), 
+  mysql.connect.params = list(host = "host", dbname = database, port = "3306", 
+    user = "user", password = "password")) {
   if (db.type == "sqlite") {
-    db <- dbConnect(RSQLite::SQLite(), db)
+    sqlite.connect.params <- config.list.merge(list(RSQLite::SQLite(), database), 
+      sqlite.connect.params)
+    database <- do.call(dbConnect, sqlite.connect.params)
   } else if (db.type == "txt") {
-    return(db)
+    database <- database
+  } else if (db.type == "mysql") {
+    mysql.connect.params <- config.list.merge(list(MySQL(), dbname = database), 
+      mysql.connect.params)
+    database <- do.call(dbConnect, mysql.connect.params)
+    dbSendQuery(database, "SET NAMES utf8")
+  }
+  return(database)
+}
+# DisConnect API to avoid the error that db.type not is sqlite or mysql
+disconnect.db <- function(database, db.type = "sqlite") {
+  if (db.type == "sqlite" || db.type == "mysql") {
+    dbDisconnect(database)
   }
 }
-disconnect.db <- function(db, db.type = "sqlite") {
-  if (db.type == "sqlite") {
-    dbDisconnect(db)
-  }
-}
 
-
-get.input.index <- function(dat.list, matched.cols) {
-  return(get.index(dat.list, matched.cols))
-}
-
-get.ref.index <- function(dat, matched.cols) {
-  return(get.index(dat, matched.cols))
-}
-
-get.index <- function(dat, matched.cols = c()) {
-  matched.cols.text <- NULL
-  index <- NULL
-  for (i in 1:length(matched.cols)) {
-    if (i < length(matched.cols)) {
-      matched.cols.text <- paste0(matched.cols.text, sprintf("dat$`%s`, ", 
-        matched.cols[i]))
-    } else {
-      matched.cols.text <- paste0(matched.cols.text, sprintf("dat$`%s`", matched.cols[i]))
-    }
-  }
-  text <- sprintf("index <- paste0(%s)", matched.cols.text)
-  eval(parse(text = text))
-  return(index)
-}
-
+# Sync database and input table colnames
 sync.colnames <- function(result, col.order, col.names) {
   colnames(result)[col.order] <- col.names
   return(result)
 }
 
+# Select data from text file, sqlite or mysql database cols: database colnames
+# used to match params: a list that record to match database using cols
 select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
   select.cols = "*", verbose = FALSE) {
   params <- lapply(params, function(x) {
@@ -70,11 +66,8 @@ select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "s
   })
   if (db.type == "sqlite") {
     sql <- sprintf("SELECT %s FROM \"%s\"", select.cols, table.name)
-    if (length(cols) == 0) {
-      result <- dbGetQuery(db, sql)
-    } else {
+    if (length(cols) > 0) {
       sql <- paste0(sql, " WHERE ")
-      count <- 1
       for (i in 1:length(params)) {
         if (i < length(params)) {
           sql.plus <- sprintf("\"%s\"==:x%s AND ", cols[i], i)
@@ -92,6 +85,32 @@ select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "s
     info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
     result <- dbGetQuery(db, sql, params = params)
     info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
+    result <- as.data.table(result)
+  } else if (db.type == "mysql") {
+    sql <- sprintf("SELECT %s FROM %s", select.cols, table.name)
+    if (length(cols) >= 0) {
+      sql <- sprintf("SELECT %s FROM %s", select.cols, table.name)
+      sql <- paste0(sql, " WHERE ")
+      for (i in 1:length(params)) {
+        if (i < length(params)) {
+          tmp.pars <- paste0(params[[cols[i]]], collapse = "', '")
+          tmp.pars <- sprintf("'%s'", tmp.pars)
+          sql.plus <- sprintf("%s in (%s) AND ", cols[i], tmp.pars)
+          sql <- paste0(sql, sql.plus)
+        } else {
+          tmp.pars <- paste0(params[[cols[i]]], collapse = "', '")
+          tmp.pars <- sprintf("'%s'", tmp.pars)
+          sql.plus <- sprintf("%s in (%s)", cols[i], tmp.pars)
+          sql <- paste0(sql, sql.plus)
+        }
+      }
+      info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
+      result <- dbGetQuery(db, sql)
+    } else {
+      info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
+      result <- dbGetQuery(db, sql)
+      info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
+    }
     result <- as.data.table(result)
   } else if (db.type == "txt") {
     result <- fread(db)
@@ -118,6 +137,7 @@ select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "s
   return(result)
 }
 
+# Return NA cols using ordered colnames
 return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col.names) {
   result <- rep(NA, length(dat.list[[1]]))
   result <- as.data.table(result)
@@ -142,7 +162,7 @@ convert.1000g.name <- function(name) {
   return(list(name = name, month = month, year = year, region = region))
 }
 
-
+# A auto recognition function to get the annotation function from database.cfg
 get.annotation.func <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR")) {
   all.supported.db <- get.annotation.names(database.cfg)
@@ -159,6 +179,9 @@ get.annotation.func <- function(name, database.cfg = system.file("extdata", "con
   return(config$func)
 }
 
+# Can be used to get the value from database.cfg, `name` is one of the first
+# level name of database.cfg, `key` is the key of first level name, `coincident`
+# decide wheather using one value to reprenst all of version
 get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR"), key = "", coincident = FALSE, extra.list = list(), rcmd.parse = TRUE) {
   config <- configr::read.config(database.cfg, extra.list = extra.list, rcmd.parse = rcmd.parse)

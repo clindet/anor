@@ -4,14 +4,17 @@
 \alias{drop.sqlite.index}
 \title{Drop search index of annovarR database table in sqlite}
 \usage{
-drop.sqlite.index(db, index, verbose = FALSE)
+drop.sqlite.index(sqlite.connect.params = list(sqlite.path = "", table.name =
+  ""), index = "", verbose = FALSE, ...)
 }
 \arguments{
-\item{db}{Output path of sqlite database}
+\item{sqlite.connect.params}{Connect to sqlite database params [sqlite.path]}
 
 \item{index}{Index name in sqlite}
 
 \item{verbose}{Ligical indicating wheather show the log message}
+
+\item{...}{Other parameters be used in dbSendQuery}
 }
 \description{
 Drop search index of annovarR database table in sqlite
@@ -19,8 +22,10 @@ Drop search index of annovarR database table in sqlite
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-x <- sqlite.build(filename = test.dat, db = test.sqlite, table.name = 'snp_test')
-x <- sqlite.index(db = test.sqlite, table.name = 'snp_test', index = 'index4', cols = c('V1', 'V2'))
-x <- drop.sqlite.index(db = test.sqlite, index = 'index4')
+x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+table.name = 'snp_test'))
+x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
+index = 'index4', cols = c('V1', 'V2'))
+x <- drop.sqlite.index(list(sqlite.path = test.sqlite), index = 'index4')
 unlink(test.sqlite)
 }

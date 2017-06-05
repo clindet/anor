@@ -8,9 +8,11 @@ annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
   database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5,
   index.col = c("chr", "start"), matched.cols = c("chr", "start", "end",
   "ref", "alt"), return.col.index = 6, return.col.names = "",
-  format.dat.fun = format.cols, setdb.fun = set.db,
-  set.table.fun = set.table, format.db.tb.fun = format.db.tb,
-  db.type = "sqlite", verbose = FALSE)
+  format.dat.fun = format.cols, dbname.fixed = NULL,
+  table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table,
+  format.db.tb.fun = format.db.tb, db.type = "sqlite",
+  mysql.connect.params = list(), sqlite.connect.params = list(),
+  verbose = FALSE)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -19,7 +21,7 @@ annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
 
 \item{buildver}{Genome version, hg19, hg38, mm10 and others}
 
-\item{database.dir}{Dir of the databases}
+\item{database.dir}{Dir of the databases (mysql no need)}
 
 \item{db.col.order}{Using the index, you can rename the database table, and can be matched using matched.cols.}
 
@@ -33,13 +35,24 @@ annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
 
 \item{format.dat.fun}{A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)}
 
-\item{setdb.fun}{A function to process the name, buildver, database.dir and get the database path}
+\item{dbname.fixed}{Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
+(Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)}
+
+\item{table.name.fixed}{Table name, default is NULL, and get from set.table.fun (Set value will fix the table.name)
+(Set value will fix the table.name, and will be added in sqlite.connenct.params and mysql.connect.params)}
+
+\item{setdb.fun}{A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)}
 
 \item{set.table.fun}{A function to process the name, buildver and get the final table name}
 
 \item{format.db.tb.fun}{A function to process the selected database table that can be used to matched with your data}
 
-\item{db.type}{Setting the database type (sqlite or txt)}
+\item{db.type}{Setting the database type (sqlite, txt or mysql)}
+
+\item{mysql.connect.params}{Connect MySQL database other parameters, 
+e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')}
+
+\item{sqlite.connect.params}{Connect SqLite database other paramertes, default is not need}
 
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 }
@@ -53,9 +66,9 @@ start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
 ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
-database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
+database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 database.dir <- dirname(database)
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
-return.col.names = 'avSNP147')
+return.col.names = 'avSNP147', db.type = 'txt')
 }

@@ -2,23 +2,29 @@
 % Please edit documentation in R/get.R
 \name{sqlite.head}
 \alias{sqlite.head}
-\title{Show top n line of table of database in sqlite}
+\title{Show top n line of table of database in sqlite database}
 \usage{
-sqlite.head(db.path, table.name, n = 10)
+sqlite.head(sqlite.connect.params = list(sqlite.path = "", table.name = ""),
+  n = 10, extra.sql = NULL, verbose = FALSE, ...)
 }
 \arguments{
-\item{db.path}{Path of sqlite database}
-
-\item{table.name}{Table name in sqlite}
+\item{sqlite.connect.params}{Connect to sqlite database params [sqlite.path, table.name]}
 
 \item{n}{n lines will be selected}
+
+\item{extra.sql}{Extra sql statement}
+
+\item{verbose}{Ligical indicating wheather show the log message}
+
+\item{...}{Other parameters pass to dbGetQuery}
 }
 \description{
-Show top n line of table of database in sqlite
+Show top n line of table of database in sqlite database
 }
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-x <- sqlite.build(filename = test.dat, db = test.sqlite, table.name = 'snp_test')
-sqlite.head(test.sqlite, 'snp_test')
+x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+table.name = 'snp_test'))
+sqlite.head(list(sqlite.path = test.sqlite, table.name = 'snp_test'))
 }

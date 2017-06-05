@@ -18,9 +18,9 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
   database.cfg = system.file("extdata", "config/download.toml", package = "annovarR"), 
   show.all.versions = FALSE, show.all.names = FALSE, show.all.buildvers = FALSE, 
   verbose = FALSE, ...) {
-  if (!show.all.versions && !show.all.buildvers && !show.all.names){
+  if (!show.all.versions && !show.all.buildvers && !show.all.names) {
     if ((length(database.dir) == 1) && (length(name) > length(database.dir))) {
-      if (!dir.exists(database.dir)){
+      if (!dir.exists(database.dir)) {
         dir.create(database.dir, recursive = TRUE)
       }
       database.dir <- rep(database.dir, length(name))
@@ -43,25 +43,31 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
     return(all.names)
   }
   if (show.all.versions) {
-    all.versions <- install.bioinfo(name = name, github.cfg = github.cfg.null, nongithub.cfg = database.cfg, 
-      show.all.versions = TRUE, verbose = verbose)
+    all.versions <- install.bioinfo(name = name, github.cfg = github.cfg.null, 
+      nongithub.cfg = database.cfg, show.all.versions = TRUE, verbose = verbose)
     return(all.versions)
   }
-  temp.download.dir = sprintf("%s/%s", tempdir(),stringi::stri_rand_strings(1, 10))
+  temp.download.dir = sprintf("%s/%s", tempdir(), stringi::stri_rand_strings(1, 
+    10))
   install.bioinfo(name = name, version = version, destdir = temp.download.dir, 
     github.cfg = github.cfg.null, nongithub.cfg = database.cfg, download.only = FALSE, 
-    extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, ...)
+    extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 
+    ...)
   files.and.dirs <- list.files(temp.download.dir, ".*")
   if (length(files.and.dirs) == 0) {
-    info.msg(sprintf("Download %s %s version %s database fail.", buildver, version, name), verbose = verbose)
+    info.msg(sprintf("Download %s %s version %s database fail.", buildver, version, 
+      name), verbose = verbose)
     return(FALSE)
-  } else{
-    status <- file.copy(sprintf("%s/%s", temp.download.dir, files.and.dirs), database.dir, overwrite = TRUE, recursive = TRUE)
+  } else {
+    status <- file.copy(sprintf("%s/%s", temp.download.dir, files.and.dirs), 
+      database.dir, overwrite = TRUE, recursive = TRUE)
     if (all(status)) {
-      info.msg(sprintf("Download %s %s version %s database successful.", buildver, version, name), verbose = verbose)
+      info.msg(sprintf("Download %s %s version %s database successful.", buildver, 
+        version, name), verbose = verbose)
       return(TRUE)
     } else {
-      info.msg(sprintf("Download %s %s version %s database fail.", buildver, version, name), verbose = verbose)
+      info.msg(sprintf("Download %s %s version %s database fail.", buildver, 
+        version, name), verbose = verbose)
       return(FALSE)
     }
   }

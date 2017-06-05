@@ -21,9 +21,9 @@ start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
 ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
-database <- system.file('extdata', 'demo/hg19_avsnp147.sqlite', package = 'annovarR')
+database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 database.dir <- dirname(database)
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation.merge(dat = dat, names = c('avsnp147', '1000g2015aug_all'), 
-database.dir = database.dir)
+database.dir = database.dir, db.type = 'txt')
 }

@@ -1,19 +1,54 @@
-#' Show top n line of table of database in sqlite
+#' Show top n line of table of database in sqlite database
 #'
-#' @param db.path Path of sqlite database
-#' @param table.name Table name in sqlite 
+#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
 #' @param n n lines will be selected
+#' @param extra.sql Extra sql statement
+#' @param verbose Ligical indicating wheather show the log message
+#' @param ... Other parameters pass to dbGetQuery
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' x <- sqlite.build(filename = test.dat, db = test.sqlite, table.name = 'snp_test')
-#' sqlite.head(test.sqlite, 'snp_test')
-sqlite.head <- function(db.path, table.name, n = 10) {
-  sqlite.db <- dbConnect(RSQLite::SQLite(), db.path)
-  sql <- sprintf("SELECT * FROM '%s' LIMIT %s", table.name, n)
-  nlines <- dbGetQuery(sqlite.db, sql)
+#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' table.name = 'snp_test'))
+#' sqlite.head(list(sqlite.path = test.sqlite, table.name = 'snp_test'))
+sqlite.head <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
+  n = 10, extra.sql = NULL, verbose = FALSE, ...) {
+  if (names(sqlite.connect.params)[1] != "") {
+    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
+      sqlite.connect.params)
+  }
+  sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
+  sqlite.db <- do.call(dbConnect, sqlite.connect.params)
+  sql <- sprintf("SELECT * FROM '%s' LIMIT %s", sqlite.connect.params[["table.name"]], 
+    n)
+  sql <- paste0(sql, extra.sql)
+  info.msg(sprintf("Query sql: %s", sql), verbose = verbose)
+  nlines <- dbGetQuery(sqlite.db, sql, ...)
   dbDisconnect(sqlite.db)
+  return(nlines)
+}
+#' Show top n line of table of database in mysql database
+#'
+#' 
+#' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
+#' @param n n lines will be selected
+#' @param extra.sql Extra sql statement
+#' @param verbose Ligical indicating wheather show the log message
+#' @param ... Other parameters pass to dbGetQuery
+#' @export
+#' @examples
+#' host <- '11.11.11.1'
+mysql.head <- function(mysql.connect.params = list(host = "", dbname = "", table.name = "", 
+  user = "", password = ""), n = 10, extra.sql = NULL, verbose = FALSE, ...) {
+  mysql.connect.params <- config.list.merge(list(MySQL()), mysql.connect.params)
+  mysql.db <- do.call(dbConnect, mysql.connect.params)
+  sql <- sprintf("SELECT * FROM %s LIMIT %s", mysql.connect.params[["table.name"]], 
+    n)
+  sql <- paste0(sql, extra.sql)
+  info.msg(sprintf("Query sql: %s", sql), verbose = verbose)
+  nlines <- dbGetQuery(mysql.db, sql, ...)
+  dbDisconnect(mysql.db)
   return(nlines)
 }
 
@@ -46,19 +81,43 @@ get.annotation.dbtype <- function(name, database.cfg = system.file("extdata", "c
 
 #' Get colnames of table of database in sqlite
 #'
-#' @param db.path Path of sqlite database
-#' @param table.name Table name in sqlite 
+#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' x <- sqlite.build(filename = test.dat, db = test.sqlite, table.name = 'snp_test')
-#' sqlite.tb.colnames(test.sqlite, 'snp_test')
-sqlite.tb.colnames <- function(db.path, table.name) {
-  sqlite.db <- dbConnect(RSQLite::SQLite(), db.path)
-  sql <- sprintf("PRAGMA table_info([%s])", table.name)
+#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' table.name = 'snp_test'))
+#' sqlite.tb.colnames(list(sqlite.path = test.sqlite, table.name = 'snp_test'))
+sqlite.tb.colnames <- function(sqlite.connect.params = list(sqlite.path = "", table.name = "")) {
+  if (names(sqlite.connect.params)[1] != "") {
+    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
+      sqlite.connect.params)
+  }
+  sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
+  sqlite.db <- do.call(dbConnect, sqlite.connect.params)
+  sql <- sprintf("PRAGMA table_info([%s])", sqlite.connect.params[["table.name"]])
   table.info <- dbGetQuery(sqlite.db, sql)
   tb.colnames <- table.info[, "name"]
   dbDisconnect(sqlite.db)
+  return(tb.colnames)
+}
+
+#' Get colnames of table of database in mysql
+#'
+#' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
+#' @param ... Other parameters pass to dbConnect
+#' @export
+#' @examples
+#' ##mysql.db.colnames(list(host = 'host', dbname = 'db', user = 'user', 
+#' ##password = 'password', table.name = 'table'))
+mysql.tb.colnames <- function(mysql.connect.params = list(host = "", dbname = "", 
+  user = "", password = "", table.name = ""), ...) {
+  mysql.connect.params <- config.list.merge(list(MySQL()), mysql.connect.params)
+  mysql.db <- do.call(dbConnect, mysql.connect.params)
+  sql <- sprintf("DESC %s", mysql.connect.params[["table.name"]])
+  table.info <- dbGetQuery(mysql.db, sql)
+  tb.colnames <- table.info$Field
+  dbDisconnect(mysql.db)
   return(tb.colnames)
 }

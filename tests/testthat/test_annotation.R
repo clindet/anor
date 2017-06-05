@@ -1,11 +1,21 @@
+database.dir <- tempdir()
+for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
+  "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
+  "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
+  "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal")) {
+  database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
+  sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
+  file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
+  sqlite.build(database, sqlite.connect.params = list(sqlite.path = sqlite.db, 
+    table.name = sprintf("%s", i)))
+}
+
 test_that("annotation.cols.match", {
   chr <- c("chr1", "chr2", "chr1")
   start <- c("10020", "10020", "10020")
   end <- c("10020", "10020", "10020")
   ref <- c("A", "A", "A")
   alt <- c("-", "-", "-")
-  database <- system.file("extdata", "demo/hg19_avsnp147.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147")
   x <- as.data.frame(x)
@@ -22,7 +32,6 @@ test_that("annotation.cols.match", {
   expect_that(x[1, 1], equals("rs775809821"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
-  
 })
 
 test_that("annotation.snp", {
@@ -31,8 +40,7 @@ test_that("annotation.snp", {
   end <- c("10020", "10020", "10020")
   ref <- c("A", "A", "A")
   alt <- c("-", "-", "-")
-  database <- system.file("extdata", "demo/hg19_avsnp147.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
+  database.dir <- tempdir()
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "avsnp147", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -61,8 +69,6 @@ test_that("annotation.cosmic", {
   end <- c("11139001", "50850617", "50850617")
   ref <- c("C", "G", "T")
   alt <- c("T", "A", "-")
-  database <- system.file("extdata", "demo/hg19_cosmic81.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "cosmic81", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -79,8 +85,6 @@ test_that("annotation.1000g", {
   end <- c("10177", "10177", "10020")
   ref <- c("-", "A", "A")
   alt <- c("C", "AC", "-")
-  database <- system.file("extdata", "demo/hg19_ALL.sites.2015_08.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "1000g2015aug_all", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -97,8 +101,6 @@ test_that("annotation:cosmic", {
   end <- c("11139001", "50850617", "50850617")
   ref <- c("C", "G", "T")
   alt <- c("T", "A", "-")
-  database <- system.file("extdata", "demo/hg19_cosmic81.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "cosmic81", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -115,8 +117,6 @@ test_that("annotation:snp", {
   end <- c("10020", "10020", "10020")
   ref <- c("A", "A", "A")
   alt <- c("-", "-", "-")
-  database <- system.file("extdata", "demo/hg19_avsnp147.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "avsnp147", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -132,8 +132,6 @@ test_that("annotation:RNA-editing", {
   # RADAR2
   chr <- c("1", "6", "1")
   start <- c("206256301", "116991832", "10020")
-  database <- system.file("extdata", "demo/hg19_RADAR2.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start)
   x <- annotation(dat = dat, name = "RADAR2", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -146,8 +144,6 @@ test_that("annotation:RNA-editing", {
   # DAREND
   chr <- c("4", "4", "1")
   start <- c("250721", "475468", "10020")
-  database <- system.file("extdata", "demo/hg19_DARNED.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start)
   x <- annotation(dat = dat, name = "DARNED", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -165,8 +161,6 @@ test_that("annotation.normal.pool", {
   ref <- c("T", "A", "A")
   alt <- c("C", "C", "-")
   
-  database <- system.file("extdata", "demo/hg19_normal2016sih_wes_ball.txt", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "2016sih_wes_ball", database.dir = database.dir)
   x <- as.data.frame(x)
@@ -211,8 +205,6 @@ test_that("annotation:cosmic81 and snp147", {
   end <- c("10020", "10020", "10020")
   ref <- c("A", "A", "A")
   alt <- c("-", "-", "-")
-  database <- system.file("extdata", "demo/hg19_avsnp147.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation.merge(names = c("cosmic81", "avsnp147"), dat = dat, database.dir = database.dir)
   x <- as.data.frame(x)
@@ -234,8 +226,6 @@ test_that("clincvar and intervar", {
   end <- c("949523", "949696", "10020", "69095", "69096")
   ref <- c("C", "-", "A", "T", "G")
   alt <- c("T", "G", "-", "G", "A")
-  database <- system.file("extdata", "demo/hg19_avsnp147.sqlite", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation.merge(names = c("clinvar_20170130", "intervar_20170202"), dat = dat, 
     database.dir = database.dir)
@@ -259,8 +249,6 @@ test_that("REDIportal", {
   start <- c("10255", "136168", "10020")
   ref <- c("A", "T", "A")
   alt <- c("G", "C", "G")
-  database <- system.file("extdata", "demo/hg19_REDIportal.txt", package = "annovarR")
-  database.dir <- dirname(database)
   dat <- data.table(chr = chr, start = start, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "REDIportal", database.dir = database.dir, 
     db.type = "txt")
@@ -270,3 +258,13 @@ test_that("REDIportal", {
   expect_that(x[2, 1], equals("A"))
   expect_that(is.na(x[3, 1]), equals(TRUE))
 })
+
+for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
+  "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
+  "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
+  "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal")) {
+  sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
+  txt.db <- sprintf("%s/%s.txt", tempdir(), i)
+  file.remove(sqlite.db)
+  file.remove(txt.db)
+}
