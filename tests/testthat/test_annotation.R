@@ -265,6 +265,8 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   txt.db <- sprintf("%s/%s.txt", tempdir(), i)
+  sqlite.db <- normalizePath(sqlite.db, "/")
+  txt.db <- normalizePath(txt.db, "/")
   file.remove(sqlite.db)
   file.remove(txt.db)
 }

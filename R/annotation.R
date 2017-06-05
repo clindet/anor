@@ -222,8 +222,8 @@ annotation.merge <- function(names, ...) {
 }
 
 annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index = NULL, 
-  db.col.order = NULL, matched.cols = NULL, dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = NULL, 
-  set.table.fun = NULL, format.db.tb.fun = NULL, database.cfg = system.file("extdata", 
+  db.col.order = NULL, matched.cols = NULL, dbname.fixed = NULL, table.name.fixed = NULL, 
+  setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, database.cfg = system.file("extdata", 
     "config/databases.toml", package = "annovarR"), ...) {
   
   dat.need.names <- get.cfg.value.by.name(name, database.cfg, key = "need.cols", 

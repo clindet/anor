@@ -5,6 +5,7 @@ test_that("sqlite.head", {
   dat <- sqlite.head(list(sqlite.path = test.sqlite, table.name = "snp_test"), 
     n = 5)
   expect_that(nrow(dat), equals(5))
+  unlink(test.sqlite)
 })
 
 test_that("get.cfg", {

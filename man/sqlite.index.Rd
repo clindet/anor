@@ -28,5 +28,6 @@ x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite,
 table.name = 'snp_test'))
 x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
 index = 'index4', cols = c('V1', 'V2'))
-unlink(test.sqlite)
+test.sqlite <- normalizePath(test.sqlite, '/')
+file.remove(test.sqlite)
 }

@@ -33,5 +33,6 @@ test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
 table.name = 'snp_test'))
-unlink(test.sqlite)
+test.sqlite <- normalizePath(test.sqlite, '/')
+file.remove(test.sqlite)
 }

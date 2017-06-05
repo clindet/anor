@@ -14,7 +14,8 @@
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
 #' table.name = 'snp_test'))
-#' unlink(test.sqlite)
+#' test.sqlite <- normalizePath(test.sqlite, '/')
+#' file.remove(test.sqlite)
 sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path = "", 
   table.name = ""), dat = data.table(), fread.params = list(), new.colnames = NULL, 
   overwrite = TRUE, verbose = FALSE, ...) {
@@ -32,7 +33,7 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path
       if (overwrite) {
         info.msg(sprintf("overwrite be setted TRUE, removing %s", sqlite.path), 
           verbose = verbose)
-        unlink(sqlite.path)
+        file.remove(sqlite.path)
       } else {
         warning(sprintf("%s already exists.", sqlite.path))
         return(FALSE)
@@ -41,7 +42,7 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path
     info.msg(sprintf("Reading file %s.", filename), verbose = verbose)
     fread.params <- config.list.merge(list(input = filename), fread.params)
     dat <- do.call(fread, fread.params)
-  } else if (length(dat) > 0){
+  } else if (length(dat) > 0) {
     info.msg(sprintf("Running sqlite.build function [sqlite.path:%s, table.name:%s], using `data` input.", 
       sqlite.path, table.name), verbose = verbose)
   } else {
@@ -83,7 +84,8 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path
 #' table.name = 'snp_test'))
 #' x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
 #' index = 'index4', cols = c('V1', 'V2'))
-#' unlink(test.sqlite)
+#' test.sqlite <- normalizePath(test.sqlite, '/')
+#' file.remove(test.sqlite)
 sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
   index = "", cols = c(), verbose = FALSE, ...) {
   sqlite.path <- sqlite.connect.params[["sqlite.path"]]
@@ -133,7 +135,8 @@ sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.na
 #' x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
 #' index = 'index4', cols = c('V1', 'V2'))
 #' x <- drop.sqlite.index(list(sqlite.path = test.sqlite), index = 'index4')
-#' unlink(test.sqlite)
+#' test.sqlite <- normalizePath(test.sqlite, '/')
+#' file.remove(test.sqlite)
 drop.sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
   index = "", verbose = FALSE, ...) {
   sqlite.path <- sqlite.connect.params[["sqlite.path"]]
@@ -182,17 +185,17 @@ drop.sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", tab
 #' ##mysql.build(test.dat, list(host = 'host', dbname = 'db', 
 #' ##table.name = 'table', user = 'user', password = 'password'))
 mysql.build <- function(filename = "", mysql.connect.params = list(host = "", dbname = "", 
-  table.name = "", user = "", password = ""), dat = data.table(), fread.params = list(), new.colnames = NULL, 
-  verbose = FALSE, ...) {
+  table.name = "", user = "", password = ""), dat = data.table(), fread.params = list(), 
+  new.colnames = NULL, verbose = FALSE, ...) {
   dbname <- mysql.connect.params[["dbname"]]
   table.name <- mysql.connect.params[["table.name"]]
   info.msg(sprintf("Running mysql.build function for %s.", filename), verbose = verbose)
   status <- FALSE
-  if (filename != ""){
-  info.msg(sprintf("Reading file %s.", filename), verbose = verbose)
-  params <- list(input = filename)
-  params <- config.list.merge(fread.params, params)
-  dat <- do.call(fread, params)
+  if (filename != "") {
+    info.msg(sprintf("Reading file %s.", filename), verbose = verbose)
+    params <- list(input = filename)
+    params <- config.list.merge(fread.params, params)
+    dat <- do.call(fread, params)
   } else if (length(data.table) > 0) {
     info.msg(sprintf("Running mysql.build function [dbname:%s, table.name:%s], using `data` input.", 
       dbname, table.name), verbose = verbose)
@@ -324,8 +327,10 @@ drop.mysql.index <- function(mysql.connect.params = list(host = "", dbname = "",
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
 #' table.name = 'snp_test'))
-#' del(sqlite.connect.params = list(dbname = test.sqlite, table.name = 'snp_test'), del.type = 'table')
-#' del(sqlite.connect.params = list(dbname = test.sqlite, table.name = 'snp_test'))
+#' del(sqlite.connect.params = list(sqlite.path = test.sqlite, 
+#' table.name = 'snp_test'), del.type = 'table')
+#' del(sqlite.connect.params = list(sqlite.path = test.sqlite, 
+#' table.name = 'snp_test'))
 del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.params = list(), 
   del.type = "database", db.type = "sqlite", verbose = FALSE, ...) {
   if (!del.type %in% c("file", "database", "table")) {
@@ -333,22 +338,27 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
   }
   status <- NULL
   if (filename != "" && del.type == "file") {
-    info.msg(sprintf("File %s will be removed.", filename))
-    status <- unlink(filename)
+    info.msg(sprintf("File %s will be removed.", filename), verbose = verbose)
+    filename <- normalizePath(filename, "/")
+    status <- file.remove(filename)
   } else if (length(sqlite.connect.params) != 0) {
     sqlite.path <- sqlite.connect.params[["sqlite.path"]]
     if (names(sqlite.connect.params)[1] != "") {
       sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
         sqlite.connect.params)
     }
-    if (del.type == "database" || del.type == "file") {
-      info.msg(sprintf("Sqlite database %s will be removed.", filename))
-      status <- unlink(sqlite.path)
+    if ((del.type == "database") || (del.type == "file")) {
+      info.msg(sprintf("Sqlite database %s will be removed.", sqlite.path), 
+        verbose = verbose)
+      sqlite.path <- normalizePath(sqlite.path, "/")
+      status <- file.remove(sqlite.path)
     } else if (del.type == "table") {
       sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
       sqlite.db <- do.call(dbConnect, sqlite.connect.params)
-      RSQLite::dbRemoveTable(sqlite.db, sqlite.connect.params[["table.name"]])
+      status <- RSQLite::dbRemoveTable(sqlite.db, sqlite.connect.params[["table.name"]])
+      dbDisconnect(sqlite.db)
     }
+    print(status)
   } else if (length(mysql.connect.params) != 0) {
     if (del.type == "database") {
       mysql.connect.params <- config.list.merge(list(MySQL()), mysql.connect.params)
@@ -362,7 +372,7 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
       status <- TRUE
     } else if (del.type == "table") {
       info.msg(sprintf("Table %s in %s MySQL database will be removed.", mysql.connect.params[["table.name"]], 
-        mysql.connect.params[["dbname"]]))
+        mysql.connect.params[["dbname"]]), verbose = verbose)
       mysql.db <- do.call(dbConnect, mysql.connect.params)
       status <- RMySQL::dbRemoveTable(mysql.db, mysql.connect.params[["table.name"]])
     }

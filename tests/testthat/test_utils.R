@@ -10,7 +10,10 @@ test_that("select.dat", {
   x <- as.data.frame(x)
   expect_that(colnames(x), equals(paste0("V", 1:6)))
   expect_that(x[1, 2], equals(13496008))
+  dbDisconnect(database)
   
+  sqlite.db <- normalizePath(sqlite.db, "/")
+  txt.db <- normalizePath(txt.db, "/")
   file.remove(sqlite.db)
   file.remove(txt.db)
   
