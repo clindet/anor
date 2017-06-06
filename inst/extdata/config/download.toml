@@ -360,6 +360,15 @@ description = "alternative allele frequency data in 1000 Genomes Project"
 1000g = "hg18"
 other = "hg19"
 
+[raw_annovar_dbscsnv11]
+source_url = ["http://www.openbioinformatics.org/annovar/download/{{buildver}}_{{version}}.txt.gz",
+              "http://www.openbioinformatics.org/annovar/download/{{buildver}}_{{version}}.txt.idx.gz"]
+decompress = [true, true]
+version_newest = "dbscsnv11"
+version_available = ["dbscsnv11"]
+buildver_available = ["hg38", "hg19"]
+description = "dbscSNV version 1.1 for splice site prediction by AdaBoost and Random Forest"
+
 [avsnp]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "avsnp147"
@@ -373,7 +382,7 @@ version_available = ["cosmic70", "cosmic81"]
 buildver_available = "hg19"
 
 [1000g]
-source_url = ["http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.tar.gz"]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.tar.gz"
 version_newest = "1000g2015aug"
 version_available = ["1000g2015aug", "1000g2014oct"]
 buildver_available = "hg19"

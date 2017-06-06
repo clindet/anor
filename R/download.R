@@ -97,6 +97,8 @@ get.finished.filename <- function(name, version, buildver = "hg38", database.cfg
     prefix <- prefix[length(prefix)]
     if (prefix == "zip") {
       prefix <- "txt"
+    } else if (prefix == "tar") {
+      prefix <- "sql"
     }
     filename <- set.1000g.db(sprintf("%s_all", version), buildver, "", prefix)
     filename <- basename(filename)
