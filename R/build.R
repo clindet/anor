@@ -226,7 +226,7 @@ mysql.build <- function(filename = "", mysql.connect.params = list(host = "", db
 #'
 #' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
 #' @param index Index name in mysql 
-#' @param cols Colnames needed to be index
+#' @param cols Colnames needed with length to be index (e.g. c("V1(6)", "V2"))
 #' @param verbose Ligical indicating wheather show the log message
 #' @param ... Other parameters be used in dbSendQuery
 #' @export
@@ -252,7 +252,7 @@ mysql.index <- function(mysql.connect.params = list(host = "", dbname = "", tabl
     info.msg(sprintf("%s index already exists.", index), verbose)
     return(FALSE)
   }
-  cols <- paste0(cols, collapse = "(6), ")
+  cols <- paste0(cols, collapse = ", ")
   sql <- sprintf("CREATE INDEX %s ON %s (%s)", index, table.name, cols)
   status <- FALSE
   info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
