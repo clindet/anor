@@ -13,7 +13,7 @@ mysql.index(mysql.connect.params = list(host = "", dbname = "", table.name =
 
 \item{index}{Index name in mysql}
 
-\item{cols}{Colnames needed to be index}
+\item{cols}{Colnames needed with length to be index (e.g. c('V1(6)', 'V2'))}
 
 \item{verbose}{Ligical indicating wheather show the log message}
 

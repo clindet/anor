@@ -73,7 +73,7 @@ version_available = ["avsnp147", "avsnp144", "avsnp142", "avsnp138"]
 [raw_annovar_avsnp.buildver_available]
 avsnp147 = ["hg38", "hg19"]
 avsnp144 = ["hg38", "hg19"]
-avsnp142 = ["hg19"]
+avsnp142 = ["hg38", "hg19"]
 avsnp138 = ["hg19"]
 [raw_annovar_avsnp.description]
 avsnp147 = "dbSNP147 with allelic splitting and left-normalization"
@@ -286,7 +286,7 @@ decompress = [true, true]
 version_newest = "popfreq_all_20150413"
 version_available = ["popfreq_max_20150413", "popfreq_all_20150413"]
 buildver_available = ["hg19"]
-[raw_annovar_popfreq_description]
+[raw_annovar_popfreq.description]
 popfreq_max_20150413 = "A database containing the maximum allele frequency from 1000G, ESP6500, ExAC and CG46" 
 popfreq_all_20150413 = "A database containing all allele frequency from 1000G, ESP6500, ExAC and CG46"
 
@@ -305,7 +305,7 @@ source_url = ["http://www.openbioinformatics.org/annovar/download/{{buildver}}_{
 decompress = [true, true]
 version_newest = "gerp++elem"
 version_available = ["gerp++elem", "gerp++gt2"]
-[raw_annovar_grep.buildver_available]
+[raw_annovar_gerp.buildver_available]
 grep++elem = ["hg19", "hg18", "mm9"]
 gerp++gt2 = ["hg19", "hg18"]
 
@@ -363,7 +363,7 @@ other = "hg19"
 [avsnp]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "avsnp147"
-version_available = ["avsnp147", "avsnp144", "avsnp142", "avsnp138"]
+version_available = ["avsnp147", "avsnp147.common", "avsnp144", "avsnp142", "avsnp138"]
 buildver_available = "hg19"
 
 [cosmic]
@@ -376,6 +376,7 @@ buildver_available = "hg19"
 source_url = ["http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.tar.gz"]
 version_newest = "1000g2015aug"
 version_available = ["1000g2015aug", "1000g2014oct"]
+buildver_available = "hg19"
 
 [radar]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"

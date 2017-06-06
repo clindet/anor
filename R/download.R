@@ -47,6 +47,19 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
       nongithub.cfg = database.cfg, show.all.versions = TRUE, verbose = verbose)
     return(all.versions)
   }
+  filenames <- mapply(get.finished.filename, name = name, version = version, buildver = rep(buildver, 
+    length(version)), database.cfg = rep(database.cfg, length(version)))
+  filenames <- sprintf("%s/%s", database.dir, filenames)
+  index <- file.exists(filenames) & file.size(filenames) > 0
+  if (any(index)) {
+    filenames <- paste0(filenames, collapse = ", ")
+    info.msg(sprintf("%s already existed.", filenames), verbose = verbose)
+    name <- name[!index]
+    version <- version[!index]
+  }
+  if (length(name) == 0) {
+    return(TRUE)
+  }
   temp.download.dir = sprintf("%s/%s", tempdir(), stringi::stri_rand_strings(1, 
     10))
   install.bioinfo(name = name, version = version, destdir = temp.download.dir, 
@@ -71,4 +84,22 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
       return(FALSE)
     }
   }
+}
+
+# Get download and decomparessd filename
+get.finished.filename <- function(name, version, buildver = "hg38", database.cfg = "") {
+  source_url <- eval.config("source_url", name, database.cfg, extra.list = list(buildver = buildver, 
+    version = version))[1]
+  filename <- basename(source_url)
+  filename <- str_replace(filename, ".gz$", "")
+  if (str_detect(version, "^1000g")) {
+    prefix <- str_split(filename, fixed("."))[[1]]
+    prefix <- prefix[length(prefix)]
+    if (prefix == "zip") {
+      prefix <- "txt"
+    }
+    filename <- set.1000g.db(sprintf("%s_all", version), buildver, "", prefix)
+    filename <- basename(filename)
+  }
+  return(filename)
 }

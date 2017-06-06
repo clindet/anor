@@ -226,7 +226,7 @@ mysql.build <- function(filename = "", mysql.connect.params = list(host = "", db
 #'
 #' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
 #' @param index Index name in mysql 
-#' @param cols Colnames needed with length to be index (e.g. c("V1(6)", "V2"))
+#' @param cols Colnames needed with length to be index (e.g. c('V1(6)', 'V2'))
 #' @param verbose Ligical indicating wheather show the log message
 #' @param ... Other parameters be used in dbSendQuery
 #' @export
@@ -358,7 +358,6 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
       status <- RSQLite::dbRemoveTable(sqlite.db, sqlite.connect.params[["table.name"]])
       dbDisconnect(sqlite.db)
     }
-    print(status)
   } else if (length(mysql.connect.params) != 0) {
     if (del.type == "database") {
       mysql.connect.params <- config.list.merge(list(MySQL()), mysql.connect.params)
