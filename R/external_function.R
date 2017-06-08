@@ -42,12 +42,16 @@ format.db.tb <- function(db.tb) {
 }
 
 # 1000G needed functions to set database name and table name
-set.1000g.db <- function(name, buildver, database.dir, db.type = "sqlite") {
+set.1000g.db <- function(name, buildver, database.dir = "", db.type = "sqlite") {
   list.1000g <- convert.1000g.name(name)
   if (db.type != "mysql") {
-    
-    db <- sprintf("%s/%s_%s.sites.%s_%s.%s", database.dir, buildver, list.1000g$region, 
-      list.1000g$year, list.1000g$month, db.type)
+    if (database.dir != "") {
+      db <- sprintf("%s/%s_%s.sites.%s_%s.%s", database.dir, buildver, list.1000g$region, 
+        list.1000g$year, list.1000g$month, db.type)
+    } else {
+      db <- sprintf("%s_%s.sites.%s_%s.%s", buildver, list.1000g$region, list.1000g$year, 
+        list.1000g$month, db.type)
+    }
   }
 }
 set.1000g.table <- function(name, buildver) {

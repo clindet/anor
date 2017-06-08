@@ -52,3 +52,22 @@ test_that("del", {
     del.type = "database")
   expect_that(x, equals(TRUE))
 })
+
+test_that("sql2sqlite", {
+  sql.file <- system.file("extdata", "demo/hg19_avsnp147.sqlite.sql", package = "annovarR")
+  out.sqlite <- tempfile()
+  sql2sqlite(sql.file = sql.file, sqlite.path = out.sqlite, verbose = FALSE)
+  con <- dbConnect(SQLite(), out.sqlite)
+  tables <- dbListTables(con)
+  x <- "hg19_avsnp147" %in% tables
+  expect_that(x, equals(TRUE))
+  unlink(out.sqlite)
+  
+  statements <- paste0(readLines(sql.file), collapse = "\n")
+  sql2sqlite(statements = statements, sqlite.path = out.sqlite, verbose = FALSE)
+  con <- dbConnect(SQLite(), out.sqlite)
+  tables <- dbListTables(con)
+  x <- "hg19_avsnp147" %in% tables
+  expect_that(x, equals(TRUE))
+  unlink(out.sqlite)
+})

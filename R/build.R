@@ -378,3 +378,53 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
   }
   return(status)
 }
+
+#' Convert sql file to sqlite database
+#' @param sql.file SQL file of sqlite database dumped
+#' @param statements SQL statements split by ';\\n' (small dataset)
+#' @param sqlite.path Path of output sqlite database
+#' @param verbose Ligical indicating wheather show the log message
+#' @param ... Other parameters be used in dbSendQuery
+#' @export
+#' @examples
+#' sql.file <- system.file('extdata', 'demo/hg19_avsnp147.sqlite.sql', package = 'annovarR')
+#' out.sqlite <- tempfile()
+#' sql2sqlite(sql.file = sql.file, sqlite.path = out.sqlite, 
+#' verbose = FALSE)
+#' unlink(out.sqlite)
+#' statements <- paste0(readLines(sql.file), collapse = '\n')
+#' sql2sqlite(statements = statements, sqlite.path = out.sqlite, 
+#' verbose = FALSE)
+#' unlink(out.sqlite)
+sql2sqlite <- function(sql.file = "", statements = "", sqlite.path = "", verbose = FALSE, 
+  ...) {
+  out.sqlite <- sqlite.path
+  if (sql.file != "") {
+    info.msg(sprintf("Converting %s to %s sqlite database.", sql.file, out.sqlite), 
+      verbose = verbose)
+  } else {
+    info.msg(sprintf("Converting sql to %s sqlite database.", out.sqlite), verbose = verbose)
+  }
+  if (statements != "") {
+    con <- do.call(dbConnect, list(SQLite(), sqlite.path))
+    statements <- str_split(statements, ";\n")[[1]]
+    func <- function(line) {
+      print.vb(line, verbose = verbose)
+      print.vb(rs, verbose = verbose)
+      rs <- dbSendQuery(con, line, ...)
+      dbClearResult(rs)
+    }
+    sapply(statements, func)
+    dbDisconnect(con)
+  } else {
+    sqlite <- Sys.which(c("sqlite3", "sqlite"))
+    sqlite <- sqlite[sqlite != ""][1]
+    if (length(sqlite) == 0) {
+      return(FALSE)
+    }
+    sqlite <- normalizePath(sqlite, "/")
+    cmd <- sprintf("%s %s < %s", sqlite, out.sqlite, sql.file)
+    info.msg(sprintf("Running CMD:%s", cmd), verbose = verbose)
+    system2(sqlite, args = out.sqlite, stdin = sql.file)
+  }
+}

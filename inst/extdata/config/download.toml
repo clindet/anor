@@ -374,30 +374,41 @@ source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{
 version_newest = "avsnp147"
 version_available = ["avsnp147", "avsnp147.common", "avsnp144", "avsnp142", "avsnp138"]
 buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
 
 [cosmic]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "cosmic81"
 version_available = ["cosmic70", "cosmic81"]
 buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
 
 [1000g]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.tar.gz"
 version_newest = "1000g2015aug"
 version_available = ["1000g2015aug", "1000g2014oct"]
 buildver_available = "hg19"
+install = """#R#
+for(i in c('all', 'afr', 'eas', 'eur', 'sas', 'amr')) {
+  x <- set.1000g.db(sprintf('{{version}}_%s', i), '{{buildver}}', "sql");
+  params <- list(sql.file = x, sqlite.path = str_replace(x, '.sql$', ''));
+  do.call(sql2sqlite, params)
+}
+#R#"""
 
 [radar]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "RADAR2"
 version_available = ["RADAR2"]
 buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
 
 [darned]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "DARNED"
 version_available = ["DARNED"]
 buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
 
 [normal_pool]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_normal{{version}}.txt"
@@ -411,9 +422,11 @@ source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{
 version_newest = "clinvar_20170130"
 version_available = ["clinvar_20170130"]
 buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
 
 [intervar]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
 version_newest = "intervar_20170202"
 version_available = ["intervar_20170202"]
 buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"

@@ -62,7 +62,13 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
   }
   temp.download.dir = sprintf("%s/%s", tempdir(), stringi::stri_rand_strings(1, 
     10))
-  install.bioinfo(name = name, version = version, destdir = temp.download.dir, 
+  info.msg(sprintf("Setted name:%s", name), verbose = verbose)
+  info.msg(sprintf("Setted version:%s", version), verbose = verbose)
+  info.msg(sprintf("Setted buildver:%s", buildver), verbose = verbose)
+  info.msg(sprintf("Setted database.dir:%s", database.dir), verbose = verbose)
+  info.msg(sprintf("Using %s as the temp install dir pass to BioInstaller::install.bioinfo.", 
+    temp.download.dir), verbose = verbose)
+  install.bioinfo(name = name, version = version, download.dir = temp.download.dir, 
     github.cfg = github.cfg.null, nongithub.cfg = database.cfg, download.only = FALSE, 
     extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 
     ...)
