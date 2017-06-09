@@ -389,9 +389,14 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
 #' @examples
 #' sql.file <- system.file('extdata', 'demo/hg19_avsnp147.sqlite.sql', package = 'annovarR')
 #' out.sqlite <- tempfile()
-#' sql2sqlite(sql.file = sql.file, sqlite.path = out.sqlite, 
-#' verbose = FALSE)
-#' unlink(out.sqlite)
+#' sqlite <- Sys.which(c("sqlite3", "sqlite"))
+#' sqlite <- sqlite[sqlite != ""][1]
+#' sqlite <- unname(sqlite)
+#' if (!is.na(sqlite)) {
+#'   sql2sqlite(sql.file = sql.file, sqlite.path = out.sqlite, 
+#'   verbose = FALSE)
+#'   unlink(out.sqlite)
+#' }
 #' statements <- paste0(readLines(sql.file), collapse = '\n')
 #' sql2sqlite(statements = statements, sqlite.path = out.sqlite, 
 #' verbose = FALSE)
@@ -419,7 +424,8 @@ sql2sqlite <- function(sql.file = "", statements = "", sqlite.path = "", verbose
   } else {
     sqlite <- Sys.which(c("sqlite3", "sqlite"))
     sqlite <- sqlite[sqlite != ""][1]
-    if (length(sqlite) == 0) {
+    sqlite <- unname(sqlite)
+    if (is.na(sqlite)) {
       return(FALSE)
     }
     sqlite <- normalizePath(sqlite, "/")
