@@ -18,6 +18,7 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
   database.cfg = system.file("extdata", "config/download.toml", package = "annovarR"), 
   show.all.versions = FALSE, show.all.names = FALSE, show.all.buildvers = FALSE, 
   verbose = FALSE, ...) {
+  database.dir <- normalizePath(database.dir)
   if (!show.all.versions && !show.all.buildvers && !show.all.names) {
     if ((length(database.dir) == 1) && (length(name) > length(database.dir))) {
       if (!dir.exists(database.dir)) {
@@ -60,7 +61,7 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
   if (length(name) == 0) {
     return(TRUE)
   }
-  temp.download.dir = sprintf("%s/%s", tempdir(), stringi::stri_rand_strings(1, 
+  temp.download.dir = sprintf("%s/%s", database.dir, stringi::stri_rand_strings(1, 
     10))
   info.msg(sprintf("Setted name:%s", name), verbose = verbose)
   info.msg(sprintf("Setted version:%s", version), verbose = verbose)
@@ -78,8 +79,9 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
       name), verbose = verbose)
     return(FALSE)
   } else {
-    status <- file.copy(sprintf("%s/%s", temp.download.dir, files.and.dirs), 
-      database.dir, overwrite = TRUE, recursive = TRUE)
+    status <- file.rename(sprintf("%s/%s", temp.download.dir, files.and.dirs), 
+      sprintf("%s/%s", database.dir, files.and.dirs))
+    unlink(temp.download.dir, recursive = TRUE, force = TRUE)
     if (all(status)) {
       info.msg(sprintf("Download %s %s version %s database successful.", buildver, 
         version, name), verbose = verbose)

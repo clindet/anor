@@ -65,8 +65,9 @@ if (!is.na(sqlite)) {
     tables <- dbListTables(con)
     x <- "hg19_avsnp147" %in% tables
     expect_that(x, equals(TRUE))
-    unlink(out.sqlite)})
-} 
+    unlink(out.sqlite)
+  })
+}
 test_that("sql2sqlite-statements", {
   sql.file <- system.file("extdata", "demo/hg19_avsnp147.sqlite.sql", package = "annovarR")
   out.sqlite <- tempfile()
