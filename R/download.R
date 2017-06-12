@@ -18,7 +18,9 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
   database.cfg = system.file("extdata", "config/download.toml", package = "annovarR"), 
   show.all.versions = FALSE, show.all.names = FALSE, show.all.buildvers = FALSE, 
   verbose = FALSE, ...) {
-  database.dir <- normalizePath(database.dir)
+  if (!is.null(database.dir)) {
+    database.dir <- normalizePath(database.dir, "/", mustWork = FALSE)
+  }
   if (!show.all.versions && !show.all.buildvers && !show.all.names) {
     if ((length(database.dir) == 1) && (length(name) > length(database.dir))) {
       if (!dir.exists(database.dir)) {

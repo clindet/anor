@@ -112,6 +112,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   print.vb(selected.db.tb, verbose = verbose)
   if (nrow(selected.db.tb) == 0) {
     empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
+    disconnect.db(database, db.type)
     return(empty.col)
   }
   selected.db.tb <- sync.colnames(selected.db.tb, db.col.order, dat.names)
@@ -199,7 +200,8 @@ annotation <- function(dat = data.table(), name = "", buildver = "hg19", databas
 
 #' Annotation function (mulitple name)
 #'
-#' @param names Annotation names, eg. c('avsnp138', 'avsnp147', '1000g2015aug_all')
+#' @param anno.names Annotation names, eg. c('avsnp138', 'avsnp147', '1000g2015aug_all')
+#' @param col.cl.num Cores num be used (default is 1)
 #' @param ... Other parametes see \code{\link{annotation}}
 #' @export
 #' @examples
@@ -212,12 +214,23 @@ annotation <- function(dat = data.table(), name = "", buildver = "hg19", databas
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-#' x <- annotation.merge(dat = dat, names = c('avsnp147', '1000g2015aug_all'), 
+#' x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all'), 
 #' database.dir = database.dir, db.type = 'txt')
-annotation.merge <- function(names, ...) {
-  result.list <- lapply(names, function(x) {
-    annotation(name = x, ...)
-  })
+annotation.merge <- function(anno.names, col.cl.num = NULL, ...) {
+  if (is.null(col.cl.num)) {
+    result.list <- lapply(anno.names, function(x) {
+      annotation(name = x, ...)
+    })
+  } else {
+    col.cl <- makeCluster(col.cl.num)
+    params <- list(...)
+    dat <- params$dat
+    clusterExport(col.cl, "dat", envir = environment())
+    registerDoParallel(col.cl)
+    result.list <- foreach(anno.names = anno.names, .combine = cbind, .packages = "annovarR") %dopar% 
+      annotation(name = anno.names, ...)
+    stopCluster(col.cl)
+  }
   return(as.data.table(result.list))
 }
 

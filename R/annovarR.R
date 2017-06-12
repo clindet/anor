@@ -12,7 +12,11 @@
 #'
 #' @docType package
 #' @name annovarR
-#' @import stringr DBI data.table futile.logger configr BioInstaller
+#' @import stringr DBI data.table futile.logger configr BioInstaller foreach doParallel
+#' @importFrom bit physical
+#' @importFrom ff as.ffdf.data.frame ffdf
+#' @importFrom ffbase ffdfrbind.fill
+#' @importFrom parallel clusterApply makeCluster clusterEvalQ clusterExport stopCluster parSapply parLapply
 #' @importFrom stringi stri_rand_strings
 #' @importFrom utils packageVersion head
 #' @importFrom RMySQL MySQL dbRemoveTable mysqlHasDefault
@@ -25,5 +29,6 @@ NULL
   # msg <- sprintf('annovarR %s \n', packageVersion('annovarR')) msg <-
   # sprintf('%s Documentation: ?annovarR, example(annovarR) and
   # browseVignettes(\'annovarR\')', msg) packageStartupMessage(msg)
+  Sys.setenv(R_TESTS = "")
   invisible()
 }

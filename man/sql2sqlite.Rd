@@ -24,8 +24,8 @@ Convert sql file to sqlite database
 \examples{
 sql.file <- system.file('extdata', 'demo/hg19_avsnp147.sqlite.sql', package = 'annovarR')
 out.sqlite <- tempfile()
-sqlite <- Sys.which(c("sqlite3", "sqlite"))
-sqlite <- sqlite[sqlite != ""][1]
+sqlite <- Sys.which(c('sqlite3', 'sqlite'))
+sqlite <- sqlite[sqlite != ''][1]
 sqlite <- unname(sqlite)
 if (!is.na(sqlite)) {
   sql2sqlite(sql.file = sql.file, sqlite.path = out.sqlite, 

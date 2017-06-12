@@ -7,8 +7,8 @@ Description:
     annovarR is an efficient software tool to utilize update-to-date information to functionally annotate genetic variants detected from diverse genomes based on ANNOVAR.
 Depends:
     R (>= 3.3.0)
-URL: https://github.com/Miachol/annovarR
-BugReports: https://github.com/Miachol/annovarR/issues
+URL: https://github.com/JhuangLab/annovarR
+BugReports: https://github.com/JhuangLab/annovarR/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -22,6 +22,12 @@ Imports:
     futile.logger (>= 1.4.3),
     stringi (>= 1.1.5),
     RMySQL (>= 0.10.11),
+    ff (>= 2.2-13),
+    ffbase (>= 0.12.3),
+    bit (>= 1.1-12),
+    foreach,
+    doParallel,
+    parallel,
     methods,
 RoxygenNote: 6.0.1
 Suggests: testthat
