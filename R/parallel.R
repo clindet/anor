@@ -50,7 +50,7 @@ splitList <- function(X, len) {
   a <- seq(from = 1, to = length(X[[1]]), by = len)
   b <- seq(from = len, to = length(X[[1]]), by = len)
   if (length(b) < length(a)) {
-    b <- c(b, a[length(a)])
+    b <- c(b, length(X[[1]]))
   }
   result <- NULL
   for (i in 1:length(a)) {
