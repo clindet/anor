@@ -5,7 +5,6 @@ versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp147.common"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 
-# annotation.auto used parameters
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "@>@str_replace('{{name}}', 'avsnp', 'avSNP')@<@"
 db.col.order = [1, 2, 3, 4, 5]
@@ -22,7 +21,6 @@ versions = ["cosmic70", "cosmic81"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
 
-# annotation.auto used parameters of cosmic database parse
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "@>@str_replace('{{name}}', 'cosmic', 'COSMIC_')@<@"
 db.col.order = [1, 2, 3, 4, 5]
@@ -40,7 +38,6 @@ versions = ["1000g2015aug_all", "1000g2015aug_afr", "1000g2015aug_amr",
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 
-# annotation.auto used parameters of 1000g database parse
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{name}}"
 db.col.order = [1, 2, 3, 4, 5]
@@ -57,7 +54,6 @@ versions = ["RADAR2"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
-# annotation.auto used parameters of RADAR2 database parse
 need.cols = ["chr", "start"]
 return.col.names = "RADAR2.is.alu"
 db.col.order = [1, 2]
@@ -74,7 +70,6 @@ versions = ["DARNED"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
-# annotation.auto used parameters of RADAR2 database parse
 need.cols = ["chr", "start"]
 return.col.names = "DARNED.in.rna"
 db.col.order = [1, 2]
@@ -91,7 +86,6 @@ versions = ["REDIportal"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
-# annotation.auto used parameters of RADAR2 database parse
 need.cols = ["chr", "start", "ref", "alt"]
 return.col.names = "REDIportal"
 db.col.order = [1, 2, 3, 4]
@@ -108,7 +102,6 @@ versions = ['2016sih_wes_ball', '2016sih_wes_tall', '2016sih_wes_nkt', '2016sih_
 func = "annotation.auto"
 default.dbtype = ["txt", "txt", "txt", "txt", "txt"]
 
-# annotation.auto used parameters of normal pool database parse
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{name}}"
 db.col.order = [1, 2, 3, 4, 5]
@@ -125,7 +118,6 @@ versions = ["clinvar_20170130"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
-# annotation.auto used parameters of normal pool database parse
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{name}}"
 db.col.order = [1, 2, 3, 4, 5]
@@ -142,13 +134,78 @@ versions = ["intervar_20170202"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
-# annotation.auto used parameters of normal pool database parse
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{name}}"
 db.col.order = [1, 2, 3, 4, 5]
 index.col = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[cadd]
+versions = ["cadd", "caddgt10", "caddgt20", "cadd13", "cadd13gt10", "cadd13gt20"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ["{{name}}", "{{name}}_phred"]
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = [6, 7]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[nci60]
+versions = ["nci60"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[icgc]
+versions = ["icgc21"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{name}}_occurrence"
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 7
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[dbnsfp]
+versions = ["dbnsfp30a", "dbnsfp31a_interpro", "dbnsfp33a"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 
+                    19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 
+                    31, 32, 33, 34, 35, 36, 37, 38, 39]
 format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"

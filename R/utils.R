@@ -125,12 +125,12 @@ select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "s
     index <- match(colnames(result), names(params))
     index <- index[!is.na(index)]
     colnames(result)[index] <- names(params)
-    keys <- paste0(names(params), collapse = ", ")
-    text <- sprintf("setkey(result, %s)", keys)
+    keys <- paste0(names(params), collapse = '", "')
+    text <- sprintf('setkey(result, "%s")', keys)
     eval(parse(text = text))
     params <- as.data.table(params)
-    keys <- paste0(names(params), collapse = ", ")
-    text <- sprintf("setkey(params, %s)", keys)
+    keys <- paste0(names(params), collapse = '", "')
+    text <- sprintf('setkey(params, "%s")', keys)
     eval(parse(text = text))
     result <- merge(result, params)
   }

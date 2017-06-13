@@ -2,7 +2,8 @@ database.dir <- tempdir()
 for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
-  "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal")) {
+  "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", "hg19_nci60", 
+  "hg19_icgc21", "hg19_dbnsfp30a")) {
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
@@ -271,11 +272,79 @@ test_that("REDIportal", {
   expect_that(x[2, 1], equals("A"))
   expect_that(is.na(x[3, 1]), equals(TRUE))
 })
+test_that("caddgt10", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("12066", "12066", "10020")
+  end <- c("12066", "12066", "10020")
+  ref <- c("T", "T", "A")
+  alt <- c("A", "C", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "caddgt10", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("caddgt10"))
+  expect_that(colnames(x)[2], equals("caddgt10_phred"))
+  expect_that(x[1, 1], equals("2.04979"))
+  expect_that(x[2, 1], equals("1.934479"))
+  expect_that(x[1, 2], equals("12.81"))
+  expect_that(x[2, 2], equals("12.43"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+})
+
+test_that("nci60", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("69270", "69428", "10020")
+  end <- c("69270", "69428", "10020")
+  ref <- c("A", "T", "A")
+  alt <- c("G", "G", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "nci60", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("nci60"))
+  expect_that(x[1, 1], equals("0.3"))
+  expect_that(x[2, 1], equals("0.016"))
+})
+
+test_that("icgc21", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("10002", "10072", "10020")
+  end <- c("10002", "10072", "10020")
+  ref <- c("A", "-", "A")
+  alt <- c("T", "A", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "icgc21", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("icgc21_occurrence"))
+  expect_that(x[1, 1], equals("MELA-AU|1|183|0.00546"))
+  expect_that(x[2, 1], equals("PACA-CA|1|227|0.00441"))
+})
+
+test_that("dbnsfp33a",{
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("69091", "69091", "10020")
+  end <- c("69091", "69091", "10020")
+  ref <- c("A", "A", "A")
+  alt <- c("C", "G", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "dbnsfp30a", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("SIFT_score"))
+  expect_that(colnames(x)[length(colnames(x))], equals("SiPhy_29way_logOdds"))
+  expect_that(x[1, 1], equals("0.13"))
+  expect_that(x[1, 2], equals("T"))
+  expect_that(x[2, 1], equals("1.0"))
+  expect_that(x[2, 2], equals("T"))
+
+})
 
 for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
-  "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal")) {
+  "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", "hg19_nci60", 
+  "hg19_icgc21", "hg19_dbnsfp30a")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   txt.db <- sprintf("%s/%s.txt", tempdir(), i)
   sqlite.db <- normalizePath(sqlite.db, "/")

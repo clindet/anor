@@ -430,3 +430,31 @@ version_newest = "intervar_20170202"
 version_available = ["intervar_20170202"]
 buildver_available = "hg19"
 install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
+
+[cadd]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
+version_newest = "cadd13"
+version_available = ["cadd13", "cadd13gt10", "cadd13gt20", "cadd", "caddgt10", "caddgt20"]
+buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
+
+[nci60]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
+version_newest = "nci60"
+version_available = "nci60"
+buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
+
+[icgc]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
+version_newest = "icgc21"
+version_available = "icgc21"
+buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"
+
+[dbnsfp]
+source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.sqlite.sql.gz"
+version_newest = "dbnsfp33a"
+version_available = ["dbnsfp33a", "dbnsfp31a_interpro", "dbnsfp30a"]
+buildver_available = "hg19"
+install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{{buildver}}_{{version}}.sqlite')#R#"

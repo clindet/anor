@@ -9,7 +9,7 @@ annotation.merge(anno.names, col.cl.num = NULL, ...)
 \arguments{
 \item{anno.names}{Annotation names, eg. c('avsnp138', 'avsnp147', '1000g2015aug_all')}
 
-\item{col.cl.num}{Cores num be used (default is 1)}
+\item{col.cl.num}{Number of cores (default is NULL, not use cluster)}
 
 \item{...}{Other parametes see \code{\link{annotation}}}
 }

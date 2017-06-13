@@ -124,10 +124,10 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   dat <- cbind(dat, id)
   dat <- as.data.table(lapply(dat, function(x) as.character(x)))
   selected.db.tb <- as.data.table(lapply(selected.db.tb, function(x) as.character(x)))
-  keys <- paste0(matched.cols, collapse = ",")
-  text <- sprintf("setkey(dat, %s)", keys)
+  keys <- paste0(matched.cols, collapse = '","')
+  text <- sprintf('setkey(dat, "%s")', keys)
   eval(paste0(text = text))
-  text <- sprintf("setkey(selected.db.tb, %s)", keys)
+  text <- sprintf('setkey(selected.db.tb, "%s")', keys)
   eval(paste0(text = text))
   selected.db.tb <- merge(selected.db.tb, dat, all = TRUE)
   selected.db.tb$id <- as.numeric(selected.db.tb$id)
@@ -142,7 +142,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
     verbose = verbose)
   disconnect.db(database, db.type)
   result <- selected.db.tb
-  if (return.col.names != "") {
+  if (any(return.col.names != "")) {
     colnames(result) <- return.col.names
   } else {
     colnames(result) <- tb.colnames[return.col.index]
@@ -201,7 +201,7 @@ annotation <- function(dat = data.table(), name = "", buildver = "hg19", databas
 #' Annotation function (mulitple name)
 #'
 #' @param anno.names Annotation names, eg. c('avsnp138', 'avsnp147', '1000g2015aug_all')
-#' @param col.cl.num Cores num be used (default is 1)
+#' @param col.cl.num Number of cores (default is NULL, not use cluster)
 #' @param ... Other parametes see \code{\link{annotation}}
 #' @export
 #' @examples
@@ -222,6 +222,9 @@ annotation.merge <- function(anno.names, col.cl.num = NULL, ...) {
       annotation(name = x, ...)
     })
   } else {
+    if (col.cl.num > length(anno.names)) {
+      col.cl.num <- length(anno.names)
+    }
     col.cl <- makeCluster(col.cl.num)
     params <- list(...)
     dat <- params$dat
