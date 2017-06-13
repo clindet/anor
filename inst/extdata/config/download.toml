@@ -386,7 +386,7 @@ install = "#R#sql2sqlite('{{buildver}}_{{version}}.sqlite.sql', sqlite.path = '{
 [1000g]
 source_url = "http://bioinfo.rjh.com.cn/download/annovarR/humandb/{{buildver}}_{{version}}.tar.gz"
 version_newest = "1000g2015aug"
-version_available = ["1000g2015aug", "1000g2014oct"]
+version_available = ["1000g2015aug"]
 buildver_available = "hg19"
 install = """#R#
 for(i in c('all', 'afr', 'eas', 'eur', 'sas', 'amr')) {

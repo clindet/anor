@@ -121,3 +121,25 @@ mysql.tb.colnames <- function(mysql.connect.params = list(host = "", dbname = ""
   dbDisconnect(mysql.db)
   return(tb.colnames)
 }
+
+#' Get sqlite table index
+#'
+#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
+#' @export
+#' @examples
+#' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' params <- list(sqlite.path = test.sqlite,
+#' table.name = 'snp_test')
+#' x <- sqlite.build(filename = test.dat, params)
+#' x <- sqlite.index(params, index = 'index4', cols = c('V1', 'V2'))
+#' indexes <- sqlite.tb.indexes(params)
+#' test.sqlite <- normalizePath(test.sqlite, '/')
+#' file.remove(test.sqlite)
+sqlite.tb.indexes <- function(sqlite.connect.params = list(sqlite.path = "", table.name = "")){
+  sqlite.db <- sqlite.connect.initial(sqlite.connect.params, verbose = FALSE)
+  sql <- "SELECT * FROM sqlite_master WHERE type = 'index'"
+  indexes <- dbGetQuery(sqlite.db, sql)
+  dbDisconnect(sqlite.db)
+  return(indexes)
+}

@@ -206,3 +206,16 @@ cbind.ffdf2 <- function(d1, d2) {
   colnames(mergeCall) <- c(D1names, D2names)
   mergeCall
 }
+
+
+# Sqlite connenct initial
+sqlite.connect.initial <- function(sqlite.connect.params = list(sqlite.path = ""), verbose = FALSE){
+  sqlite.path <- sqlite.connect.params[["sqlite.path"]]
+  if (names(sqlite.connect.params)[1] != "") {
+    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
+      sqlite.connect.params)
+  }
+  info.msg(sprintf("Setting up connection: %s sqlite databse.", sqlite.path), verbose = verbose)
+  sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
+  sqlite.db <- do.call(dbConnect, sqlite.connect.params)
+}

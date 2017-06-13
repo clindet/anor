@@ -134,7 +134,7 @@ sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.na
 #' table.name = 'snp_test'))
 #' x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
 #' index = 'index4', cols = c('V1', 'V2'))
-#' x <- drop.sqlite.index(list(sqlite.path = test.sqlite), index = 'index4')
+#' x <- drop.sqlite.index(list(sqlite.path = test.sqlite, table.name = "snp_test"), index = 'index4')
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
 drop.sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
@@ -151,8 +151,8 @@ drop.sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", tab
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)
   sql <- "SELECT * FROM sqlite_master WHERE type = 'index'"
-  indexs <- dbGetQuery(sqlite.db, sql)
-  if (!(index %in% indexs)) {
+  indexes <- dbGetQuery(sqlite.db, sql)
+  if (!(index %in% indexes)) {
     info.msg(sprintf("%s index not existed in %s sqlite database.", index, sqlite.path), 
       verbose)
     return(FALSE)
