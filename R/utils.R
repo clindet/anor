@@ -125,12 +125,12 @@ select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "s
     index <- match(colnames(result), names(params))
     index <- index[!is.na(index)]
     colnames(result)[index] <- names(params)
-    keys <- paste0(names(params), collapse = '", "')
-    text <- sprintf('setkey(result, "%s")', keys)
+    keys <- paste0(names(params), collapse = "\", \"")
+    text <- sprintf("setkey(result, \"%s\")", keys)
     eval(parse(text = text))
     params <- as.data.table(params)
-    keys <- paste0(names(params), collapse = '", "')
-    text <- sprintf('setkey(params, "%s")', keys)
+    keys <- paste0(names(params), collapse = "\", \"")
+    text <- sprintf("setkey(params, \"%s\")", keys)
     eval(parse(text = text))
     result <- merge(result, params)
   }
@@ -209,7 +209,8 @@ cbind.ffdf2 <- function(d1, d2) {
 
 
 # Sqlite connenct initial
-sqlite.connect.initial <- function(sqlite.connect.params = list(sqlite.path = ""), verbose = FALSE){
+sqlite.connect.initial <- function(sqlite.connect.params = list(sqlite.path = ""), 
+  verbose = FALSE) {
   sqlite.path <- sqlite.connect.params[["sqlite.path"]]
   if (names(sqlite.connect.params)[1] != "") {
     sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 

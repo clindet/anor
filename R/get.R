@@ -136,7 +136,7 @@ mysql.tb.colnames <- function(mysql.connect.params = list(host = "", dbname = ""
 #' indexes <- sqlite.tb.indexes(params)
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
-sqlite.tb.indexes <- function(sqlite.connect.params = list(sqlite.path = "", table.name = "")){
+sqlite.tb.indexes <- function(sqlite.connect.params = list(sqlite.path = "", table.name = "")) {
   sqlite.db <- sqlite.connect.initial(sqlite.connect.params, verbose = FALSE)
   sql <- "SELECT * FROM sqlite_master WHERE type = 'index'"
   indexes <- dbGetQuery(sqlite.db, sql)

@@ -106,8 +106,7 @@ sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.na
     return(FALSE)
   }
   cols <- paste0(cols, collapse = "', '")
-  cols <- paste0("'", cols, "'")
-  sql <- sprintf("CREATE INDEX '%s' ON '%s' (%s)", index, table.name, cols)
+  sql <- sprintf("CREATE INDEX '%s' ON '%s' ('%s')", index, table.name, cols)
   status <- FALSE
   info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
   status <- dbSendQuery(sqlite.db, sql, ...)
@@ -134,7 +133,7 @@ sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.na
 #' table.name = 'snp_test'))
 #' x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
 #' index = 'index4', cols = c('V1', 'V2'))
-#' x <- drop.sqlite.index(list(sqlite.path = test.sqlite, table.name = "snp_test"), index = 'index4')
+#' x <- drop.sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), index = 'index4')
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
 drop.sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
