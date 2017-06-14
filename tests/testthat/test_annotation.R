@@ -4,7 +4,7 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 
   "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
-  "hg19_gme", "hg19_hrcr1")) {
+  "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap")) {
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
@@ -365,7 +365,6 @@ test_that("gme", {
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "gme", database.dir = database.dir, db.type = "txt")
   x <- as.data.frame(x)
-  print(x)
   expect_that(colnames(x)[1], equals("GME_AF"))
   expect_that(x[1, 1], equals("0.049505"))
   expect_that(x[2, 1], equals("0.698113"))
@@ -385,12 +384,40 @@ test_that("hrcr1", {
   expect_that(x[2, 2], equals("8"))
 })
 
+test_that("revel", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("35142", "35142", "10020")
+  end <- c("35142", "35142", "10020")
+  ref <- c("G", "G", "A")
+  alt <- c("A", "C", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "revel", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("REVEL"))
+  expect_that(x[1, 1], equals("0.027"))
+  expect_that(x[2, 1], equals("0.035"))
+})
+
+test_that("mcap", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("69091", "69092", "10020")
+  end <- c("69091", "69092", "10020")
+  ref <- c("A", "T", "A")
+  alt <- c("T", "C", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "mcap", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("MCAP"))
+  expect_that(x[1, 1], equals("0.00708247797993"))
+  expect_that(x[2, 1], equals("0.00326415452909"))
+})
+
 for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 
   "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
-  "hg19_gme", "hg19_hrcr1")) {
+  "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   txt.db <- sprintf("%s/%s.txt", tempdir(), i)
   sqlite.db <- normalizePath(sqlite.db, "/")
