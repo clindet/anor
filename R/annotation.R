@@ -59,18 +59,21 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   # dbname is path of sqlite or text database or is dbname of MySQL database
   dbname <- dbname.initial(name, dbname.fixed, setdb.fun, buildver, database.dir, 
     db.type, mysql.connect.params, sqlite.connect.params)
-  database.params <- database.params.initial(db.type, dbname, sqlite.connect.params, 
+  
+  # table.name initial
+  table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)
+  
+  # database.params initial
+  database.params <- database.params.initial(db.type, dbname, table.name, sqlite.connect.params, 
     mysql.connect.params)
   sqlite.connect.params <- database.params[["sqlite"]]
   mysql.connect.params <- database.params[["mysql"]]
   print.db.info(dbname, db.type, mysql.connect.params, verbose)
   
-  # table.name initial
-  table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)
-  
   database <- connect.db(dbname, db.type, sqlite.connect.params, mysql.connect.params, 
     verbose)
-  tb.colnames <- db.tb.colnames(dbname, table.name, db.type, mysql.connect.params)
+  tb.colnames <- db.tb.colnames(dbname = dbname, db.type = db.type, sqlite.connect.params, 
+    mysql.connect.params)
   info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
   
   # Get unique records, params is pass to select.dat.full.match and get matched
@@ -137,6 +140,142 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   return(result)
 }
 
+#' A regeion annotation utils that can be used to write a yourself annotation function
+#'
+#' @param dat A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))
+#' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
+#' @param buildver Genome version, hg19, hg38, mm10 and others
+#' @param database.dir Dir of the databases (mysql no need)
+#' @param db.col.order Using the index, you can rename the database table, and can be matched using matched.cols. 
+#' @param index.cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
+#' @param matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
+#' @param return.col.index Setting the colnums need be returned
+#' @param return.col.names Setting the returned colnum names
+#' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
+#' @param dbname.fixed Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
+#' (Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)
+#' @param table.name.fixed Table name, default is NULL, and get from set.table.fun (Set value will fix the table.name)
+#' (Set value will fix the table.name, and will be added in sqlite.connenct.params and mysql.connect.params)
+#' @param setdb.fun A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)
+#' @param set.table.fun A function to process the name, buildver and get the final table name
+#' @param format.db.tb.fun A function to process the selected database table that can be used to matched with your data
+#' @param db.type Setting the database type (sqlite, txt or mysql)
+#' @param mysql.connect.params Connect MySQL database other parameters, 
+#' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
+#' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
+#' @param verbose Logical indicating wheather print the extra log infomation
+#' @export
+#' @examples
+#' library(data.table)
+#' chr <- c('chr1', 'chr2', 'chr1')
+#' start <- c('10020', '10020', '10020')
+#' end <- c('10020', '10020', '10020')
+#' ref <- c('A', 'A', 'A')
+#' alt <- c('-', '-', '-')
+#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
+#' database.dir <- dirname(database)
+#' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+annotation.region.match <- function(dat = data.table(), name = "", buildver = "hg19", 
+  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5, index.cols = c("chr", 
+    "start", "end"), matched.cols = c("chr", "start", "end"), return.col.index = 4, 
+  return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
+  setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.tb, 
+  db.type = "sqlite", mysql.connect.params = list(), sqlite.connect.params = list(), 
+  verbose = FALSE) {
+  dat.names <- names(dat)
+  if (is.null(database.dir) || database.dir == "") {
+    stop("Parameter database.dir not be setted.")
+  } else if (!dir.exists(database.dir)) {
+    stop(sprintf("%s directory not existed.", database.dir))
+  }
+  info.msg(sprintf("Total %s line be prepared to be annotate with %s database.", 
+    nrow(dat), name), verbose = verbose)
+  print.vb(dat, verbose = verbose)
+  info.msg("Formating the input data.", verbose = verbose)
+  # format.dat.fun can standardize the input data
+  dat <- format.dat.fun(dat)
+  print.vb(dat, verbose = verbose)
+  
+  # dbname is path of sqlite or text database or is dbname of MySQL database
+  dbname <- dbname.initial(name, dbname.fixed, setdb.fun, buildver, database.dir, 
+    db.type, mysql.connect.params, sqlite.connect.params)
+  database.params <- database.params.initial(db.type, dbname, sqlite.connect.params, 
+    mysql.connect.params)
+  sqlite.connect.params <- database.params[["sqlite"]]
+  mysql.connect.params <- database.params[["mysql"]]
+  print.db.info(dbname, db.type, mysql.connect.params, verbose)
+  
+  # table.name initial
+  table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)
+  
+  database <- connect.db(dbname, db.type, sqlite.connect.params, mysql.connect.params, 
+    verbose)
+  tb.colnames <- db.tb.colnames(db.type, sqlite.connect.params, mysql.connect.params)
+  info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
+  
+  # Get unique records, params is pass to select.dat.full.match and get matched
+  # data table from database
+  dup <- !duplicated(dat)
+  params <- dat[dup, index.cols, with = FALSE]
+  
+  # Sync the colnames between input cols and database table cols which be used to
+  # select data
+  index.cols.order <- match(colnames(dat), index.cols)
+  index.cols.order <- index.cols.order[!is.na(index.cols.order)]
+  colnames(params) <- tb.colnames[index.cols.order]
+  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.full.match from database (%s).", 
+    paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
+    verbose = verbose)
+  print.vb(params, verbose = verbose)
+  
+  # Select data from database
+  selected.db.tb <- select.dat.region.match(database, table.name, tb.colnames[index.cols.order], 
+    params = params, db.type = db.type, verbose = verbose)
+  selected.db.tb <- format.db.tb.fun(selected.db.tb)
+  info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
+    verbose = verbose)
+  print.vb(selected.db.tb, verbose = verbose)
+  
+  # Check return.col.index, if empty return the all of cols in database without
+  # matched cols
+  if (all(return.col.index == "")) {
+    all.cols <- 1:ncol(selected.db.tb)
+    return.col.index <- all.cols[!all.cols %in% db.col.order]
+  }
+  
+  # If selected data is empty, return NA matrix according the return.col.index and
+  # return.col.names
+  if (nrow(selected.db.tb) == 0) {
+    empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
+    disconnect.db(database, db.type)
+    return(empty.col)
+  }
+  
+  # Sync colnames between selected data and input data
+  selected.db.tb <- sync.colnames(selected.db.tb, db.col.order, dat.names)
+  tb.colnames <- colnames(selected.db.tb)
+  info.msg(sprintf("After sync colnames, the selected data colnames:%s", paste0(tb.colnames, 
+    collapse = ",")), verbose = verbose)
+  selected.colnames <- tb.colnames[return.col.index]
+  
+  selected.db.tb <- get.region.match.final.table(dat, selected.db.tb, matched.cols, 
+    selected.colnames, verbose)
+  
+  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
+    verbose = verbose)
+  disconnect.db(database, db.type)
+  
+  # Final process on result
+  result <- selected.db.tb
+  if (any(return.col.names != "")) {
+    colnames(result) <- return.col.names
+  } else {
+    colnames(result) <- tb.colnames[return.col.index]
+  }
+  info.msg("Returned data:", verbose = verbose)
+  print.vb(result, verbose = verbose)
+  return(result)
+}
 #' Annotation function (single name)
 #'
 #' @param dat A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))

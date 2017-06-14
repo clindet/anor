@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{sqlite.tb.indexes}
 \alias{sqlite.tb.indexes}
-\title{Get sqlite table index}
+\title{Get sqlite table indexes}
 \usage{
 sqlite.tb.indexes(sqlite.connect.params = list(dbname = "", table.name = ""))
 }
@@ -10,7 +10,7 @@ sqlite.tb.indexes(sqlite.connect.params = list(dbname = "", table.name = ""))
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}
 }
 \description{
-Get sqlite table index
+Get sqlite table indexes
 }
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())

@@ -1,0 +1,8 @@
+##gff-version	2
+##
+AB000123	Twinscan	CDS	193817	194022	.	-	2	gene_id "AB000123.1"; ranscript_id "AB00123.1.2";
+AB000123	Twinscan	CDS	199645	199752	.	-	2	gene_id "AB000123.1"; transcript_id "AB00123.1.2";
+AB000123	Twinscan	CDS	200369	200508	.	-	1	gene_id "AB000123.1"; transcript_id "AB00123.1.2";
+AB000123	Twinscan	CDS	215991	216028	.	-	0	gene_id "AB000123.1"; transcript_id "AB00123.1.2";
+AB000123	Twinscan	start_codon	216026	216028	.	-	.	gene_id "AB000123.1"; transcript_id "AB00123.1.2";
+AB000123	Twinscan	stop_codon	193814	193816	.	-	.	gene_id "AB000123.1"; transcript_id "AB00123.1.2";

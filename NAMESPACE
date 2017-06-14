@@ -3,6 +3,7 @@
 export(annotation)
 export(annotation.cols.match)
 export(annotation.merge)
+export(annotation.region.match)
 export(convert2annovar)
 export(del)
 export(download.database)
