@@ -149,20 +149,139 @@ db.tb.colnames <- function(dbname = "", db.type = "sqlite", sqlite.connect.param
   }
 }
 
-# Read GFF and BED file
-read.region.file <- function(filename, file.type = NULL, ...) {
-  file.type <- get.region.filetype(filename)
-  dat <- fread(filename, ...)
-  if (file.type == "gff") {
+# select.dat.full.match.sqlite
+select.dat.full.match.sqlite <- function(db, table.name, cols = c(), params = list(), 
+  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
+  params <- lapply(params, function(x) {
+    as.character(x)
+  })
+  params.length <- length(params)
+  if (is.null(sql.operator)) {
+    sql.operator <- rep("==", length(params))
+  }
+  sql <- sprintf("SELECT %s FROM \"%s\"", select.cols, table.name)
+  if (length(cols) > 0) {
+    sql <- paste0(sql, " WHERE ")
+    for (i in 1:params.length) {
+      if (i < params.length) {
+        sql.plus <- sprintf("\"%s\"%s:x%s AND ", cols[i], sql.operator[i], 
+        i)
+        sql <- paste0(sql, sql.plus)
+      } else {
+        sql.plus <- sprintf("\"%s\"%s:x%s", cols[i], sql.operator[i], i)
+        sql <- paste0(sql, sql.plus)
+      }
+    }
+  }
+  info.msg(sprintf("Input %s colnum type:%s", paste0(names(params), collapse = ","), 
+    paste0(sapply(params, typeof), collapse = ",")), verbose = verbose)
+  print.vb(lapply(params, head), verbose = verbose)
+  params <- unname(params)
+  info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
+  result <- dbGetQuery(db, sql, params = params)
+  info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
+  result <- as.data.table(result)
+}
+
+# select.dat.full.match.mysql
+select.dat.full.match.mysql <- function(db, table.name, cols = c(), params = list(), 
+  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
+  params <- lapply(params, function(x) {
+    as.character(x)
+  })
+  params.length <- length(params)
+  sql <- sprintf("SELECT %s FROM %s", select.cols, table.name)
+  if (length(cols) >= 0) {
+    sql <- sprintf("SELECT %s FROM %s", select.cols, table.name)
+    sql <- paste0(sql, " WHERE ")
+    for (i in 1:length(params)) {
+      if (i < length(params)) {
+        tmp.pars <- paste0(params[[cols[i]]], collapse = "', '")
+        tmp.pars <- sprintf("'%s'", tmp.pars)
+        sql.plus <- sprintf("%s in (%s) AND ", cols[i], tmp.pars)
+        sql <- paste0(sql, sql.plus)
+      } else {
+        tmp.pars <- paste0(params[[cols[i]]], collapse = "', '")
+        tmp.pars <- sprintf("'%s'", tmp.pars)
+        sql.plus <- sprintf("%s in (%s)", cols[i], tmp.pars)
+        sql <- paste0(sql, sql.plus)
+      }
+    }
+    info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
+    result <- dbGetQuery(db, sql)
+  } else {
+    info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
+    result <- dbGetQuery(db, sql)
+    info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
+  }
+  result <- as.data.table(result)
+}
+
+# select.dat.full.match.txt
+select.dat.full.match.txt <- function(db, table.name, cols = c(), params = list(), 
+  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
+  result <- fread(db)
+  result <- lapply(result, function(x) {
+    as.character(x)
+  })
+  params <- lapply(params, function(x) {
+    as.character(x)
+  })
+  result <- as.data.table(result)
+  params <- as.data.table(params)
+  index <- match(colnames(result), names(params))
+  index <- index[!is.na(index)]
+  colnames(result)[index] <- names(params)
+  keys <- paste0(names(params), collapse = "\", \"")
+  text <- sprintf("setkey(result, \"%s\")", keys)
+  eval(parse(text = text))
+  params <- as.data.table(params)
+  keys <- paste0(names(params), collapse = "\", \"")
+  text <- sprintf("setkey(params, \"%s\")", keys)
+  eval(parse(text = text))
+  result <- merge(result, params)
+}
+# Select data from text file, sqlite or mysql database cols: database colnames
+# (Simultaneously satisfy the cols SQL conditions) used to match params: a list
+# that record to match database using cols
+select.dat.full.match <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
+  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
+  params <- lapply(params, function(x) {
+    as.character(x)
+  })
+  params.length <- length(params)
+  if (is.null(sql.operator)) {
+    sql.operator <- rep("==", length(params))
+  }
+  if (db.type == "sqlite") {
+    result <- select.dat.full.match.sqlite(db, table.name, cols, params, select.cols, sql.operator, verbose)
+  } else if (db.type == "mysql") {
+    result <- select.dat.full.match.mysql(db, table.name, cols, params, select.cols, sql.operator, verbose)
+  } else if (db.type == "txt") {
+    result <- select.dat.full.match.txt(db, table.name, cols, params, select.cols, sql.operator, verbose)
+  }
+  return(result)
+}
+
+# Read GFF and BED file or database
+read.region <- function(filename = "", region.type = "gff", sqlite.connect.params = NULL, mysql.connect.params = NULL, 
+                        ...) {
+  if (filename != "") {
+    
+    region.type <- get.region.filetype(filename)
+    dat <- fread(filename, ...)
+  }
+  
+  if (region.type == "gff") {
     if (str_detect(filename, "bed$")) {
       warning("Reading BED prefix file by GFF3 option")
     }
     all.names <- c("seqid", "source", "type", "start", "end", "score", "strand", 
       "phase", "attributes")
-  } else if (file.type == "gtf") {
+  } else if (region.type == "gtf") {
     all.names <- c("seqid", "source", "method", "start", "end", "score", "strand", 
       "phase", "groups")
-  } else if (file.type == "bed") {
+  } else if (region.type == "bed") {
     if (str_detect(filename, "gff$")) {
       warning("Reading BED prefix file by GFF option")
     }
@@ -187,93 +306,6 @@ get.region.filetype <- function(filename, use.prefix = TRUE) {
     }
   }
 }
-
-# Select data from text file, sqlite or mysql database cols: database colnames
-# (Simultaneously satisfy the cols SQL conditions) used to match params: a list
-# that record to match database using cols
-select.dat.full.match <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
-  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
-  params <- lapply(params, function(x) {
-    as.character(x)
-  })
-  params.length <- length(params)
-  if (is.null(sql.operator)) {
-    sql.operator <- rep("==", length(params))
-  }
-  if (db.type == "sqlite") {
-    sql <- sprintf("SELECT %s FROM \"%s\"", select.cols, table.name)
-    if (length(cols) > 0) {
-      sql <- paste0(sql, " WHERE ")
-      for (i in 1:params.length) {
-        if (i < params.length) {
-          sql.plus <- sprintf("\"%s\"%s:x%s AND ", cols[i], sql.operator[i], 
-          i)
-          sql <- paste0(sql, sql.plus)
-        } else {
-          sql.plus <- sprintf("\"%s\"%s:x%s", cols[i], sql.operator[i], i)
-          sql <- paste0(sql, sql.plus)
-        }
-      }
-    }
-    info.msg(sprintf("Input %s colnum type:%s", paste0(names(params), collapse = ","), 
-      paste0(sapply(params, typeof), collapse = ",")), verbose = verbose)
-    print.vb(lapply(params, head), verbose = verbose)
-    params <- unname(params)
-    info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
-    result <- dbGetQuery(db, sql, params = params)
-    info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
-    result <- as.data.table(result)
-  } else if (db.type == "mysql") {
-    sql <- sprintf("SELECT %s FROM %s", select.cols, table.name)
-    if (length(cols) >= 0) {
-      sql <- sprintf("SELECT %s FROM %s", select.cols, table.name)
-      sql <- paste0(sql, " WHERE ")
-      for (i in 1:length(params)) {
-        if (i < length(params)) {
-          tmp.pars <- paste0(params[[cols[i]]], collapse = "', '")
-          tmp.pars <- sprintf("'%s'", tmp.pars)
-          sql.plus <- sprintf("%s in (%s) AND ", cols[i], tmp.pars)
-          sql <- paste0(sql, sql.plus)
-        } else {
-          tmp.pars <- paste0(params[[cols[i]]], collapse = "', '")
-          tmp.pars <- sprintf("'%s'", tmp.pars)
-          sql.plus <- sprintf("%s in (%s)", cols[i], tmp.pars)
-          sql <- paste0(sql, sql.plus)
-        }
-      }
-      info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
-      result <- dbGetQuery(db, sql)
-    } else {
-      info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
-      result <- dbGetQuery(db, sql)
-      info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
-    }
-    result <- as.data.table(result)
-  } else if (db.type == "txt") {
-    result <- fread(db)
-    result <- lapply(result, function(x) {
-      as.character(x)
-    })
-    params <- lapply(params, function(x) {
-      as.character(x)
-    })
-    result <- as.data.table(result)
-    params <- as.data.table(params)
-    index <- match(colnames(result), names(params))
-    index <- index[!is.na(index)]
-    colnames(result)[index] <- names(params)
-    keys <- paste0(names(params), collapse = "\", \"")
-    text <- sprintf("setkey(result, \"%s\")", keys)
-    eval(parse(text = text))
-    params <- as.data.table(params)
-    keys <- paste0(names(params), collapse = "\", \"")
-    text <- sprintf("setkey(params, \"%s\")", keys)
-    eval(parse(text = text))
-    result <- merge(result, params)
-  }
-  return(result)
-}
-
 # region match version select.dat
 select.dat.region.match <- function(db, table.name, cols = c(), params = list(), 
   db.type = "sqlite", select.cols = "*", sql.operator = NULL, verbose = FALSE) {
