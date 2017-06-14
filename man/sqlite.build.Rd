@@ -4,14 +4,14 @@
 \alias{sqlite.build}
 \title{Build annovarR database in sqlite}
 \usage{
-sqlite.build(filename = "", sqlite.connect.params = list(sqlite.path = "",
+sqlite.build(filename = "", sqlite.connect.params = list(dbname = "",
   table.name = ""), dat = data.table(), fread.params = list(),
   new.colnames = NULL, overwrite = TRUE, verbose = FALSE, ...)
 }
 \arguments{
 \item{filename}{Path of raw data, will be read by fread}
 
-\item{sqlite.connect.params}{Connect to sqlite database params [sqlite.path, table.name]}
+\item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}
 
 \item{dat}{Object of data.table, as the input data to build database (optional)}
 
@@ -31,7 +31,7 @@ Build annovarR database in sqlite
 \examples{
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))
 test.sqlite <- normalizePath(test.sqlite, '/')
 file.remove(test.sqlite)

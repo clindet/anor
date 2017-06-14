@@ -27,6 +27,22 @@ buildver_available = ["hg19", "hg18"]
 description = "UCSC goldenPath/{{buildver}}/database/ensGene.txt.gz"
 after_success = "mv ensGene.txt ucsc_{{buildver}}_ensGene.txt"
 
+[raw_ucsc_dnase_clustered]
+source_url = "http://hgdownload.cse.ucsc.edu/goldenPath/{{buildver}}/encodeDCC/wgEncodeRegDnaseClustered/wgEncodeRegDnaseClustered{{version}}.bed.gz"
+version_newest = "V3"
+version_available = ["V3"]
+buildver_available = ["hg19"]
+description = "UCSC DNaseI Hypersensitivity Clusters in 125 cell types from ENCODE"
+after_success = "mv wgEncodeRegDnaseClustered{{version}}.bed ucsc_{{buildver}}_wgEncodeRegDnaseClustered{{version}}.bed"
+
+[raw_ucsc_tfbs_clustered]
+source_url = "http://hgdownload.cse.ucsc.edu/goldenPath/{{buildver}}/encodeDCC/wgEncodeRegTfbsClustered/wgEncodeRegTfbsClustered{{version}}.bed.gz"
+version_newest = "V3"
+version_available = ["V3"]
+buildver_available = ["hg19"]
+description = "UCSC Transcription Factor ChIP-seq (161 factors) from ENCODE with Factorbook Motifs"
+after_success = "mv wgEncodeRegTfbsClustered{{version}}.bed ucsc_{{buildver}}_wgEncodeRegTfbsClustered{{version}}.bed"
+
 [raw_annovar_refgene]
 source_url = ["http://www.openbioinformatics.org/annovar/download/{{buildver}}_refGene.txt.gz", 
               "http://www.openbioinformatics.org/annovar/download/{{buildver}}_refGeneMrna.fa.gz", 

@@ -1,12 +1,12 @@
 
-test_that("select.dat", {
+test_that("select.dat.full.match", {
   database <- system.file("extdata", "demo/hg19_cosmic81.txt", package = "annovarR")
   sqlite.db <- sprintf("%s/hg19_cosmic81.sqlite", tempdir())
   txt.db <- sprintf("%s/hg19_cosmic81.txt", tempdir())
   file.copy(database, txt.db)
-  sqlite.build(database, list(sqlite.path = sqlite.db, table.name = "hg19_cosmic81"))
+  sqlite.build(database, list(dbname = sqlite.db, table.name = "hg19_cosmic81"))
   database <- dbConnect(RSQLite::SQLite(), sqlite.db)
-  x <- select.dat(database, "hg19_cosmic81", "V1", list("1"))
+  x <- select.dat.full.match(database, "hg19_cosmic81", "V1", list("1"))
   x <- as.data.frame(x)
   expect_that(colnames(x), equals(paste0("V", 1:6)))
   expect_that(x[1, 2], equals(13496008))
@@ -21,8 +21,8 @@ test_that("select.dat", {
   if (mysqlHasDefault()) {
     database <- dbConnect(RMySQL::MySQL(), dbname = "annovarr")
     database <- system.file("extdata", "demo/hg19_cosmic81.txt", package = "annovarR")
-    y <- system.time(x <- select.dat(database, "disease", "symbol", list(symbol = rep("AML", 
-      10000)), verbose = FALSE, db.type = "mysql"))
+    y <- system.time(x <- select.dat.full.match(database, "disease", "symbol", 
+      list(symbol = rep("AML", 10000)), verbose = FALSE, db.type = "mysql"))
   }
 })
 

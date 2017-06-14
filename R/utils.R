@@ -15,7 +15,7 @@ print.vb <- function(x, verbose = FALSE, ...) {
 # Show colnames of table in database or text file
 db.tb.colnames <- function(dbname = "", table.name = "", db.type = "sqlite", mysql.connect.params = list()) {
   if (db.type == "sqlite") {
-    tb.colname <- sqlite.tb.colnames(list(sqlite.path = dbname, table.name = table.name))
+    tb.colname <- sqlite.tb.colnames(list(dbname = dbname, table.name = table.name))
   } else if (db.type == "txt") {
     table.dat <- fread(dbname, nrows = 1)
     tb.colnames <- colnames(table.dat)
@@ -26,19 +26,26 @@ db.tb.colnames <- function(dbname = "", table.name = "", db.type = "sqlite", mys
   }
 }
 
-# Connect API for sqlite and mysql database, text file will return db
-connect.db <- function(database, db.type = "sqlite", sqlite.connect.params = list(), 
-  mysql.connect.params = list(host = "host", dbname = database, port = "3306", 
-    user = "user", password = "password")) {
+# Connect API for sqlite and mysql database, text file will return db dbname for
+# sqlite and txt database
+connect.db <- function(dbname, db.type = "sqlite", sqlite.connect.params = list(), 
+  mysql.connect.params = list(), verbose = TRUE) {
+  if (db.type == "mysql") {
+    info.msg(sprintf("Setting up connection: Host:%s databse:%s.", mysql.connect.params$host, 
+      mysql.connect.params$dbname), verbose = verbose)
+  } else if (db.type == "sqlite") {
+    info.msg(sprintf("Setting up connection: %s sqlite databse.", sqlite.connect.params$dbname), 
+      verbose = verbose)
+  } else {
+    info.msg(sprintf("Setting up connection: %s databse.", dbname), verbose = verbose)
+  }
   if (db.type == "sqlite") {
-    sqlite.connect.params <- config.list.merge(list(RSQLite::SQLite(), database), 
-      sqlite.connect.params)
+    sqlite.connect.params <- config.list.merge(list(RSQLite::SQLite()), sqlite.connect.params)
     database <- do.call(dbConnect, sqlite.connect.params)
   } else if (db.type == "txt") {
-    database <- database
+    database <- dbname
   } else if (db.type == "mysql") {
-    mysql.connect.params <- config.list.merge(list(MySQL(), dbname = database), 
-      mysql.connect.params)
+    mysql.connect.params <- config.list.merge(list(MySQL()), mysql.connect.params)
     database <- do.call(dbConnect, mysql.connect.params)
     dbSendQuery(database, "SET NAMES utf8")
   }
@@ -58,22 +65,28 @@ sync.colnames <- function(result, col.order, col.names) {
 }
 
 # Select data from text file, sqlite or mysql database cols: database colnames
-# used to match params: a list that record to match database using cols
-select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
-  select.cols = "*", verbose = FALSE) {
+# (Simultaneously satisfy the cols SQL conditions) used to match params: a list
+# that record to match database using cols
+select.dat.full.match <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
+  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
   params <- lapply(params, function(x) {
     as.character(x)
   })
+  params.length <- length(params)
+  if (is.null(sql.operator)) {
+    sql.operator <- rep("==", length(params))
+  }
   if (db.type == "sqlite") {
     sql <- sprintf("SELECT %s FROM \"%s\"", select.cols, table.name)
     if (length(cols) > 0) {
       sql <- paste0(sql, " WHERE ")
-      for (i in 1:length(params)) {
-        if (i < length(params)) {
-          sql.plus <- sprintf("\"%s\"==:x%s AND ", cols[i], i)
+      for (i in 1:params.length) {
+        if (i < params.length) {
+          sql.plus <- sprintf("\"%s\"%s:x%s AND ", cols[i], sql.operator[i], 
+          i)
           sql <- paste0(sql, sql.plus)
         } else {
-          sql.plus <- sprintf("\"%s\"==:x%s", cols[i], i)
+          sql.plus <- sprintf("\"%s\"%s:x%s", cols[i], sql.operator[i], i)
           sql <- paste0(sql, sql.plus)
         }
       }
@@ -215,14 +228,91 @@ cbind.ffdf2 <- function(d1, d2) {
 
 
 # Sqlite connenct initial
-sqlite.connect.initial <- function(sqlite.connect.params = list(sqlite.path = ""), 
-  verbose = FALSE) {
-  sqlite.path <- sqlite.connect.params[["sqlite.path"]]
-  if (names(sqlite.connect.params)[1] != "") {
-    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
-      sqlite.connect.params)
-  }
-  info.msg(sprintf("Setting up connection: %s sqlite databse.", sqlite.path), verbose = verbose)
+sqlite.connect.initial <- function(sqlite.connect.params = list(dbname = ""), verbose = FALSE) {
+  dbname <- sqlite.connect.params[["dbname"]]
+  info.msg(sprintf("Setting up connection: %s sqlite databse.", dbname), verbose = verbose)
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)
+}
+
+# Set dbname in annotation.R annotation.pos.utils
+dbname.initial <- function(name, dbname.fixed = NULL, setdb.fun = NULL, buildver = "hg19", 
+  database.dir = NULL, db.type = db.type, mysql.connect.params = NULL, sqlite.connect.params = NULL) {
+  if (is.null(dbname.fixed)) {
+    setdb.fun.args <- methods::formalArgs(setdb.fun)
+    setdb.fun.params <- list(name = name, buildver = buildver, database.dir = database.dir, 
+      db.type = db.type)
+    if ("mysql.connect.params" %in% setdb.fun.args) {
+      setdb.fun.params <- config.list.merge(setdb.fun.params, list(mysql.connect.params = mysql.connect.params))
+    }
+    if ("sqlite.connect.params" %in% setdb.fun.args) {
+      setdb.fun.params <- config.list.merge(setdb.fun.params, list(sqlite.connect.params = sqlite.connect.params))
+    }
+    dbname <- do.call(setdb.fun, setdb.fun.params)
+  } else {
+    dbname <- dbname.fixed
+  }
+  return(dbname)
+}
+
+# print.db.info Print the database info
+print.db.info <- function(dbname, db.type, mysql.connect.params, verbose = TRUE) {
+  if (db.type != "mysql" && !file.exists(dbname)) {
+    stop(sprintf("%s database not existed, please check the database dir or setdb.fun function again.", 
+      dbname))
+  }
+  if (db.type != "mysql") {
+    info.msg(sprintf("Database path:%s", dbname), verbose = verbose)
+  } else {
+    info.msg(sprintf("Host: %s, Database:%s", mysql.connect.params$host, dbname), 
+      verbose = verbose)
+  }
+}
+
+# Initial table name
+table.name.initial <- function(name, table.name.fixed, buildver, set.table.fun) {
+  if (is.null(table.name.fixed)) {
+    set.table.fun.params <- list(name = name, buildver = buildver)
+    table.name <- do.call(set.table.fun, set.table.fun.params)
+  } else {
+    table.name <- table.name.fixed
+  }
+}
+
+# Initial databae connect params
+database.params.initial <- function(db.type, dbname, sqlite.connect.params = list(), 
+  mysql.connect.params = list()) {
+  if (db.type == "sqlite") {
+    sqlite.connect.params$dbname <- dbname
+  } else if (db.type == "mysql") {
+    mysql.connect.params$dbname <- dbname
+  }
+  return(list(sqlite = sqlite.connect.params, mysql = mysql.connect.params))
+}
+
+# Merge selected data and input data and get final output
+get.full.match.final.table <- function(dat, selected.db.tb, matched.cols = "", selected.colnames = "", 
+  verbose = FALSE) {
+  # Generate a unique id to get final result according the input data table
+  id <- 1:nrow(dat)
+  dat <- cbind(dat, id)
+  dat <- as.data.table(lapply(dat, function(x) as.character(x)))
+  selected.db.tb <- as.data.table(lapply(selected.db.tb, function(x) as.character(x)))
+  
+  # Set data.table key to accelerate merge step
+  keys <- paste0(matched.cols, collapse = "\",\"")
+  text <- sprintf("setkey(dat, \"%s\")", keys)
+  eval(paste0(text = text))
+  text <- sprintf("setkey(selected.db.tb, \"%s\")", keys)
+  eval(paste0(text = text))
+  
+  selected.db.tb <- merge(selected.db.tb, dat, all = TRUE)
+  selected.db.tb$id <- as.numeric(selected.db.tb$id)
+  setkey(selected.db.tb, id)
+  selected.db.tb <- selected.db.tb[!is.na(selected.db.tb$id), ]
+  selected.db.tb <- selected.db.tb[!duplicated(selected.db.tb$id), ]
+  info.msg(sprintf("Total %s line be processed.", nrow(selected.db.tb)), verbose = verbose)
+  info.msg(sprintf("Matched data using %s colnums %s:", paste0(matched.cols, collapse = ",")))
+  print.vb(selected.db.tb, verbose = verbose)
+  selected.db.tb <- selected.db.tb[, selected.colnames, with = FALSE]
 }

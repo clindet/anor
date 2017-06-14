@@ -9,7 +9,7 @@ annotation(dat = data.table(), name = "", buildver = "hg19",
   database.cfg = system.file("extdata", "config/databases.toml", package =
   "annovarR"), func = NULL, mysql.connect.params = list(host = "", dbname =
   "", table.name = "", user = "", password = ""),
-  sqlite.connect.params = list(sqlite.path = "", table.name = ""), ...)
+  sqlite.connect.params = list(dbname = ""), ...)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}

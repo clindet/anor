@@ -4,15 +4,15 @@
 \alias{sql2sqlite}
 \title{Convert sql file to sqlite database}
 \usage{
-sql2sqlite(sql.file = "", statements = "", sqlite.path = "",
-  verbose = FALSE, ...)
+sql2sqlite(sql.file = "", statements = "", dbname = "", verbose = FALSE,
+  ...)
 }
 \arguments{
 \item{sql.file}{SQL file of sqlite database dumped}
 
 \item{statements}{SQL statements split by ';\\n' (small dataset)}
 
-\item{sqlite.path}{Path of output sqlite database}
+\item{dbname}{Path of output sqlite database}
 
 \item{verbose}{Ligical indicating wheather show the log message}
 
@@ -28,12 +28,12 @@ sqlite <- Sys.which(c('sqlite3', 'sqlite'))
 sqlite <- sqlite[sqlite != ''][1]
 sqlite <- unname(sqlite)
 if (!is.na(sqlite)) {
-  sql2sqlite(sql.file = sql.file, sqlite.path = out.sqlite, 
+  sql2sqlite(sql.file = sql.file, dbname = out.sqlite, 
   verbose = FALSE)
   unlink(out.sqlite)
 }
 statements <- paste0(readLines(sql.file), collapse = '\\n')
-sql2sqlite(statements = statements, sqlite.path = out.sqlite, 
+sql2sqlite(statements = statements, dbname = out.sqlite, 
 verbose = FALSE)
 unlink(out.sqlite)
 }

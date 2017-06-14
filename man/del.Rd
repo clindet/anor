@@ -11,7 +11,7 @@ del(filename = "", sqlite.connect.params = list(),
 \arguments{
 \item{filename}{Path of text format data}
 
-\item{sqlite.connect.params}{Connect to sqlite database params [sqlite.path, table.name]}
+\item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}
 
 \item{mysql.connect.params}{Mysql parameters, [host, dbname, table.name, user, password etc.]}
 
@@ -34,10 +34,10 @@ file.create(db)
 del(db, del.type = 'file')
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))
-del(sqlite.connect.params = list(sqlite.path = test.sqlite, 
+del(sqlite.connect.params = list(dbname = test.sqlite, 
 table.name = 'snp_test'), del.type = 'table')
-del(sqlite.connect.params = list(sqlite.path = test.sqlite, 
+del(sqlite.connect.params = list(dbname = test.sqlite, 
 table.name = 'snp_test'))
 }

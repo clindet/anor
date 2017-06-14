@@ -4,11 +4,11 @@
 \alias{sqlite.index}
 \title{Generate search index of annovarR database table in sqlite}
 \usage{
-sqlite.index(sqlite.connect.params = list(sqlite.path = "", table.name = ""),
+sqlite.index(sqlite.connect.params = list(dbname = "", table.name = ""),
   index = "", cols = c(), verbose = FALSE, ...)
 }
 \arguments{
-\item{sqlite.connect.params}{Connect to sqlite database params [sqlite.path, table.name]}
+\item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}
 
 \item{index}{Index name in sqlite}
 
@@ -24,9 +24,9 @@ Generate search index of annovarR database table in sqlite
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))
-x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
+x <- sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), 
 index = 'index4', cols = c('V1', 'V2'))
 test.sqlite <- normalizePath(test.sqlite, '/')
 file.remove(test.sqlite)

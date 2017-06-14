@@ -55,96 +55,77 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   # format.dat.fun can standardize the input data
   dat <- format.dat.fun(dat)
   print.vb(dat, verbose = verbose)
+  
   # dbname is path of sqlite or text database or is dbname of MySQL database
-  if (is.null(dbname.fixed)) {
-    setdb.fun.args <- methods::formalArgs(setdb.fun)
-    setdb.fun.params <- list(name = name, buildver = buildver, database.dir = database.dir, 
-      db.type = db.type)
-    if ("mysql.connect.params" %in% setdb.fun.args) {
-      setdb.fun.params <- config.list.merge(setdb.fun.params, list(mysql.connect.params = mysql.connect.params))
-    }
-    if ("sqlite.connect.params" %in% setdb.fun.args) {
-      setdb.fun.params <- config.list.merge(setdb.fun.params, list(sqlite.connect.params = sqlite.connect.params))
-    }
-    dbname <- do.call(setdb.fun, setdb.fun.params)
-  } else {
-    dbname <- dbname.fixed
-  }
-  if (db.type != "mysql" && !file.exists(dbname)) {
-    stop(sprintf("%s database not existed, please check the database dir or setdb.fun function again.", 
-      dbname))
-  }
-  database <- dbname
-  if (db.type != "mysql") {
-    info.msg(sprintf("Database path:%s", dbname))
-  } else {
-    info.msg(sprintf("Host: %s, Database:%s", mysql.connect.params$host, dbname))
-  }
-  if (is.null(table.name.fixed)) {
-    set.table.fun.params <- list(name = name, buildver = buildver)
-    table.name <- do.call(set.table.fun, set.table.fun.params)
-  } else {
-    table.name <- table.name.fixed
-  }
-  if (db.type == "mysql") {
-    info.msg(sprintf("Setting up connection: Host:%s databse:%s.", mysql.connect.params$host, 
-      mysql.connect.params$dbname), verbose = verbose)
-  } else {
-    info.msg(sprintf("Setting up connection: %s databse.", dbname), verbose = verbose)
-  }
-  database <- connect.db(database, db.type, sqlite.connect.params, mysql.connect.params)
+  dbname <- dbname.initial(name, dbname.fixed, setdb.fun, buildver, database.dir, 
+    db.type, mysql.connect.params, sqlite.connect.params)
+  database.params <- database.params.initial(db.type, dbname, sqlite.connect.params, 
+    mysql.connect.params)
+  sqlite.connect.params <- database.params[["sqlite"]]
+  mysql.connect.params <- database.params[["mysql"]]
+  print.db.info(dbname, db.type, mysql.connect.params, verbose)
+  
+  # table.name initial
+  table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)
+  
+  database <- connect.db(dbname, db.type, sqlite.connect.params, mysql.connect.params, 
+    verbose)
   tb.colnames <- db.tb.colnames(dbname, table.name, db.type, mysql.connect.params)
   info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
+  
+  # Get unique records, params is pass to select.dat.full.match and get matched
+  # data table from database
   dup <- !duplicated(dat)
-  params = dat[dup, index.col, with = FALSE]
+  params <- dat[dup, index.col, with = FALSE]
+  
+  # Sync the colnames between input cols and database table cols which be used to
+  # select data
   index.col.order <- match(colnames(dat), index.col)
   index.col.order <- index.col.order[!is.na(index.col.order)]
   colnames(params) <- tb.colnames[index.col.order]
-  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select dat from database (%s).", 
+  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.full.match from database (%s).", 
     paste0(index.col, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
     verbose = verbose)
   print.vb(params, verbose = verbose)
-  selected.db.tb <- select.dat(database, table.name, tb.colnames[index.col.order], 
+  
+  # Select data from database
+  selected.db.tb <- select.dat.full.match(database, table.name, tb.colnames[index.col.order], 
     params = params, db.type = db.type, verbose = verbose)
   selected.db.tb <- format.db.tb.fun(selected.db.tb)
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)
   print.vb(selected.db.tb, verbose = verbose)
+  
+  # Check return.col.index, if empty return the all of cols in database without
+  # matched cols
   if (all(return.col.index == "")) {
     all.cols <- 1:ncol(selected.db.tb)
     return.col.index <- all.cols[!all.cols %in% db.col.order]
   }
+  
+  # If selected data is empty, return NA matrix according the return.col.index and
+  # return.col.names
   if (nrow(selected.db.tb) == 0) {
     empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
     disconnect.db(database, db.type)
     return(empty.col)
   }
+  
+  # Sync colnames between selected data and input data
   selected.db.tb <- sync.colnames(selected.db.tb, db.col.order, dat.names)
   tb.colnames <- colnames(selected.db.tb)
   info.msg(sprintf("After sync colnames, the selected data colnames:%s", paste0(tb.colnames, 
     collapse = ",")), verbose = verbose)
   selected.colnames <- tb.colnames[return.col.index]
-  id <- 1:nrow(dat)
-  dat <- cbind(dat, id)
-  dat <- as.data.table(lapply(dat, function(x) as.character(x)))
-  selected.db.tb <- as.data.table(lapply(selected.db.tb, function(x) as.character(x)))
-  keys <- paste0(matched.cols, collapse = "\",\"")
-  text <- sprintf("setkey(dat, \"%s\")", keys)
-  eval(paste0(text = text))
-  text <- sprintf("setkey(selected.db.tb, \"%s\")", keys)
-  eval(paste0(text = text))
-  selected.db.tb <- merge(selected.db.tb, dat, all = TRUE)
-  selected.db.tb$id <- as.numeric(selected.db.tb$id)
-  setkey(selected.db.tb, id)
-  selected.db.tb <- selected.db.tb[!is.na(selected.db.tb$id), ]
-  selected.db.tb <- selected.db.tb[!duplicated(selected.db.tb$id), ]
-  info.msg(sprintf("Total %s line be processed.", nrow(selected.db.tb)), verbose = verbose)
-  info.msg(sprintf("Matched data using %s colnums %s:", paste0(matched.cols, collapse = ",")))
-  print.vb(selected.db.tb, verbose = verbose)
-  selected.db.tb <- selected.db.tb[, selected.colnames, with = FALSE]
+  
+  selected.db.tb <- get.full.match.final.table(dat, selected.db.tb, matched.cols, 
+    selected.colnames, verbose)
+  
   info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
     verbose = verbose)
   disconnect.db(database, db.type)
+  
+  # Final process on result
   result <- selected.db.tb
   if (any(return.col.names != "")) {
     colnames(result) <- return.col.names
@@ -185,8 +166,8 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
 annotation <- function(dat = data.table(), name = "", buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", 
   ""), db.type = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR"), func = NULL, mysql.connect.params = list(host = "", dbname = "", 
-  table.name = "", user = "", password = ""), sqlite.connect.params = list(sqlite.path = "", 
-  table.name = ""), ...) {
+  table.name = "", user = "", password = ""), sqlite.connect.params = list(dbname = ""), 
+  ...) {
   result <- NULL
   if (is.null(db.type)) {
     db.type <- get.annotation.dbtype(name, database.cfg = database.cfg)
@@ -239,41 +220,4 @@ annotation.merge <- function(anno.names, col.cl.num = NULL, ...) {
     stopCluster(col.cl)
   }
   return(as.data.table(result.list))
-}
-
-annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index = NULL, 
-  db.col.order = NULL, matched.cols = NULL, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, 
-  database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
-  ...) {
-  
-  dat.need.names <- get.cfg.value.by.name(name, database.cfg, key = "need.cols", 
-    coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
-  
-  dat <- dat[, colnames(dat) %in% dat.need.names, with = FALSE]
-  
-  supported.auto.names <- get.annotation.names(database.cfg = database.cfg)
-  if (!name %in% supported.auto.names) {
-    stop(sprintf("%s not be supprted by annotation.auto, please check the name and %s.", 
-      name, database.cfg))
-  }
-  
-  auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
-    "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", "format.dat.fun")
-  params <- list()
-  for (item in auto.parameters) {
-    item.value <- eval(parse(text = item))
-    if (is.null(item.value)) {
-      params[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
-        coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
-    } else {
-      params[[item]] <- item.value
-    }
-  }
-  annotation.cols.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
-    return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
-    matched.cols = params[["matched.cols"]], setdb.fun = eval(parse(text = params[["setdb.fun"]])), 
-    set.table.fun = eval(parse(text = params[["set.table.fun"]])), format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), 
-    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
-    ...)
 }

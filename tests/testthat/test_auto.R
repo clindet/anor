@@ -7,8 +7,8 @@ test_that("sqlite.auto.build", {
   x <- sqlite.auto.index("avsnp147", "hg19", database.dir = tempdir(), verbose = FALSE, 
     index = "chr_start_index2")
   expect_that(x, equals(TRUE))
-  sqlite.path <- sprintf("%s/%s.sqlite", tempdir(), i)
-  x <- sqlite.tb.indexes(list(sqlite.path = sqlite.path, table.name = "hg19_avsnp147"))
+  dbname <- sprintf("%s/%s.sqlite", tempdir(), i)
+  x <- sqlite.tb.indexes(list(dbname = dbname, table.name = "hg19_avsnp147"))
   expect_that("chr_start_index" %in% x$name, equals(TRUE))
   expect_that("chr_start_index2" %in% x$name, equals(TRUE))
   unlink(sprintf("%s/%s.txt", tempdir(), i))

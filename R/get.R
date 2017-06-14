@@ -1,6 +1,6 @@
 #' Show top n line of table of database in sqlite database
 #'
-#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
+#' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
 #' @param n n lines will be selected
 #' @param extra.sql Extra sql statement
 #' @param verbose Ligical indicating wheather show the log message
@@ -9,15 +9,11 @@
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
-#' sqlite.head(list(sqlite.path = test.sqlite, table.name = 'snp_test'))
-sqlite.head <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
+#' sqlite.head(list(dbname = test.sqlite, table.name = 'snp_test'))
+sqlite.head <- function(sqlite.connect.params = list(dbname = "", table.name = ""), 
   n = 10, extra.sql = NULL, verbose = FALSE, ...) {
-  if (names(sqlite.connect.params)[1] != "") {
-    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
-      sqlite.connect.params)
-  }
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)
   sql <- sprintf("SELECT * FROM '%s' LIMIT %s", sqlite.connect.params[["table.name"]], 
@@ -81,19 +77,15 @@ get.annotation.dbtype <- function(name, database.cfg = system.file("extdata", "c
 
 #' Get colnames of table of database in sqlite
 #'
-#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
+#' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
-#' sqlite.tb.colnames(list(sqlite.path = test.sqlite, table.name = 'snp_test'))
-sqlite.tb.colnames <- function(sqlite.connect.params = list(sqlite.path = "", table.name = "")) {
-  if (names(sqlite.connect.params)[1] != "") {
-    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
-      sqlite.connect.params)
-  }
+#' sqlite.tb.colnames(list(dbname = test.sqlite, table.name = 'snp_test'))
+sqlite.tb.colnames <- function(sqlite.connect.params = list(dbname = "", table.name = "")) {
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)
   sql <- sprintf("PRAGMA table_info([%s])", sqlite.connect.params[["table.name"]])
@@ -124,19 +116,19 @@ mysql.tb.colnames <- function(mysql.connect.params = list(host = "", dbname = ""
 
 #' Get sqlite table index
 #'
-#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
+#' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' params <- list(sqlite.path = test.sqlite,
+#' params <- list(dbname = test.sqlite,
 #' table.name = 'snp_test')
 #' x <- sqlite.build(filename = test.dat, params)
 #' x <- sqlite.index(params, index = 'index4', cols = c('V1', 'V2'))
 #' indexes <- sqlite.tb.indexes(params)
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
-sqlite.tb.indexes <- function(sqlite.connect.params = list(sqlite.path = "", table.name = "")) {
+sqlite.tb.indexes <- function(sqlite.connect.params = list(dbname = "", table.name = "")) {
   sqlite.db <- sqlite.connect.initial(sqlite.connect.params, verbose = FALSE)
   sql <- "SELECT * FROM sqlite_master WHERE type = 'index'"
   indexes <- dbGetQuery(sqlite.db, sql)

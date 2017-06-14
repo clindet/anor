@@ -28,12 +28,12 @@ sqlite.auto.index(name, buildver = "hg19", database.dir = "/path/",
 Index annovarR database in sqlite (auto from extdata/config/database.toml)
 }
 \examples{
-i <- "hg19_avsnp147"
-database <- system.file("extdata", sprintf("demo/\%s.txt", i), package = "annovarR")
-file.copy(database, sprintf("\%s/\%s.txt", tempdir(), i))
-sqlite.auto.build("avsnp147", "hg19", database.dir = tempdir(), verbose = TRUE)
-sqlite.auto.index("avsnp147", "hg19", database.dir = tempdir(), index = "chr_start_index2",
+i <- 'hg19_avsnp147'
+database <- system.file('extdata', sprintf('demo/\%s.txt', i), package = 'annovarR')
+file.copy(database, sprintf('\%s/\%s.txt', tempdir(), i))
+sqlite.auto.build('avsnp147', 'hg19', database.dir = tempdir(), verbose = TRUE)
+sqlite.auto.index('avsnp147', 'hg19', database.dir = tempdir(), index = 'chr_start_index2',
 verbose = TRUE)
-unlink(sprintf("\%s/\%s.txt", tempdir(), i))
-unlink(sprintf("\%s/\%s.sqlite", tempdir(), i))
+unlink(sprintf('\%s/\%s.txt', tempdir(), i))
+unlink(sprintf('\%s/\%s.sqlite', tempdir(), i))
 }

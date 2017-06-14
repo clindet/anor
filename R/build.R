@@ -1,7 +1,7 @@
 #' Build annovarR database in sqlite
 #'
 #' @param filename Path of raw data, will be read by fread
-#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
+#' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
 #' @param dat Object of data.table, as the input data to build database (optional)
 #' @param fread.params Other parameters be used in \code{\link[data.table]{fread}}
 #' @param new.colnames New colnames of table, default is to retain the original
@@ -12,33 +12,29 @@
 #' @examples
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
-#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
-sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path = "", 
+sqlite.build <- function(filename = "", sqlite.connect.params = list(dbname = "", 
   table.name = ""), dat = data.table(), fread.params = list(), new.colnames = NULL, 
   overwrite = TRUE, verbose = FALSE, ...) {
   if (!file.exists(filename)) {
     stop(sprintf("%s not existed.", filename))
   }
-  sqlite.path <- sqlite.connect.params[["sqlite.path"]]
-  if (names(sqlite.connect.params)[1] != "") {
-    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
-      sqlite.connect.params)
-  }
+  dbname <- sqlite.connect.params[["dbname"]]
   table.name <- sqlite.connect.params[["table.name"]]
   status <- FALSE
   if (filename != "") {
-    info.msg(sprintf("Running sqlite.build function [filename:%s, sqlite.path:%s, table.name:%s].", 
-      filename, sqlite.path, table.name), verbose = verbose)
-    if (file.exists(sqlite.path)) {
+    info.msg(sprintf("Running sqlite.build function [filename:%s, dbname:%s, table.name:%s].", 
+      filename, dbname, table.name), verbose = verbose)
+    if (file.exists(dbname)) {
       if (overwrite) {
-        info.msg(sprintf("overwrite be setted TRUE, removing %s", sqlite.path), 
+        info.msg(sprintf("overwrite be setted TRUE, removing %s", dbname), 
           verbose = verbose)
-        file.remove(sqlite.path)
+        file.remove(dbname)
       } else {
-        warning(sprintf("%s already exists.", sqlite.path))
+        warning(sprintf("%s already exists.", dbname))
         return(FALSE)
       }
     }
@@ -46,13 +42,13 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path
     fread.params <- config.list.merge(list(input = filename), fread.params)
     dat <- do.call(fread, fread.params)
   } else if (length(dat) > 0) {
-    info.msg(sprintf("Running sqlite.build function [sqlite.path:%s, table.name:%s], using `data` input.", 
-      sqlite.path, table.name), verbose = verbose)
+    info.msg(sprintf("Running sqlite.build function [dbname:%s, table.name:%s], using `data` input.", 
+      dbname, table.name), verbose = verbose)
   } else {
     stop("Please set filenmae or dat at least one!")
   }
   
-  info.msg(sprintf("Setting up connection: %s sqlite databse.", sqlite.path), verbose = verbose)
+  info.msg(sprintf("Setting up connection: %s sqlite databse.", dbname), verbose = verbose)
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)
   info.msg(sprintf("Default table colnames is %s.", paste0(colnames(dat), collapse = ", ")), 
@@ -62,11 +58,11 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path
     info.msg(sprintf("Table colnames be setted to %s.", paste0(colnames(dat), 
       collapse = ", ")), verbose = verbose)
   }
-  info.msg(sprintf("Writing table %s in %s sqlite database.", table.name, sqlite.path), 
+  info.msg(sprintf("Writing table %s in %s sqlite database.", table.name, dbname), 
     verbose = verbose)
   status <- dbWriteTable(sqlite.db, table.name, dat, ...)
   print.vb(status, verbose = verbose)
-  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", sqlite.path), 
+  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
     verbose = verbose)
   dbDisconnect(sqlite.db)
   return(status)
@@ -74,7 +70,7 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path
 
 #' Generate search index of annovarR database table in sqlite
 #'
-#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
+#' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
 #' @param index Index name in sqlite 
 #' @param cols Colnames needed to be index
 #' @param verbose Ligical indicating wheather show the log message
@@ -83,23 +79,19 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
-#' x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
+#' x <- sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), 
 #' index = 'index4', cols = c('V1', 'V2'))
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
-sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
+sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.name = ""), 
   index = "", cols = c(), verbose = FALSE, ...) {
-  sqlite.path <- sqlite.connect.params[["sqlite.path"]]
-  if (names(sqlite.connect.params)[1] != "") {
-    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
-      sqlite.connect.params)
-  }
+  dbname <- sqlite.connect.params[["dbname"]]
   table.name <- sqlite.connect.params[["table.name"]]
-  info.msg(sprintf("Running sqlite.index function [sqlite.path:%s, table.name:%s, index:%s, cols:%s].", 
-    sqlite.path, table.name, index, paste0(cols, collapse = "; ")), verbose = verbose)
-  info.msg(sprintf("Setting up connection: %s sqlite databse.", sqlite.path), verbose = verbose)
+  info.msg(sprintf("Running sqlite.index function [dbname:%s, table.name:%s, index:%s, cols:%s].", 
+    dbname, table.name, index, paste0(cols, collapse = "; ")), verbose = verbose)
+  info.msg(sprintf("Setting up connection: %s sqlite databse.", dbname), verbose = verbose)
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)
   sql <- "SELECT * FROM sqlite_master WHERE type = \"index\""
@@ -116,7 +108,7 @@ sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.na
   print.vb(status, verbose)
   info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
   dbClearResult(status)
-  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", sqlite.path), 
+  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
     verbose = verbose)
   dbDisconnect(sqlite.db)
   return(status)
@@ -124,7 +116,7 @@ sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.na
 
 #' Drop search index of annovarR database table in sqlite
 #'
-#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path]
+#' @param sqlite.connect.params Connect to sqlite database params [dbname]
 #' @param index Index name in sqlite 
 #' @param verbose Ligical indicating wheather show the log message
 #' @param ... Other parameters be used in dbSendQuery
@@ -132,30 +124,26 @@ sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.na
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
-#' x <- sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), 
+#' x <- sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), 
 #' index = 'index4', cols = c('V1', 'V2'))
-#' x <- drop.sqlite.index(list(sqlite.path = test.sqlite, table.name = 'snp_test'), index = 'index4')
+#' x <- drop.sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), index = 'index4')
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
-drop.sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", table.name = ""), 
+drop.sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.name = ""), 
   index = "", verbose = FALSE, ...) {
-  sqlite.path <- sqlite.connect.params[["sqlite.path"]]
-  if (names(sqlite.connect.params)[1] != "") {
-    sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
-      sqlite.connect.params)
-  }
-  info.msg(sprintf("Running drop.sqlite.index function [sqlite.path:%s, index:%s].", 
-    sqlite.path, index), verbose = verbose)
+  dbname <- sqlite.connect.params[["dbname"]]
+  info.msg(sprintf("Running drop.sqlite.index function [dbname:%s, index:%s].", 
+    dbname, index), verbose = verbose)
   status <- FALSE
-  info.msg(sprintf("Setting up connection: %s sqlite databse.", sqlite.path), verbose = verbose)
+  info.msg(sprintf("Setting up connection: %s sqlite databse.", dbname), verbose = verbose)
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)
   sql <- "SELECT * FROM sqlite_master WHERE type = 'index'"
   indexes <- dbGetQuery(sqlite.db, sql)
   if (!(index %in% indexes)) {
-    info.msg(sprintf("%s index not existed in %s sqlite database.", index, sqlite.path), 
+    info.msg(sprintf("%s index not existed in %s sqlite database.", index, dbname), 
       verbose)
     return(FALSE)
   }
@@ -165,7 +153,7 @@ drop.sqlite.index <- function(sqlite.connect.params = list(sqlite.path = "", tab
   print.vb(status, verbose)
   info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
   dbClearResult(status)
-  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", sqlite.path), 
+  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
     verbose = verbose)
   dbDisconnect(sqlite.db)
   return(status)
@@ -312,7 +300,7 @@ drop.mysql.index <- function(mysql.connect.params = list(host = "", dbname = "",
 
 #' Delete table or database (text file, sqlite, mysql)
 #' @param filename Path of text format data
-#' @param sqlite.connect.params Connect to sqlite database params [sqlite.path, table.name]
+#' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
 #' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
 #' @param del.type file (for filename), database (for sqlite and MySQL), table (for sqlite and MySQL) 
 #' be supported (delete file, delete sqlite db file, delete table in sqlite db,
@@ -327,11 +315,11 @@ drop.mysql.index <- function(mysql.connect.params = list(host = "", dbname = "",
 #' del(db, del.type = 'file')
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
-#' x <- sqlite.build(filename = test.dat, list(sqlite.path = test.sqlite, 
+#' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
-#' del(sqlite.connect.params = list(sqlite.path = test.sqlite, 
+#' del(sqlite.connect.params = list(dbname = test.sqlite, 
 #' table.name = 'snp_test'), del.type = 'table')
-#' del(sqlite.connect.params = list(sqlite.path = test.sqlite, 
+#' del(sqlite.connect.params = list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
 del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.params = list(), 
   del.type = "database", db.type = "sqlite", verbose = FALSE, ...) {
@@ -344,16 +332,11 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
     filename <- normalizePath(filename, "/")
     status <- file.remove(filename)
   } else if (length(sqlite.connect.params) != 0) {
-    sqlite.path <- sqlite.connect.params[["sqlite.path"]]
-    if (names(sqlite.connect.params)[1] != "") {
-      sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 
-        sqlite.connect.params)
-    }
+    dbname <- sqlite.connect.params[["dbname"]]
     if ((del.type == "database") || (del.type == "file")) {
-      info.msg(sprintf("Sqlite database %s will be removed.", sqlite.path), 
-        verbose = verbose)
-      sqlite.path <- normalizePath(sqlite.path, "/")
-      status <- file.remove(sqlite.path)
+      info.msg(sprintf("Sqlite database %s will be removed.", dbname), verbose = verbose)
+      dbname <- normalizePath(dbname, "/")
+      status <- file.remove(dbname)
     } else if (del.type == "table") {
       sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
       sqlite.db <- do.call(dbConnect, sqlite.connect.params)
@@ -384,7 +367,7 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
 #' Convert sql file to sqlite database
 #' @param sql.file SQL file of sqlite database dumped
 #' @param statements SQL statements split by ';\\n' (small dataset)
-#' @param sqlite.path Path of output sqlite database
+#' @param dbname Path of output sqlite database
 #' @param verbose Ligical indicating wheather show the log message
 #' @param ... Other parameters be used in dbSendQuery
 #' @export
@@ -395,17 +378,17 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
 #' sqlite <- sqlite[sqlite != ''][1]
 #' sqlite <- unname(sqlite)
 #' if (!is.na(sqlite)) {
-#'   sql2sqlite(sql.file = sql.file, sqlite.path = out.sqlite, 
+#'   sql2sqlite(sql.file = sql.file, dbname = out.sqlite, 
 #'   verbose = FALSE)
 #'   unlink(out.sqlite)
 #' }
 #' statements <- paste0(readLines(sql.file), collapse = '\n')
-#' sql2sqlite(statements = statements, sqlite.path = out.sqlite, 
+#' sql2sqlite(statements = statements, dbname = out.sqlite, 
 #' verbose = FALSE)
 #' unlink(out.sqlite)
-sql2sqlite <- function(sql.file = "", statements = "", sqlite.path = "", verbose = FALSE, 
+sql2sqlite <- function(sql.file = "", statements = "", dbname = "", verbose = FALSE, 
   ...) {
-  out.sqlite <- sqlite.path
+  out.sqlite <- dbname
   if (sql.file != "") {
     info.msg(sprintf("Converting %s to %s sqlite database.", sql.file, out.sqlite), 
       verbose = verbose)
@@ -413,7 +396,7 @@ sql2sqlite <- function(sql.file = "", statements = "", sqlite.path = "", verbose
     info.msg(sprintf("Converting sql to %s sqlite database.", out.sqlite), verbose = verbose)
   }
   if (statements != "") {
-    con <- do.call(dbConnect, list(SQLite(), sqlite.path))
+    con <- do.call(dbConnect, list(SQLite(), out.sqlite))
     statements <- str_split(statements, ";\n")[[1]]
     func <- function(line) {
       print.vb(line, verbose = verbose)

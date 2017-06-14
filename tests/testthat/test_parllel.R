@@ -6,8 +6,8 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
-  sqlite.build(database, sqlite.connect.params = list(sqlite.path = sqlite.db, 
-    table.name = sprintf("%s", i)))
+  sqlite.build(database, sqlite.connect.params = list(dbname = sqlite.db, table.name = sprintf("%s", 
+    i)))
 }
 
 test_that("parAnnotation", {
