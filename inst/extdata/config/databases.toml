@@ -208,3 +208,35 @@ format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
+
+[gme]
+versions = ["gme"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = ""
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[hrcr1]
+versions = ["hrcr1"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = ""
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"

@@ -3,7 +3,8 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 
-  "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro")) {
+  "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
+  "hg19_gme", "hg19_hrcr1")) {
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
@@ -355,11 +356,41 @@ test_that("dbnsfp33a", {
   expect_that(str_detect(x[1, 1], "7TM$"), equals(TRUE))
 })
 
+test_that("gme", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("69134", "69270", "10020")
+  end <- c("69134", "69270", "10020")
+  ref <- c("A", "A", "A")
+  alt <- c("G", "G", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "gme", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  print(x)
+  expect_that(colnames(x)[1], equals("GME_AF"))
+  expect_that(x[1, 1], equals("0.049505"))
+  expect_that(x[2, 1], equals("0.698113"))
+})
+
+test_that("hrcr1", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("13380", "16071", "10020")
+  end <- c("13380", "16071", "10020")
+  ref <- c("C", "G", "A")
+  alt <- c("G", "A", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "hrcr1", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[2], equals("HRC_AC"))
+  expect_that(x[1, 2], equals("5"))
+  expect_that(x[2, 2], equals("8"))
+})
+
 for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 
-  "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro")) {
+  "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
+  "hg19_gme", "hg19_hrcr1")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   txt.db <- sprintf("%s/%s.txt", tempdir(), i)
   sqlite.db <- normalizePath(sqlite.db, "/")
