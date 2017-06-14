@@ -243,8 +243,9 @@ annotation.merge <- function(anno.names, col.cl.num = NULL, ...) {
 
 annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index = NULL, 
   db.col.order = NULL, matched.cols = NULL, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), ...) {
+  setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, 
+  database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
+  ...) {
   
   dat.need.names <- get.cfg.value.by.name(name, database.cfg, key = "need.cols", 
     coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
@@ -258,20 +259,21 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
   }
   
   auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
-    "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun")
-  para.values <- list()
+    "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", "format.dat.fun")
+  params <- list()
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
     if (is.null(item.value)) {
-      para.values[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
+      params[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
         coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
     } else {
-      para.values[[item]] <- item.value
+      params[[item]] <- item.value
     }
   }
-  annotation.cols.match(dat = dat, name = name, return.col.names = para.values[["return.col.names"]], 
-    return.col.index = para.values[["return.col.index"]], db.col.order = para.values[["db.col.order"]], 
-    matched.cols = para.values[["matched.cols"]], setdb.fun = eval(parse(text = para.values[["setdb.fun"]])), 
-    set.table.fun = eval(parse(text = para.values[["set.table.fun"]])), format.db.tb.fun = eval(parse(text = para.values[["format.db.tb.fun"]])), 
-    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, ...)
+  annotation.cols.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
+    return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
+    matched.cols = params[["matched.cols"]], setdb.fun = eval(parse(text = params[["setdb.fun"]])), 
+    set.table.fun = eval(parse(text = params[["set.table.fun"]])), format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), 
+    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
+    ...)
 }

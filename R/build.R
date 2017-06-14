@@ -19,6 +19,9 @@
 sqlite.build <- function(filename = "", sqlite.connect.params = list(sqlite.path = "", 
   table.name = ""), dat = data.table(), fread.params = list(), new.colnames = NULL, 
   overwrite = TRUE, verbose = FALSE, ...) {
+  if (!file.exists(filename)) {
+    stop(sprintf("%s not existed.", filename))
+  }
   sqlite.path <- sqlite.connect.params[["sqlite.path"]]
   if (names(sqlite.connect.params)[1] != "") {
     sqlite.connect.params <- config.list.merge(list(sqlite.connect.params[["sqlite.path"]]), 

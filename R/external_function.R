@@ -1,13 +1,14 @@
 # annovarR default function: setdb.fun, set.table.fun, format.db.tb.fun You can
 # re-write this R source file
-format.cols <- function(dat.list) {
-  dat.list <- dat.list
-  if ("chr" %in% names(dat.list)) {
-    if (str_detect(dat.list[["chr"]][1], "chr|Chr")) {
-      dat.list$chr <- str_replace(as.character(dat.list$chr), "chr|Chr", "")
+format.cols <- function(dat.input) {
+  dat.input <- dat.input
+  if ("chr" %in% names(dat.input)) {
+    if (str_detect(dat.input[["chr"]][1], "chr|Chr")) {
+      dat.input$chr <- str_replace(as.character(dat.input$chr), "chr|Chr", 
+        "")
     }
   }
-  return(dat.list)
+  return(dat.input)
 }
 
 set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", mysql.connect.params = list(), 
@@ -88,6 +89,15 @@ format.1000g.db.tb <- function(dat = "", filename = "", ...) {
   return(dat)
 }
 
+# Some of database format of Chr col have 'chr' flag
+format.cols.plus.chr <- function(dat.input) {
+  if (!str_detect(dat.input$chr[1], "chr|Chr|CHR")) {
+    dat.input$chr <- paste0("chr", dat.input$chr)
+  } else if (str_detect(dat.input$chr[1], "Chr|CHR")) {
+    dat.input$chr <- str_replace_all(dat.input$chr, "Chr|CHR", "chr")
+  }
+  return(dat.input)
+}
 
 # Sih Normal Pool needed functions to set database name and table name
 set.sih.normal.pool.db <- function(name, buildver, database.dir, db.type = "txt") {

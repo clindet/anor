@@ -151,7 +151,7 @@ func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ["{{name}}", "{{name}}_phred"]
+return.col.names = ""
 db.col.order = [1, 2, 3, 4, 5]
 index.col = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -269,6 +269,86 @@ index.col = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.index = ""
 format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[exac03]
+versions = ["exac03", "exac03nontcga", "exac03nonpsych"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = ""
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[gnomad]
+versions = ["gnomad_exome", "gnomad_genome"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = ""
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[kaviar]
+versions = ["kaviar_20150923"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = ""
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[popfreq]
+versions = ["popfreq_max_20150413", "popfreq_all_20150413"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = ""
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[gwava]
+versions = ["gwava"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.col = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = ""
+format.dat.fun = "format.cols.plus.chr"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"

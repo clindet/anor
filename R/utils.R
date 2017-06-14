@@ -139,9 +139,12 @@ select.dat <- function(db, table.name, cols = c(), params = list(), db.type = "s
 
 # Return NA cols using ordered colnames
 return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col.names) {
-  result <- rep(NA, length(dat.list[[1]]))
+  result <- NULL
+  for (i in 1:length(return.col.index)) {
+    result <- cbind(result, rep(NA, length(dat.list[[1]])))
+  }
   result <- as.data.table(result)
-  if (return.col.names != "") {
+  if (any(return.col.names != "")) {
     colnames(result) <- return.col.names
   } else {
     colnames(result) <- tb.colnames[return.col.index]
@@ -191,6 +194,9 @@ get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "c
   })
   index <- unlist(index)
   config <- config[[names(config)[index]]]
+  if (!key %in% names(config)) {
+    stop(sprintf("%s section not existed in %s.", key, database.cfg))
+  }
   if (coincident) {
     return(config[[key]])
   } else {

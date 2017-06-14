@@ -4,7 +4,9 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 
   "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
-  "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap")) {
+  "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap", "hg19_exac03", "hg19_exac03nontcga", 
+  "hg19_exac03nonpsych", "hg19_gnomad_exome", "hg19_gnomad_genome", "hg19_gwava", 
+  "hg19_kaviar_20150923", "hg19_popfreq_all_20150413", "hg19_popfreq_max_20150413")) {
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
@@ -220,19 +222,14 @@ test_that("annotation:cosmic81 and snp147", {
   expect_that(is.na(x[2, 2]), equals(TRUE))
   expect_that(is.na(x[3, 1]), equals(TRUE))
   expect_that(x[3, 2], equals("rs775809821"))
-  #x <- annotation.merge(anno.names = c("cosmic81", "avsnp147"), dat = dat, database.dir = database.dir, 
-  #  col.cl.num = 2)
-  #x <- as.data.frame(x)
-  #expect_that(colnames(x)[1], equals("COSMIC_81"))
-  #expect_that(colnames(x)[2], equals("avSNP147"))
-  #x[, 1] <- as.character(x[, 1])
-  #x[, 2] <- as.character(x[, 2])
-  #expect_that(is.na(x[1, 1]), equals(TRUE))
-  #expect_that(x[1, 2], equals("rs775809821"))
-  #expect_that(is.na(x[2, 1]), equals(TRUE))
-  #expect_that(is.na(x[2, 2]), equals(TRUE))
-  #expect_that(is.na(x[3, 1]), equals(TRUE))
-  #expect_that(x[3, 2], equals("rs775809821"))
+  # x <- annotation.merge(anno.names = c('cosmic81', 'avsnp147'), dat = dat,
+  # database.dir = database.dir, col.cl.num = 2) x <- as.data.frame(x)
+  # expect_that(colnames(x)[1], equals('COSMIC_81')) expect_that(colnames(x)[2],
+  # equals('avSNP147')) x[, 1] <- as.character(x[, 1]) x[, 2] <- as.character(x[,
+  # 2]) expect_that(is.na(x[1, 1]), equals(TRUE)) expect_that(x[1, 2],
+  # equals('rs775809821')) expect_that(is.na(x[2, 1]), equals(TRUE))
+  # expect_that(is.na(x[2, 2]), equals(TRUE)) expect_that(is.na(x[3, 1]),
+  # equals(TRUE)) expect_that(x[3, 2], equals('rs775809821'))
 })
 
 test_that("clincvar and intervar", {
@@ -282,8 +279,8 @@ test_that("caddgt10", {
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
   x <- annotation(dat = dat, name = "caddgt10", database.dir = database.dir, db.type = "txt")
   x <- as.data.frame(x)
-  expect_that(colnames(x)[1], equals("caddgt10"))
-  expect_that(colnames(x)[2], equals("caddgt10_phred"))
+  expect_that(colnames(x)[1], equals("CADDgt10"))
+  expect_that(colnames(x)[2], equals("CADDgt10_Phred"))
   expect_that(x[1, 1], equals("2.04979"))
   expect_that(x[2, 1], equals("1.934479"))
   expect_that(x[1, 2], equals("12.81"))
@@ -303,6 +300,7 @@ test_that("nci60", {
   expect_that(colnames(x)[1], equals("nci60"))
   expect_that(x[1, 1], equals("0.3"))
   expect_that(x[2, 1], equals("0.016"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 test_that("icgc21", {
@@ -317,6 +315,7 @@ test_that("icgc21", {
   expect_that(colnames(x)[1], equals("icgc21_occurrence"))
   expect_that(x[1, 1], equals("MELA-AU|1|183|0.00546"))
   expect_that(x[2, 1], equals("PACA-CA|1|227|0.00441"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 test_that("dbnsfp33a", {
@@ -334,6 +333,7 @@ test_that("dbnsfp33a", {
   expect_that(x[1, 2], equals("T"))
   expect_that(x[2, 1], equals("1.0"))
   expect_that(x[2, 2], equals("T"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
   x <- annotation(dat = dat, name = "dbnsfp33a", database.dir = database.dir, db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("SIFT_score"))
@@ -342,18 +342,21 @@ test_that("dbnsfp33a", {
   expect_that(x[1, 3], equals("T"))
   expect_that(x[2, 1], equals("1.0"))
   expect_that(x[2, 3], equals("T"))
-
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+  
   chr <- c("chr1", "chr1", "chr1")
   start <- c("69190", "69091", "10020")
   end <- c("69190", "69091", "10020")
   ref <- c("G", "A", "A")
   alt <- c("A", "G", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, name = "dbnsfp31a_interpro", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, name = "dbnsfp31a_interpro", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("Interpro_domain"))
   expect_that(str_detect(x[1, 1], "^GPCR"), equals(TRUE))
   expect_that(str_detect(x[1, 1], "7TM$"), equals(TRUE))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 test_that("gme", {
@@ -368,6 +371,7 @@ test_that("gme", {
   expect_that(colnames(x)[1], equals("GME_AF"))
   expect_that(x[1, 1], equals("0.049505"))
   expect_that(x[2, 1], equals("0.698113"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 test_that("hrcr1", {
@@ -382,6 +386,7 @@ test_that("hrcr1", {
   expect_that(colnames(x)[2], equals("HRC_AC"))
   expect_that(x[1, 2], equals("5"))
   expect_that(x[2, 2], equals("8"))
+  expect_that(is.na(x[3, 2]), equals(TRUE))
 })
 
 test_that("revel", {
@@ -396,6 +401,7 @@ test_that("revel", {
   expect_that(colnames(x)[1], equals("REVEL"))
   expect_that(x[1, 1], equals("0.027"))
   expect_that(x[2, 1], equals("0.035"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 test_that("mcap", {
@@ -410,6 +416,133 @@ test_that("mcap", {
   expect_that(colnames(x)[1], equals("MCAP"))
   expect_that(x[1, 1], equals("0.00708247797993"))
   expect_that(x[2, 1], equals("0.00326415452909"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+})
+
+test_that("exac03", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("13372", "13380", "10020")
+  end <- c("13372", "13380", "10020")
+  ref <- c("G", "C", "A")
+  alt <- c("C", "G", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "exac03", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("ExAC_ALL"))
+  x[, 1] <- formatC(as.numeric(x[, 1]))
+  expect_that(x[1, 1], equals("0.0002"))
+  expect_that(x[2, 1], equals("0.0033"))
+  expect_that(x[3, 1], equals("NA"))
+  
+  x <- annotation(dat = dat, name = "exac03nontcga", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("ExAC_nontcga_ALL"))
+  x[, 1] <- formatC(as.numeric(x[, 1]))
+  expect_that(x[1, 1], equals("0.0003"))
+  expect_that(x[2, 1], equals("0.0024"))
+  expect_that(x[3, 1], equals("NA"))
+  
+  x <- annotation(dat = dat, name = "exac03nonpsych", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("ExAC_nonpsych_ALL"))
+  x[, 1] <- formatC(as.numeric(x[, 1]))
+  expect_that(x[1, 1], equals("0.0002"))
+  expect_that(x[2, 1], equals("0.0034"))
+  expect_that(x[3, 1], equals("NA"))
+})
+
+test_that("gnomad", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("12559", "12573", "10020")
+  end <- c("12559", "12573", "10020")
+  ref <- c("G", "T", "A")
+  alt <- c("A", "C", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "gnomad_exome", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("gnomAD_exome_ALL"))
+  x[, 1] <- formatC(as.numeric(x[, 1]))
+  expect_that(x[1, 1], equals("0.0051"))
+  expect_that(x[2, 1], equals("0.0005"))
+  expect_that(x[3, 1], equals("NA"))
+  
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("10109", "10108", "10020")
+  end <- c("10114", "10114", "10020")
+  ref <- c("AACCCT", "CAACCCT", "A")
+  alt <- c("-", "C", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "gnomad_genome", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("gnomAD_genome_ALL"))
+  x[, 1] <- formatC(as.numeric(x[, 1]))
+  expect_that(x[1, 1], equals("0.001"))
+  expect_that(x[2, 1], equals("0.001"))
+  expect_that(x[3, 1], equals("NA"))
+})
+
+test_that("gwava", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("10177", "10180", "10020")
+  end <- c("10177", "10180", "10020")
+  ref <- c("A", "T", "A")
+  alt <- c("C", "A", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "gwava", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("GWAVA_region_score"))
+  expect_that(x[1, 1], equals("0.47"))
+  expect_that(x[2, 1], equals("0.5"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+})
+
+test_that("kaviar", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("10001", "10002", "10020")
+  end <- c("10001", "10002", "10020")
+  ref <- c("T", "A", "A")
+  alt <- c("C", "T", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "kaviar_20150923", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("Kaviar_AF"))
+  expect_that(x[1, 1], equals("3.84e-05"))
+  expect_that(x[2, 1], equals("3.84e-05"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+})
+test_that("popfreq", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("10177", "10235", "10020")
+  end <- c("10177", "10235", "10020")
+  ref <- c("-", "-", "A")
+  alt <- c("C", "A", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "popfreq_all_20150413", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("PopFreqMax"))
+  expect_that(x[1, 1], equals("0.49"))
+  expect_that(x[2, 1], equals("0.0051"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("10177", "10235", "10020")
+  end <- c("10177", "10235", "10020")
+  ref <- c("-", "-", "A")
+  alt <- c("C", "A", "G")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "popfreq_max_20150413", database.dir = database.dir, 
+    db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x), equals("PopFreqMax"))
+  expect_that(x[1, 1], equals("0.49"))
+  expect_that(x[2, 1], equals("0.0051"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
@@ -417,7 +550,9 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 
   "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
-  "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap")) {
+  "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap", "hg19_exac03", "hg19_exac03nontcga", 
+  "hg19_exac03nonpsych", "hg19_gnomad_exome", "hg19_gnomad_genome", "hg19_gwava", 
+  "hg19_kaviar_20150923", "hg19_popfreq_all_20150413", "hg19_popfreq_max_20150413")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   txt.db <- sprintf("%s/%s.txt", tempdir(), i)
   sqlite.db <- normalizePath(sqlite.db, "/")
