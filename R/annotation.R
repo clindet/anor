@@ -110,6 +110,10 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)
   print.vb(selected.db.tb, verbose = verbose)
+  if (all(return.col.index == "")) {
+    all.cols <- 1:ncol(selected.db.tb)
+    return.col.index <- all.cols[!all.cols %in% db.col.order]
+  }
   if (nrow(selected.db.tb) == 0) {
     empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
     disconnect.db(database, db.type)
