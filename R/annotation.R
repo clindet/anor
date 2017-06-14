@@ -5,8 +5,8 @@
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases (mysql no need)
 #' @param db.col.order Using the index, you can rename the database table, and can be matched using matched.cols. 
-#' @param index.col Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
-#' @param matched.cols Using the selected cols to match data with selected partial data by index.col limited.
+#' @param index.cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
+#' @param matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
 #' @param return.col.index Setting the colnums need be returned
 #' @param return.col.names Setting the returned colnum names
 #' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
@@ -36,7 +36,7 @@
 #' x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
 #' return.col.names = 'avSNP147', db.type = 'txt')
 annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5, index.col = c("chr", 
+  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5, index.cols = c("chr", 
     "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), return.col.index = 6, 
   return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
   setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.tb, 
@@ -76,20 +76,20 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   # Get unique records, params is pass to select.dat.full.match and get matched
   # data table from database
   dup <- !duplicated(dat)
-  params <- dat[dup, index.col, with = FALSE]
+  params <- dat[dup, index.cols, with = FALSE]
   
   # Sync the colnames between input cols and database table cols which be used to
   # select data
-  index.col.order <- match(colnames(dat), index.col)
-  index.col.order <- index.col.order[!is.na(index.col.order)]
-  colnames(params) <- tb.colnames[index.col.order]
+  index.cols.order <- match(colnames(dat), index.cols)
+  index.cols.order <- index.cols.order[!is.na(index.cols.order)]
+  colnames(params) <- tb.colnames[index.cols.order]
   info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.full.match from database (%s).", 
-    paste0(index.col, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
+    paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
     verbose = verbose)
   print.vb(params, verbose = verbose)
   
   # Select data from database
-  selected.db.tb <- select.dat.full.match(database, table.name, tb.colnames[index.col.order], 
+  selected.db.tb <- select.dat.full.match(database, table.name, tb.colnames[index.cols.order], 
     params = params, db.type = db.type, verbose = verbose)
   selected.db.tb <- format.db.tb.fun(selected.db.tb)
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 

@@ -6,7 +6,8 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
   "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap", "hg19_exac03", "hg19_exac03nontcga", 
   "hg19_exac03nonpsych", "hg19_gnomad_exome", "hg19_gnomad_genome", "hg19_gwava", 
-  "hg19_kaviar_20150923", "hg19_popfreq_all_20150413", "hg19_popfreq_max_20150413")) {
+  "hg19_kaviar_20150923", "hg19_popfreq_all_20150413", "hg19_popfreq_max_20150413", 
+  "hg19_eigen")) {
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
@@ -545,6 +546,22 @@ test_that("popfreq", {
   expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
+test_that("eigen", {
+  chr <- c("chr1", "chr1", "chr1")
+  start <- c("10001", "10002", "10020")
+  end <- c("10001", "10002", "10021")
+  ref <- c("T", "A", "A")
+  alt <- c("G", "C", "GG")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation(dat = dat, name = "eigen", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(colnames(x), equals("Eigen"))
+  expect_that(x[1, 1], equals("-0.3078"))
+  expect_that(x[2, 1], equals("-0.3078"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+  
+})
+
 for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
@@ -552,7 +569,8 @@ for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.
   "hg19_nci60", "hg19_icgc21", "hg19_dbnsfp30a", "hg19_dbnsfp33a", "hg19_dbnsfp31a_interpro", 
   "hg19_gme", "hg19_hrcr1", "hg19_revel", "hg19_mcap", "hg19_exac03", "hg19_exac03nontcga", 
   "hg19_exac03nonpsych", "hg19_gnomad_exome", "hg19_gnomad_genome", "hg19_gwava", 
-  "hg19_kaviar_20150923", "hg19_popfreq_all_20150413", "hg19_popfreq_max_20150413")) {
+  "hg19_kaviar_20150923", "hg19_popfreq_all_20150413", "hg19_popfreq_max_20150413", 
+  "hg19_eigen")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   txt.db <- sprintf("%s/%s.txt", tempdir(), i)
   sqlite.db <- normalizePath(sqlite.db, "/")

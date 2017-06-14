@@ -21,7 +21,7 @@ sqlite.auto.build <- function(name, buildver = "hg19", database.dir = "/path/", 
   info.msg(sprintf("Auto build database %s %s in %s", buildver, name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
-    "index.col")
+    "index.cols")
   default.pars <- list()
   for (item in auto.parameters) {
     default.pars[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
@@ -36,7 +36,7 @@ sqlite.auto.build <- function(name, buildver = "hg19", database.dir = "/path/", 
     verbose = verbose)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
-  order <- match(default.pars[["index.col"]], default.pars[["need.cols"]])
+  order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])
   cols <- db.colnames[order]
   sqlite.index(sqlite.connect.params = sqlite.connect.params, cols = cols, index = index, 
     verbose = verbose)
@@ -72,7 +72,7 @@ sqlite.auto.index <- function(name, buildver = "hg19", database.dir = "/path/", 
   info.msg(sprintf("Auto build database %s %s in %s", buildver, name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
-    "index.col")
+    "index.cols")
   default.pars <- list()
   for (item in auto.parameters) {
     default.pars[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
@@ -85,7 +85,7 @@ sqlite.auto.index <- function(name, buildver = "hg19", database.dir = "/path/", 
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
-  order <- match(default.pars[["index.col"]], default.pars[["need.cols"]])
+  order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])
   cols <- db.colnames[order]
   status <- sqlite.index(sqlite.connect.params = sqlite.connect.params, cols = cols, 
     index = index, verbose = verbose)
