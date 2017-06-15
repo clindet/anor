@@ -57,7 +57,7 @@ get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "c
   index <- unlist(index)
   config <- config[[names(config)[index]]]
   if (!key %in% names(config)) {
-    stop(sprintf("%s section not existed in %s.", key, database.cfg))
+    return(NULL)
   }
   if (coincident) {
     return(config[[key]])

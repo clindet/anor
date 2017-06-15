@@ -11,8 +11,8 @@ annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
   format.dat.fun = format.cols, dbname.fixed = NULL,
   table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table,
   format.db.tb.fun = format.db.tb, db.type = "sqlite",
-  mysql.connect.params = list(), sqlite.connect.params = list(),
-  verbose = FALSE)
+  db.file.prefix = NULL, mysql.connect.params = list(),
+  sqlite.connect.params = list(), verbose = FALSE)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -48,6 +48,8 @@ annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
 \item{format.db.tb.fun}{A function to process the selected database table that can be used to matched with your data}
 
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
+
+\item{db.file.prefix}{Only be setted when db.type is local databae like sqlite or txt}
 
 \item{mysql.connect.params}{Connect MySQL database other parameters, 
 e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')}

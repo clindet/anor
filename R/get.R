@@ -165,7 +165,7 @@ select.dat.full.match.sqlite <- function(db, table.name, cols = c(), params = li
     for (i in 1:params.length) {
       if (i < params.length) {
         sql.plus <- sprintf("\"%s\"%s:x%s AND ", cols[i], sql.operator[i], 
-        i)
+          i)
         sql <- paste0(sql, sql.plus)
       } else {
         sql.plus <- sprintf("\"%s\"%s:x%s", cols[i], sql.operator[i], i)
@@ -254,22 +254,28 @@ select.dat.full.match <- function(db, table.name, cols = c(), params = list(), d
     sql.operator <- rep("==", length(params))
   }
   if (db.type == "sqlite") {
-    result <- select.dat.full.match.sqlite(db, table.name, cols, params, select.cols, sql.operator, verbose)
+    result <- select.dat.full.match.sqlite(db, table.name, cols, params, select.cols, 
+      sql.operator, verbose)
   } else if (db.type == "mysql") {
-    result <- select.dat.full.match.mysql(db, table.name, cols, params, select.cols, sql.operator, verbose)
+    result <- select.dat.full.match.mysql(db, table.name, cols, params, select.cols, 
+      sql.operator, verbose)
   } else if (db.type == "txt") {
-    result <- select.dat.full.match.txt(db, table.name, cols, params, select.cols, sql.operator, verbose)
+    result <- select.dat.full.match.txt(db, table.name, cols, params, select.cols, 
+      sql.operator, verbose)
   }
   return(result)
 }
 
 # Read GFF and BED file or database
-read.region <- function(filename = "", region.type = "gff", sqlite.connect.params = NULL, mysql.connect.params = NULL, 
-                        ...) {
-  if (filename != "") {
-    
-    region.type <- get.region.filetype(filename)
-    dat <- fread(filename, ...)
+select.dat.region.match <- function(db, table.name, cols = c(), params = list(), 
+  region.type = "gff", db.type = "sqlite", select.cols = "*", sql.operator = NULL, 
+  verbose = FALSE, ...) {
+  params <- lapply(params, function(x) {
+    as.character(x)
+  })
+  params.length <- length(params)
+  if (is.null(sql.operator)) {
+    sql.operator <- c(">=", "<=")
   }
   
   if (region.type == "gff") {
@@ -288,7 +294,7 @@ read.region <- function(filename = "", region.type = "gff", sqlite.connect.param
     all.names <- c("chr", "start", "end", "name", "score", "strand", "thick_start", 
       "thick_end", "item_rgb", "block_count", "block_sizes", "block_starts")
   }
-  colnames(dat)[1:ncol(dat)] <- all.names[1:ncol(dat)]
+  colnames(dat)[1:ncol(result)] <- all.names[1:ncol(result)]
   return(dat)
 }
 
@@ -305,9 +311,4 @@ get.region.filetype <- function(filename, use.prefix = TRUE) {
       return("other")
     }
   }
-}
-# region match version select.dat
-select.dat.region.match <- function(db, table.name, cols = c(), params = list(), 
-  db.type = "sqlite", select.cols = "*", sql.operator = NULL, verbose = FALSE) {
-  return(NULL)
 }

@@ -18,6 +18,7 @@
 #' @param set.table.fun A function to process the name, buildver and get the final table name
 #' @param format.db.tb.fun A function to process the selected database table that can be used to matched with your data
 #' @param db.type Setting the database type (sqlite, txt or mysql)
+#' @param db.file.prefix Only be setted when db.type is local databae like sqlite or txt
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
@@ -40,7 +41,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
     "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), return.col.index = 6, 
   return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
   setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.tb, 
-  db.type = "sqlite", mysql.connect.params = list(), sqlite.connect.params = list(), 
+  db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
   dat.names <- names(dat)
   if (is.null(database.dir) || database.dir == "") {
@@ -56,9 +57,12 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   dat <- format.dat.fun(dat)
   print.vb(dat, verbose = verbose)
   
+  if (is.null(db.file.prefix)) {
+    db.file.prefix <- db.type
+  }
   # dbname is path of sqlite or text database or is dbname of MySQL database
   dbname <- dbname.initial(name, dbname.fixed, setdb.fun, buildver, database.dir, 
-    db.type, mysql.connect.params, sqlite.connect.params)
+    db.type, db.file.prefix, mysql.connect.params, sqlite.connect.params)
   
   # table.name initial
   table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)

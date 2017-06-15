@@ -11,12 +11,12 @@ format.cols <- function(dat.input) {
   return(dat.input)
 }
 
-set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", mysql.connect.params = list(), 
-  sqlite.connect.params = list()) {
+set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", db.file.prefix = "txt", 
+  mysql.connect.params = list(), sqlite.connect.params = list()) {
   if (db.type == "sqlite") {
-    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
+    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.file.prefix)
   } else if (db.type == "txt") {
-    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.type)
+    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.file.prefix)
   } else if (db.type == "mysql") {
     if (is.null(sqlite.connect.params$dbname)) {
       dbname <- sprintf("%s_%s", buildver, name)
