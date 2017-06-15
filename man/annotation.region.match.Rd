@@ -5,12 +5,13 @@
 \title{A regeion annotation utils that can be used to write a yourself annotation function}
 \usage{
 annotation.region.match(dat = data.table(), name = "", buildver = "hg19",
-  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5,
-  index.cols = c("chr", "start", "end"), matched.cols = c("chr", "start",
-  "end"), return.col.index = 4, return.col.names = "",
-  format.dat.fun = format.cols, dbname.fixed = NULL,
-  table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table,
-  format.db.tb.fun = format.db.tb, db.type = "sqlite",
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:3,
+  index.cols = c("chr", "start", "end"), full.matched.cols = "chr",
+  inferior.col = "start", superior.col = "end", return.col.index = 4,
+  return.col.names = "", format.dat.fun = format.cols,
+  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db,
+  set.table.fun = set.table, format.db.tb.fun = format.db.region.tb,
+  db.type = "sqlite", db.file.prefix = NULL,
   mysql.connect.params = list(), sqlite.connect.params = list(),
   verbose = FALSE)
 }
@@ -27,7 +28,11 @@ annotation.region.match(dat = data.table(), name = "", buildver = "hg19",
 
 \item{index.cols}{Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'}
 
-\item{matched.cols}{Using the selected cols to match data with selected partial data by index.cols limited.}
+\item{full.matched.cols}{Using the selected cols to match data with selected partial data by index.cols limited.}
+
+\item{inferior.col}{Inferior limit col, e.g. start}
+
+\item{superior.col}{Inferior limit col, e.g. end}
 
 \item{return.col.index}{Setting the colnums need be returned}
 
@@ -49,6 +54,8 @@ annotation.region.match(dat = data.table(), name = "", buildver = "hg19",
 
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
 
+\item{db.file.prefix}{Only be setted when db.type is local databae like sqlite or txt}
+
 \item{mysql.connect.params}{Connect MySQL database other parameters, 
 e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')}
 
@@ -61,12 +68,16 @@ A regeion annotation utils that can be used to write a yourself annotation funct
 }
 \examples{
 library(data.table)
-chr <- c('chr1', 'chr2', 'chr1')
-start <- c('10020', '10020', '10020')
-end <- c('10020', '10020', '10020')
-ref <- c('A', 'A', 'A')
-alt <- c('-', '-', '-')
-database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
-database.dir <- dirname(database)
-dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+bed.file <- system.file("extdata", "demo/example.bed", package = "annovarR")
+bed.sqlite <- sprintf("\%s/\%s.sqlite", tempdir(), basename(bed.file))
+connect.params <- list(dbname = bed.sqlite, table.name = "bed")
+sqlite.build(bed.file, connect.params)
+chr <- c("chr10", "chr1")
+start <- c("100188904", "100185955")
+end <- c("100188904", "100185955")
+dat <- data.table(chr = chr, start = start, end = end)
+x <- annotation.region.match(dat = dat, database.dir = tempdir(),
+dbname.fixed = bed.sqlite, table.name.fixed = "bed", 
+db.type = "sqlite", format.dat.fun = function(x) return(x))
+file.remove(bed.sqlite)
 }

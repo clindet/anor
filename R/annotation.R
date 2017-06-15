@@ -37,7 +37,7 @@
 #' x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
 #' return.col.names = 'avSNP147', db.type = 'txt')
 annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5, index.cols = c("chr", 
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.cols = c("chr", 
     "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), return.col.index = 6, 
   return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
   setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.tb, 
@@ -152,7 +152,9 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
 #' @param database.dir Dir of the databases (mysql no need)
 #' @param db.col.order Using the index, you can rename the database table, and can be matched using matched.cols. 
 #' @param index.cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
-#' @param matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
+#' @param full.matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
+#' @param inferior.col Inferior limit col, e.g. start
+#' @param superior.col Inferior limit col, e.g. end
 #' @param return.col.index Setting the colnums need be returned
 #' @param return.col.names Setting the returned colnum names
 #' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
@@ -164,6 +166,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
 #' @param set.table.fun A function to process the name, buildver and get the final table name
 #' @param format.db.tb.fun A function to process the selected database table that can be used to matched with your data
 #' @param db.type Setting the database type (sqlite, txt or mysql)
+#' @param db.file.prefix Only be setted when db.type is local databae like sqlite or txt
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
@@ -171,20 +174,24 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
 #' @export
 #' @examples
 #' library(data.table)
-#' chr <- c('chr1', 'chr2', 'chr1')
-#' start <- c('10020', '10020', '10020')
-#' end <- c('10020', '10020', '10020')
-#' ref <- c('A', 'A', 'A')
-#' alt <- c('-', '-', '-')
-#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
-#' database.dir <- dirname(database)
-#' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+#' bed.file <- system.file('extdata', 'demo/example.bed', package = 'annovarR')
+#' bed.sqlite <- sprintf('%s/%s.sqlite', tempdir(), basename(bed.file))
+#' connect.params <- list(dbname = bed.sqlite, table.name = 'bed')
+#' sqlite.build(bed.file, connect.params)
+#' chr <- c('chr10', 'chr1')
+#' start <- c('100188904', '100185955')
+#' end <- c('100188904', '100185955')
+#' dat <- data.table(chr = chr, start = start, end = end)
+#' x <- annotation.region.match(dat = dat, database.dir = tempdir(),
+#' dbname.fixed = bed.sqlite, table.name.fixed = 'bed', 
+#' db.type = 'sqlite', format.dat.fun = function(x) return(x))
+#' file.remove(bed.sqlite)
 annotation.region.match <- function(dat = data.table(), name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5, index.cols = c("chr", 
-    "start", "end"), matched.cols = c("chr", "start", "end"), return.col.index = 4, 
-  return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.tb, 
-  db.type = "sqlite", mysql.connect.params = list(), sqlite.connect.params = list(), 
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:3, index.cols = c("chr", 
+    "start", "end"), full.matched.cols = "chr", inferior.col = "start", superior.col = "end", 
+  return.col.index = 4, return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, 
+  table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.region.tb, 
+  db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
   dat.names <- names(dat)
   if (is.null(database.dir) || database.dir == "") {
@@ -200,21 +207,27 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
   dat <- format.dat.fun(dat)
   print.vb(dat, verbose = verbose)
   
+  if (is.null(db.file.prefix)) {
+    db.file.prefix <- db.type
+  }
   # dbname is path of sqlite or text database or is dbname of MySQL database
   dbname <- dbname.initial(name, dbname.fixed, setdb.fun, buildver, database.dir, 
-    db.type, mysql.connect.params, sqlite.connect.params)
-  database.params <- database.params.initial(db.type, dbname, sqlite.connect.params, 
+    db.type, db.file.prefix, mysql.connect.params, sqlite.connect.params)
+  
+  # table.name initial
+  table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)
+  
+  # database.params initial
+  database.params <- database.params.initial(db.type, dbname, table.name, sqlite.connect.params, 
     mysql.connect.params)
   sqlite.connect.params <- database.params[["sqlite"]]
   mysql.connect.params <- database.params[["mysql"]]
   print.db.info(dbname, db.type, mysql.connect.params, verbose)
   
-  # table.name initial
-  table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)
-  
   database <- connect.db(dbname, db.type, sqlite.connect.params, mysql.connect.params, 
     verbose)
-  tb.colnames <- db.tb.colnames(db.type, sqlite.connect.params, mysql.connect.params)
+  tb.colnames <- db.tb.colnames(dbname = dbname, db.type = db.type, sqlite.connect.params, 
+    mysql.connect.params)
   info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
   
   # Get unique records, params is pass to select.dat.full.match and get matched
@@ -227,15 +240,24 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
   index.cols.order <- match(colnames(dat), index.cols)
   index.cols.order <- index.cols.order[!is.na(index.cols.order)]
   colnames(params) <- tb.colnames[index.cols.order]
+  full.matched.cols.raw <- full.matched.cols
+  inferior.col.raw <- inferior.col
+  superior.col.raw <- superior.col
+  for (i in c("full.matched.cols", "inferior.col", "superior.col")) {
+    index <- match(colnames(dat), eval(parse(text = i)))
+    text <- sprintf("%s <- '%s'", i, colnames(params)[!is.na(index)])
+    eval(parse(text = text))
+  }
   info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.full.match from database (%s).", 
     paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
     verbose = verbose)
   print.vb(params, verbose = verbose)
-  
   # Select data from database
-  selected.db.tb <- select.dat.region.match(database, table.name, tb.colnames[index.cols.order], 
-    params = params, db.type = db.type, verbose = verbose)
-  selected.db.tb <- format.db.tb.fun(selected.db.tb)
+  select.params <- list(db = database, table.name = table.name, full.matched.cols = full.matched.cols, 
+    inferior.col = inferior.col, superior.col = superior.col, params = params, 
+    db.type = db.type, verbose = verbose)
+  selected.db.tb <- do.call(select.dat.region.match, select.params)
+  selected.db.tb <- format.db.tb.fun(dat, selected.db.tb)
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)
   print.vb(selected.db.tb, verbose = verbose)
@@ -262,8 +284,8 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
     collapse = ",")), verbose = verbose)
   selected.colnames <- tb.colnames[return.col.index]
   
-  selected.db.tb <- get.region.match.final.table(dat, selected.db.tb, matched.cols, 
-    selected.colnames, verbose)
+  selected.db.tb <- get.region.match.final.table(dat, selected.db.tb, inferior.col.raw, 
+    superior.col.raw, selected.colnames, verbose)
   
   info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
     verbose = verbose)

@@ -246,9 +246,6 @@ select.dat.full.match.txt <- function(db, table.name, cols = c(), params = list(
 # that record to match database using cols
 select.dat.full.match <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
-  params <- lapply(params, function(x) {
-    as.character(x)
-  })
   params.length <- length(params)
   if (is.null(sql.operator)) {
     sql.operator <- rep("==", length(params))
@@ -266,49 +263,69 @@ select.dat.full.match <- function(db, table.name, cols = c(), params = list(), d
   return(result)
 }
 
+# Region match from txt file (eg. gff, gtf, bed)
+select.dat.region.match.sqlite <- function(db, table.name, full.matched.cols = c(), 
+  inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
+  ...) {
+  sql.operator <- c(rep("==", length(full.matched.cols)), "<=", ">=")
+  result <- select.dat.full.match.sqlite(db, table.name, c(full.matched.cols, inferior.col, 
+    superior.col), params, select.cols, sql.operator, verbose)
+}
+# Region match from txt file (eg. gff, gtf, bed)
+select.dat.region.match.txt <- function(db, table.name, full.matched.cols = c(), 
+  inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
+  ...) {
+  ref.dat <- fread(db)
+  result.list <- full.foverlaps(ref.dat, params, inferior.col, superior.col)
+  ref.dat <- result.list$ref.dat
+  index.table <- result.list$index.table
+  index <- index.table$yid[!is.na(index.table$yid)]
+  ref.dat <- ref.dat[index, ]
+}
+
 # Read GFF and BED file or database
-select.dat.region.match <- function(db, table.name, cols = c(), params = list(), 
-  region.type = "gff", db.type = "sqlite", select.cols = "*", sql.operator = NULL, 
-  verbose = FALSE, ...) {
+select.dat.region.match <- function(db, table.name, full.matched.cols = c(), inferior.col = c(), 
+  superior.col = c(), params = list(), db.type = "txt", select.cols = "*", verbose = FALSE, 
+  ...) {
   params <- lapply(params, function(x) {
     as.character(x)
   })
   params.length <- length(params)
-  if (is.null(sql.operator)) {
-    sql.operator <- c(">=", "<=")
+  if (db.type == "sqlite") {
+    result <- select.dat.region.match.sqlite(db, table.name, full.matched.cols, 
+      inferior.col, superior.col, params, select.cols, verbose)
+  } else if (db.type == "txt") {
+    result <- select.dat.region.match.txt(db, table.name, full.matched.cols, 
+      inferior.col, superior.col, params, select.cols, verbose)
   }
-  
-  if (region.type == "gff") {
-    if (str_detect(filename, "bed$")) {
-      warning("Reading BED prefix file by GFF3 option")
-    }
-    all.names <- c("seqid", "source", "type", "start", "end", "score", "strand", 
-      "phase", "attributes")
-  } else if (region.type == "gtf") {
-    all.names <- c("seqid", "source", "method", "start", "end", "score", "strand", 
-      "phase", "groups")
-  } else if (region.type == "bed") {
-    if (str_detect(filename, "gff$")) {
-      warning("Reading BED prefix file by GFF option")
-    }
-    all.names <- c("chr", "start", "end", "name", "score", "strand", "thick_start", 
-      "thick_end", "item_rgb", "block_count", "block_sizes", "block_starts")
-  }
-  colnames(dat)[1:ncol(result)] <- all.names[1:ncol(result)]
-  return(dat)
+  return(result)
 }
 
-get.region.filetype <- function(filename, use.prefix = TRUE) {
-  filename <- tolower(filename)
-  if (use.prefix) {
-    if (str_detect(filename, "bed$")) {
-      return("bed")
-    } else if (str_detect(filename, "gff$")) {
-      return("gff")
-    } else if (str_detect(filename, "gtf$")) {
-      return("gtf")
-    } else {
-      return("other")
-    }
+full.foverlaps <- function(ref.dat, input.dat, inferior.col, superior.col) {
+  ref.dat <- as.data.table(ref.dat)
+  input.dat <- as.data.table(input.dat)
+  index <- match(colnames(ref.dat), names(input.dat))
+  index <- index[!is.na(index)]
+  colnames(ref.dat)[index] <- names(input.dat)
+  texts <- sprintf("ref.dat$%s <- as.numeric(ref.dat$%s)", inferior.col, inferior.col)
+  texts <- c(texts, sprintf("input.dat$%s <- as.numeric(input.dat$%s)", inferior.col, 
+    inferior.col))
+  texts <- c(texts, sprintf("ref.dat$%s <- as.numeric(ref.dat$%s)", superior.col, 
+    superior.col))
+  texts <- c(texts, sprintf("input.dat$%s <- as.numeric(input.dat$%s)", superior.col, 
+    superior.col))
+  for (i in texts) {
+    eval(parse(text = i))
   }
+  keys <- paste0(names(input.dat), collapse = "\", \"")
+  text <- sprintf("setkey(ref.dat, \"%s\")", keys)
+  eval(parse(text = text))
+  id <- 1:nrow(input.dat)
+  keys <- paste0(names(input.dat), collapse = "\", \"")
+  text <- sprintf("setkey(input.dat, \"%s\")", keys)
+  input.dat <- cbind(input.dat, id)
+  input.dat <- as.data.table(input.dat)
+  eval(parse(text = text))
+  index.table <- foverlaps(input.dat, ref.dat, type = "any", which = TRUE)
+  return(list(ref.dat = ref.dat, input.dat = input.dat, index.table = index.table))
 }

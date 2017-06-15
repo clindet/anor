@@ -5,7 +5,7 @@
 \title{A position annotation utils that can be used to write a yourself annotation function}
 \usage{
 annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
-  database.dir = Sys.getenv("annovarR_DB_DIR", NULL), db.col.order = 1:5,
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5,
   index.cols = c("chr", "start"), matched.cols = c("chr", "start", "end",
   "ref", "alt"), return.col.index = 6, return.col.names = "",
   format.dat.fun = format.cols, dbname.fixed = NULL,

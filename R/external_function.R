@@ -42,6 +42,10 @@ format.db.tb <- function(db.tb) {
   return(db.tb)
 }
 
+format.db.region.tb <- function(dat = "", db.tb = "") {
+  return(db.tb)
+}
+
 # 1000G needed functions to set database name and table name
 set.1000g.db <- function(name, buildver, database.dir = "", db.type = "sqlite") {
   list.1000g <- convert.1000g.name(name)
