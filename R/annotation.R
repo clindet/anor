@@ -256,6 +256,7 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
     paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
     verbose = verbose)
   print.vb(params, verbose = verbose)
+  
   # Select data from database
   select.params <- list(db = database, table.name = table.name, full.matched.cols = full.matched.cols, 
     inferior.col = inferior.col, superior.col = superior.col, params = params, 
