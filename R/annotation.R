@@ -44,7 +44,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
   dat.names <- names(dat)
-  if (is.null(database.dir) || database.dir == "") {
+  if (is.null(dbname.fixed) && (is.null(database.dir) || database.dir == "")) {
     stop("Parameter database.dir not be setted.")
   } else if (!dir.exists(database.dir)) {
     stop(sprintf("%s directory not existed.", database.dir))
@@ -63,7 +63,6 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   # dbname is path of sqlite or text database or is dbname of MySQL database
   dbname <- dbname.initial(name, dbname.fixed, setdb.fun, buildver, database.dir, 
     db.type, db.file.prefix, mysql.connect.params, sqlite.connect.params)
-  
   # table.name initial
   table.name <- table.name.initial(name, table.name.fixed, buildver, set.table.fun)
   
@@ -78,8 +77,11 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
     verbose)
   tb.colnames <- db.tb.colnames(dbname = dbname, db.type = db.type, sqlite.connect.params, 
     mysql.connect.params)
+  tb.colnames.raw <- tb.colnames
   info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
   
+  print.vb(index.cols, verbose = verbose)
+  print.vb(dat, verbose = verbose)
   # Get unique records, params is pass to select.dat.full.match and get matched
   # data table from database
   dup <- !duplicated(dat)
@@ -87,6 +89,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   
   # Sync the colnames between input cols and database table cols which be used to
   # select data
+  tb.colnames <- tb.colnames[db.col.order]
   index.cols.order <- match(colnames(dat), index.cols)
   index.cols.order <- index.cols.order[!is.na(index.cols.order)]
   colnames(params) <- tb.colnames[index.cols.order]
@@ -194,7 +197,7 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
   dat.names <- names(dat)
-  if (is.null(database.dir) || database.dir == "") {
+  if (is.null(dbname.fixed) && (is.null(database.dir) || database.dir == "")) {
     stop("Parameter database.dir not be setted.")
   } else if (!dir.exists(database.dir)) {
     stop(sprintf("%s directory not existed.", database.dir))
@@ -237,6 +240,7 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
   
   # Sync the colnames between input cols and database table cols which be used to
   # select data
+  tb.colnames <- tb.colnames[db.col.order]
   index.cols.order <- match(colnames(dat), index.cols)
   index.cols.order <- index.cols.order[!is.na(index.cols.order)]
   colnames(params) <- tb.colnames[index.cols.order]

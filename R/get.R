@@ -220,26 +220,30 @@ select.dat.full.match.mysql <- function(db, table.name, cols = c(), params = lis
 # select.dat.full.match.txt
 select.dat.full.match.txt <- function(db, table.name, cols = c(), params = list(), 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
-  result <- fread(db)
-  result <- lapply(result, function(x) {
+  ref.dat <- fread(db)
+  ref.dat.colnames.raw <- colnames(ref.dat)
+  ref.dat <- lapply(ref.dat, function(x) {
     as.character(x)
   })
   params <- lapply(params, function(x) {
     as.character(x)
   })
-  result <- as.data.table(result)
+  ref.dat <- as.data.table(ref.dat)
   params <- as.data.table(params)
-  index <- match(colnames(result), names(params))
+  index <- match(names(params), colnames(ref.dat))
   index <- index[!is.na(index)]
-  colnames(result)[index] <- names(params)
+  colnames(ref.dat)[index] <- names(params)
   keys <- paste0(names(params), collapse = "\", \"")
-  text <- sprintf("setkey(result, \"%s\")", keys)
+  text <- sprintf("setkey(ref.dat, \"%s\")", keys)
   eval(parse(text = text))
   params <- as.data.table(params)
   keys <- paste0(names(params), collapse = "\", \"")
   text <- sprintf("setkey(params, \"%s\")", keys)
   eval(parse(text = text))
-  result <- merge(result, params)
+  ref.dat <- merge(params, ref.dat)
+  index <- match(ref.dat.colnames.raw, colnames(ref.dat))
+  setcolorder(ref.dat, index)
+  return(ref.dat)
 }
 # Select data from text file, sqlite or mysql database cols: database colnames
 # (Simultaneously satisfy the cols SQL conditions) used to match params: a list

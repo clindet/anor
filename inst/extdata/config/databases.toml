@@ -16,6 +16,22 @@ setdb.fun = "set.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
 
+[rs2pos]
+versions = ["rs2pos138", "rs2pos142", "rs2pos144", "rs2pos147"]
+default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
+func = "annotation.auto"
+
+need.cols = ["rs"]
+return.col.names = ["chr", "start", "end", "ref", "alt"]
+db.col.order = 6
+index.cols = ["rs"]
+matched.cols = ["rs"]
+return.col.index = [1, 2, 3, 4, 5]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.rs2pos"
+set.table.fun = "set.table.rs2pos"
+format.db.tb.fun = "format.db.tb.rs2pos"
+
 [cosmic]
 versions = ["cosmic70", "cosmic81"]
 func = "annotation.auto"

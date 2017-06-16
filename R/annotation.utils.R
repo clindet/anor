@@ -38,7 +38,7 @@ get.annotation.func <- function(name, database.cfg = system.file("extdata", "con
 
 # Set dbname in annotation.R annotation.pos.utils
 dbname.initial <- function(name, dbname.fixed = NULL, setdb.fun = NULL, buildver = "hg19", 
-  database.dir = NULL, db.type = "sqlite", db.file.prefix = "txt", mysql.connect.params = NULL, 
+  database.dir = NULL, db.type = "sqlite", db.file.prefix = "sqlite", mysql.connect.params = NULL, 
   sqlite.connect.params = NULL) {
   if (is.null(dbname.fixed)) {
     setdb.fun.args <- methods::formalArgs(setdb.fun)

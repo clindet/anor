@@ -28,7 +28,7 @@ sqlite.auto.build <- function(name, buildver = "hg19", database.dir = "/path/", 
       coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
   }
   filename <- do.call(default.pars[["setdb.fun"]], list(name = name, buildver = buildver, 
-    database.dir = database.dir, db.type = "txt"))
+    database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
   dbname <- str_replace(filename, "txt$", "sqlite")
   table.name <- do.call(default.pars[["set.table.fun"]], list(name = name, buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
@@ -99,10 +99,10 @@ sqlite.auto.index <- function(name, buildver = "hg19", database.dir = "/path/", 
 
 # Auto to annotation accodring the database.cfg
 annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index = NULL, 
-  db.col.order = NULL, matched.cols = NULL, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, 
-  db.file.prefix = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
-    package = "annovarR"), ...) {
+  db.col.order = NULL, index.cols = NULL, matched.cols = NULL, dbname.fixed = NULL, 
+  table.name.fixed = NULL, setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, 
+  format.dat.fun = NULL, db.file.prefix = NULL, database.cfg = system.file("extdata", 
+    "config/databases.toml", package = "annovarR"), ...) {
   
   dat.need.names <- get.cfg.value.by.name(name, database.cfg, key = "need.cols", 
     coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
@@ -116,8 +116,8 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
   }
   
   auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
-    "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", "format.dat.fun", 
-    "db.file.prefix")
+    "index.cols", "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", 
+    "format.dat.fun", "db.file.prefix")
   params <- list()
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
@@ -130,8 +130,9 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
   }
   annotation.cols.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
     return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
-    matched.cols = params[["matched.cols"]], setdb.fun = eval(parse(text = params[["setdb.fun"]])), 
-    set.table.fun = eval(parse(text = params[["set.table.fun"]])), format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), 
-    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
+    index.cols = params[["index.cols"]], matched.cols = params[["matched.cols"]], 
+    setdb.fun = eval(parse(text = params[["setdb.fun"]])), set.table.fun = eval(parse(text = params[["set.table.fun"]])), 
+    format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), dbname.fixed = dbname.fixed, 
+    table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
     db.file.prefix = params[["db.file.prefix"]], ...)
 }

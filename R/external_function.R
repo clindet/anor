@@ -11,8 +11,11 @@ format.cols <- function(dat.input) {
   return(dat.input)
 }
 
-set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", db.file.prefix = "txt", 
+set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", db.file.prefix = NULL, 
   mysql.connect.params = list(), sqlite.connect.params = list()) {
+  if (is.null(db.file.prefix)) {
+    db.file.prefix <- db.type
+  }
   if (db.type == "sqlite") {
     dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.file.prefix)
   } else if (db.type == "txt") {
@@ -38,11 +41,12 @@ set.table <- function(name = "", buildver = "", db.type = "sqlite", mysql.connec
   }
 }
 
-format.db.tb <- function(db.tb) {
+format.db.tb <- function(db.tb, ...) {
+  params <- list(...)
   return(db.tb)
 }
 
-format.db.region.tb <- function(dat = "", db.tb = "") {
+format.db.region.tb <- function(dat = "", db.tb = "", ...) {
   return(db.tb)
 }
 
@@ -110,4 +114,34 @@ set.sih.normal.pool.db <- function(name, buildver, database.dir, db.type = "txt"
   } else if (db.type == "txt") {
     db <- sprintf("%s/%s_normal%s.txt", database.dir, buildver, name)
   }
+}
+
+# Format selected data table family: rs2pos
+format.db.tb.rs2pos <- function(db.tb) {
+  setkey(db.tb, V6)
+  rs.frq <- table(db.tb$V6)
+  rs.frq <- as.data.table(rs.frq)
+  for (i in rs.frq$V1[rs.frq$N > 1]) {
+    first.line <- which(db.tb$V6 == i)[1]
+    db.tb$V1[first.line] <- paste0(db.tb$V1[db.tb$V6 == i], collapse = ",")
+    db.tb$V2[first.line] <- paste0(db.tb$V2[db.tb$V6 == i], collapse = ",")
+    db.tb$V3[first.line] <- paste0(db.tb$V3[db.tb$V6 == i], collapse = ",")
+    db.tb$V4[first.line] <- paste0(db.tb$V4[db.tb$V6 == i], collapse = ",")
+    db.tb$V5[first.line] <- paste0(db.tb$V5[db.tb$V6 == i], collapse = ",")
+  }
+  return(db.tb)
+}
+
+# set.db.rs2pos
+set.db.rs2pos <- function(...) {
+  params <- list(...)
+  params$name <- str_replace(params$name, "rs2pos", "avsnp")
+  do.call(set.db, params)
+}
+
+# set.table.rs2pos
+set.table.rs2pos <- function(...) {
+  params <- list(...)
+  params$name <- str_replace(params$name, "rs2pos", "avsnp")
+  do.call(set.table, params)
 }
