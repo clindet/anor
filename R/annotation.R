@@ -46,7 +46,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   dat.names <- names(dat)
   if (is.null(dbname.fixed) && (is.null(database.dir) || database.dir == "")) {
     stop("Parameter database.dir not be setted.")
-  } else if (!dir.exists(database.dir)) {
+  } else if (is.null(dbname.fixed) && !dir.exists(database.dir)) {
     stop(sprintf("%s directory not existed.", database.dir))
   }
   info.msg(sprintf("Total %s line be prepared to be annotate with %s database.", 
@@ -101,7 +101,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
   # Select data from database
   selected.db.tb <- select.dat.full.match(database, table.name, tb.colnames[index.cols.order], 
     params = params, db.type = db.type, verbose = verbose)
-  selected.db.tb <- format.db.tb.fun(selected.db.tb)
+  selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = dat)
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)
   print.vb(selected.db.tb, verbose = verbose)
@@ -199,7 +199,7 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
   dat.names <- names(dat)
   if (is.null(dbname.fixed) && (is.null(database.dir) || database.dir == "")) {
     stop("Parameter database.dir not be setted.")
-  } else if (!dir.exists(database.dir)) {
+  } else if (is.null(dbname.fixed) && !dir.exists(database.dir)) {
     stop(sprintf("%s directory not existed.", database.dir))
   }
   info.msg(sprintf("Total %s line be prepared to be annotate with %s database.", 
@@ -252,7 +252,7 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
     text <- sprintf("%s <- '%s'", i, colnames(params)[!is.na(index)])
     eval(parse(text = text))
   }
-  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.full.match from database (%s).", 
+  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.region.match from database (%s).", 
     paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
     verbose = verbose)
   print.vb(params, verbose = verbose)
@@ -262,7 +262,8 @@ annotation.region.match <- function(dat = data.table(), name = "", buildver = "h
     inferior.col = inferior.col, superior.col = superior.col, params = params, 
     db.type = db.type, verbose = verbose)
   selected.db.tb <- do.call(select.dat.region.match, select.params)
-  selected.db.tb <- format.db.tb.fun(dat, selected.db.tb)
+  selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = params, 
+    inferior.col = inferior.col, superior.col = superior.col)
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)
   print.vb(selected.db.tb, verbose = verbose)

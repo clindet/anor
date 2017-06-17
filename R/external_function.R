@@ -41,12 +41,17 @@ set.table <- function(name = "", buildver = "", db.type = "sqlite", mysql.connec
   }
 }
 
-format.db.tb <- function(db.tb, ...) {
+format.db.tb <- function(...) {
   params <- list(...)
-  return(db.tb)
+  return(params$db.tb)
 }
 
-format.db.region.tb <- function(dat = "", db.tb = "", ...) {
+format.db.region.tb <- function(...) {
+  params <- list(...)
+  db.tb <- params$db.tb
+  index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, params$superior.col)$index.table
+  db.tb <- db.tb[index.table$yid, ]
+  db.tb <- cbind(db.tb, index.table[, 1])
   return(db.tb)
 }
 
@@ -69,32 +74,32 @@ set.1000g.table <- function(name, buildver) {
     list.1000g$month)
 }
 
-format.1000g.db.tb <- function(dat = "", filename = "", ...) {
+format.1000g.db.tb <- function(db.tb = "", filename = "", ...) {
   if (filename != "") {
-    dat <- fread(filename, ...)
+    db.tb <- fread(filename, ...)
   }
-  end <- as.numeric(dat$V2)
-  have.num <- str_detect(dat$V4, "[0-9]")
-  end[have.num] <- end[have.num] + as.numeric(str_extract(dat$V4[have.num], "[0-9]*"))
-  dat <- cbind(dat[, c(1, 2)], end, dat[, c(3, 4, 6, 5)])
-  only.num <- !str_detect(dat$V4, "[atcgATCG]")
-  dat$end[only.num] <- dat$end[only.num] - 1
-  dat$V4[only.num] <- "-"
-  zero.alt <- str_detect(dat$V4, "0[atctATCG]*")
-  dat$V4[zero.alt] <- str_replace(dat$V4[zero.alt], "0", "")
-  dat$V4[zero.alt] <- str_replace(dat$V4[zero.alt], dat$V3[zero.alt], "")
-  dat$V3[zero.alt] <- "-"
-  have.num.but.no.only <- str_detect(dat$V4, "[1-9]")
+  end <- as.numeric(db.tb$V2)
+  have.num <- str_detect(db.tb$V4, "[0-9]")
+  end[have.num] <- end[have.num] + as.numeric(str_extract(db.tb$V4[have.num], "[0-9]*"))
+  db.tb <- cbind(db.tb[, c(1, 2)], end, db.tb[, c(3, 4, 6, 5)])
+  only.num <- !str_detect(db.tb$V4, "[atcgATCG]")
+  db.tb$end[only.num] <- db.tb$end[only.num] - 1
+  db.tb$V4[only.num] <- "-"
+  zero.alt <- str_detect(db.tb$V4, "0[atctATCG]*")
+  db.tb$V4[zero.alt] <- str_replace(db.tb$V4[zero.alt], "0", "")
+  db.tb$V4[zero.alt] <- str_replace(db.tb$V4[zero.alt], db.tb$V3[zero.alt], "")
+  db.tb$V3[zero.alt] <- "-"
+  have.num.but.no.only <- str_detect(db.tb$V4, "[1-9]")
   have.num.but.no.only <- have.num.but.no.only & !only.num
-  dat$end[have.num.but.no.only] <- dat$end[have.num.but.no.only] - 1
-  num <- str_extract(dat$V4, "[1-9]*")
-  dat$V4[have.num.but.no.only] <- str_replace_all(dat$V4[have.num.but.no.only], 
+  db.tb$end[have.num.but.no.only] <- db.tb$end[have.num.but.no.only] - 1
+  num <- str_extract(db.tb$V4, "[1-9]*")
+  db.tb$V4[have.num.but.no.only] <- str_replace_all(db.tb$V4[have.num.but.no.only], 
     "[0-9]*", "")
-  ref.len <- str_length(dat$V3)
-  alt.len <- str_length(dat$V4)
+  ref.len <- str_length(db.tb$V3)
+  alt.len <- str_length(db.tb$V4)
   is.deletion <- ref.len > alt.len
-  colnames(dat) <- c("chr", "start", "end", "ref", "alt", "rs", "frq")
-  return(dat)
+  colnames(db.tb) <- c("chr", "start", "end", "ref", "alt", "rs", "frq")
+  return(db.tb)
 }
 
 # Some of database format of Chr col have 'chr' flag
@@ -117,17 +122,48 @@ set.sih.normal.pool.db <- function(name, buildver, database.dir, db.type = "txt"
 }
 
 # Format selected data table family: rs2pos
-format.db.tb.rs2pos <- function(db.tb) {
-  setkey(db.tb, V6)
-  rs.frq <- table(db.tb$V6)
+format.db.tb.unique <- function(...) {
+  params <- list(...)
+  db.tb <- params$db.tb
+  if (nrow(db.tb) == 0) {
+    return(db.tb)
+  }
+  index.cols <- params$index.cols
+  if (is.null(index.cols)) {
+    index.cols <- "V6"
+  }
+  index.cols.raw <- index.cols
+  
+  need.cols <- colnames(db.tb)
+  is.region <- !is.null(params$input.dat) && !is.null(params$inferior.col)
+  if (is.region) {
+    # region match, according xid to merge mulitple row to one
+    index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, 
+      params$superior.col)$index.table
+    db.tb <- db.tb[index.table$yid, ]
+    db.tb <- cbind(db.tb, index.table[, 1])
+    db.tb <- cbind(db.tb, index.table[, 2])
+    index.cols <- "xid"
+  }
+  need.cols <- need.cols[!need.cols %in% index.cols.raw]
+  keys <- paste0(index.cols, collapse = "\", \"")
+  text <- sprintf("setkey(db.tb, \"%s\")", keys)
+  eval(parse(text = text))
+  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(index.cols, collapse = "//"))
+  eval(parse(text = text))
+  rs.frq <- table(db.tb$new)
   rs.frq <- as.data.table(rs.frq)
   for (i in rs.frq$V1[rs.frq$N > 1]) {
-    first.line <- which(db.tb$V6 == i)[1]
-    db.tb$V1[first.line] <- paste0(db.tb$V1[db.tb$V6 == i], collapse = ",")
-    db.tb$V2[first.line] <- paste0(db.tb$V2[db.tb$V6 == i], collapse = ",")
-    db.tb$V3[first.line] <- paste0(db.tb$V3[db.tb$V6 == i], collapse = ",")
-    db.tb$V4[first.line] <- paste0(db.tb$V4[db.tb$V6 == i], collapse = ",")
-    db.tb$V5[first.line] <- paste0(db.tb$V5[db.tb$V6 == i], collapse = ",")
+    first.line <- which(db.tb$new == i)[1]
+    for (j in need.cols) {
+      db.tb[[j]][first.line] <- paste0(db.tb[[j]][db.tb$new == i], collapse = "//")
+    }
+  }
+  text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
+  eval(parse(text = text))
+  if (is.region) {
+    text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
+    eval(parse(text = text))
   }
   return(db.tb)
 }
@@ -143,5 +179,38 @@ set.db.rs2pos <- function(...) {
 set.table.rs2pos <- function(...) {
   params <- list(...)
   params$name <- str_replace(params$name, "rs2pos", "avsnp")
+  do.call(set.table, params)
+}
+
+# refGene format db tb
+format.db.tb.refgene <- function(...) {
+  params <- list(...)
+  db.tb <- params$db.tb
+  if (nrow(db.tb) == 0) {
+    return(db.tb)
+  }
+  index.cols <- c("V3", "V5", "V6")
+  format.db.tb.unique(db.tb = db.tb, index.cols = index.cols, ...)
+}
+
+# Set refGene and ensGene dbname
+set.db.refgene <- function(...) {
+  params <- list(...)
+  if (params$name == "ucsc_refgene") {
+    params$name <- "refGene"
+  } else {
+    params$name <- "ensGene"
+  }
+  do.call(set.db, params)
+}
+
+# Set refGene and ensGene table.name
+set.table.refgene <- function(...) {
+  params <- list(...)
+  if (params$name == "ucsc_refgene") {
+    params$name <- "refGene"
+  } else {
+    params$name <- "ensGene"
+  }
   do.call(set.table, params)
 }

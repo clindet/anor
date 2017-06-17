@@ -274,6 +274,7 @@ select.dat.region.match.sqlite <- function(db, table.name, full.matched.cols = c
   sql.operator <- c(rep("==", length(full.matched.cols)), "<=", ">=")
   result <- select.dat.full.match.sqlite(db, table.name, c(full.matched.cols, inferior.col, 
     superior.col), params, select.cols, sql.operator, verbose)
+  result <- result[!duplicated(result), ]
 }
 # Region match from txt file (eg. gff, gtf, bed)
 select.dat.region.match.txt <- function(db, table.name, full.matched.cols = c(), 
@@ -284,6 +285,7 @@ select.dat.region.match.txt <- function(db, table.name, full.matched.cols = c(),
   ref.dat <- result.list$ref.dat
   index.table <- result.list$index.table
   index <- index.table$yid[!is.na(index.table$yid)]
+  index <- index[!duplicated(index)]
   ref.dat <- ref.dat[index, ]
 }
 
@@ -307,8 +309,9 @@ select.dat.region.match <- function(db, table.name, full.matched.cols = c(), inf
 
 full.foverlaps <- function(ref.dat, input.dat, inferior.col, superior.col) {
   ref.dat <- as.data.table(ref.dat)
+  ref.dat.colnames.raw <- colnames(ref.dat)
   input.dat <- as.data.table(input.dat)
-  index <- match(colnames(ref.dat), names(input.dat))
+  index <- match(names(input.dat), colnames(ref.dat))
   index <- index[!is.na(index)]
   colnames(ref.dat)[index] <- names(input.dat)
   texts <- sprintf("ref.dat$%s <- as.numeric(ref.dat$%s)", inferior.col, inferior.col)
@@ -331,5 +334,8 @@ full.foverlaps <- function(ref.dat, input.dat, inferior.col, superior.col) {
   input.dat <- as.data.table(input.dat)
   eval(parse(text = text))
   index.table <- foverlaps(input.dat, ref.dat, type = "any", which = TRUE)
+  adj.index <- match(index.table$xid, input.dat$id)
+  index.table$xid <- adj.index
+  setkey(index.table, "xid")
   return(list(ref.dat = ref.dat, input.dat = input.dat, index.table = index.table))
 }

@@ -127,14 +127,9 @@ get.full.match.final.table <- function(dat, selected.db.tb, matched.cols = "", s
 # Merge selected data and input data and get final output
 get.region.match.final.table <- function(dat, selected.db.tb, inferior.col = "", 
   superior.col = "", selected.colnames = "", verbose = FALSE) {
-  result.list <- full.foverlaps(selected.db.tb, dat, inferior.col, superior.col)
-  selected.db.tb <- result.list$ref.dat
-  input.dat <- result.list$input.dat
-  index.table <- result.list$index.table
-  index <- index.table$yid
-  selected.db.tb <- selected.db.tb[index, selected.colnames, with = FALSE]
-  index <- match(input.dat$id, index.table$xid)
-  selected.db.tb <- selected.db.tb[index, ]
+  setkey(selected.db.tb, "xid")
+  selected.db.tb <- selected.db.tb[!duplicated(selected.db.tb$xid), ]
+  selected.db.tb <- selected.db.tb[, selected.colnames, with = FALSE]
   info.msg(sprintf("Total %s line be processed.", nrow(selected.db.tb)), verbose = verbose)
   print.vb(selected.db.tb, verbose = verbose)
   return(selected.db.tb)

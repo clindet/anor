@@ -1,5 +1,14 @@
+bed.file <- system.file("extdata", "demo/example.bed", package = "annovarR")
+bed.sqlite <- sprintf("%s/%s.sqlite", tempdir(), basename(bed.file))
+connect.params <- list(dbname = bed.sqlite, table.name = "bed")
+sqlite.build(bed.file, connect.params)
+refGene.file <- system.file("extdata", "demo/hg19_refGene.txt", package = "annovarR")
+sqlite.db.name <- str_replace(basename(refGene.file), ".txt$", ".sqlite")
+refGene.sqlite <- sprintf("%s/%s", tempdir(), sqlite.db.name)
+connect.params <- list(dbname = refGene.sqlite, table.name = "hg19_refGene")
+sqlite.build(refGene.file, connect.params)
+
 test_that("select.dat.region.match.txt", {
-  bed.file <- system.file("extdata", "demo/example.bed", package = "annovarR")
   V1 <- c("chr10", "chr1")
   V2 <- c("100188904", "100185955")
   V3 <- c("100188904", "100185955")
@@ -15,11 +24,6 @@ test_that("select.dat.region.match.txt", {
 })
 
 test_that("select.dat.region.match.sqlite", {
-  bed.file <- system.file("extdata", "demo/example.bed", package = "annovarR")
-  bed.sqlite <- sprintf("%s/%s.sqlite", tempdir(), basename(bed.file))
-  connect.params <- list(dbname = bed.sqlite, table.name = "bed")
-  sqlite.build(bed.file, connect.params)
-  expect_that(file.size(bed.sqlite) > 0, equals(TRUE))
   V1 <- c("chr10", "chr1")
   V2 <- c("100188904", "100185955")
   V3 <- c("100188904", "100185955")
@@ -34,16 +38,10 @@ test_that("select.dat.region.match.sqlite", {
   expect_that(x[2, 1], equals("chr10"))
   expect_that(x[1, 4], equals("HPS1"))
   expect_that(x[2, 4], equals("HPS1"))
-  file.remove(bed.sqlite)
   
 })
 
 test_that("annotation.region.match", {
-  bed.file <- system.file("extdata", "demo/example.bed", package = "annovarR")
-  bed.sqlite <- sprintf("%s/%s.sqlite", tempdir(), basename(bed.file))
-  connect.params <- list(dbname = bed.sqlite, table.name = "bed")
-  sqlite.build(bed.file, connect.params)
-  expect_that(file.size(bed.sqlite) > 0, equals(TRUE))
   chr <- c("chr10", "chr1")
   start <- c("100188904", "100185955")
   end <- c("100188904", "100185955")
@@ -54,3 +52,39 @@ test_that("annotation.region.match", {
   expect_that(x[1, 1], equals("HPS1"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
 })
+
+test_that("annotation.region.match:refgene", {
+  chr <- c("11", "11", "14")
+  start <- c("89057522", "89224732", "52471419")
+  end <- c("89057522", "89224732", "52471419")
+  dat <- data.table(chr = chr, start = start, end = end)
+  x <- annotation.region.match(dat = dat, dbname.fixed = refGene.file, table.name.fixed = "hg19_refGene", 
+    db.col.order = c(3, 5, 6), full.matched.col = "chr", inferior.col = "start", 
+    format.dat.fun = format.cols.plus.chr, superior.col = "end", return.col.index = 13, 
+    return.col.names = "Gene", verbose = FALSE, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(x[1, 1], equals("NOX4"))
+  expect_that(x[2, 1], equals("NOX4"))
+  expect_that(x[3, 1], equals("C14orf166"))
+  x <- annotation.region.match(dat = dat, dbname.fixed = refGene.sqlite, table.name.fixed = "hg19_refGene", 
+    db.col.order = c(3, 5, 6), full.matched.col = "chr", inferior.col = "start", 
+    format.dat.fun = format.cols.plus.chr, superior.col = "end", return.col.index = 13, 
+    return.col.names = "Gene", verbose = FALSE, db.type = "sqlite")
+  x <- as.data.frame(x)
+  expect_that(x[1, 1], equals("NOX4"))
+  expect_that(x[2, 1], equals("NOX4"))
+  expect_that(x[3, 1], equals("C14orf166"))
+})
+
+test_that("auto:refgene", {
+  chr <- c("11", "11", "14")
+  start <- c("89057522", "89224732", "52471419")
+  end <- c("89057522", "89224732", "52471419")
+  dat <- data.table(chr = chr, start = start, end = end)
+  x <- annotation(name = "ucsc_refgene", dat = dat, database.dir = tempdir(), db.type = "sqlite", 
+    verbose = FALSE)
+})
+
+
+file.remove(bed.sqlite)
+file.remove(refGene.sqlite)

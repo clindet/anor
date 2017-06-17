@@ -99,10 +99,11 @@ sqlite.auto.index <- function(name, buildver = "hg19", database.dir = "/path/", 
 
 # Auto to annotation accodring the database.cfg
 annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index = NULL, 
-  db.col.order = NULL, index.cols = NULL, matched.cols = NULL, dbname.fixed = NULL, 
-  table.name.fixed = NULL, setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, 
-  format.dat.fun = NULL, db.file.prefix = NULL, database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), ...) {
+  db.col.order = NULL, index.cols = NULL, matched.cols = NULL, full.matched.cols = NULL, 
+  inferior.col = NULL, superior.col = NULL, dbname.fixed = NULL, table.name.fixed = NULL, 
+  setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, 
+  db.file.prefix = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
+    package = "annovarR"), is.region = NULL, ...) {
   
   dat.need.names <- get.cfg.value.by.name(name, database.cfg, key = "need.cols", 
     coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
@@ -117,7 +118,8 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
   
   auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
     "index.cols", "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", 
-    "format.dat.fun", "db.file.prefix")
+    "format.dat.fun", "db.file.prefix", "full.matched.cols", "inferior.col", 
+    "superior.col", "is.region")
   params <- list()
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
@@ -128,11 +130,23 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
       params[[item]] <- item.value
     }
   }
-  annotation.cols.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
-    return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
-    index.cols = params[["index.cols"]], matched.cols = params[["matched.cols"]], 
-    setdb.fun = eval(parse(text = params[["setdb.fun"]])), set.table.fun = eval(parse(text = params[["set.table.fun"]])), 
-    format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), dbname.fixed = dbname.fixed, 
-    table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
-    db.file.prefix = params[["db.file.prefix"]], ...)
+  is.region <- params[["is.region"]]
+  if (is.null(is.region) || !is.region) {
+    annotation.cols.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
+      return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
+      index.cols = params[["index.cols"]], matched.cols = params[["matched.cols"]], 
+      setdb.fun = eval(parse(text = params[["setdb.fun"]])), set.table.fun = eval(parse(text = params[["set.table.fun"]])), 
+      format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), 
+      dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
+      db.file.prefix = params[["db.file.prefix"]], ...)
+  } else {
+    annotation.region.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
+      return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
+      index.cols = params[["index.cols"]], full.matched.cols = params[["full.matched.cols"]], 
+      inferior.col = params[["inferior.col"]], superior.col = params[["superior.col"]], 
+      setdb.fun = eval(parse(text = params[["setdb.fun"]])), set.table.fun = eval(parse(text = params[["set.table.fun"]])), 
+      format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), 
+      dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
+      db.file.prefix = params[["db.file.prefix"]], ...)
+  }
 }

@@ -68,16 +68,16 @@ A regeion annotation utils that can be used to write a yourself annotation funct
 }
 \examples{
 library(data.table)
-bed.file <- system.file("extdata", "demo/example.bed", package = "annovarR")
-bed.sqlite <- sprintf("\%s/\%s.sqlite", tempdir(), basename(bed.file))
-connect.params <- list(dbname = bed.sqlite, table.name = "bed")
+bed.file <- system.file('extdata', 'demo/example.bed', package = 'annovarR')
+bed.sqlite <- sprintf('\%s/\%s.sqlite', tempdir(), basename(bed.file))
+connect.params <- list(dbname = bed.sqlite, table.name = 'bed')
 sqlite.build(bed.file, connect.params)
-chr <- c("chr10", "chr1")
-start <- c("100188904", "100185955")
-end <- c("100188904", "100185955")
+chr <- c('chr10', 'chr1')
+start <- c('100188904', '100185955')
+end <- c('100188904', '100185955')
 dat <- data.table(chr = chr, start = start, end = end)
 x <- annotation.region.match(dat = dat, database.dir = tempdir(),
-dbname.fixed = bed.sqlite, table.name.fixed = "bed", 
-db.type = "sqlite", format.dat.fun = function(x) return(x))
+dbname.fixed = bed.sqlite, table.name.fixed = 'bed', 
+db.type = 'sqlite', format.dat.fun = function(x) return(x))
 file.remove(bed.sqlite)
 }
