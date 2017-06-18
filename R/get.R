@@ -272,6 +272,7 @@ select.dat.region.match.sqlite <- function(db, table.name, full.matched.cols = c
   inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
   ...) {
   sql.operator <- c(rep("==", length(full.matched.cols)), "<=", ">=")
+  params$superior.col <- params$inferior.col
   result <- select.dat.full.match.sqlite(db, table.name, c(full.matched.cols, inferior.col, 
     superior.col), params, select.cols, sql.operator, verbose)
   result <- result[!duplicated(result), ]

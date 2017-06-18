@@ -21,7 +21,6 @@
 parAnnotation <- function(row.cl, ...) {
   row.cl.num <- length(row.cl)
   registerDoParallel(row.cl)
-  clusterEvalQ(row.cl, library(annovarR))
   params <- list(...)
   dat <- params$dat
   dat <- splitList(dat, row.cl.num)

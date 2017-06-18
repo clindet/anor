@@ -32,7 +32,7 @@ annotation.region.match(dat = data.table(), name = "", buildver = "hg19",
 
 \item{inferior.col}{Inferior limit col, e.g. start}
 
-\item{superior.col}{Inferior limit col, e.g. end}
+\item{superior.col}{Superior limit col, e.g. end}
 
 \item{return.col.index}{Setting the colnums need be returned}
 

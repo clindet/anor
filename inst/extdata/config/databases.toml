@@ -1,4 +1,4 @@
-Title = "annovarR configuration file"
+Title = "annovarR database annotation configuration file"
 
 [avsnp]
 versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp147.common"]

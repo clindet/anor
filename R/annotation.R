@@ -157,7 +157,7 @@ annotation.cols.match <- function(dat = data.table(), name = "", buildver = "hg1
 #' @param index.cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
 #' @param full.matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
 #' @param inferior.col Inferior limit col, e.g. start
-#' @param superior.col Inferior limit col, e.g. end
+#' @param superior.col Superior limit col, e.g. end
 #' @param return.col.index Setting the colnums need be returned
 #' @param return.col.names Setting the returned colnum names
 #' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
