@@ -11,6 +11,17 @@ format.cols <- function(dat.input) {
   return(dat.input)
 }
 
+# Some of database format of Chr col have 'chr' flag
+format.cols.plus.chr <- function(dat.input) {
+  if (!str_detect(dat.input$chr[1], "chr|Chr|CHR")) {
+    dat.input$chr <- paste0("chr", dat.input$chr)
+  } else if (str_detect(dat.input$chr[1], "Chr|CHR")) {
+    dat.input$chr <- str_replace_all(dat.input$chr, "Chr|CHR", "chr")
+  }
+  return(dat.input)
+}
+
+# Default set database name function
 set.db <- function(anno.name, buildver = "hg19", database.dir = "", db.type = "", db.file.prefix = NULL, 
   mysql.connect.params = list(), sqlite.connect.params = list()) {
   if (is.null(db.file.prefix)) {
@@ -44,6 +55,53 @@ set.table <- function(anno.name = "", buildver = "", db.type = "sqlite", mysql.c
 format.db.tb <- function(...) {
   params <- list(...)
   return(params$db.tb)
+}
+
+# Format selected data table family: rs2pos
+format.db.tb.unique <- function(...) {
+  params <- list(...)
+  db.tb <- params$db.tb
+  if (nrow(db.tb) == 0) {
+    return(db.tb)
+  }
+  index.cols <- params$index.cols
+  if (is.null(index.cols)) {
+    index.cols <- "V6"
+  }
+  index.cols.raw <- index.cols
+  
+  need.cols <- colnames(db.tb)
+  is.region <- !is.null(params$input.dat) && !is.null(params$inferior.col)
+  if (is.region) {
+    # region match, according xid to merge mulitple row to one
+    index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, 
+      params$superior.col)$index.table
+    db.tb <- db.tb[index.table$yid, ]
+    db.tb <- cbind(db.tb, index.table[, 1])
+    db.tb <- cbind(db.tb, index.table[, 2])
+    index.cols <- "xid"
+  }
+  need.cols <- need.cols[!need.cols %in% index.cols.raw]
+  keys <- paste0(index.cols, collapse = "\", \"")
+  text <- sprintf("setkey(db.tb, \"%s\")", keys)
+  eval(parse(text = text))
+  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(index.cols, collapse = ", "))
+  eval(parse(text = text))
+  rs.frq <- table(db.tb$new)
+  rs.frq <- as.data.table(rs.frq)
+  for (i in rs.frq$V1[rs.frq$N > 1]) {
+    first.line <- which(db.tb$new == i)[1]
+    for (j in need.cols) {
+      db.tb[[j]][first.line] <- paste0(db.tb[[j]][db.tb$new == i], collapse = "//")
+    }
+  }
+  text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
+  eval(parse(text = text))
+  if (is.region) {
+    text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
+    eval(parse(text = text))
+  }
+  return(db.tb)
 }
 
 format.db.region.tb <- function(...) {
@@ -103,16 +161,6 @@ format.1000g.db.tb <- function(db.tb = "", filename = "", ...) {
   return(db.tb)
 }
 
-# Some of database format of Chr col have 'chr' flag
-format.cols.plus.chr <- function(dat.input) {
-  if (!str_detect(dat.input$chr[1], "chr|Chr|CHR")) {
-    dat.input$chr <- paste0("chr", dat.input$chr)
-  } else if (str_detect(dat.input$chr[1], "Chr|CHR")) {
-    dat.input$chr <- str_replace_all(dat.input$chr, "Chr|CHR", "chr")
-  }
-  return(dat.input)
-}
-
 # Sih Normal Pool needed functions to set database name and table name
 set.sih.normal.pool.db <- function(anno.name, buildver, database.dir, db.type = "txt") {
   if (db.type == "sqlite") {
@@ -122,68 +170,19 @@ set.sih.normal.pool.db <- function(anno.name, buildver, database.dir, db.type = 
   }
 }
 
-# Format selected data table family: rs2pos
-format.db.tb.unique <- function(...) {
-  params <- list(...)
-  db.tb <- params$db.tb
-  if (nrow(db.tb) == 0) {
-    return(db.tb)
-  }
-  index.cols <- params$index.cols
-  if (is.null(index.cols)) {
-    index.cols <- "V6"
-  }
-  index.cols.raw <- index.cols
-  
-  need.cols <- colnames(db.tb)
-  is.region <- !is.null(params$input.dat) && !is.null(params$inferior.col)
-  if (is.region) {
-    # region match, according xid to merge mulitple row to one
-    index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, 
-      params$superior.col)$index.table
-    db.tb <- db.tb[index.table$yid, ]
-    db.tb <- cbind(db.tb, index.table[, 1])
-    db.tb <- cbind(db.tb, index.table[, 2])
-    index.cols <- "xid"
-  }
-  need.cols <- need.cols[!need.cols %in% index.cols.raw]
-  keys <- paste0(index.cols, collapse = "\", \"")
-  text <- sprintf("setkey(db.tb, \"%s\")", keys)
-  eval(parse(text = text))
-  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(index.cols, collapse = ", "))
-  eval(parse(text = text))
-  rs.frq <- table(db.tb$new)
-  rs.frq <- as.data.table(rs.frq)
-  for (i in rs.frq$V1[rs.frq$N > 1]) {
-    first.line <- which(db.tb$new == i)[1]
-    for (j in need.cols) {
-      db.tb[[j]][first.line] <- paste0(db.tb[[j]][db.tb$new == i], collapse = "//")
-    }
-  }
-  text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
-  eval(parse(text = text))
-  if (is.region) {
-    text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
-    eval(parse(text = text))
-  }
-  return(db.tb)
-}
-
-# set.db.rs2pos
+### rs2pos section ###
 set.db.rs2pos <- function(...) {
   params <- list(...)
   params$anno.name <- str_replace(params$anno.name, "rs2pos", "avsnp")
   do.call(set.db, params)
 }
-
-# set.table.rs2pos
 set.table.rs2pos <- function(...) {
   params <- list(...)
   params$anno.name <- str_replace(params$anno.name, "rs2pos", "avsnp")
   do.call(set.table, params)
 }
 
-# refGene format db tb
+### refGene section ###
 format.db.tb.refgene <- function(...) {
   params <- list(...)
   db.tb <- params$db.tb
@@ -193,8 +192,6 @@ format.db.tb.refgene <- function(...) {
   index.cols <- c("V3", "V5", "V6")
   format.db.tb.unique(db.tb = db.tb, index.cols = index.cols, ...)
 }
-
-# Set refGene and ensGene dbname
 set.db.refgene <- function(...) {
   params <- list(...)
   if (params$anno.name == "ucsc_refgene") {
@@ -204,8 +201,6 @@ set.db.refgene <- function(...) {
   }
   do.call(set.db, params)
 }
-
-# Set refGene and ensGene table.name
 set.table.refgene <- function(...) {
   params <- list(...)
   if (params$anno.name == "ucsc_refgene") {

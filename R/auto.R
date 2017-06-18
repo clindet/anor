@@ -150,3 +150,20 @@ annotation.auto <- function(dat, anno.name, return.col.names = NULL, return.col.
       db.file.prefix = params[["db.file.prefix"]], ...)
   }
 }
+
+# A auto recognition function to get the annotation function from database.cfg
+get.annotation.func <- function(anno.name, database.cfg = system.file("extdata", "config/databases.toml", 
+  package = "annovarR")) {
+  all.supported.db <- get.annotation.names(database.cfg)
+  if (!(anno.name %in% all.supported.db)) {
+    stop(sprintf("%s not be supported.", anno.name))
+  }
+  config <- configr::read.config(database.cfg)
+  config <- config[names(config) != "Title"]
+  index <- lapply(config, function(x) {
+    anno.name %in% x[["versions"]]
+  })
+  index <- unlist(index)
+  config <- config[[names(config)[index]]]
+  return(config$func)
+}

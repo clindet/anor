@@ -164,14 +164,14 @@ format.db.tb.fun = "format.db.tb"
 [cadd]
 versions = ["cadd", "caddgt10", "caddgt20", "cadd13", "cadd13gt10", "cadd13gt20"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = [6, 7]
+return.col.index = ""
 format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
@@ -212,7 +212,7 @@ format.db.tb.fun = "format.db.tb"
 [dbnsfp]
 versions = ["dbnsfp30a", "dbnsfp31a_interpro", "dbnsfp33a"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default.dbtype = ["sqlite", "sqlite", "sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -292,7 +292,7 @@ format.db.tb.fun = "format.db.tb"
 [exac03]
 versions = ["exac03", "exac03nontcga", "exac03nonpsych"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default.dbtype = ["sqlite", "sqlite", "sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -308,7 +308,7 @@ format.db.tb.fun = "format.db.tb"
 [gnomad]
 versions = ["gnomad_exome", "gnomad_genome"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default.dbtype = ["sqlite", "sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -340,7 +340,7 @@ format.db.tb.fun = "format.db.tb"
 [popfreq]
 versions = ["popfreq_max_20150413", "popfreq_all_20150413"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default.dbtype = ["sqlite", "sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -388,7 +388,7 @@ format.db.tb.fun = "format.db.tb"
 [refgene]
 versions = ["ucsc_refgene", "ens_refgene"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default.dbtype = ["txt", "txt"]
 is.region = true
 
 need.cols = ["chr", "start", "end"]

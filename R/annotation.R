@@ -137,7 +137,8 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   dbname <- returned.list$params
   rm(returned.list)
   gc()
-  
+
+  # Sync matched colsnames with reference database
   full.matched.cols.raw <- full.matched.cols
   inferior.col.raw <- inferior.col
   superior.col.raw <- superior.col
@@ -240,9 +241,11 @@ annotation.merge <- function(anno.names, col.cl.num = NULL, ...) {
     params <- list(...)
     dat <- params$dat
     clusterExport(col.cl, "dat", envir = environment())
+    clusterExport(col.cl, "anno.names", envir = environment())
     registerDoParallel(col.cl)
-    result.list <- foreach(anno.names = anno.names, .combine = cbind, .packages = "annovarR") %dopar% 
-      annotation(anno.name = anno.names, ...)
+    x <- NULL
+    result.list <- foreach(x = 1:length(anno.names), .combine = cbind, .packages = "annovarR") %dopar% 
+      annotation(anno.name = anno.names[x], ...)
     stopCluster(col.cl)
   }
   return(as.data.table(result.list))
