@@ -44,6 +44,126 @@ database.dir.check <- function(dbname.fixed = NULL, database.dir = NULL) {
   }
 }
 
+# preprocess before to query with database
+before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.cols = c("chr", 
+    "start"), format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
+  setdb.fun = set.db, set.table.fun = set.table, db.type = "sqlite", 
+  db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
+  verbose = FALSE) {
+  dat <- input.dat.check(dat)
+  if (is.null(dat)) {
+    return(NULL)
+  }
+  dat.names <- names(dat)
+  database.dir.check(dbname.fixed = dbname.fixed, database.dir = database.dir)
+  dat <- input.dat.initial(dat, format.dat.fun, verbose)
+  db.file.prefix <- db.file.prefix.initial(db.type, db.file.prefix)
+  # dbname is path of sqlite or text database or is dbname of MySQL database
+  dbname <- dbname.initial(anno.name, dbname.fixed, setdb.fun, buildver, database.dir, 
+    db.type, db.file.prefix, mysql.connect.params, sqlite.connect.params)
+  # table.name initial
+  table.name <- table.name.initial(anno.name, table.name.fixed, buildver, set.table.fun)
+  
+  # database.params initial
+  database.params <- database.params.initial(db.type, dbname, table.name, sqlite.connect.params, 
+    mysql.connect.params)
+  sqlite.connect.params <- database.params[["sqlite"]]
+  mysql.connect.params <- database.params[["mysql"]]
+  print.db.info(dbname, db.type, mysql.connect.params, verbose)
+  
+  database.con <- connect.db(dbname, db.type, sqlite.connect.params, mysql.connect.params, 
+    verbose)
+  tb.colnames <- db.tb.colnames(dbname = dbname, db.type = db.type, sqlite.connect.params, 
+    mysql.connect.params)
+  info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
+  
+  print.vb(index.cols, verbose = verbose)
+  print.vb(dat, verbose = verbose)
+  # Get unique records, params is pass to select.dat.full.match and get matched
+  # data table from database
+  dup <- !duplicated(dat)
+  params <- dat[dup, index.cols, with = FALSE]
+  
+  # Sync the colnames between input cols and database table cols which be used to
+  # select data
+  tb.colnames <- tb.colnames[db.col.order]
+  index.cols.order <- match(colnames(dat), index.cols)
+  index.cols.order <- index.cols.order[!is.na(index.cols.order)]
+  colnames(params) <- tb.colnames[index.cols.order]
+  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select dat from database (%s).", 
+    paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
+    verbose = verbose)
+  print.vb(params, verbose = verbose)
+  return(list(dat = dat, dat.names = dat.names, params = params, database.con = database.con, tb.colnames = tb.colnames, 
+              table.name = table.name, index.cols.order = index.cols.order, dbname = dbname))
+}
+
+# after query process
+after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fun = NULL, 
+                              db.col.order = NULL, tb.colnames = NULL, matched.cols = NULL,
+                              full.matched.cols = NULL, full.matched.cols.raw = NULL,
+                              inferior.col = NULL, inferior.col.raw = NULL, superior.col = NULL,
+                              superior.col.raw = NULL, dbname = NULL,
+                              return.col.index = NULL, return.col.names = NULL, 
+                              database.con = NULL, db.type = NULL, dat.names = NULL, params = NULL, 
+                              get.final.table.fun = get.full.match.final.table, verbose = FALSE) {
+  if (!is.null(matched.cols)) {
+    selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = dat)
+  } else {
+    selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = params,
+      inferior.col = inferior.col, superior.col = superior.col)
+  }
+  info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
+    verbose = verbose)
+  print.vb(selected.db.tb, verbose = verbose)
+  
+  # Check return.col.index, if empty return the all of cols in database without
+  # matched cols
+  if (all(return.col.index == "")) {
+    all.cols <- 1:ncol(selected.db.tb)
+    return.col.index <- all.cols[!all.cols %in% db.col.order]
+  }
+  
+  # If selected data is empty, return NA matrix according the return.col.index and
+  # return.col.names
+  if (nrow(selected.db.tb) == 0) {
+    empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
+    disconnect.db(database.con, db.type)
+    return(empty.col)
+  }
+  
+  # Sync colnames between selected data and input data
+  selected.db.tb <- sync.colnames(selected.db.tb, db.col.order, dat.names)
+  tb.colnames <- colnames(selected.db.tb)
+  info.msg(sprintf("After sync colnames, the selected data colnames:%s", paste0(tb.colnames, 
+    collapse = ",")), verbose = verbose)
+  selected.colnames <- tb.colnames[return.col.index]
+  
+  if (!is.null(matched.cols)) {
+    selected.db.tb <- get.final.table.fun(dat, selected.db.tb, matched.cols, 
+      selected.colnames, verbose)
+  } else {
+    selected.db.tb <- get.final.table.fun(dat, selected.db.tb,
+      inferior.col.raw, superior.col.raw, selected.colnames, verbose)
+  }
+  
+  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
+    verbose = verbose)
+  disconnect.db(database.con, db.type)
+  
+  # Final process on result
+  result <- selected.db.tb
+  if (any(return.col.names != "")) {
+    colnames(result) <- return.col.names
+  } else {
+    colnames(result) <- tb.colnames[return.col.index]
+  }
+  info.msg("Returned data:", verbose = verbose)
+  print.vb(result, verbose = verbose)
+  return(result)
+}
+
 # Sync database and input table colnames
 sync.colnames <- function(result, col.order, col.names) {
   colnames(result)[col.order] <- col.names

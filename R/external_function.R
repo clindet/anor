@@ -49,7 +49,8 @@ format.db.tb <- function(...) {
 format.db.region.tb <- function(...) {
   params <- list(...)
   db.tb <- params$db.tb
-  index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, params$superior.col)$index.table
+  index.table <- full.foverlaps(db.tb, params$input.dat,
+                                params$inferior.col, params$superior.col)$index.table
   db.tb <- db.tb[index.table$yid, ]
   db.tb <- cbind(db.tb, index.table[, 1])
   return(db.tb)
@@ -149,7 +150,7 @@ format.db.tb.unique <- function(...) {
   keys <- paste0(index.cols, collapse = "\", \"")
   text <- sprintf("setkey(db.tb, \"%s\")", keys)
   eval(parse(text = text))
-  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(index.cols, collapse = "//"))
+  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(index.cols, collapse = ", "))
   eval(parse(text = text))
   rs.frq <- table(db.tb$new)
   rs.frq <- as.data.table(rs.frq)

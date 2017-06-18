@@ -43,99 +43,32 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.tb, 
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
-  dat <- input.dat.check(dat)
-  if (is.null(dat)) {
-    return(NULL)
-  }
-  dat.names <- names(dat)
-  database.dir.check(dbname.fixed = dbname.fixed, database.dir = database.dir)
-  dat <- input.dat.initial(dat, format.dat.fun, verbose)
-  db.file.prefix <- db.file.prefix.initial(db.type, db.file.prefix)
-  # dbname is path of sqlite or text database or is dbname of MySQL database
-  dbname <- dbname.initial(anno.name, dbname.fixed, setdb.fun, buildver, database.dir, 
-    db.type, db.file.prefix, mysql.connect.params, sqlite.connect.params)
-  # table.name initial
-  table.name <- table.name.initial(anno.name, table.name.fixed, buildver, set.table.fun)
   
-  # database.params initial
-  database.params <- database.params.initial(db.type, dbname, table.name, sqlite.connect.params, 
-    mysql.connect.params)
-  sqlite.connect.params <- database.params[["sqlite"]]
-  mysql.connect.params <- database.params[["mysql"]]
-  print.db.info(dbname, db.type, mysql.connect.params, verbose)
-  
-  database.con <- connect.db(dbname, db.type, sqlite.connect.params, mysql.connect.params, 
-    verbose)
-  tb.colnames <- db.tb.colnames(dbname = dbname, db.type = db.type, sqlite.connect.params, 
-    mysql.connect.params)
-  tb.colnames.raw <- tb.colnames
-  info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
-  
-  print.vb(index.cols, verbose = verbose)
-  print.vb(dat, verbose = verbose)
-  # Get unique records, params is pass to select.dat.full.match and get matched
-  # data table from database
-  dup <- !duplicated(dat)
-  params <- dat[dup, index.cols, with = FALSE]
-  
-  # Sync the colnames between input cols and database table cols which be used to
-  # select data
-  tb.colnames <- tb.colnames[db.col.order]
-  index.cols.order <- match(colnames(dat), index.cols)
-  index.cols.order <- index.cols.order[!is.na(index.cols.order)]
-  colnames(params) <- tb.colnames[index.cols.order]
-  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.full.match from database (%s).", 
-    paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
-    verbose = verbose)
-  print.vb(params, verbose = verbose)
-  
+  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir,
+               db.col.order = db.col.order, index.cols = index.cols, format.dat.fun = format.dat.fun, 
+               dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, 
+               setdb.fun = setdb.fun, set.table.fun = set.table.fun, db.type = db.type, 
+               db.file.prefix = db.file.prefix, mysql.connect.params = mysql.connect.params, 
+               sqlite.connect.params = sqlite.connect.params, verbose = verbose)
+  returned.list <- do.call(before.query.steps, pars)
+  dat <- returned.list$dat
+  database.con <- returned.list$database.con
+  table.name <- returned.list$table.name
+  tb.colnames <- returned.list$tb.colnames
+  index.cols.order <- returned.list$index.cols.order
+  dat.names <- returned.list$dat.names
+  params <- returned.list$params
+  rm(returned.list)
+  gc()
   # Select data from database
   selected.db.tb <- select.dat.full.match(database.con, table.name, tb.colnames[index.cols.order], 
     params = params, db.type = db.type, verbose = verbose)
-  selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = dat)
-  info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
-    verbose = verbose)
-  print.vb(selected.db.tb, verbose = verbose)
-  
-  # Check return.col.index, if empty return the all of cols in database without
-  # matched cols
-  if (all(return.col.index == "")) {
-    all.cols <- 1:ncol(selected.db.tb)
-    return.col.index <- all.cols[!all.cols %in% db.col.order]
-  }
-  
-  # If selected data is empty, return NA matrix according the return.col.index and
-  # return.col.names
-  if (nrow(selected.db.tb) == 0) {
-    empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
-    disconnect.db(database.con, db.type)
-    return(empty.col)
-  }
-  
-  # Sync colnames between selected data and input data
-  selected.db.tb <- sync.colnames(selected.db.tb, db.col.order, dat.names)
-  tb.colnames <- colnames(selected.db.tb)
-  info.msg(sprintf("After sync colnames, the selected data colnames:%s", paste0(tb.colnames, 
-    collapse = ",")), verbose = verbose)
-  selected.colnames <- tb.colnames[return.col.index]
-  
-  selected.db.tb <- get.full.match.final.table(dat, selected.db.tb, matched.cols, 
-    selected.colnames, verbose)
-  
-  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
-    verbose = verbose)
-  disconnect.db(database.con, db.type)
-  
-  # Final process on result
-  result <- selected.db.tb
-  if (any(return.col.names != "")) {
-    colnames(result) <- return.col.names
-  } else {
-    colnames(result) <- tb.colnames[return.col.index]
-  }
-  info.msg("Returned data:", verbose = verbose)
-  print.vb(result, verbose = verbose)
-  return(result)
+  pars <- list(dat = dat, selected.db.tb = selected.db.tb, format.db.tb.fun = format.db.tb.fun, 
+               return.col.index = return.col.index, matched.cols = matched.cols, db.col.order = db.col.order, 
+               return.col.names = return.col.names, tb.colnames = tb.colnames,
+               database.con = database.con, db.type = db.type, dat.names = dat.names, get.final.table.fun = 
+               get.full.match.final.table, verbose = verbose)
+  return(do.call(after.query.steps, pars))
 }
 
 #' A regeion annotation utils that can be used to write a yourself annotation function
@@ -187,46 +120,24 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.region.tb, 
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
-  dat <- input.dat.check(dat)
-  if (is.null(dat)) {
-    return(NULL)
-  }
-  dat.names <- names(dat)
-  database.dir.check(dbname.fixed = dbname.fixed, database.dir = database.dir)
-  dat <- input.dat.initial(dat, format.dat.fun, verbose)
-  db.file.prefix <- db.file.prefix.initial(db.type, db.file.prefix)
-
-  # dbname is path of sqlite or text database or is dbname of MySQL database
-  dbname <- dbname.initial(anno.name, dbname.fixed, setdb.fun, buildver, database.dir, 
-    db.type, db.file.prefix, mysql.connect.params, sqlite.connect.params)
+  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir,
+               db.col.order = db.col.order, index.cols = index.cols, format.dat.fun = format.dat.fun, 
+               dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, 
+               setdb.fun = setdb.fun, set.table.fun = set.table.fun, db.type = db.type, 
+               db.file.prefix = db.file.prefix, mysql.connect.params = mysql.connect.params, 
+               sqlite.connect.params = sqlite.connect.params, verbose = verbose)
+  returned.list <- do.call(before.query.steps, pars)
+  dat <- returned.list$dat
+  database.con <- returned.list$database.con
+  table.name <- returned.list$table.name
+  tb.colnames <- returned.list$tb.colnames
+  index.cols.order <- returned.list$index.cols.order
+  dat.names <- returned.list$dat.names
+  params <- returned.list$params
+  dbname <- returned.list$params
+  rm(returned.list)
+  gc()
   
-  # table.name initial
-  table.name <- table.name.initial(anno.name, table.name.fixed, buildver, set.table.fun)
-  
-  # database.params initial
-  database.params <- database.params.initial(db.type, dbname, table.name, sqlite.connect.params, 
-    mysql.connect.params)
-  sqlite.connect.params <- database.params[["sqlite"]]
-  mysql.connect.params <- database.params[["mysql"]]
-  print.db.info(dbname, db.type, mysql.connect.params, verbose)
-  
-  database.con <- connect.db(dbname, db.type, sqlite.connect.params, mysql.connect.params, 
-    verbose)
-  tb.colnames <- db.tb.colnames(dbname = dbname, db.type = db.type, sqlite.connect.params, 
-    mysql.connect.params)
-  info.msg("Database colnames:%s", paste0(tb.colnames, collapse = ", "), verbose = verbose)
-  
-  # Get unique records, params is pass to select.dat.full.match and get matched
-  # data table from database
-  dup <- !duplicated(dat)
-  params <- dat[dup, index.cols, with = FALSE]
-  
-  # Sync the colnames between input cols and database table cols which be used to
-  # select data
-  tb.colnames <- tb.colnames[db.col.order]
-  index.cols.order <- match(colnames(dat), index.cols)
-  index.cols.order <- index.cols.order[!is.na(index.cols.order)]
-  colnames(params) <- tb.colnames[index.cols.order]
   full.matched.cols.raw <- full.matched.cols
   inferior.col.raw <- inferior.col
   superior.col.raw <- superior.col
@@ -235,61 +146,22 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
     text <- sprintf("%s <- '%s'", i, colnames(params)[!is.na(index)])
     eval(parse(text = text))
   }
-  info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select.dat.region.match from database (%s).", 
-    paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
-    verbose = verbose)
-  print.vb(params, verbose = verbose)
   
   # Select data from database
   select.params <- list(db = database.con, table.name = table.name, full.matched.cols = full.matched.cols, 
     inferior.col = inferior.col, superior.col = superior.col, params = params, 
     db.type = db.type, verbose = verbose)
   selected.db.tb <- do.call(select.dat.region.match, select.params)
-  selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = params, 
-    inferior.col = inferior.col, superior.col = superior.col)
-  info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
-    verbose = verbose)
-  print.vb(selected.db.tb, verbose = verbose)
-  
-  # Check return.col.index, if empty return the all of cols in database without
-  # matched cols
-  if (all(return.col.index == "")) {
-    all.cols <- 1:ncol(selected.db.tb)
-    return.col.index <- all.cols[!all.cols %in% db.col.order]
-  }
-  
-  # If selected data is empty, return NA matrix according the return.col.index and
-  # return.col.names
-  if (nrow(selected.db.tb) == 0) {
-    empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
-    disconnect.db(database.con, db.type)
-    return(empty.col)
-  }
-  
-  # Sync colnames between selected data and input data
-  selected.db.tb <- sync.colnames(selected.db.tb, db.col.order, dat.names)
-  tb.colnames <- colnames(selected.db.tb)
-  info.msg(sprintf("After sync colnames, the selected data colnames:%s", paste0(tb.colnames, 
-    collapse = ",")), verbose = verbose)
-  selected.colnames <- tb.colnames[return.col.index]
-  
-  selected.db.tb <- get.region.match.final.table(dat, selected.db.tb, inferior.col.raw, 
-    superior.col.raw, selected.colnames, verbose)
-  
-  info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
-    verbose = verbose)
-  disconnect.db(database.con, db.type)
-  
-  # Final process on result
-  result <- selected.db.tb
-  if (any(return.col.names != "")) {
-    colnames(result) <- return.col.names
-  } else {
-    colnames(result) <- tb.colnames[return.col.index]
-  }
-  info.msg("Returned data:", verbose = verbose)
-  print.vb(result, verbose = verbose)
-  return(result)
+  pars <- list(dat = dat, selected.db.tb = selected.db.tb, format.db.tb.fun = format.db.tb.fun, 
+               return.col.index = return.col.index, full.matched.cols = full.matched.cols, 
+               full.matched.cols.raw = full.matched.cols.raw,
+               inferior.col = inferior.col, inferior.col.raw = inferior.col.raw, 
+               superior.col = superior.col, superior.col.raw = superior.col.raw,
+               db.col.order = db.col.order, params = params,
+               return.col.names = return.col.names, tb.colnames = tb.colnames,
+               database.con = database.con, db.type = db.type, dat.names = dat.names, get.final.table.fun = 
+               get.region.match.final.table, dbname = dbname, verbose = verbose)
+  return(do.call(after.query.steps, pars))
 }
 #' Annotation function (single name)
 #'
