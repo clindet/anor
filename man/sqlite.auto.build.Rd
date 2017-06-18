@@ -4,13 +4,13 @@
 \alias{sqlite.auto.build}
 \title{Build annovarR database in sqlite (auto from extdata/config/database.toml)}
 \usage{
-sqlite.auto.build(name, buildver = "hg19", database.dir = "/path/",
+sqlite.auto.build(anno.name, buildver = "hg19", database.dir = "/path/",
   index = "chr_start_index", db.type = "sqlite",
   database.cfg = system.file("extdata", "config/databases.toml", package =
   "annovarR"), verbose = TRUE)
 }
 \arguments{
-\item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
+\item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
 
 \item{buildver}{Genome version, hg19, hg38, mm10 and others}
 

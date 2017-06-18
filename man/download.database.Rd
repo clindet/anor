@@ -4,14 +4,14 @@
 \alias{download.database}
 \title{Download annovarR databases}
 \usage{
-download.database(name = c(), version = c(), buildver = "hg19",
+download.database(catgry.name = c(), version = c(), buildver = "hg19",
   database.dir = c(), database.cfg = system.file("extdata",
   "config/download.toml", package = "annovarR"), show.all.versions = FALSE,
   show.all.names = FALSE, show.all.buildvers = FALSE, verbose = FALSE,
   ...)
 }
 \arguments{
-\item{name}{Name of download eg. cosmic, avsnp, 1000g}
+\item{catgry.name}{Name of download catgry eg. cosmic, avsnp, 1000g}
 
 \item{version}{Version of download database}
 

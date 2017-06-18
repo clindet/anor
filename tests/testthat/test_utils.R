@@ -36,10 +36,10 @@ test_that("get.annotation.func", {
 test_that("get.cfg.value.by.name", {
   cfg <- system.file("extdata", "config/databases.toml", package = "annovarR")
   x <- get.cfg.value.by.name("avsnp138", cfg, key = "return.col.names", coincident = TRUE, 
-    extra.list = list(name = "avsnp138"), rcmd.parse = TRUE)
+    extra.list = list(anno.name = "avsnp138"), rcmd.parse = TRUE)
   expect_that(x, equals("avSNP138"))
   x <- get.cfg.value.by.name("1000g2015aug_all", cfg, key = "return.col.names", 
-    coincident = TRUE, extra.list = list(name = "1000g2015aug_all"), rcmd.parse = TRUE)
+    coincident = TRUE, extra.list = list(anno.name = "1000g2015aug_all"), rcmd.parse = TRUE)
   expect_that(x, equals("1000g2015aug_all"))
 })
 

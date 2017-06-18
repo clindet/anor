@@ -11,18 +11,18 @@ format.cols <- function(dat.input) {
   return(dat.input)
 }
 
-set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", db.file.prefix = NULL, 
+set.db <- function(anno.name, buildver = "hg19", database.dir = "", db.type = "", db.file.prefix = NULL, 
   mysql.connect.params = list(), sqlite.connect.params = list()) {
   if (is.null(db.file.prefix)) {
     db.file.prefix <- db.type
   }
   if (db.type == "sqlite") {
-    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.file.prefix)
+    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, anno.name, db.file.prefix)
   } else if (db.type == "txt") {
-    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, name, db.file.prefix)
+    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, anno.name, db.file.prefix)
   } else if (db.type == "mysql") {
     if (is.null(sqlite.connect.params$dbname)) {
-      dbname <- sprintf("%s_%s", buildver, name)
+      dbname <- sprintf("%s_%s", buildver, anno.name)
     } else {
       dbname <- mysql.connect.params[["dbname"]]
     }
@@ -30,14 +30,14 @@ set.db <- function(name, buildver = "hg19", database.dir = "", db.type = "", db.
   return(dbname)
 }
 # Default set table name function
-set.table <- function(name = "", buildver = "", db.type = "sqlite", mysql.connect.params = list(), 
+set.table <- function(anno.name = "", buildver = "", db.type = "sqlite", mysql.connect.params = list(), 
   sqlite.connect.params = list()) {
   if (db.type == "sqlite") {
-    table.name <- paste0(buildver, "_", name)
+    table.name <- paste0(buildver, "_", anno.name)
   } else if (db.type == "txt") {
-    table.name <- paste0(buildver, "_", name)
+    table.name <- paste0(buildver, "_", anno.name)
   } else if (db.type == "mysql") {
-    table.name <- paste0(buildver, "_", name)
+    table.name <- paste0(buildver, "_", anno.name)
   }
 }
 
@@ -56,8 +56,8 @@ format.db.region.tb <- function(...) {
 }
 
 # 1000G needed functions to set database name and table name
-set.1000g.db <- function(name, buildver, database.dir = "", db.type = "sqlite") {
-  list.1000g <- convert.1000g.name(name)
+set.1000g.db <- function(anno.name, buildver, database.dir = "", db.type = "sqlite") {
+  list.1000g <- convert.1000g.name(anno.name)
   if (db.type != "mysql") {
     if (database.dir != "") {
       db <- sprintf("%s/%s_%s.sites.%s_%s.%s", database.dir, buildver, list.1000g$region, 
@@ -68,8 +68,8 @@ set.1000g.db <- function(name, buildver, database.dir = "", db.type = "sqlite") 
     }
   }
 }
-set.1000g.table <- function(name, buildver) {
-  list.1000g <- convert.1000g.name(name)
+set.1000g.table <- function(anno.name, buildver) {
+  list.1000g <- convert.1000g.name(anno.name)
   table <- sprintf("%s_%s.sites.%s_%s", buildver, list.1000g$region, list.1000g$year, 
     list.1000g$month)
 }
@@ -113,11 +113,11 @@ format.cols.plus.chr <- function(dat.input) {
 }
 
 # Sih Normal Pool needed functions to set database name and table name
-set.sih.normal.pool.db <- function(name, buildver, database.dir, db.type = "txt") {
+set.sih.normal.pool.db <- function(anno.name, buildver, database.dir, db.type = "txt") {
   if (db.type == "sqlite") {
-    db <- sprintf("%s/%s_normal%s.sqlite", database.dir, buildver, name)
+    db <- sprintf("%s/%s_normal%s.sqlite", database.dir, buildver, anno.name)
   } else if (db.type == "txt") {
-    db <- sprintf("%s/%s_normal%s.txt", database.dir, buildver, name)
+    db <- sprintf("%s/%s_normal%s.txt", database.dir, buildver, anno.name)
   }
 }
 
@@ -171,14 +171,14 @@ format.db.tb.unique <- function(...) {
 # set.db.rs2pos
 set.db.rs2pos <- function(...) {
   params <- list(...)
-  params$name <- str_replace(params$name, "rs2pos", "avsnp")
+  params$anno.name <- str_replace(params$anno.name, "rs2pos", "avsnp")
   do.call(set.db, params)
 }
 
 # set.table.rs2pos
 set.table.rs2pos <- function(...) {
   params <- list(...)
-  params$name <- str_replace(params$name, "rs2pos", "avsnp")
+  params$anno.name <- str_replace(params$anno.name, "rs2pos", "avsnp")
   do.call(set.table, params)
 }
 
@@ -196,10 +196,10 @@ format.db.tb.refgene <- function(...) {
 # Set refGene and ensGene dbname
 set.db.refgene <- function(...) {
   params <- list(...)
-  if (params$name == "ucsc_refgene") {
-    params$name <- "refGene"
+  if (params$anno.name == "ucsc_refgene") {
+    params$anno.name <- "refGene"
   } else {
-    params$name <- "ensGene"
+    params$anno.name <- "ensGene"
   }
   do.call(set.db, params)
 }
@@ -207,10 +207,10 @@ set.db.refgene <- function(...) {
 # Set refGene and ensGene table.name
 set.table.refgene <- function(...) {
   params <- list(...)
-  if (params$name == "ucsc_refgene") {
-    params$name <- "refGene"
+  if (params$anno.name == "ucsc_refgene") {
+    params$anno.name <- "refGene"
   } else {
-    params$name <- "ensGene"
+    params$anno.name <- "ensGene"
   }
   do.call(set.table, params)
 }

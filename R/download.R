@@ -1,6 +1,6 @@
 #' Download annovarR databases
 #'
-#' @param name Name of download eg. cosmic, avsnp, 1000g
+#' @param catgry.name Name of download catgry eg. cosmic, avsnp, 1000g
 #' @param version Version of download database
 #' @param buildver Genome version, e.g hg19, hg38, mm10
 #' @param database.dir Dir of the databases
@@ -14,7 +14,7 @@
 #' @examples
 #' download.database('1000g', database.dir = sprintf('%s/databases/', tempdir()), 
 #' show.all.versions = TRUE)
-download.database <- function(name = c(), version = c(), buildver = "hg19", database.dir = c(), 
+download.database <- function(catgry.name = c(), version = c(), buildver = "hg19", database.dir = c(), 
   database.cfg = system.file("extdata", "config/download.toml", package = "annovarR"), 
   show.all.versions = FALSE, show.all.names = FALSE, show.all.buildvers = FALSE, 
   verbose = FALSE, ...) {
@@ -22,11 +22,11 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
     database.dir <- normalizePath(database.dir, "/", mustWork = FALSE)
   }
   if (!show.all.versions && !show.all.buildvers && !show.all.names) {
-    if ((length(database.dir) == 1) && (length(name) > length(database.dir))) {
+    if ((length(database.dir) == 1) && (length(catgry.name) > length(database.dir))) {
       if (!dir.exists(database.dir)) {
         dir.create(database.dir, recursive = TRUE)
       }
-      database.dir <- rep(database.dir, length(name))
+      database.dir <- rep(database.dir, length(catgry.name))
     } else {
       dirs <- database.dir[!dir.exists(database.dir)]
       if (length(dirs) > 0) {
@@ -35,7 +35,7 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
     }
   }
   if (show.all.buildvers) {
-    buildvers <- eval.config(value = "buildver_available", config = name, file = database.cfg)
+    buildvers <- eval.config(value = "buildver_available", config = catgry.name, file = database.cfg)
     return(buildvers)
   }
   github.cfg.null <- tempfile()
@@ -46,39 +46,39 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
     return(all.names)
   }
   if (show.all.versions) {
-    all.versions <- install.bioinfo(name = name, github.cfg = github.cfg.null, 
+    all.versions <- install.bioinfo(name = catgry.name, github.cfg = github.cfg.null, 
       nongithub.cfg = database.cfg, show.all.versions = TRUE, verbose = verbose)
     return(all.versions)
   }
-  filenames <- mapply(get.finished.filename, name = name, version = version, buildver = rep(buildver, 
+  filenames <- mapply(get.finished.filename, catgry.name = catgry.name, version = version, buildver = rep(buildver, 
     length(version)), database.cfg = rep(database.cfg, length(version)))
   filenames <- sprintf("%s/%s", database.dir, filenames)
   index <- file.exists(filenames) & file.size(filenames) > 0
   if (any(index)) {
     filenames <- paste0(filenames, collapse = ", ")
     info.msg(sprintf("%s already existed.", filenames), verbose = verbose)
-    name <- name[!index]
+    catgry.name <- catgry.name[!index]
     version <- version[!index]
   }
-  if (length(name) == 0) {
+  if (length(catgry.name) == 0) {
     return(TRUE)
   }
   temp.download.dir = sprintf("%s/%s", database.dir, stringi::stri_rand_strings(1, 
     10))
-  info.msg(sprintf("Setted name:%s", name), verbose = verbose)
+  info.msg(sprintf("Setted catgry.name:%s", catgry.name), verbose = verbose)
   info.msg(sprintf("Setted version:%s", version), verbose = verbose)
   info.msg(sprintf("Setted buildver:%s", buildver), verbose = verbose)
   info.msg(sprintf("Setted database.dir:%s", database.dir), verbose = verbose)
   info.msg(sprintf("Using %s as the temp install dir pass to BioInstaller::install.bioinfo.", 
     temp.download.dir), verbose = verbose)
-  install.bioinfo(name = name, version = version, download.dir = temp.download.dir, 
+  install.bioinfo(name = catgry.name, version = version, download.dir = temp.download.dir, 
     github.cfg = github.cfg.null, nongithub.cfg = database.cfg, download.only = FALSE, 
     extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 
     ...)
   files.and.dirs <- list.files(temp.download.dir, ".*")
   if (length(files.and.dirs) == 0) {
     info.msg(sprintf("Download %s %s version %s database fail.", buildver, version, 
-      name), verbose = verbose)
+      catgry.name), verbose = verbose)
     return(FALSE)
   } else {
     status <- file.rename(sprintf("%s/%s", temp.download.dir, files.and.dirs), 
@@ -86,19 +86,19 @@ download.database <- function(name = c(), version = c(), buildver = "hg19", data
     unlink(temp.download.dir, recursive = TRUE, force = TRUE)
     if (all(status)) {
       info.msg(sprintf("Download %s %s version %s database successful.", buildver, 
-        version, name), verbose = verbose)
+        version, catgry.name), verbose = verbose)
       return(TRUE)
     } else {
       info.msg(sprintf("Download %s %s version %s database fail.", buildver, 
-        version, name), verbose = verbose)
+        version, catgry.name), verbose = verbose)
       return(FALSE)
     }
   }
 }
 
 # Get download and decomparessd filename
-get.finished.filename <- function(name, version, buildver = "hg38", database.cfg = "") {
-  source_url <- eval.config("source_url", name, database.cfg, extra.list = list(buildver = buildver, 
+get.finished.filename <- function(catgry.name, version, buildver = "hg38", database.cfg = "") {
+  source_url <- eval.config("source_url", catgry.name, database.cfg, extra.list = list(buildver = buildver, 
     version = version))[1]
   filename <- basename(source_url)
   filename <- str_replace(filename, ".gz$", "")

@@ -81,7 +81,7 @@ test_that("auto:refgene", {
   start <- c("89057522", "89224732", "52471419")
   end <- c("89057522", "89224732", "52471419")
   dat <- data.table(chr = chr, start = start, end = end)
-  x <- annotation(name = "ucsc_refgene", dat = dat, database.dir = tempdir(), db.type = "sqlite", 
+  x <- annotation(anno.name = "ucsc_refgene", dat = dat, database.dir = tempdir(), db.type = "sqlite", 
     verbose = FALSE)
 })
 

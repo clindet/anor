@@ -4,10 +4,11 @@
 \alias{annotation.cols.match}
 \title{A position annotation utils that can be used to write a yourself annotation function}
 \usage{
-annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5,
-  index.cols = c("chr", "start"), matched.cols = c("chr", "start", "end",
-  "ref", "alt"), return.col.index = 6, return.col.names = "",
+annotation.cols.match(dat = data.table(), anno.name = "",
+  buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", ""),
+  db.col.order = 1:5, index.cols = c("chr", "start"),
+  matched.cols = c("chr", "start", "end", "ref", "alt"),
+  return.col.index = 6, return.col.names = "",
   format.dat.fun = format.cols, dbname.fixed = NULL,
   table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table,
   format.db.tb.fun = format.db.tb, db.type = "sqlite",
@@ -17,7 +18,7 @@ annotation.cols.match(dat = data.table(), name = "", buildver = "hg19",
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
 
-\item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
+\item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
 
 \item{buildver}{Genome version, hg19, hg38, mm10 and others}
 

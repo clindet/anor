@@ -64,14 +64,14 @@ get.annotation.names <- function(database.cfg = system.file("extdata", "config/d
 
 #' Get annovarR default databases type [sqlite, txt]
 #'
-#' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
+#' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param database.cfg Configuration file of annovarR databases infomation
 #' @export
 #' @examples
 #' get.annotation.dbtype('avsnp147') 
-get.annotation.dbtype <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
+get.annotation.dbtype <- function(anno.name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR")) {
-  dbtype <- get.cfg.value.by.name(name, database.cfg, key = "default.dbtype")
+  dbtype <- get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype")
   return(dbtype)
 }
 

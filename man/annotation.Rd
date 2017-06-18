@@ -4,7 +4,7 @@
 \alias{annotation}
 \title{Annotation function (single name)}
 \usage{
-annotation(dat = data.table(), name = "", buildver = "hg19",
+annotation(dat = data.table(), anno.name = "", buildver = "hg19",
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL,
   database.cfg = system.file("extdata", "config/databases.toml", package =
   "annovarR"), func = NULL, mysql.connect.params = list(host = "", dbname =
@@ -14,7 +14,7 @@ annotation(dat = data.table(), name = "", buildver = "hg19",
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
 
-\item{name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.}
+\item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.}
 
 \item{buildver}{Genome version, hg19, hg38, mm10 and others}
 

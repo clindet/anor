@@ -1,3 +1,49 @@
+# Input dat validation check step
+input.dat.check <- function(dat) {
+  if (!is.list(dat)) {
+    stop('Input dat format must be a list.')
+  }
+  if (!is.data.table(dat)) {
+    dat <- as.data.table(dat)
+  }
+  if (nrow(dat) == 0) {
+    return(NULL)
+  } else {
+    return(dat)
+  }
+} 
+
+# Input dat initial to ready analysis
+input.dat.initial <- function(dat, format.dat.fun, verbose = FALSE){
+  info.msg(sprintf("Total %s lines be inputed, colnames is %s.", nrow(dat)), 
+           paste0(colnames(dat), collapse = ", "), verbose = verbose)
+  print.vb(dat, verbose = verbose)
+  # format.dat.fun can standardize the input data
+  info.msg("Formating the input data.", verbose = verbose)
+  dat <- format.dat.fun(dat)
+  info.msg(sprintf("After formated, total %s lines be hold back, colnames is %s.", nrow(dat)), 
+           paste0(colnames(dat), collapse = ", "), verbose = verbose)
+  print.vb(dat, verbose = verbose)
+  return(dat)
+}
+
+# Initial db file prefix
+db.file.prefix.initial <- function(db.type = NULL, db.file.prefix = NULL) {
+  if (is.null(db.file.prefix)) {
+    db.file.prefix <- db.type
+  }
+  return(db.file.prefix)
+}
+
+# Database and database dir check
+database.dir.check <- function(dbname.fixed = NULL, database.dir = NULL) {
+  if (is.null(dbname.fixed) && (is.null(database.dir) || database.dir == "")) {
+    stop("Parameter database.dir not be setted.")
+  } else if (is.null(dbname.fixed) && !dir.exists(database.dir)) {
+    stop(sprintf("%s directory not existed.", database.dir))
+  }
+}
+
 # Sync database and input table colnames
 sync.colnames <- function(result, col.order, col.names) {
   colnames(result)[col.order] <- col.names
@@ -20,16 +66,16 @@ return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col
 }
 
 # A auto recognition function to get the annotation function from database.cfg
-get.annotation.func <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
+get.annotation.func <- function(anno.name, database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR")) {
   all.supported.db <- get.annotation.names(database.cfg)
-  if (!(name %in% all.supported.db)) {
-    stop(sprintf("%s not be supported.", name))
+  if (!(anno.name %in% all.supported.db)) {
+    stop(sprintf("%s not be supported.", anno.name))
   }
   config <- configr::read.config(database.cfg)
   config <- config[names(config) != "Title"]
   index <- lapply(config, function(x) {
-    name %in% x[["versions"]]
+    anno.name %in% x[["versions"]]
   })
   index <- unlist(index)
   config <- config[[names(config)[index]]]
@@ -37,12 +83,12 @@ get.annotation.func <- function(name, database.cfg = system.file("extdata", "con
 }
 
 # Set dbname in annotation.R annotation.pos.utils
-dbname.initial <- function(name, dbname.fixed = NULL, setdb.fun = NULL, buildver = "hg19", 
+dbname.initial <- function(anno.name, dbname.fixed = NULL, setdb.fun = NULL, buildver = "hg19", 
   database.dir = NULL, db.type = "sqlite", db.file.prefix = "sqlite", mysql.connect.params = NULL, 
   sqlite.connect.params = NULL) {
   if (is.null(dbname.fixed)) {
     setdb.fun.args <- methods::formalArgs(setdb.fun)
-    setdb.fun.params <- list(name = name, buildver = buildver, database.dir = database.dir, 
+    setdb.fun.params <- list(anno.name = anno.name, buildver = buildver, database.dir = database.dir, 
       db.type = db.type)
     if ("mysql.connect.params" %in% setdb.fun.args) {
       setdb.fun.params <- config.list.merge(setdb.fun.params, list(mysql.connect.params = mysql.connect.params))
@@ -75,9 +121,9 @@ print.db.info <- function(dbname, db.type, mysql.connect.params, verbose = TRUE)
 }
 
 # Initial table name
-table.name.initial <- function(name, table.name.fixed, buildver, set.table.fun) {
+table.name.initial <- function(anno.name, table.name.fixed, buildver, set.table.fun) {
   if (is.null(table.name.fixed)) {
-    set.table.fun.params <- list(name = name, buildver = buildver)
+    set.table.fun.params <- list(anno.name = anno.name, buildver = buildver)
     table.name <- do.call(set.table.fun, set.table.fun.params)
   } else {
     table.name <- table.name.fixed
@@ -139,15 +185,15 @@ get.region.match.final.table <- function(dat, selected.db.tb, inferior.col = "",
 
 ## ALL.2015.08 => name = hg19_ALL.sites.2015.08.txt, mongh = aug, year = 2015,
 ## region = all
-convert.1000g.name <- function(name) {
+convert.1000g.name <- function(anno.name) {
   month.hash <- list(jan = "01", feb = "02", mar = "03", apr = "04", may = "05", 
     jun = "06", jul = "07", aug = "08", sep = "09", oct = "10", nov = "11", dec = "12")
-  month <- str_extract(name, names(month.hash))
+  month <- str_extract(anno.name, names(month.hash))
   month <- month[!is.na(month)]
   month <- month.hash[month]
-  year <- str_extract(name, "1000g[0-9]*")
+  year <- str_extract(anno.name, "1000g[0-9]*")
   year <- str_replace(year, "1000g", "")
-  region <- str_extract(name, "_[a-z]*")
+  region <- str_extract(anno.name, "_[a-z]*")
   region <- toupper(str_replace(region, "_", ""))
-  return(list(name = name, month = month, year = year, region = region))
+  return(list(anno.name = anno.name, month = month, year = year, region = region))
 }

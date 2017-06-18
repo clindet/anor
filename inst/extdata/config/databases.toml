@@ -6,7 +6,7 @@ default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "@>@str_replace('{{name}}', 'avsnp', 'avSNP')@<@"
+return.col.names = "@>@str_replace('{{anno.name}}', 'avsnp', 'avSNP')@<@"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -38,7 +38,7 @@ func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "@>@str_replace('{{name}}', 'cosmic', 'COSMIC_')@<@"
+return.col.names = "@>@str_replace('{{anno.name}}', 'cosmic', 'COSMIC_')@<@"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -55,7 +55,7 @@ func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{name}}"
+return.col.names = "{{anno.name}}"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -119,7 +119,7 @@ func = "annotation.auto"
 default.dbtype = ["txt", "txt", "txt", "txt", "txt"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{name}}"
+return.col.names = "{{anno.name}}"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -135,7 +135,7 @@ func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{name}}"
+return.col.names = "{{anno.name}}"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -151,7 +151,7 @@ func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{name}}"
+return.col.names = "{{anno.name}}"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -183,7 +183,7 @@ func = "annotation.auto"
 default.dbtype = ["txt"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{name}}"
+return.col.names = "{{anno.name}}"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
@@ -199,7 +199,7 @@ func = "annotation.auto"
 default.dbtype = ["sqlite"]
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{name}}_occurrence"
+return.col.names = "{{anno.name}}_occurrence"
 db.col.order = [1, 2, 3, 4, 5]
 index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]

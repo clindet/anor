@@ -1,6 +1,6 @@
 #' Build annovarR database in sqlite (auto from extdata/config/database.toml)
 #'
-#' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
+#' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases (mysql no need)
 #' @param index Index name in sqlite 
@@ -15,22 +15,22 @@
 #' sqlite.auto.build('avsnp147', 'hg19', database.dir = tempdir(), verbose = TRUE)
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
-sqlite.auto.build <- function(name, buildver = "hg19", database.dir = "/path/", index = "chr_start_index", 
+sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/path/", index = "chr_start_index", 
   db.type = "sqlite", database.cfg = system.file("extdata", "config/databases.toml", 
     package = "annovarR"), verbose = TRUE) {
-  info.msg(sprintf("Auto build database %s %s in %s", buildver, name, database.dir), 
+  info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
     "index.cols")
   default.pars <- list()
   for (item in auto.parameters) {
-    default.pars[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
-      coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
+    default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
+      coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  filename <- do.call(default.pars[["setdb.fun"]], list(name = name, buildver = buildver, 
+  filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, buildver = buildver, 
     database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
   dbname <- str_replace(filename, "txt$", "sqlite")
-  table.name <- do.call(default.pars[["set.table.fun"]], list(name = name, buildver = buildver))
+  table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   sqlite.build(filename = filename, sqlite.connect.params = sqlite.connect.params, 
     verbose = verbose)
@@ -49,7 +49,7 @@ sqlite.auto.build <- function(name, buildver = "hg19", database.dir = "/path/", 
 }
 
 #' Index annovarR database in sqlite (auto from extdata/config/database.toml)
-#' @param name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
+#' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases (mysql no need)
 #' @param index Index name in sqlite 
@@ -66,22 +66,22 @@ sqlite.auto.build <- function(name, buildver = "hg19", database.dir = "/path/", 
 #' verbose = TRUE)
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
-sqlite.auto.index <- function(name, buildver = "hg19", database.dir = "/path/", index = "chr_start_index", 
+sqlite.auto.index <- function(anno.name, buildver = "hg19", database.dir = "/path/", index = "chr_start_index", 
   db.type = "sqlite", database.cfg = system.file("extdata", "config/databases.toml", 
     package = "annovarR"), verbose = TRUE) {
-  info.msg(sprintf("Auto build database %s %s in %s", buildver, name, database.dir), 
+  info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
     "index.cols")
   default.pars <- list()
   for (item in auto.parameters) {
-    default.pars[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
-      coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
+    default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
+      coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  filename <- do.call(default.pars[["setdb.fun"]], list(name = name, buildver = buildver, 
+  filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, buildver = buildver, 
     database.dir = database.dir, db.type = "txt"))
   dbname <- str_replace(filename, "txt$", "sqlite")
-  table.name <- do.call(default.pars[["set.table.fun"]], list(name = name, buildver = buildver))
+  table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
@@ -98,22 +98,22 @@ sqlite.auto.index <- function(name, buildver = "hg19", database.dir = "/path/", 
 }
 
 # Auto to annotation accodring the database.cfg
-annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index = NULL, 
+annotation.auto <- function(dat, anno.name, return.col.names = NULL, return.col.index = NULL, 
   db.col.order = NULL, index.cols = NULL, matched.cols = NULL, full.matched.cols = NULL, 
   inferior.col = NULL, superior.col = NULL, dbname.fixed = NULL, table.name.fixed = NULL, 
   setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, 
   db.file.prefix = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
     package = "annovarR"), is.region = NULL, ...) {
   
-  dat.need.names <- get.cfg.value.by.name(name, database.cfg, key = "need.cols", 
-    coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
+  #dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols", 
+  #  coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   
-  dat <- dat[, colnames(dat) %in% dat.need.names, with = FALSE]
+  #dat <- dat[, colnames(dat) %in% dat.need.names, with = FALSE]
   
   supported.auto.names <- get.annotation.names(database.cfg = database.cfg)
-  if (!name %in% supported.auto.names) {
+  if (!anno.name %in% supported.auto.names) {
     stop(sprintf("%s not be supprted by annotation.auto, please check the name and %s.", 
-      name, database.cfg))
+      anno.name, database.cfg))
   }
   
   auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
@@ -124,15 +124,15 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
     if (is.null(item.value)) {
-      params[[item]] <- get.cfg.value.by.name(name, database.cfg, key = item, 
-        coincident = TRUE, extra.list = list(name = name), rcmd.parse = TRUE)
+      params[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
+        coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
     } else {
       params[[item]] <- item.value
     }
   }
   is.region <- params[["is.region"]]
   if (is.null(is.region) || !is.region) {
-    annotation.cols.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
+    annotation.cols.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
       return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
       index.cols = params[["index.cols"]], matched.cols = params[["matched.cols"]], 
       setdb.fun = eval(parse(text = params[["setdb.fun"]])), set.table.fun = eval(parse(text = params[["set.table.fun"]])), 
@@ -140,7 +140,7 @@ annotation.auto <- function(dat, name, return.col.names = NULL, return.col.index
       dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
       db.file.prefix = params[["db.file.prefix"]], ...)
   } else {
-    annotation.region.match(dat = dat, name = name, return.col.names = params[["return.col.names"]], 
+    annotation.region.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
       return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
       index.cols = params[["index.cols"]], full.matched.cols = params[["full.matched.cols"]], 
       inferior.col = params[["inferior.col"]], superior.col = params[["superior.col"]], 
