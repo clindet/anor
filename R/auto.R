@@ -15,9 +15,9 @@
 #' sqlite.auto.build('avsnp147', 'hg19', database.dir = tempdir(), verbose = TRUE)
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
-sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/path/", index = "chr_start_index", 
-  db.type = "sqlite", database.cfg = system.file("extdata", "config/databases.toml", 
-    package = "annovarR"), verbose = TRUE) {
+sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/path/", 
+  index = "chr_start_index", db.type = "sqlite", database.cfg = system.file("extdata", 
+    "config/databases.toml", package = "annovarR"), verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
@@ -27,10 +27,11 @@ sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/pat
     default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
       coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, buildver = buildver, 
-    database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
+  filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
+    buildver = buildver, database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
   dbname <- str_replace(filename, "txt$", "sqlite")
-  table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, buildver = buildver))
+  table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
+    buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   sqlite.build(filename = filename, sqlite.connect.params = sqlite.connect.params, 
     verbose = verbose)
@@ -66,9 +67,9 @@ sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/pat
 #' verbose = TRUE)
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
-sqlite.auto.index <- function(anno.name, buildver = "hg19", database.dir = "/path/", index = "chr_start_index", 
-  db.type = "sqlite", database.cfg = system.file("extdata", "config/databases.toml", 
-    package = "annovarR"), verbose = TRUE) {
+sqlite.auto.index <- function(anno.name, buildver = "hg19", database.dir = "/path/", 
+  index = "chr_start_index", db.type = "sqlite", database.cfg = system.file("extdata", 
+    "config/databases.toml", package = "annovarR"), verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
@@ -78,10 +79,11 @@ sqlite.auto.index <- function(anno.name, buildver = "hg19", database.dir = "/pat
     default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
       coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, buildver = buildver, 
-    database.dir = database.dir, db.type = "txt"))
+  filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
+    buildver = buildver, database.dir = database.dir, db.type = "txt"))
   dbname <- str_replace(filename, "txt$", "sqlite")
-  table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, buildver = buildver))
+  table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
+    buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
@@ -105,10 +107,11 @@ annotation.auto <- function(dat, anno.name, return.col.names = NULL, return.col.
   db.file.prefix = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
     package = "annovarR"), is.region = NULL, ...) {
   
-  #dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols", 
-  #  coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
+  # dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key =
+  # 'need.cols', coincident = TRUE, extra.list = list(anno.name = anno.name),
+  # rcmd.parse = TRUE)
   
-  #dat <- dat[, colnames(dat) %in% dat.need.names, with = FALSE]
+  # dat <- dat[, colnames(dat) %in% dat.need.names, with = FALSE]
   
   supported.auto.names <- get.annotation.names(database.cfg = database.cfg)
   if (!anno.name %in% supported.auto.names) {
@@ -152,8 +155,8 @@ annotation.auto <- function(dat, anno.name, return.col.names = NULL, return.col.
 }
 
 # A auto recognition function to get the annotation function from database.cfg
-get.annotation.func <- function(anno.name, database.cfg = system.file("extdata", "config/databases.toml", 
-  package = "annovarR")) {
+get.annotation.func <- function(anno.name, database.cfg = system.file("extdata", 
+  "config/databases.toml", package = "annovarR")) {
   all.supported.db <- get.annotation.names(database.cfg)
   if (!(anno.name %in% all.supported.db)) {
     stop(sprintf("%s not be supported.", anno.name))

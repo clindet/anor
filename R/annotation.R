@@ -44,12 +44,12 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
   
-  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir,
-               db.col.order = db.col.order, index.cols = index.cols, format.dat.fun = format.dat.fun, 
-               dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, 
-               setdb.fun = setdb.fun, set.table.fun = set.table.fun, db.type = db.type, 
-               db.file.prefix = db.file.prefix, mysql.connect.params = mysql.connect.params, 
-               sqlite.connect.params = sqlite.connect.params, verbose = verbose)
+  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir, 
+    db.col.order = db.col.order, index.cols = index.cols, format.dat.fun = format.dat.fun, 
+    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, setdb.fun = setdb.fun, 
+    set.table.fun = set.table.fun, db.type = db.type, db.file.prefix = db.file.prefix, 
+    mysql.connect.params = mysql.connect.params, sqlite.connect.params = sqlite.connect.params, 
+    verbose = verbose)
   returned.list <- do.call(before.query.steps, pars)
   dat <- returned.list$dat
   database.con <- returned.list$database.con
@@ -64,10 +64,10 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   selected.db.tb <- select.dat.full.match(database.con, table.name, tb.colnames[index.cols.order], 
     params = params, db.type = db.type, verbose = verbose)
   pars <- list(dat = dat, selected.db.tb = selected.db.tb, format.db.tb.fun = format.db.tb.fun, 
-               return.col.index = return.col.index, matched.cols = matched.cols, db.col.order = db.col.order, 
-               return.col.names = return.col.names, tb.colnames = tb.colnames,
-               database.con = database.con, db.type = db.type, dat.names = dat.names, get.final.table.fun = 
-               get.full.match.final.table, verbose = verbose)
+    return.col.index = return.col.index, matched.cols = matched.cols, db.col.order = db.col.order, 
+    return.col.names = return.col.names, tb.colnames = tb.colnames, database.con = database.con, 
+    db.type = db.type, dat.names = dat.names, get.final.table.fun = get.full.match.final.table, 
+    verbose = verbose)
   return(do.call(after.query.steps, pars))
 }
 
@@ -120,12 +120,12 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.region.tb, 
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
-  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir,
-               db.col.order = db.col.order, index.cols = index.cols, format.dat.fun = format.dat.fun, 
-               dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, 
-               setdb.fun = setdb.fun, set.table.fun = set.table.fun, db.type = db.type, 
-               db.file.prefix = db.file.prefix, mysql.connect.params = mysql.connect.params, 
-               sqlite.connect.params = sqlite.connect.params, verbose = verbose)
+  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir, 
+    db.col.order = db.col.order, index.cols = index.cols, format.dat.fun = format.dat.fun, 
+    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, setdb.fun = setdb.fun, 
+    set.table.fun = set.table.fun, db.type = db.type, db.file.prefix = db.file.prefix, 
+    mysql.connect.params = mysql.connect.params, sqlite.connect.params = sqlite.connect.params, 
+    verbose = verbose)
   returned.list <- do.call(before.query.steps, pars)
   dat <- returned.list$dat
   database.con <- returned.list$database.con
@@ -137,7 +137,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   dbname <- returned.list$params
   rm(returned.list)
   gc()
-
+  
   # Sync matched colsnames with reference database
   full.matched.cols.raw <- full.matched.cols
   inferior.col.raw <- inferior.col
@@ -154,14 +154,13 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
     db.type = db.type, verbose = verbose)
   selected.db.tb <- do.call(select.dat.region.match, select.params)
   pars <- list(dat = dat, selected.db.tb = selected.db.tb, format.db.tb.fun = format.db.tb.fun, 
-               return.col.index = return.col.index, full.matched.cols = full.matched.cols, 
-               full.matched.cols.raw = full.matched.cols.raw,
-               inferior.col = inferior.col, inferior.col.raw = inferior.col.raw, 
-               superior.col = superior.col, superior.col.raw = superior.col.raw,
-               db.col.order = db.col.order, params = params,
-               return.col.names = return.col.names, tb.colnames = tb.colnames,
-               database.con = database.con, db.type = db.type, dat.names = dat.names, get.final.table.fun = 
-               get.region.match.final.table, dbname = dbname, verbose = verbose)
+    return.col.index = return.col.index, full.matched.cols = full.matched.cols, 
+    full.matched.cols.raw = full.matched.cols.raw, inferior.col = inferior.col, 
+    inferior.col.raw = inferior.col.raw, superior.col = superior.col, superior.col.raw = superior.col.raw, 
+    db.col.order = db.col.order, params = params, return.col.names = return.col.names, 
+    tb.colnames = tb.colnames, database.con = database.con, db.type = db.type, 
+    dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
+    dbname = dbname, verbose = verbose)
   return(do.call(after.query.steps, pars))
 }
 #' Annotation function (single name)
@@ -176,7 +175,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
-#' @param ... Other parametes see \code{\link{annotation.cols.match}}
+#' @param ... Other parameters see \code{\link{annotation.cols.match}}
 #' @export
 #' @examples
 #' library(data.table)
@@ -214,7 +213,7 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
 #'
 #' @param anno.names Annotation names, eg. c('avsnp138', 'avsnp147', '1000g2015aug_all')
 #' @param col.cl.num Number of cores (default is NULL, not use cluster)
-#' @param ... Other parametes see \code{\link{annotation}}
+#' @param ... Other parameters see \code{\link{annotation}}
 #' @export
 #' @examples
 #' library(data.table)

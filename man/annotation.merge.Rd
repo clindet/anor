@@ -11,7 +11,7 @@ annotation.merge(anno.names, col.cl.num = NULL, ...)
 
 \item{col.cl.num}{Number of cores (default is NULL, not use cluster)}
 
-\item{...}{Other parametes see \code{\link{annotation}}}
+\item{...}{Other parameters see \code{\link{annotation}}}
 }
 \description{
 Annotation function (mulitple name)

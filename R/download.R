@@ -14,10 +14,10 @@
 #' @examples
 #' download.database('1000g', database.dir = sprintf('%s/databases/', tempdir()), 
 #' show.all.versions = TRUE)
-download.database <- function(catgry.name = c(), version = c(), buildver = "hg19", database.dir = c(), 
-  database.cfg = system.file("extdata", "config/download.toml", package = "annovarR"), 
-  show.all.versions = FALSE, show.all.names = FALSE, show.all.buildvers = FALSE, 
-  verbose = FALSE, ...) {
+download.database <- function(catgry.name = c(), version = c(), buildver = "hg19", 
+  database.dir = c(), database.cfg = system.file("extdata", "config/download.toml", 
+    package = "annovarR"), show.all.versions = FALSE, show.all.names = FALSE, 
+  show.all.buildvers = FALSE, verbose = FALSE, ...) {
   if (!is.null(database.dir)) {
     database.dir <- normalizePath(database.dir, "/", mustWork = FALSE)
   }
@@ -35,7 +35,8 @@ download.database <- function(catgry.name = c(), version = c(), buildver = "hg19
     }
   }
   if (show.all.buildvers) {
-    buildvers <- eval.config(value = "buildver_available", config = catgry.name, file = database.cfg)
+    buildvers <- eval.config(value = "buildver_available", config = catgry.name, 
+      file = database.cfg)
     return(buildvers)
   }
   github.cfg.null <- tempfile()
@@ -50,8 +51,9 @@ download.database <- function(catgry.name = c(), version = c(), buildver = "hg19
       nongithub.cfg = database.cfg, show.all.versions = TRUE, verbose = verbose)
     return(all.versions)
   }
-  filenames <- mapply(get.finished.filename, catgry.name = catgry.name, version = version, buildver = rep(buildver, 
-    length(version)), database.cfg = rep(database.cfg, length(version)))
+  filenames <- mapply(get.finished.filename, catgry.name = catgry.name, version = version, 
+    buildver = rep(buildver, length(version)), database.cfg = rep(database.cfg, 
+      length(version)))
   filenames <- sprintf("%s/%s", database.dir, filenames)
   index <- file.exists(filenames) & file.size(filenames) > 0
   if (any(index)) {

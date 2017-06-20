@@ -2,9 +2,8 @@
 before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.cols = c("chr", 
     "start"), format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = set.db, set.table.fun = set.table, db.type = "sqlite", 
-  db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
-  verbose = FALSE) {
+  setdb.fun = set.db, set.table.fun = set.table, db.type = "sqlite", db.file.prefix = NULL, 
+  mysql.connect.params = list(), sqlite.connect.params = list(), verbose = FALSE) {
   db.type.check(db.type)
   dat <- input.dat.check(dat)
   if (is.null(dat)) {
@@ -12,7 +11,7 @@ before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "h
   }
   database.dir.check(dbname.fixed = dbname.fixed, database.dir = database.dir)
   dat <- input.dat.initial(dat, format.dat.fun, verbose)
-  dat <- dat[,1:length(db.col.order)]
+  dat <- dat[, 1:length(db.col.order)]
   dat.names <- names(dat)
   db.file.prefix <- db.file.prefix.initial(db.type, db.file.prefix)
   # dbname is path of sqlite or text database or is dbname of MySQL database
@@ -51,23 +50,22 @@ before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "h
     paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
     verbose = verbose)
   print.vb(params, verbose = verbose)
-  return(list(dat = dat, dat.names = dat.names, params = params, database.con = database.con, tb.colnames = tb.colnames, 
-              table.name = table.name, index.cols.order = index.cols.order, dbname = dbname))
+  return(list(dat = dat, dat.names = dat.names, params = params, database.con = database.con, 
+    tb.colnames = tb.colnames, table.name = table.name, index.cols.order = index.cols.order, 
+    dbname = dbname))
 }
 
 # after query process
 after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fun = NULL, 
-                              db.col.order = NULL, tb.colnames = NULL, matched.cols = NULL,
-                              full.matched.cols = NULL, full.matched.cols.raw = NULL,
-                              inferior.col = NULL, inferior.col.raw = NULL, superior.col = NULL,
-                              superior.col.raw = NULL, dbname = NULL,
-                              return.col.index = NULL, return.col.names = NULL, 
-                              database.con = NULL, db.type = NULL, dat.names = NULL, params = NULL, 
-                              get.final.table.fun = get.full.match.final.table, verbose = FALSE) {
+  db.col.order = NULL, tb.colnames = NULL, matched.cols = NULL, full.matched.cols = NULL, 
+  full.matched.cols.raw = NULL, inferior.col = NULL, inferior.col.raw = NULL, superior.col = NULL, 
+  superior.col.raw = NULL, dbname = NULL, return.col.index = NULL, return.col.names = NULL, 
+  database.con = NULL, db.type = NULL, dat.names = NULL, params = NULL, get.final.table.fun = get.full.match.final.table, 
+  verbose = FALSE) {
   if (!is.null(matched.cols)) {
     selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = dat)
   } else {
-    selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = params,
+    selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = params, 
       inferior.col = inferior.col, superior.col = superior.col)
   }
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
@@ -100,8 +98,8 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
     selected.db.tb <- get.final.table.fun(dat, selected.db.tb, matched.cols, 
       selected.colnames, verbose)
   } else {
-    selected.db.tb <- get.final.table.fun(dat, selected.db.tb,
-      inferior.col.raw, superior.col.raw, selected.colnames, verbose)
+    selected.db.tb <- get.final.table.fun(dat, selected.db.tb, inferior.col.raw, 
+      superior.col.raw, selected.colnames, verbose)
   }
   
   info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 

@@ -2,7 +2,7 @@
 db.type.check <- function(db.type) {
   if (is.null(db.type)) {
     stop("Please set db.type value.")
-  } else if (!db.type %in% c('txt', 'sqlite', 'mysql')) {
+  } else if (!db.type %in% c("txt", "sqlite", "mysql")) {
     stop("db.type only support txt/sqlite and mysql.")
   }
 }
@@ -10,7 +10,7 @@ db.type.check <- function(db.type) {
 # Input dat validation check step
 input.dat.check <- function(dat) {
   if (!is.list(dat)) {
-    stop('Input dat format must be a list.')
+    stop("Input dat format must be a list.")
   }
   if (!is.data.table(dat)) {
     dat <- as.data.table(dat)
@@ -20,18 +20,18 @@ input.dat.check <- function(dat) {
   } else {
     return(dat)
   }
-} 
+}
 
 # Input dat initial to ready analysis
-input.dat.initial <- function(dat, format.dat.fun, verbose = FALSE){
-  info.msg(sprintf("Total %s lines be inputed, colnames is %s.", nrow(dat), 
-           paste0(colnames(dat), collapse = ", ")), verbose = verbose)
+input.dat.initial <- function(dat, format.dat.fun, verbose = FALSE) {
+  info.msg(sprintf("Total %s lines be inputed, colnames is %s.", nrow(dat), paste0(colnames(dat), 
+    collapse = ", ")), verbose = verbose)
   print.vb(dat, verbose = verbose)
   # format.dat.fun can standardize the input data
   info.msg("Formating the input data.", verbose = verbose)
   dat <- format.dat.fun(dat)
-  info.msg(sprintf("After formated, total %s lines be hold back, colnames is %s.", nrow(dat), 
-           paste0(colnames(dat), collapse = ", ")), verbose = verbose)
+  info.msg(sprintf("After formated, total %s lines be hold back, colnames is %s.", 
+    nrow(dat), paste0(colnames(dat), collapse = ", ")), verbose = verbose)
   print.vb(dat, verbose = verbose)
   return(dat)
 }
@@ -74,8 +74,8 @@ dbname.initial <- function(anno.name, dbname.fixed = NULL, setdb.fun = NULL, bui
   } else {
     dbname <- dbname.fixed
   }
-  if (db.type %in% c('txt', 'sqlite') && !file.exists(dbname)) {
-    stop(sprintf('%s %s format database dose not exist.', dbname, db.type))
+  if (db.type %in% c("txt", "sqlite") && !file.exists(dbname)) {
+    stop(sprintf("%s %s format database dose not exist.", dbname, db.type))
   }
   return(dbname)
 }

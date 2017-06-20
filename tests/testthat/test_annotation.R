@@ -47,7 +47,7 @@ test_that("annotation.snp", {
   alt <- c("-", "-", "-")
   database.dir <- tempdir()
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="avsnp147", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "avsnp147", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("avSNP147"))
   x[, 1] <- as.character(x[, 1])
@@ -75,7 +75,7 @@ test_that("annotation.cosmic", {
   ref <- c("C", "G", "T")
   alt <- c("T", "A", "-")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="cosmic81", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "cosmic81", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("COSMIC_81"))
   x[, 1] <- as.character(x[, 1])
@@ -91,10 +91,10 @@ test_that("annotation.1000g", {
   ref <- c("-", "A", "A")
   alt <- c("C", "AC", "-")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="1000g2015aug_all", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "1000g2015aug_all", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("1000g2015aug_all"))
-  x <- annotation(dat = dat, anno.name ="1000g2015aug_all", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "1000g2015aug_all", database.dir = database.dir, 
     return.col.names = "1000g2015aug_all_frq")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("1000g2015aug_all_frq"))
@@ -107,7 +107,7 @@ test_that("annotation:cosmic", {
   ref <- c("C", "G", "T")
   alt <- c("T", "A", "-")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="cosmic81", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "cosmic81", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("COSMIC_81"))
   x[, 1] <- as.character(x[, 1])
@@ -123,7 +123,7 @@ test_that("annotation:snp", {
   ref <- c("A", "A", "A")
   alt <- c("-", "-", "-")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="avsnp147", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "avsnp147", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("avSNP147"))
   x[, 1] <- as.character(x[, 1])
@@ -138,7 +138,7 @@ test_that("annotation:RNA-editing", {
   chr <- c("1", "6", "1")
   start <- c("206256301", "116991832", "10020")
   dat <- data.table(chr = chr, start = start)
-  x <- annotation(dat = dat, anno.name ="RADAR2", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "RADAR2", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("RADAR2.is.alu"))
   x[, 1] <- as.character(x[, 1])
@@ -150,7 +150,7 @@ test_that("annotation:RNA-editing", {
   chr <- c("4", "4", "1")
   start <- c("250721", "475468", "10020")
   dat <- data.table(chr = chr, start = start)
-  x <- annotation(dat = dat, anno.name ="DARNED", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "DARNED", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("DARNED.in.rna"))
   x[, 1] <- as.character(x[, 1])
@@ -167,35 +167,35 @@ test_that("annotation.normal.pool", {
   alt <- c("C", "C", "-")
   
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="2016sih_wes_ball", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "2016sih_wes_ball", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("2016sih_wes_ball"))
   x[, 1] <- as.numeric(x[, 1])
   expect_that(x[1, 1], equals(200))
   expect_that(x[2, 1], equals(200))
   expect_that(is.na(x[3, 1]), equals(TRUE))
-  x <- annotation(dat = dat, anno.name ="2016sih_wes_tall", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "2016sih_wes_tall", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("2016sih_wes_tall"))
   x[, 1] <- as.numeric(x[, 1])
   expect_that(x[1, 1], equals(16))
   expect_that(x[2, 1], equals(16))
   expect_that(is.na(x[3, 1]), equals(TRUE))
-  x <- annotation(dat = dat, anno.name ="2016sih_wes_nkt", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "2016sih_wes_nkt", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("2016sih_wes_nkt"))
   x[, 1] <- as.numeric(x[, 1])
   expect_that(x[1, 1], equals(25))
   expect_that(x[2, 1], equals(25))
   expect_that(is.na(x[3, 1]), equals(TRUE))
-  x <- annotation(dat = dat, anno.name ="2016sih_wgs_nkt", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "2016sih_wgs_nkt", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("2016sih_wgs_nkt"))
   x[, 1] <- as.numeric(x[, 1])
   expect_that(x[1, 1], equals(10))
   expect_that(x[2, 1], equals(10))
   expect_that(is.na(x[3, 1]), equals(TRUE))
-  x <- annotation(dat = dat, anno.name ="2016sih_wgs_dlbcl", database.dir = database.dir)
+  x <- annotation(dat = dat, anno.name = "2016sih_wgs_dlbcl", database.dir = database.dir)
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("2016sih_wgs_dlbcl"))
   x[, 1] <- as.numeric(x[, 1])
@@ -263,7 +263,7 @@ test_that("REDIportal", {
   ref <- c("A", "T", "A")
   alt <- c("G", "C", "G")
   dat <- data.table(chr = chr, start = start, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="REDIportal", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "REDIportal", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("REDIportal"))
@@ -278,7 +278,8 @@ test_that("caddgt10", {
   ref <- c("T", "T", "A")
   alt <- c("A", "C", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="caddgt10", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "caddgt10", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("CADDgt10"))
   expect_that(colnames(x)[2], equals("CADDgt10_Phred"))
@@ -295,7 +296,8 @@ test_that("caddgt20", {
   ref <- c("A", "A", "A")
   alt <- c("C", "T", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="caddgt20", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "caddgt20", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("CADDgt20"))
   expect_that(colnames(x)[2], equals("CADDgt20_Phred"))
@@ -313,7 +315,8 @@ test_that("nci60", {
   ref <- c("A", "T", "A")
   alt <- c("G", "G", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="nci60", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "nci60", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("nci60"))
   expect_that(x[1, 1], equals("0.3"))
@@ -328,7 +331,8 @@ test_that("icgc21", {
   ref <- c("A", "-", "A")
   alt <- c("T", "A", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="icgc21", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "icgc21", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("icgc21_occurrence"))
   expect_that(x[1, 1], equals("MELA-AU|1|183|0.00546"))
@@ -343,7 +347,8 @@ test_that("dbnsfp33a", {
   ref <- c("A", "A", "A")
   alt <- c("C", "G", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="dbnsfp30a", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "dbnsfp30a", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("SIFT_score"))
   expect_that(colnames(x)[length(colnames(x))], equals("SiPhy_29way_logOdds"))
@@ -352,7 +357,8 @@ test_that("dbnsfp33a", {
   expect_that(x[2, 1], equals("1.0"))
   expect_that(x[2, 2], equals("T"))
   expect_that(is.na(x[3, 1]), equals(TRUE))
-  x <- annotation(dat = dat, anno.name ="dbnsfp33a", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "dbnsfp33a", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("SIFT_score"))
   expect_that(colnames(x)[length(colnames(x))], equals("GTEx_V6_tissue"))
@@ -368,7 +374,7 @@ test_that("dbnsfp33a", {
   ref <- c("G", "A", "A")
   alt <- c("A", "G", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="dbnsfp31a_interpro", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "dbnsfp31a_interpro", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("Interpro_domain"))
@@ -384,7 +390,7 @@ test_that("gme", {
   ref <- c("A", "A", "A")
   alt <- c("G", "G", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="gme", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "gme", database.dir = database.dir, db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("GME_AF"))
   expect_that(x[1, 1], equals("0.049505"))
@@ -399,7 +405,8 @@ test_that("hrcr1", {
   ref <- c("C", "G", "A")
   alt <- c("G", "A", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="hrcr1", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "hrcr1", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[2], equals("HRC_AC"))
   expect_that(x[1, 2], equals("5"))
@@ -414,7 +421,8 @@ test_that("revel", {
   ref <- c("G", "G", "A")
   alt <- c("A", "C", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="revel", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "revel", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("REVEL"))
   expect_that(x[1, 1], equals("0.027"))
@@ -429,7 +437,7 @@ test_that("mcap", {
   ref <- c("A", "T", "A")
   alt <- c("T", "C", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="mcap", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "mcap", database.dir = database.dir, db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("MCAP"))
   expect_that(x[1, 1], equals("0.00708247797993"))
@@ -444,7 +452,8 @@ test_that("exac03", {
   ref <- c("G", "C", "A")
   alt <- c("C", "G", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="exac03", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "exac03", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("ExAC_ALL"))
   x[, 1] <- formatC(as.numeric(x[, 1]))
@@ -452,7 +461,7 @@ test_that("exac03", {
   expect_that(x[2, 1], equals("0.0033"))
   expect_that(x[3, 1], equals("NA"))
   
-  x <- annotation(dat = dat, anno.name ="exac03nontcga", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "exac03nontcga", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("ExAC_nontcga_ALL"))
@@ -461,7 +470,7 @@ test_that("exac03", {
   expect_that(x[2, 1], equals("0.0024"))
   expect_that(x[3, 1], equals("NA"))
   
-  x <- annotation(dat = dat, anno.name ="exac03nonpsych", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "exac03nonpsych", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("ExAC_nonpsych_ALL"))
@@ -478,7 +487,7 @@ test_that("gnomad", {
   ref <- c("G", "T", "A")
   alt <- c("A", "C", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="gnomad_exome", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "gnomad_exome", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("gnomAD_exome_ALL"))
@@ -493,7 +502,7 @@ test_that("gnomad", {
   ref <- c("AACCCT", "CAACCCT", "A")
   alt <- c("-", "C", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="gnomad_genome", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "gnomad_genome", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("gnomAD_genome_ALL"))
@@ -510,7 +519,8 @@ test_that("gwava", {
   ref <- c("A", "T", "A")
   alt <- c("C", "A", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="gwava", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "gwava", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("GWAVA_region_score"))
   expect_that(x[1, 1], equals("0.47"))
@@ -525,7 +535,7 @@ test_that("kaviar", {
   ref <- c("T", "A", "A")
   alt <- c("C", "T", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="kaviar_20150923", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "kaviar_20150923", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("Kaviar_AF"))
@@ -540,7 +550,7 @@ test_that("popfreq", {
   ref <- c("-", "-", "A")
   alt <- c("C", "A", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="popfreq_all_20150413", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "popfreq_all_20150413", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x)[1], equals("PopFreqMax"))
@@ -554,7 +564,7 @@ test_that("popfreq", {
   ref <- c("-", "-", "A")
   alt <- c("C", "A", "G")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="popfreq_max_20150413", database.dir = database.dir, 
+  x <- annotation(dat = dat, anno.name = "popfreq_max_20150413", database.dir = database.dir, 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("PopFreqMax"))
@@ -570,7 +580,8 @@ test_that("eigen", {
   ref <- c("T", "A", "A")
   alt <- c("G", "C", "GG")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name ="eigen", database.dir = database.dir, db.type = "txt")
+  x <- annotation(dat = dat, anno.name = "eigen", database.dir = database.dir, 
+    db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("Eigen"))
   expect_that(x[1, 1], equals("-0.3078"))

@@ -22,8 +22,8 @@ format.cols.plus.chr <- function(dat.input) {
 }
 
 # Default set database name function
-set.db <- function(anno.name, buildver = "hg19", database.dir = "", db.type = "", db.file.prefix = NULL, 
-  mysql.connect.params = list(), sqlite.connect.params = list()) {
+set.db <- function(anno.name, buildver = "hg19", database.dir = "", db.type = "", 
+  db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list()) {
   if (is.null(db.file.prefix)) {
     db.file.prefix <- db.type
   }
@@ -107,8 +107,7 @@ format.db.tb.unique <- function(...) {
 format.db.region.tb <- function(...) {
   params <- list(...)
   db.tb <- params$db.tb
-  index.table <- full.foverlaps(db.tb, params$input.dat,
-                                params$inferior.col, params$superior.col)$index.table
+  index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, params$superior.col)$index.table
   db.tb <- db.tb[index.table$yid, ]
   db.tb <- cbind(db.tb, index.table[, 1])
   return(db.tb)

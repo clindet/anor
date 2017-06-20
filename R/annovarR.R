@@ -14,8 +14,8 @@
 #' @name annovarR
 #' @import stringr DBI data.table futile.logger configr BioInstaller foreach doParallel
 #' @importFrom bit physical
-#' @importFrom ff as.ffdf.data.frame ffdf
-#' @importFrom ffbase ffdfrbind.fill
+#' @importFrom ff as.ffdf.data.frame ffdf ffload
+#' @importFrom ffbase ffdfrbind.fill ffdfappend
 #' @importFrom parallel clusterApply makeCluster clusterEvalQ clusterExport stopCluster parSapply parLapply
 #' @importFrom stringi stri_rand_strings
 #' @importFrom utils packageVersion head
