@@ -11,7 +11,7 @@ after_success = "mv refGene.txt ucsc_{{buildver}}_refGene.txt"
 [raw_ucsc_knowngene]
 source_url = ["http://hgdownload.cse.ucsc.edu/goldenPath/{{buildver}}/database/knownGene.txt.gz", 
               "http://hgdownload.cse.ucsc.edu/goldenPath/{{buildver}}/database/kgXref.txt.gz"]
-decompress = [true, true]
+decompress = "!!glue {rep(TRUE, 2)}"
 version_newest = "knowngene"
 version_available = ["knowngene"]
 buildver_available = ["hg38", "hg19", "hg18"]
@@ -258,8 +258,6 @@ description = "dbSNP with ANNOVAR index files"
 snp128 = "hg18"
 snp137 = "hg19"
 other = ["hg19", "hg18"]
-
-
 
 [raw_annovar_nci60]
 source_url = ["http://www.openbioinformatics.org/annovar/download/{{buildver}}_{{version}}.txt.gz",

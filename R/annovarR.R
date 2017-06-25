@@ -16,7 +16,7 @@
 #' @importFrom bit physical
 #' @importFrom ff as.ffdf.data.frame ffdf ffload
 #' @importFrom ffbase ffdfrbind.fill ffdfappend
-#' @importFrom parallel clusterApply makeCluster clusterEvalQ clusterExport stopCluster parSapply parLapply
+#' @importFrom parallel clusterApply makeCluster clusterEvalQ clusterExport stopCluster parSapply parLapply detectCores
 #' @importFrom stringi stri_rand_strings
 #' @importFrom utils packageVersion head
 #' @importFrom RMySQL MySQL dbRemoveTable mysqlHasDefault
@@ -32,3 +32,4 @@ NULL
   Sys.setenv(R_TESTS = "")
   invisible()
 }
+

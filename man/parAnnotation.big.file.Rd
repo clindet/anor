@@ -5,7 +5,9 @@
 \title{Annotation function for big file}
 \usage{
 parAnnotation.big.file(filename = "", out.file = "", new.colnames = NULL,
-  new.colnames.order = NULL, fwrite.params = list(), ...)
+  cores.avail = detectCores(logical = F), batch.row.cl.num = 5,
+  min.split.rows = 1e+06, new.colnames.order = NULL,
+  fwrite.params = list(), ff.tmp.dir = tempdir(), ...)
 }
 \arguments{
 \item{filename}{Path of input data}
@@ -14,9 +16,17 @@ parAnnotation.big.file(filename = "", out.file = "", new.colnames = NULL,
 
 \item{new.colnames}{New colnames of table, default is to retain the original (File mode only)}
 
+\item{cores.avail}{Available core num can be used by annovarR}
+
+\item{batch.row.cl.num}{Default is 5 (recommend)}
+
+\item{min.split.rows}{Default is 1e+06, if lower this value, annovarR will not to split the input data (no more than 5e+06)}
+
 \item{new.colnames.order}{New colnames order in table (File mode only)}
 
 \item{fwrite.params}{Other parameters pass to \code{\link[data.table]{fwrite}}}
+
+\item{ff.tmp.dir}{The default ff object stored dir. [Defautle is tempdir()]}
 
 \item{...}{Other parameters see \code{\link{parAnnotation}}}
 }

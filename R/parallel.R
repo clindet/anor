@@ -53,7 +53,11 @@ parAnnotation <- function(row.cl, ...) {
 #' @param out.file Path of output annotation infomation
 #' @param new.colnames New colnames of table, default is to retain the original (File mode only)
 #' @param new.colnames.order New colnames order in table (File mode only)
+#' @param cores.avail Available core num can be used by annovarR
+#' @param batch.row.cl.num Default is 5 (recommend)
+#' @param min.split.rows Default is 1e+06, if lower this value, annovarR will not to split the input data (no more than 5e+06)
 #' @param fwrite.params Other parameters pass to \code{\link[data.table]{fwrite}}
+#' @param ff.tmp.dir The default ff object stored dir. [Defautle is tempdir()]
 #' @param ... Other parameters see \code{\link{parAnnotation}}
 #' @export
 #' @examples
@@ -66,9 +70,11 @@ parAnnotation <- function(row.cl, ...) {
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-parAnnotation.big.file <- function(filename = "", out.file = "", new.colnames = NULL, 
-  new.colnames.order = NULL, fwrite.params = list(), ...) {
-  
+parAnnotation.big.file <- function(filename = "", out.txt = "", new.colnames = NULL, 
+  cores.avail = detectCores(logical = F), batch.row.cl.num = 5, min.split.rows = 1e+06, 
+  new.colnames.order = NULL, fwrite.params = list(sep = "\t"), ff.tmp.dir = tempdir(), 
+  ...) {
+  max.batch.num <- ceiling(cores.avail/batch.row.cl.num)
   params <- list(...)
   if (filename != "") {
     file.row.num <- nrow(fread(filename, select = 1L))
@@ -87,7 +93,7 @@ parAnnotation.big.file <- function(filename = "", out.file = "", new.colnames = 
   if (file.row.num >= 5e+06) {
     split.region <- 1e+06
     max.split.num <- file.row.num/split.region
-  } else if (file.row.num > 1e+06) {
+  } else if (file.row.num > min.split.rows) {
     split.region <- 5e+05
     max.split.num <- file.row.num/split.region
   } else {
@@ -127,65 +133,58 @@ parAnnotation.big.file <- function(filename = "", out.file = "", new.colnames = 
       }
     }
     params[["dat"]] <- dat.tmp
-    out.ff <- tempfile()
-    split.anno.out.list[[i]] <- out.ff
+    out.file <- tempfile()
+    split.anno.out.list[[i]] <- out.file
     params.file <- tempfile()
-    params.extra <- list(out.ff = out.ff)
+    params.extra <- list(out.file = out.file)
     params.extra.file <- tempfile()
     save(params, file = params.file)
     save(params.extra, file = params.extra.file)
     script <- set.big.file.script(split.file, params.file, params.extra.file, 
-      tempdir())
+      ff.tmp.dir, batch.row.cl.num, tempfile())
     script.tmp <- tempfile()
     writeLines(script, script.tmp, sep = "\n")
-    if (i%%7 == 0) {
-      if (split.region == 1e+06) {
-        Sys.sleep(35)
-      } else if (split.region == 5e+05) {
-        Sys.sleep(20)
+    while (TRUE) {
+      lock.file.num <- length(list.files(tempdir(), "*.annovarR.lock"))
+      if (lock.file.num < max.batch.num) {
+        break
       } else {
-        Sys.sleep(10)
+        Sys.sleep(5)
       }
     }
     system(sprintf("Rscript %s", script.tmp), ignore.stderr = TRUE, ignore.stdout = TRUE, 
       wait = FALSE)
   }
-  for (i in split.seq) {
-    result.tmp <- NULL
-    out.ff <- split.anno.out.list[[i]]
-    while (TRUE) {
-      if (file.exists(sprintf("%s.ffData", out.ff)) && file.exists(sprintf("%s.RData", 
-        out.ff))) {
-        break
-      }
+  while (TRUE) {
+    out.file <- split.anno.out.list
+    is.finished <- all(file.exists(sprintf("%s", out.file)))
+    if (is.finished) {
+      break
+    } else {
       Sys.sleep(5)
     }
-    ffload(file = split.anno.out.list[[i]], overwrite = TRUE)
-    if (i == 1) {
-      result <- result.tmp
-    } else {
-      result <- ffdfappend(result, result.tmp)
-    }
-    rm(result.tmp)
-    gc()
   }
-  if (out.file != "") {
-    fwrite.params <- config.list.merge(list(x = result, file = out.file))
-    do.call(fwrite, fwrite.params)
+  result <- NULL
+  if (file.exists(out.txt)) {
+    file.remove(out.txt)
   }
-  return(result)
+  for (x in split.seq) {
+    result.tmp <- NULL
+    result.tmp <- fread(split.anno.out.list[[x]])
+    fwrite(result.tmp, out.txt, append = TRUE, na = fixed("NA"), sep = "\t")
+  }
 }
 
 # Set parAnnotation.big.file script
 set.big.file.script <- function(split.file = "", params.file = "", params.extra.file = "", 
-  tmp.dir = "") {
-  script <- sprintf(paste0("library(annovarR);library(parallel);library(data.table);library(ff);", 
-    "load('%s');load('%s');options(fftempdir = '%s');", "params$row.cl <- makeCluster(5);", 
-    "if (!'dat' %s names(params)){params$dat <- fread('%s')};", "print(params);", 
+  ff.tmp.dir = "", batch.row.cl.num = 5, lock.file = tempfile()) {
+  script <- sprintf(paste0("library(annovarR);library(parallel);library(data.table);", 
+    "load('%s');load('%s');options(fftempdir = '%s');", "params$row.cl <- makeCluster(%s);", 
+    "if (!'dat' %s names(params)){params$dat <- fread('%s')};", "lock.file <- '%s.annovarR.lock';file.create(lock.file);", 
     "result.tmp <- do.call(parAnnotation, params);", "stopCluster(params$row.cl);", 
-    "result.tmp <- lapply(result.tmp, as.factor);", "result.tmp <- as.ffdf.data.frame(result.tmp);", 
-    "ffsave(result.tmp, file = params.extra$out.ff);"), params.file, params.extra.file, 
-    tmp.dir, "%in%", split.file)
+    "file.remove(lock.file);", "fwrite(result.tmp, file = params.extra$out.file, na = 'NA');"), 
+    params.file, params.extra.file, ff.tmp.dir, batch.row.cl.num, "%in%", split.file, 
+    lock.file)
   
 }
 
