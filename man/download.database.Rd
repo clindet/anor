@@ -6,9 +6,9 @@
 \usage{
 download.database(catgry.name = c(), version = c(), buildver = "hg19",
   database.dir = c(), database.cfg = system.file("extdata",
-  "config/download.toml", package = "annovarR"), show.all.versions = FALSE,
-  show.all.names = FALSE, show.all.buildvers = FALSE, verbose = FALSE,
-  ...)
+  "config/db/db_annovar.toml", package = "BioInstaller"),
+  show.all.versions = FALSE, show.all.names = FALSE,
+  show.all.buildvers = FALSE, verbose = FALSE, ...)
 }
 \arguments{
 \item{catgry.name}{Name of download catgry eg. cosmic, avsnp, 1000g}
@@ -19,7 +19,10 @@ download.database(catgry.name = c(), version = c(), buildver = "hg19",
 
 \item{database.dir}{Dir of the databases}
 
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file for download, most of annovarR database 
+resources can be found in system.file('extdata', 
+'config/db/db_annovar.toml', package = "BioInstaller") and 
+system.file('extdata', 'config/db/db_main.toml', package = "BioInstaller")}
 
 \item{show.all.versions}{Logical indicating wheather show all avaliable versions}
 
@@ -35,6 +38,10 @@ download.database(catgry.name = c(), version = c(), buildver = "hg19",
 Download annovarR databases
 }
 \examples{
-download.database('1000g', database.dir = sprintf('\%s/databases/', tempdir()), 
+download.database('db_annovar_1000g', database.dir = sprintf('\%s/databases/', tempdir()), 
 show.all.versions = TRUE)
+
+download.database(show.all.names = TRUE)
+download.database(database.cfg = system.file('extdata', 'config/db/db_main.toml', package = "BioInstaller"), 
+show.all.names = TRUE)
 }

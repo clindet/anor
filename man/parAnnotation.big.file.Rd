@@ -4,15 +4,13 @@
 \alias{parAnnotation.big.file}
 \title{Annotation function for big file}
 \usage{
-parAnnotation.big.file(filename = "", out.file = "", new.colnames = NULL,
+parAnnotation.big.file(filename = "", out.txt = "", new.colnames = NULL,
   cores.avail = detectCores(logical = F), batch.row.cl.num = 5,
   min.split.rows = 1e+06, new.colnames.order = NULL,
-  fwrite.params = list(), ff.tmp.dir = tempdir(), ...)
+  fwrite.params = list(sep = "\\t"), ff.tmp.dir = tempdir(), ...)
 }
 \arguments{
 \item{filename}{Path of input data}
-
-\item{out.file}{Path of output annotation infomation}
 
 \item{new.colnames}{New colnames of table, default is to retain the original (File mode only)}
 
@@ -29,6 +27,8 @@ parAnnotation.big.file(filename = "", out.file = "", new.colnames = NULL,
 \item{ff.tmp.dir}{The default ff object stored dir. [Defautle is tempdir()]}
 
 \item{...}{Other parameters see \code{\link{parAnnotation}}}
+
+\item{out.file}{Path of output annotation infomation}
 }
 \description{
 Annotation function for big file

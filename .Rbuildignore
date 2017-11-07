@@ -5,3 +5,4 @@
 ^data-raw$
 .travis.yml
 ^pre-db
+Makefile

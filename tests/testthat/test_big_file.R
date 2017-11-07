@@ -18,7 +18,7 @@ test_that("big file", {
       2e+05), ref = rep(ref, 2e+05), alt = rep(alt, 2e+05))
     x <- system.time(result <- parAnnotation.big.file(dat = dat, anno.names = c("avsnp147", 
       "cosmic81"), database.dir = database.dir, db.type = "txt", ff.tmp.dir = tempdir(), 
-      out.txt = "/home/ljf/result.txt", fwrite.params = list(sep = "\t")))
+      out.txt = tempfile(), fwrite.params = list(sep = "\t")))
     print(x)
     dat.file <- tempfile()
     fwrite(dat, dat.file, sep = "\t")

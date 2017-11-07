@@ -15,7 +15,7 @@ LazyData: true
 Imports:
     stringr (>= 1.2.0),
     configr (>= 0.2.2),
-    BioInstaller (>= 0.1.1.3),
+    BioInstaller (>= 0.3.0),
     DBI (>= 0.6-1),
     data.table (>= 1.10.4),
     RSQLite (>= 1.1-2),
