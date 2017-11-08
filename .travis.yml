@@ -11,7 +11,8 @@ before_install:
   - curl -OLs http://eddelbuettel.github.io/r-travis/run.sh && chmod 0755 run.sh
   # optionally add our launchpad repo, but not needed here
   # - sudo add-apt-repository -y ppa:edd/misc
-  - Rscript -e 'install.packages(c("covr", "devtools", "roxygen2", "testthat", "jsonlite", "ini", "yaml", "RcppTOML"))'
+  - Rscript -e 'install.packages(c("covr", "devtools", "roxygen2", "testthat", "configr", "RSQLite", "futile.logger", "RMySQL", "ff", "ffbase", "bit", "foreach", "doParallel", "data.table"))'
+  - Rscript -e 'devtools::install_github("JhuangLab/BioInstaller")'
   - ./run.sh bootstrap
 
 install:
