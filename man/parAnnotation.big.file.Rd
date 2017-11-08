@@ -12,6 +12,8 @@ parAnnotation.big.file(filename = "", out.txt = "", new.colnames = NULL,
 \arguments{
 \item{filename}{Path of input data}
 
+\item{out.txt}{Path of output annotation infomation}
+
 \item{new.colnames}{New colnames of table, default is to retain the original (File mode only)}
 
 \item{cores.avail}{Available core num can be used by annovarR}
@@ -27,8 +29,6 @@ parAnnotation.big.file(filename = "", out.txt = "", new.colnames = NULL,
 \item{ff.tmp.dir}{The default ff object stored dir. [Defautle is tempdir()]}
 
 \item{...}{Other parameters see \code{\link{parAnnotation}}}
-
-\item{out.file}{Path of output annotation infomation}
 }
 \description{
 Annotation function for big file

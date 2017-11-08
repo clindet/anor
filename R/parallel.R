@@ -50,7 +50,7 @@ parAnnotation <- function(row.cl, ...) {
 #' Annotation function for big file
 #'
 #' @param filename Path of input data
-#' @param out.file Path of output annotation infomation
+#' @param out.txt Path of output annotation infomation
 #' @param new.colnames New colnames of table, default is to retain the original (File mode only)
 #' @param new.colnames.order New colnames order in table (File mode only)
 #' @param cores.avail Available core num can be used by annovarR

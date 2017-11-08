@@ -21,8 +21,7 @@ download.database(catgry.name = c(), version = c(), buildver = "hg19",
 
 \item{database.cfg}{Configuration file for download, most of annovarR database 
 resources can be found in system.file('extdata', 
-'config/db/db_annovar.toml', package = "BioInstaller") and 
-system.file('extdata', 'config/db/db_main.toml', package = "BioInstaller")}
+'config/db/db_annovar.toml', package = "BioInstaller")}
 
 \item{show.all.versions}{Logical indicating wheather show all avaliable versions}
 
@@ -40,8 +39,4 @@ Download annovarR databases
 \examples{
 download.database('db_annovar_1000g', database.dir = sprintf('\%s/databases/', tempdir()), 
 show.all.versions = TRUE)
-
-download.database(show.all.names = TRUE)
-download.database(database.cfg = system.file('extdata', 'config/db/db_main.toml', package = "BioInstaller"), 
-show.all.names = TRUE)
 }
