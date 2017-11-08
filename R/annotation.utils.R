@@ -169,7 +169,7 @@ get.full.match.final.table <- function(dat, selected.db.tb, matched.cols = "", s
   text <- sprintf("setkey(selected.db.tb, \"%s\")", keys)
   eval(paste0(text = text))
   
-  selected.db.tb <- merge(selected.db.tb, dat, all = TRUE)
+  selected.db.tb <- merge(selected.db.tb, dat, all = TRUE, allow.cartesian = TRUE)
   selected.db.tb$id <- as.numeric(selected.db.tb$id)
   setkey(selected.db.tb, id)
   selected.db.tb <- selected.db.tb[!is.na(selected.db.tb$id), ]

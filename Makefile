@@ -33,6 +33,9 @@ clean:
 	cd ..;\
 	$(RM) -r $(PKGNAME).Rcheck/;\
 
+clean_test2:
+	cd ./tests/testthat/ && $(RM) test_annotation.R test_big_file.R test_download.R test_parllel.R;
+
 cleanall:
 	cd ..;\
 	$(RM) -r $(PKGNAME).Rcheck/;\
@@ -42,6 +45,12 @@ cleanall:
 test:
 	cd .;\
     Rscript -e "devtools::test()"
+
+test2:
+	cd ./tests/testthat/;
+	cp ./tests/testthat/slow/*.R ./tests/testthat/;\
+	cd ./;\
+    Rscript -e "devtools::test()" \
 
 format:
 	cd .;\
