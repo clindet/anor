@@ -63,6 +63,7 @@ if (!is.na(sqlite)) {
     sql2sqlite(sql.file = sql.file, dbname = out.sqlite, verbose = FALSE)
     con <- dbConnect(SQLite(), out.sqlite)
     tables <- dbListTables(con)
+    dbDisconnect(con)
     x <- "hg19_avsnp147" %in% tables
     expect_that(x, equals(TRUE))
     unlink(out.sqlite)
@@ -75,6 +76,7 @@ test_that("sql2sqlite-statements", {
   sql2sqlite(statements = statements, dbname = out.sqlite, verbose = FALSE)
   con <- dbConnect(SQLite(), out.sqlite)
   tables <- dbListTables(con)
+  dbDisconnect(con)
   x <- "hg19_avsnp147" %in% tables
   expect_that(x, equals(TRUE))
   unlink(out.sqlite)

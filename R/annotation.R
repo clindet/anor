@@ -244,7 +244,9 @@ annotation.merge <- function(anno.names, col.cl.num = NULL, ...) {
     registerDoParallel(col.cl)
     x <- NULL
     result.list <- foreach(x = 1:length(anno.names), .combine = cbind, .packages = "annovarR") %dopar% 
+    {
       annotation(anno.name = anno.names[x], ...)
+    }
     stopCluster(col.cl)
   }
   return(as.data.table(result.list))

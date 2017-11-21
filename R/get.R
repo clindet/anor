@@ -180,7 +180,7 @@ select.dat.full.match.sqlite <- function(db, table.name, cols = c(), params = li
   info.msg(sprintf("Input %s colnum type:%s", paste0(names(params), collapse = ","), 
     paste0(sapply(params, typeof), collapse = ",")), verbose = verbose)
   print.vb(lapply(params, head), verbose = verbose)
-  params <- unname(params)
+  names(params) <- paste0("x", 1:length(params))
   info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
   result <- dbGetQuery(db, sql, params = params)
   info.msg(sprintf("Finish query: %s", sql), verbose = verbose)

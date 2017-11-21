@@ -1,8 +1,6 @@
 PKGNAME := $(shell sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION)
 PKGVERS := $(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 PKGSRC  := $(shell basename `pwd`)
-DOWNLOAD_DIR := "/tmp/test_BioInstaller"
-DEST_DIR := "/tmp/test_src"
 
 all: doc build
 

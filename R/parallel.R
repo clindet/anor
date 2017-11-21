@@ -22,17 +22,20 @@
 #' }
 parAnnotation <- function(row.cl, ...) {
   row.cl.num <- length(row.cl)
-  registerDoParallel(row.cl)
   params <- list(...)
   dat <- params$dat
   dat <- splitList(dat, row.cl.num)
   if (row.cl.num > length(dat)) {
     row.cl.num <- length(dat)
   }
+  x <- NULL
+  registerDoParallel(row.cl)
   clusterExport(row.cl, "row.cl.num", envir = environment())
   clusterExport(row.cl, "params", envir = environment())
   clusterExport(row.cl, "dat", envir = environment())
-  x <- NULL
+  print(params)
+  print(dat)
+  print(row.cl.num)
   result <- foreach(x = 1:row.cl.num, .packages = "annovarR") %dopar% {
     params.pre <- params
     params.pre[["dat"]] <- NULL
@@ -44,6 +47,7 @@ parAnnotation <- function(row.cl, ...) {
     result <- do.call(annotation.merge, params)
   }
   result <- do.call(rbindlist, list(result))
+  print(result)
   return(result)
 }
 

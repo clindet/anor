@@ -7,6 +7,41 @@ for (i in c("hg19_avsnp147", "hg19_cosmic81")) {
     i)))
 }
 
+test_that("annotation.merge:cosmic81 and snp147", {
+  chr <- c("chr1", "chr2", "chr1", "chr12", "chr2", "chr12")
+  start <- c("10020", "10020", "10020", "11139001", "50850617", "11139002")
+  end <- c("10020", "10020", "10020", "11139001", "50850617", "50850617")
+  ref <- c("A", "A", "A", "C", "G", "T")
+  alt <- c("-", "-", "-", "T", "A", "-")
+  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+  x <- annotation.merge(anno.names = c("cosmic81", "avsnp147"), dat = dat, database.dir = database.dir)
+  x <- as.data.frame(x)
+  expect_that(colnames(x)[1], equals("COSMIC_81"))
+  expect_that(colnames(x)[2], equals("avSNP147"))
+  x[, 1] <- as.character(x[, 1])
+  x[, 2] <- as.character(x[, 2])
+  expect_that(is.na(x[1, 1]), equals(TRUE))
+  expect_that(x[1, 2], equals("rs775809821"))
+  expect_that(is.na(x[2, 1]), equals(TRUE))
+  expect_that(is.na(x[2, 2]), equals(TRUE))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+  expect_that(x[3, 2], equals("rs775809821"))
+  x <- annotation.merge(anno.names = c('cosmic81', 'avsnp147'), dat = dat,
+   database.dir = database.dir, col.cl.num = 2) 
+   x <- as.data.frame(x)
+   expect_that(colnames(x)[1], equals('COSMIC_81')) 
+   expect_that(colnames(x)[2],
+   equals('avSNP147')) 
+   x[, 1] <- as.character(x[, 1]) 
+   x[, 2] <- as.character(x[, 2]) 
+   expect_that(is.na(x[1, 1]), equals(TRUE)) 
+   expect_that(x[1, 2], equals('rs775809821')) 
+   expect_that(is.na(x[2, 1]), equals(TRUE))
+   expect_that(is.na(x[2, 2]), equals(TRUE)) 
+   expect_that(is.na(x[3, 1]), equals(TRUE)) 
+   expect_that(x[3, 2], equals('rs775809821'))
+})
+
 test_that("parAnnotation", {
   if ("annovarR" %in% .packages(all.available = T)) {
     chr <- c("chr1", "chr2", "chr1", "chr12", "chr2", "chr12")
@@ -17,7 +52,7 @@ test_that("parAnnotation", {
     dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
     row.cl <- makeCluster(2)
     x <- parAnnotation(dat = dat, anno.names = c("avsnp147", "cosmic81"), database.dir = database.dir, 
-      row.cl = row.cl, col.cl.num = 2)
+      row.cl = row.cl, col.cl.num = 1)
     stopCluster(row.cl)
     x <- as.data.frame(x)
     expect_that(colnames(x)[1], equals("avSNP147"))
@@ -48,6 +83,7 @@ test_that("parAnnotation", {
     expect_that(is.na(x[6, 2]), equals(TRUE))
   }
 })
+
 
 for (i in c("hg19_avsnp147", "hg19_cosmic81")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)

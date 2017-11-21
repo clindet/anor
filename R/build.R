@@ -97,6 +97,7 @@ sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.name = 
   sql <- "SELECT * FROM sqlite_master WHERE type = \"index\""
   indexs <- dbGetQuery(sqlite.db, sql)
   if (index %in% indexs) {
+    dbDisconnect(sqlite.db)
     info.msg(sprintf("%s index already exists.", index), verbose)
     return(FALSE)
   }

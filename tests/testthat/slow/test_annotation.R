@@ -72,22 +72,6 @@ test_that("annotation.snp", {
   expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
-test_that("annotation.cosmic", {
-  chr <- c("chr12", "chr2", "chr12")
-  start <- c("11139001", "50850617", "11139002")
-  end <- c("11139001", "50850617", "50850617")
-  ref <- c("C", "G", "T")
-  alt <- c("T", "A", "-")
-  dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation(dat = dat, anno.name = "cosmic81", database.dir = database.dir)
-  x <- as.data.frame(x)
-  expect_that(colnames(x), equals("COSMIC_81"))
-  x[, 1] <- as.character(x[, 1])
-  expect_that(x[1, 1], equals("ID=COSM4732228;OCCURENCE=1(large_intestine)"))
-  expect_that(x[2, 1], equals("ID=COSM383974,COSM5973818,COSM383973,COSM5973817;OCCURENCE=1(upper_aerodigestive_tract),1(lung)"))
-  expect_that(is.na(x[3, 1]), equals(TRUE))
-})
-
 test_that("annotation.1000g", {
   chr <- c("chr1", "chr2", "chr1")
   start <- c("10177", "10177", "10020")
@@ -208,7 +192,7 @@ test_that("annotation.normal.pool", {
   expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
-test_that("annotation:cosmic81 and snp147", {
+test_that("annotation.merge non-parallel:cosmic81 and snp147", {
   chr <- c("chr1", "chr2", "chr1", "chr12", "chr2", "chr12")
   start <- c("10020", "10020", "10020", "11139001", "50850617", "11139002")
   end <- c("10020", "10020", "10020", "11139001", "50850617", "50850617")
@@ -227,20 +211,6 @@ test_that("annotation:cosmic81 and snp147", {
   expect_that(is.na(x[2, 2]), equals(TRUE))
   expect_that(is.na(x[3, 1]), equals(TRUE))
   expect_that(x[3, 2], equals("rs775809821"))
-  x <- annotation.merge(anno.names = c('cosmic81', 'avsnp147'), dat = dat,
-   database.dir = database.dir, col.cl.num = 2) 
-   x <- as.data.frame(x)
-   expect_that(colnames(x)[1], equals('COSMIC_81')) 
-   expect_that(colnames(x)[2],
-   equals('avSNP147')) 
-   x[, 1] <- as.character(x[, 1]) 
-   x[, 2] <- as.character(x[, 2]) 
-   expect_that(is.na(x[1, 1]), equals(TRUE)) 
-   expect_that(x[1, 2], equals('rs775809821')) 
-   expect_that(is.na(x[2, 1]), equals(TRUE))
-   expect_that(is.na(x[2, 2]), equals(TRUE)) 
-   expect_that(is.na(x[3, 1]), equals(TRUE)) 
-   expect_that(x[3, 2], equals('rs775809821'))
 })
 
 test_that("clincvar and intervar", {
