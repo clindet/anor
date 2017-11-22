@@ -24,7 +24,7 @@ parAnnotation <- function(row.cl, ...) {
   row.cl.num <- length(row.cl)
   params <- list(...)
   dat <- params$dat
-  dat <- splitList(dat, row.cl.num)
+  dat <- split_list(dat, row.cl.num)
   if (row.cl.num > length(dat)) {
     row.cl.num <- length(dat)
   }
@@ -44,10 +44,11 @@ parAnnotation <- function(row.cl, ...) {
     dat.pre["dat"] <- dat[x]
     params["dat"] <- dat.pre["dat"]
     params$dat <- as.data.table(params$dat)
-    result <- do.call(annotation.merge, params)
+    result.tmp <- do.call(annotation.merge, params)
+    result <- rbind(result, result.tmp)
   }
+  stopCluster(row.cl)
   result <- do.call(rbindlist, list(result))
-  print(result)
   return(result)
 }
 
@@ -61,7 +62,7 @@ parAnnotation <- function(row.cl, ...) {
 #' @param batch.row.cl.num Default is 5 (recommend)
 #' @param min.split.rows Default is 1e+06, if lower this value, annovarR will not to split the input data (no more than 5e+06)
 #' @param fwrite.params Other parameters pass to \code{\link[data.table]{fwrite}}
-#' @param ff.tmp.dir The default ff object stored dir. [Defautle is tempdir()]
+#' @param tmpdir The default ff object stored dir. [Defautle is tempdir()]
 #' @param ... Other parameters see \code{\link{parAnnotation}}
 #' @export
 #' @examples
@@ -76,7 +77,7 @@ parAnnotation <- function(row.cl, ...) {
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 parAnnotation.big.file <- function(filename = "", out.txt = "", new.colnames = NULL, 
   cores.avail = detectCores(logical = F), batch.row.cl.num = 5, min.split.rows = 1e+06, 
-  new.colnames.order = NULL, fwrite.params = list(sep = "\t"), ff.tmp.dir = tempdir(), 
+  new.colnames.order = NULL, fwrite.params = list(sep = "\t"), tmpdir = tempdir(), 
   ...) {
   max.batch.num <- ceiling(cores.avail/batch.row.cl.num)
   params <- list(...)
@@ -145,7 +146,7 @@ parAnnotation.big.file <- function(filename = "", out.txt = "", new.colnames = N
     save(params, file = params.file)
     save(params.extra, file = params.extra.file)
     script <- set.big.file.script(split.file, params.file, params.extra.file, 
-      ff.tmp.dir, batch.row.cl.num, tempfile())
+      tmpdir, batch.row.cl.num, tempfile())
     script.tmp <- tempfile()
     writeLines(script, script.tmp, sep = "\n")
     while (TRUE) {
@@ -181,29 +182,21 @@ parAnnotation.big.file <- function(filename = "", out.txt = "", new.colnames = N
 
 # Set parAnnotation.big.file script
 set.big.file.script <- function(split.file = "", params.file = "", params.extra.file = "", 
-  ff.tmp.dir = "", batch.row.cl.num = 5, lock.file = tempfile()) {
+  tmpdir = "", batch.row.cl.num = 5, lock.file = tempfile()) {
   script <- sprintf(paste0("library(annovarR);library(parallel);library(data.table);", 
     "load('%s');load('%s');options(fftempdir = '%s');", "params$row.cl <- makeCluster(%s);", 
     "if (!'dat' %s names(params)){params$dat <- fread('%s')};", "lock.file <- '%s.annovarR.lock';file.create(lock.file);", 
     "result.tmp <- do.call(parAnnotation, params);", "stopCluster(params$row.cl);", 
     "file.remove(lock.file);", "fwrite(result.tmp, file = params.extra$out.file, na = 'NA');"), 
-    params.file, params.extra.file, ff.tmp.dir, batch.row.cl.num, "%in%", split.file, 
+    params.file, params.extra.file, tmpdir, batch.row.cl.num, "%in%", split.file, 
     lock.file)
   
 }
 
-# Function to split list and distributed to different computing core len is the
-# number of core X is the list object
-splitList <- function(X, len) {
-  len <- ceiling(length(X[[1]])/len)
-  a <- seq(from = 1, to = length(X[[1]]), by = len)
-  b <- seq(from = len, to = length(X[[1]]), by = len)
-  if (length(b) < length(a)) {
-    b <- c(b, length(X[[1]]))
-  }
-  result <- NULL
-  for (i in 1:length(a)) {
-    result[[i]] <- lapply(X, function(x) x[a[i]:b[i]])
-  }
-  return(result)
+cbind.ffdf2 <- function(d1, d2) {
+  D1names <- colnames(d1)
+  D2names <- colnames(d2)
+  mergeCall <- do.call("ffdf", c(physical(d1), physical(d2)))
+  colnames(mergeCall) <- c(D1names, D2names)
+  mergeCall
 }

@@ -212,7 +212,6 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
 #' Annotation function (mulitple name)
 #'
 #' @param anno.names Annotation names, eg. c('avsnp138', 'avsnp147', '1000g2015aug_all')
-#' @param col.cl.num Number of cores (default is NULL, not use cluster)
 #' @param ... Other parameters see \code{\link{annotation}}
 #' @export
 #' @examples
@@ -227,27 +226,9 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all'), 
 #' database.dir = database.dir, db.type = 'txt')
-annotation.merge <- function(anno.names, col.cl.num = NULL, ...) {
-  if (is.null(col.cl.num)) {
-    result.list <- lapply(anno.names, function(x) {
-      annotation(anno.name = x, ...)
-    })
-  } else {
-    if (col.cl.num > length(anno.names)) {
-      col.cl.num <- length(anno.names)
-    }
-    col.cl <- makeCluster(col.cl.num)
-    params <- list(...)
-    dat <- params$dat
-    clusterExport(col.cl, "dat", envir = environment())
-    clusterExport(col.cl, "anno.names", envir = environment())
-    registerDoParallel(col.cl)
-    x <- NULL
-    result.list <- foreach(x = 1:length(anno.names), .combine = cbind, .packages = "annovarR") %dopar% 
-    {
-      annotation(anno.name = anno.names[x], ...)
-    }
-    stopCluster(col.cl)
-  }
+annotation.merge <- function(anno.names, ...) {
+  result.list <- lapply(anno.names, function(x) {
+    annotation(anno.name = x, ...)
+  })
   return(as.data.table(result.list))
 }

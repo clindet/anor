@@ -11,12 +11,12 @@ before_install:
   - curl -OLs http://eddelbuettel.github.io/r-travis/run.sh && chmod 0755 run.sh
   # optionally add our launchpad repo, but not needed here
   # - sudo add-apt-repository -y ppa:edd/misc
-  - Rscript -e 'install.packages(c("covr", "devtools", "roxygen2", "testthat", "configr", "RSQLite", "futile.logger", "RMySQL", "ff", "ffbase", "bit", "foreach", "doParallel", "data.table"))'
+  - Rscript -e 'install.packages(c("covr", "devtools", "roxygen2", "knitr", "testthat", "configr", "RSQLite", "futile.logger", "RMySQL", "data.table", "rmarkdown"))'
   - Rscript -e 'devtools::install_github("JhuangLab/BioInstaller")'
+  - Rscript -e 'devtools::install_github("JhuangLab/ngstk")'
   - ./run.sh bootstrap
 
 install:
-  - ./run.sh install_aptget r-cran-rcpp
   - Rscript -e 'library("devtools");install_github("Miachol/annovarR")'
 
 after_failure:
@@ -24,4 +24,4 @@ after_failure:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - Rscript -e 'library("covr"); covr::codecov()'
+  - Rscript -e 'library("covr"); covr::codecov(token = "f42215d2-4fe0-489f-9afe-4deb30f4dc49")'

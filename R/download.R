@@ -42,7 +42,7 @@ download.database <- function(catgry.name = c(), version = c(), buildver = "hg19
     return(buildvers)
   }
   github.cfg.null <- tempfile()
-  file.create(github.cfg.null)
+  write.config(list(title = "empty github.cfg"), github.cfg.null)
   if (show.all.names) {
     all.names <- install.bioinfo(github.cfg = github.cfg.null, nongithub.cfg = database.cfg, 
       show.all.names = TRUE, verbose = verbose)

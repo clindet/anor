@@ -50,10 +50,10 @@ test_that("parAnnotation", {
     ref <- c("A", "A", "A", "C", "G", "T")
     alt <- c("-", "-", "-", "T", "A", "-")
     dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-    row.cl <- makeCluster(2)
+    #row.cl <- makeCluster(1)
     x <- parAnnotation(dat = dat, anno.names = c("avsnp147", "cosmic81"), database.dir = database.dir, 
-      row.cl = row.cl, col.cl.num = 1)
-    stopCluster(row.cl)
+      row.cl = 2, col.cl.num = 1)
+    #stopCluster(row.cl)
     x <- as.data.frame(x)
     expect_that(colnames(x)[1], equals("avSNP147"))
     expect_that(colnames(x)[2], equals("COSMIC_81"))

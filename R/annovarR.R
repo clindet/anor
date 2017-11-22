@@ -12,16 +12,13 @@
 #'
 #' @docType package
 #' @name annovarR
-#' @import stringr DBI data.table futile.logger configr BioInstaller foreach doParallel
-#' @importFrom bit physical
-#' @importFrom ff as.ffdf.data.frame ffdf ffload
-#' @importFrom ffbase ffdfrbind.fill ffdfappend
-#' @importFrom parallel clusterApply makeCluster clusterEvalQ clusterExport stopCluster parSapply parLapply detectCores
+#' @import stringr DBI data.table futile.logger configr BioInstaller
 #' @importFrom stringi stri_rand_strings
 #' @importFrom utils packageVersion head
 #' @importFrom RMySQL MySQL dbRemoveTable mysqlHasDefault
 #' @importFrom RSQLite SQLite dbRemoveTable
 #' @importFrom methods formalArgs
+#' @importFrom ngstk split_list
 NULL
 
 .onAttach <- function(libname, pkgname) {

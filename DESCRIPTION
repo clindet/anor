@@ -15,19 +15,17 @@ LazyData: true
 Imports:
     stringr (>= 1.2.0),
     configr (>= 0.2.2),
-    BioInstaller (>= 0.3.0),
+    BioInstaller (>= 0.3.0.1),
+    ngstk (>= 0.1.1.1),
     DBI (>= 0.6-1),
     data.table (>= 1.10.4),
     RSQLite (>= 2.0),
     futile.logger (>= 1.4.3),
     stringi (>= 1.1.5),
     RMySQL (>= 0.10.11),
-    ff (>= 2.2-13),
-    ffbase (>= 0.12.3),
-    bit (>= 1.1-12),
-    foreach,
-    doParallel,
-    parallel,
     methods,
 RoxygenNote: 6.0.1
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
