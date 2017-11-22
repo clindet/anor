@@ -2,7 +2,7 @@
 
 annovarR package
 ==============
-[annovarR](http://bioinfo.rjh.com.cn/labs/jhuang/tools/annovarR/) R package is an open source genomic annotation tool based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public databases. Some of RNA-editing and other RNA-seq releated database be added as the supplement of ANNOVAR.
+[annovarR](https://github.com/JhuangLab/annovarR) R package is an open source genomic annotation tool based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public databases. Some of RNA-editing and other RNA-seq releated database be added as the supplement of ANNOVAR.
 
 Feature:
 

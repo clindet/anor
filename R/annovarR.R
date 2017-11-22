@@ -6,9 +6,9 @@
 #' @seealso
 #' Useful links:
 #'
-#' \url{https://github.com/Miachol/annovarR} 
+#' \url{https://github.com/JhuangLab/annovarR} 
 #'
-#' Report bugs at \url{https://github.com/Miachol/annovarR/issues} 
+#' Report bugs at \url{https://github.com/JhuangLab/annovarR/issues} 
 #'
 #' @docType package
 #' @name annovarR

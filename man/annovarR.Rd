@@ -13,9 +13,9 @@ functionally annotate genetic variants detected from diverse genomes based on AN
 \seealso{
 Useful links:
 
-\url{https://github.com/Miachol/annovarR} 
+\url{https://github.com/JhuangLab/annovarR} 
 
-Report bugs at \url{https://github.com/Miachol/annovarR/issues}
+Report bugs at \url{https://github.com/JhuangLab/annovarR/issues}
 }
 \author{
 Li Jianfeng \url{lee_jianfeng@sjtu.edu.cn}
