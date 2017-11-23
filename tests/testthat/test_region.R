@@ -6,22 +6,42 @@ refGene.file <- system.file("extdata", "demo/hg19_refGene.txt", package = "annov
 sqlite.db.name <- str_replace(basename(refGene.file), ".txt$", ".sqlite")
 refGene.sqlite <- sprintf("%s/%s", tempdir(), sqlite.db.name)
 connect.params <- list(dbname = refGene.sqlite, table.name = "hg19_refGene")
+
 sqlite.build(refGene.file, connect.params)
 
 test_that("select.dat.region.match.txt", {
-  V1 <- c("chr10", "chr1")
-  V2 <- c("100188904", "100185955")
-  V3 <- c("100188904", "100185955")
+  # only select matched rows
+  V1 <- c("chr10", "chr1", "chr2", "chr10")
+  V2 <- c("100188904", "100185955", "123456", "104590288")
+  V3 <- c("100188904", "100185955", "123456", "104597290")
   params <- list(V1 = V1, V2 = V2, V3 = V3)
   x <- select.dat.region.match(bed.file, "bed", "V1", "V2", "V3", params = params, 
     db.type = "txt")
   x <- as.data.frame(x)
-  expect_that(nrow(x), equals(2))
+  expect_that(nrow(x), equals(3))
   expect_that(x[1, 1], equals("chr10"))
   expect_that(x[2, 1], equals("chr10"))
   expect_that(x[1, 4], equals("HPS1"))
   expect_that(x[2, 4], equals("HPS1"))
+  expect_that(x[3, 4], equals("CYP17A1"))
 })
+
+test_that("annotation.cscd", {
+  chr <- c("chr7", "chrX", "chr1", "chr10")
+  start <- c("18631138", "123668609", "10020", "1234")
+  end <- c("18669104", "123668736", "10020", "4567")
+  dat <- data.table(chr = chr, start = start, end = end)
+  database.dir <- system.file('extdata', 'demo', package = 'annovarR')
+  x <- annotation(dat, "cscd_cancer_circrna", database.dir = database.dir, db.type = "txt")
+  x <- as.data.frame(x)
+  expect_that(nrow(x), equals(4))
+  expect_that(x[1, 2], equals("cancer//cancer"))
+  expect_that(x[2, 2], equals("cancer"))
+  expect_that(is.na(x[3, 1]), equals(TRUE))
+  expect_that(is.na(x[4, 1]), equals(TRUE))
+
+})
+
 
 test_that("select.dat.region.match.sqlite", {
   V1 <- c("chr10", "chr1")
@@ -47,7 +67,8 @@ test_that("annotation.region.match", {
   end <- c("100188904", "100185955")
   dat <- data.table(chr = chr, start = start, end = end)
   x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.sqlite, 
-    table.name.fixed = "bed", db.type = "sqlite", format.dat.fun = format.cols.plus.chr)
+    table.name.fixed = "bed", db.type = "sqlite", format.dat.fun = format.cols.plus.chr, 
+    format.db.tb.fun = format.db.region.tb)
   x <- as.data.frame(x)
   expect_that(x[1, 1], equals("HPS1"))
   expect_that(is.na(x[2, 1]), equals(TRUE))

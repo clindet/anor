@@ -48,8 +48,10 @@ disconnect.db <- function(database, db.type = "sqlite") {
 # level name of database.cfg, `key` is the key of first level name, `coincident`
 # decide wheather using one value to reprenst all of version
 get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
-  package = "annovarR"), key = "", coincident = FALSE, extra.list = list(), rcmd.parse = TRUE) {
-  config <- configr::read.config(database.cfg, extra.list = extra.list, rcmd.parse = rcmd.parse)
+  package = "annovarR"), key = "", coincident = FALSE, extra.list = list(), rcmd.parse = TRUE, 
+  glue.parse = TRUE) {
+  config <- configr::read.config(database.cfg, extra.list = extra.list, rcmd.parse = rcmd.parse, 
+    glue.parse = glue.parse)
   config <- config[names(config) != "Title"]
   index <- lapply(config, function(x) {
     name %in% x[["versions"]]

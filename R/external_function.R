@@ -74,8 +74,8 @@ format.db.tb.unique <- function(...) {
   is.region <- !is.null(params$input.dat) && !is.null(params$inferior.col)
   if (is.region) {
     # region match, according xid to merge mulitple row to one
-    index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, 
-      params$superior.col)$index.table
+    index.table <- full.foverlaps(db.tb, params$input.dat, params$full.matched.cols, 
+      params$inferior.col, params$superior.col)$index.table
     db.tb <- db.tb[index.table$yid, ]
     db.tb <- cbind(db.tb, index.table[, 1])
     db.tb <- cbind(db.tb, index.table[, 2])
@@ -107,7 +107,8 @@ format.db.tb.unique <- function(...) {
 format.db.region.tb <- function(...) {
   params <- list(...)
   db.tb <- params$db.tb
-  index.table <- full.foverlaps(db.tb, params$input.dat, params$inferior.col, params$superior.col)$index.table
+  index.table <- full.foverlaps(db.tb, params$input.dat, params$full.matched.cols, 
+    params$inferior.col, params$superior.col)$index.table
   db.tb <- db.tb[index.table$yid, ]
   db.tb <- cbind(db.tb, index.table[, 1])
   return(db.tb)

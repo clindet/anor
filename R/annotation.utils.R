@@ -66,12 +66,11 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
     selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = dat)
   } else {
     selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = params, 
-      inferior.col = inferior.col, superior.col = superior.col)
+      full.matched.cols = full.matched.cols, inferior.col = inferior.col, superior.col = superior.col)
   }
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)
   print.vb(selected.db.tb, verbose = verbose)
-  
   # Check return.col.index, if empty return the all of cols in database without
   # matched cols
   if (all(return.col.index == "")) {

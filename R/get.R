@@ -286,7 +286,8 @@ select.dat.region.match.txt <- function(db, table.name, full.matched.cols = c(),
   inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
   ...) {
   ref.dat <- fread(db)
-  result.list <- full.foverlaps(ref.dat, params, inferior.col, superior.col)
+  result.list <- full.foverlaps(ref.dat, params, full.matched.cols, inferior.col, 
+    superior.col)
   ref.dat <- result.list$ref.dat
   index.table <- result.list$index.table
   index <- index.table$yid[!is.na(index.table$yid)]
@@ -312,7 +313,7 @@ select.dat.region.match <- function(db, table.name, full.matched.cols = c(), inf
   return(result)
 }
 
-full.foverlaps <- function(ref.dat, input.dat, inferior.col, superior.col) {
+full.foverlaps <- function(ref.dat, input.dat, full.matched.cols, inferior.col, superior.col) {
   ref.dat <- as.data.table(ref.dat)
   ref.dat.colnames.raw <- colnames(ref.dat)
   input.dat <- as.data.table(input.dat)
@@ -339,8 +340,7 @@ full.foverlaps <- function(ref.dat, input.dat, inferior.col, superior.col) {
   input.dat <- as.data.table(input.dat)
   eval(parse(text = text))
   index.table <- foverlaps(input.dat, ref.dat, type = "any", which = TRUE)
-  adj.index <- match(index.table$xid, input.dat$id)
-  index.table$xid <- adj.index
+  index.table$xid <- input.dat$id[index.table$xid]
   setkey(index.table, "xid")
   return(list(ref.dat = ref.dat, input.dat = input.dat, index.table = index.table))
 }

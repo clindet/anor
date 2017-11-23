@@ -6,7 +6,7 @@
 #' @param database.dir Dir of the databases
 #' @param database.cfg Configuration file for download, most of annovarR database 
 #' resources can be found in system.file('extdata', 
-#' 'config/db/db_annovar.toml', package = "BioInstaller")
+#' 'config/db/db_annovar.toml', package = 'BioInstaller')
 #' @param show.all.versions Logical indicating wheather show all avaliable versions
 #' @param show.all.names Logical indicating wheather show all avaliable name
 #' @param show.all.buildvers Logical indicating wheather show all avaliable buildver
@@ -17,8 +17,8 @@
 #' download.database('db_annovar_1000g', database.dir = sprintf('%s/databases/', tempdir()), 
 #' show.all.versions = TRUE)
 download.database <- function(catgry.name = c(), version = c(), buildver = "hg19", 
-  database.dir = c(), database.cfg = system.file('extdata', 'config/db/db_annovar.toml', package = "BioInstaller"),
-  show.all.versions = FALSE, show.all.names = FALSE, 
+  database.dir = c(), database.cfg = system.file("extdata", "config/db/db_annovar.toml", 
+    package = "BioInstaller"), show.all.versions = FALSE, show.all.names = FALSE, 
   show.all.buildvers = FALSE, verbose = FALSE, ...) {
   if (!is.null(database.dir)) {
     database.dir <- normalizePath(database.dir, "/", mustWork = FALSE)

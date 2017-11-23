@@ -403,3 +403,24 @@ format.dat.fun = "format.cols.plus.chr"
 setdb.fun = "set.db.refgene"
 set.table.fun = "set.table.refgene"
 format.db.tb.fun = "format.db.tb.refgene"
+
+[cscd_main]
+versions = ["cscd_cancer_circrna", 
+            "cscd_common_circrna", 
+            "cscd_normal_circrna"]
+func = "annotation.auto"
+default.dbtype = ["!!glue {rep('sqlite', 3)}"]
+is.region = true
+
+need.cols = ["chr", "start", "end"]
+return.col.names = ["cscd_main_info","cscd_main_tissue"]
+db.col.order = [19, 20, 21]
+index.cols = ["chr", "start", "end"]
+full.matched.cols = "chr"
+inferior.col = "start"
+superior.col = "end"
+return.col.index = [1,7]
+format.dat.fun = "format.cols.plus.chr"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb.unique"
