@@ -1,9 +1,10 @@
 # preprocess before to query with database
 before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.cols = c("chr", 
-    "start"), format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = set.db, set.table.fun = set.table, db.type = "sqlite", db.file.prefix = NULL, 
-  mysql.connect.params = list(), sqlite.connect.params = list(), verbose = FALSE) {
+    "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), format.dat.fun = format.cols, 
+  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
+  db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
+  verbose = FALSE) {
   db.type.check(db.type)
   dat <- input.dat.check(dat)
   if (is.null(dat)) {
@@ -45,6 +46,8 @@ before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "h
   tb.colnames <- tb.colnames[db.col.order]
   index.cols.order <- match(colnames(dat), index.cols)
   index.cols.order <- index.cols.order[!is.na(index.cols.order)]
+  matched.cols.order <- match(colnames(dat), matched.cols)
+  matched.cols.order <- matched.cols.order[!is.na(matched.cols.order)]
   colnames(params) <- tb.colnames[index.cols.order]
   info.msg(sprintf("After drop duplicated, %s colnum total %s line be used to select dat from database (%s).", 
     paste0(index.cols, collapse = ","), nrow(params), paste0(names(params), collapse = ",")), 
@@ -52,21 +55,24 @@ before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "h
   print.vb(params, verbose = verbose)
   return(list(dat = dat, dat.names = dat.names, params = params, database.con = database.con, 
     tb.colnames = tb.colnames, table.name = table.name, index.cols.order = index.cols.order, 
-    dbname = dbname))
+    matched.cols.order = matched.cols.order, dbname = dbname))
 }
 
 # after query process
 after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fun = NULL, 
-  db.col.order = NULL, tb.colnames = NULL, matched.cols = NULL, full.matched.cols = NULL, 
-  full.matched.cols.raw = NULL, inferior.col = NULL, inferior.col.raw = NULL, superior.col = NULL, 
-  superior.col.raw = NULL, dbname = NULL, return.col.index = NULL, return.col.names = NULL, 
-  database.con = NULL, db.type = NULL, dat.names = NULL, params = NULL, get.final.table.fun = get.full.match.final.table, 
-  verbose = FALSE) {
-  if (!is.null(matched.cols)) {
-    selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = dat)
+  db.col.order = NULL, tb.colnames = NULL, tb.matched.cols = NULL, matched.cols = NULL, 
+  full.matched.cols = NULL, full.matched.cols.raw = NULL, inferior.col = NULL, 
+  inferior.col.raw = NULL, superior.col = NULL, superior.col.raw = NULL, dbname = NULL, 
+  return.col.index = NULL, return.col.names = NULL, database.con = NULL, db.type = NULL, 
+  dat.names = NULL, params = NULL, get.final.table.fun = get.full.match.final.table, 
+  query.type = "full", verbose = FALSE) {
+  if (query.type == "full") {
+    selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = dat, 
+      tb.matched.cols = tb.matched.cols)
   } else {
     selected.db.tb <- format.db.tb.fun(db.tb = selected.db.tb, input.dat = params, 
-      full.matched.cols = full.matched.cols, inferior.col = inferior.col, superior.col = superior.col)
+      full.matched.cols = full.matched.cols, inferior.col = inferior.col, superior.col = superior.col, 
+      tb.matched.cols = c(full.matched.cols, inferior.col, superior.col))
   }
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)

@@ -64,11 +64,11 @@ format.db.tb.unique <- function(...) {
   if (nrow(db.tb) == 0) {
     return(db.tb)
   }
-  index.cols <- params$index.cols
-  if (is.null(index.cols)) {
-    index.cols <- "V6"
+  tb.matched.cols <- params$tb.matched.cols
+  if (is.null(tb.matched.cols)) {
+    stop("Error in format.db.tb.unique: not set matched.cols using database colnames.")
   }
-  index.cols.raw <- index.cols
+  tb.matched.cols.raw <- tb.matched.cols
   
   need.cols <- colnames(db.tb)
   is.region <- !is.null(params$input.dat) && !is.null(params$inferior.col)
@@ -79,13 +79,13 @@ format.db.tb.unique <- function(...) {
     db.tb <- db.tb[index.table$yid, ]
     db.tb <- cbind(db.tb, index.table[, 1])
     db.tb <- cbind(db.tb, index.table[, 2])
-    index.cols <- "xid"
+    tb.matched.cols <- "xid"
   }
-  need.cols <- need.cols[!need.cols %in% index.cols.raw]
-  keys <- paste0(index.cols, collapse = "\", \"")
+  need.cols <- need.cols[!need.cols %in% tb.matched.cols.raw]
+  keys <- paste0(tb.matched.cols, collapse = "\", \"")
   text <- sprintf("setkey(db.tb, \"%s\")", keys)
   eval(parse(text = text))
-  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(index.cols, collapse = ", "))
+  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(tb.matched.cols, collapse = ", "))
   eval(parse(text = text))
   rs.frq <- table(db.tb$new)
   rs.frq <- as.data.table(rs.frq)
@@ -183,15 +183,6 @@ set.table.rs2pos <- function(...) {
 }
 
 ### refGene section ###
-format.db.tb.refgene <- function(...) {
-  params <- list(...)
-  db.tb <- params$db.tb
-  if (nrow(db.tb) == 0) {
-    return(db.tb)
-  }
-  index.cols <- c("V3", "V5", "V6")
-  format.db.tb.unique(db.tb = db.tb, index.cols = index.cols, ...)
-}
 set.db.refgene <- function(...) {
   params <- list(...)
   if (params$anno.name == "ucsc_refgene") {

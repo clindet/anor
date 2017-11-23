@@ -402,7 +402,7 @@ return.col.index = [2,13]
 format.dat.fun = "format.cols.plus.chr"
 setdb.fun = "set.db.refgene"
 set.table.fun = "set.table.refgene"
-format.db.tb.fun = "format.db.tb.refgene"
+format.db.tb.fun = "format.db.tb.unique"
 
 [cscd_main]
 versions = ["cscd_cancer_circrna", 
@@ -424,3 +424,20 @@ format.dat.fun = "format.cols.plus.chr"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb.unique"
+
+[epi_genes]
+versions = ["epi_genes_v1"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+
+need.cols = ["gene"]
+return.col.names = ["{{anno.name}}_type", "{{anno.name}}_pmid"]
+db.col.order = 1
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [2, 3]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb.unique"
+

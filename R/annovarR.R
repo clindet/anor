@@ -19,6 +19,7 @@
 #' @importFrom RSQLite SQLite dbRemoveTable
 #' @importFrom methods formalArgs
 #' @importFrom ngstk split_list
+#' @importFrom data.table is.data.table
 NULL
 
 .onAttach <- function(libname, pkgname) {
