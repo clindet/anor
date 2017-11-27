@@ -25,8 +25,6 @@ install.packages('annovarR')
 
 ### Github
 ``` bash
-# Install the cutting edge development version from Lab-GitHub:
-# Now only Jhuanglab members can get the source
 # install.packages("devtools")
 devtools::install_github("JhuangLab/annovarR")
 ```
