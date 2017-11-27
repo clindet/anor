@@ -67,12 +67,13 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
   dat.names = NULL, params = NULL, get.final.table.fun = get.full.match.final.table, 
   query.type = "full", verbose = FALSE) {
   if (query.type == "full") {
-    selected.db.tb <- do.call(format.db.tb.fun, list(db.tb = selected.db.tb, input.dat = dat, 
-      tb.matched.cols = tb.matched.cols))
+    selected.db.tb <- do.call(format.db.tb.fun, list(db.tb = selected.db.tb, 
+      input.dat = dat, tb.matched.cols = tb.matched.cols))
   } else {
-    selected.db.tb <- do.call(format.db.tb.fun, list(db.tb = selected.db.tb, input.dat = params, 
-      full.matched.cols = full.matched.cols, inferior.col = inferior.col, superior.col = superior.col, 
-      tb.matched.cols = c(full.matched.cols, inferior.col, superior.col)))
+    selected.db.tb <- do.call(format.db.tb.fun, list(db.tb = selected.db.tb, 
+      input.dat = params, full.matched.cols = full.matched.cols, inferior.col = inferior.col, 
+      superior.col = superior.col, tb.matched.cols = c(full.matched.cols, inferior.col, 
+        superior.col)))
   }
   info.msg(sprintf("Total %s line be selected from database:", nrow(selected.db.tb)), 
     verbose = verbose)

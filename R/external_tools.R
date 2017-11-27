@@ -21,21 +21,24 @@
 #' down.dbname <- 'refGene'
 #' annovar('perl', down.dbname = 'avsnp147', annovar.dir = '/opt/annovar', debug = TRUE)
 annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = paste(c("{{perl}}", 
-  "{{script}}{{extra.params}}", "-downdb", "{{buildver}}", "{{webfrom}}", "{{down.dbname}}", "{{database.dir}}"), 
-  collapse = " "), script1.gene.based = paste(c("{{perl}}", "{{script}}{{extra.params}}", 
-  "{{buildver}}", "{{input.file}}", "{{database.dir}}"), collapse = " "), script1.region.based = paste(c("{{perl}}", 
-  "{{script}}", " -regionanno{{extra.params}}", "{{buildver}}", "{{dbtype}}", "{{input.file}}", 
-  "{{database.dir}}"), collapse = " "), script1.filter.based = paste(c("{{perl}}", 
-  "{{script}}", "-filter{{extra.params}}", "{{buildver}}", "{{dbtype}}", "{{input.file}}", 
-  "{{database.dir}}"), collapse = " "), script2 = paste(c("{{perl}}", "{{script}}", 
-  "{{input.file}}", "{{database.dir}}", "{{buildver}}", "-remove", "-protocol {{dbtype}}", 
-  "-operation", "{{operation}}", "-nastring .", "-otherinfo", "-vcfinput"), collapse = " ")), 
-  cmd.used = "script1.downdb", down.dbname = "", input.file = "", annovar.dir = "", 
-  buildver = "hg19", database.dir = "{{annovar.dir}}/humandb", webfrom = "annovar", 
-  dbtype = "", out = NULL, operation.type = list(gene.based = c("refGene", "knownGene", 
-    "ensGene", "ccdsGene"), region.based = c("cytoBand", "genomicSuperDups")), 
-  cmd.profix.flag = list(buildver = "-buildver", dbtype = "-dbtype", webfrom = "-webfrom", 
-    out = "-out"), extra.params = "", debug = FALSE) {
+  "{{script}}{{extra.params}}", "-downdb", "{{buildver}}", "{{webfrom}}", "{{down.dbname}}", 
+  "{{database.dir}}"), collapse = " "), script1.gene.based = paste(c("{{perl}}", 
+  "{{script}}{{extra.params}}", "{{buildver}}", "{{input.file}}", "{{database.dir}}"), 
+  collapse = " "), script1.region.based = paste(c("{{perl}}", "{{script}}", " -regionanno{{extra.params}}", 
+  "{{buildver}}", "{{dbtype}}", "{{input.file}}", "{{database.dir}}"), collapse = " "), 
+  script1.filter.based = paste(c("{{perl}}", "{{script}}", "-filter{{extra.params}}", 
+    "{{buildver}}", "{{dbtype}}", "{{input.file}}", "{{database.dir}}"), collapse = " "), 
+  script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}", "{{database.dir}}", 
+    "{{buildver}}", "-remove", "-protocol {{dbtype}}", "-operation", "{{operation}}", 
+    "-nastring .", "-otherinfo", "-vcfinput"), collapse = " "), script3 = paste("{{perl}}", 
+    "{{script}}{{extra.params}}", "-format", "{{format}}", "{{input.file}}", 
+    "> {{convert.out}}", collapse = " ")), cmd.used = "script1.downdb", down.dbname = "", 
+  input.file = "", annovar.dir = "", buildver = "hg19", database.dir = "{{annovar.dir}}/humandb", 
+  webfrom = "annovar", dbtype = "", out = NULL, convert.out = "", format = "vcf4", 
+  operation.type = list(gene.based = c("refGene", "knownGene", "ensGene", "ccdsGene"), 
+    region.based = c("cytoBand", "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver", 
+    dbtype = "-dbtype", webfrom = "-webfrom", out = "-out"), extra.params = "", 
+  debug = FALSE) {
   operation <- ""
   if (cmd.used == "script2") {
     operation <- c()
@@ -72,7 +75,8 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   cmd <- parse.extra(cmd.pool[[cmd.used]], extra.list = list(perl = perl, script = script, 
     input.file = input.file, annovar.dir = annovar.dir, down.dbname = down.dbname, 
     buildver = buildver, database.dir = database.dir, webfrom = webfrom, dbtype = dbtype, 
-    out = out, extra.params = extra.params, down.dbname = down.dbname, operation = operation))
+    out = out, format = format, extra.params = extra.params, down.dbname = down.dbname, 
+    operation = operation, convert.out = convert.out))
   cat(cmd, sep = "\n")
   if (!debug) {
     system(cmd)

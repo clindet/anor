@@ -6,4 +6,7 @@ x <- annovar("perl", cmd.used = "script1.region.based", dbtype = "cytoBand", ann
 x <- annovar("perl", cmd.used = "script1.filter.based", dbtype = "avsnp147", annovar.dir = "~/tmp/annovar.dir", debug = TRUE)
 x <- annovar("perl", cmd.used = "script2", dbtype = "refGene,cytoBand,avsnp147", 
              input.file = "example.avinput", annovar.dir = "~/tmp/annovar.dir", debug = TRUE)
+
+x <- annovar("perl", cmd.used = "script3", format = "vcf4old", 
+             input.file = "example.vcf", convert.out = "example.avinput", annovar.dir = "~/tmp/annovar.dir", debug = TRUE)
 })
