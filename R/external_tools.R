@@ -11,6 +11,8 @@
 #' @param webfrom Database resource warehouse, e.g. ucsc, annovar
 #' @param dbtype ANNOVAR annotation name
 #' @param out ANNOVAR -out parameter value 
+#' @param convert.out ANNOVAR convert2annovar.pl output file, e.g. out.avinput
+#' @param format ANNOVAR convert2annovar.pl input format option
 #' @param operation.type Operation types used in table_annovar.pl
 #' @param cmd.profix.flag Profix used in ANNOVAR command
 #' @param extra.params Extra paramters in ANNOVAR command

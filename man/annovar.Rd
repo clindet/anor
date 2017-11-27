@@ -17,14 +17,16 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
   = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}",
   "{{database.dir}}", "{{buildver}}", "-remove", "-protocol {{dbtype}}",
   "-operation", "{{operation}}", "-nastring .", "-otherinfo", "-vcfinput"),
-  collapse = " ")), cmd.used = "script1.downdb", down.dbname = "",
-  input.file = "", annovar.dir = "", buildver = "hg19",
+  collapse = " "), script3 = paste("{{perl}}", "{{script}}{{extra.params}}",
+  "-format", "{{format}}", "{{input.file}}", "> {{convert.out}}", collapse =
+  " ")), cmd.used = "script1.downdb", down.dbname = "", input.file = "",
+  annovar.dir = "", buildver = "hg19",
   database.dir = "{{annovar.dir}}/humandb", webfrom = "annovar",
-  dbtype = "", out = NULL, operation.type = list(gene.based = c("refGene",
-  "knownGene", "ensGene", "ccdsGene"), region.based = c("cytoBand",
-  "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver", dbtype
-  = "-dbtype", webfrom = "-webfrom", out = "-out"), extra.params = "",
-  debug = FALSE)
+  dbtype = "", out = NULL, convert.out = "", format = "vcf4",
+  operation.type = list(gene.based = c("refGene", "knownGene", "ensGene",
+  "ccdsGene"), region.based = c("cytoBand", "genomicSuperDups")),
+  cmd.profix.flag = list(buildver = "-buildver", dbtype = "-dbtype", webfrom =
+  "-webfrom", out = "-out"), extra.params = "", debug = FALSE)
 }
 \arguments{
 \item{perl}{Executable file of perl}
@@ -48,6 +50,10 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
 \item{dbtype}{ANNOVAR annotation name}
 
 \item{out}{ANNOVAR -out parameter value}
+
+\item{convert.out}{ANNOVAR convert2annovar.pl output file, e.g. out.avinput}
+
+\item{format}{ANNOVAR convert2annovar.pl input format option}
 
 \item{operation.type}{Operation types used in table_annovar.pl}
 

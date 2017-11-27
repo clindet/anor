@@ -4,11 +4,15 @@
 \name{annovarR}
 \alias{annovarR}
 \alias{annovarR-package}
-\title{annovarR can be used to annotate genetic variants from genomic and transcriptome data. 
-Some of published and in-house database have been introduced in annovarR.}
+\title{annovarR is an novel integrated open source tool to annotate genetic variants data 
+based on ANNOVAR and other public annotation databases, 
+such as [varcards](http://varcards.biols.ac.cn/), 
+[REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc.}
 \description{
-annovarR can be used to annotate genetic variants from genomic and transcriptome data. 
-Some of published and in-house database have been introduced in annovarR.
+annovarR is an novel integrated open source tool to annotate genetic variants data 
+based on ANNOVAR and other public annotation databases, 
+such as [varcards](http://varcards.biols.ac.cn/), 
+[REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc.
 }
 \seealso{
 Useful links:

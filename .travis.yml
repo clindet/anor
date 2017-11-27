@@ -17,11 +17,11 @@ before_install:
   - ./run.sh bootstrap
 
 install:
-  - Rscript -e 'library("devtools");install_github("Miachol/annovarR")'
+  - Rscript -e 'library("devtools");install_github("JhuangLab/annovarR")'
 
 after_failure:
   - ./run.sh dump_logs
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - Rscript -e 'library("covr"); covr::codecov(token = "f42215d2-4fe0-489f-9afe-4deb30f4dc49")'
+  - Rscript -e 'library("covr"); covr::codecov()'

@@ -2,6 +2,7 @@
 
 		* use do.call process external function 
 		* document re-format
+		* convert2annovar.pl be added in annovar
 
 2017-11-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 

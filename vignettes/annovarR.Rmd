@@ -18,9 +18,17 @@ library(data.table)
 
 ## Introduction
 
-[annovarR](https://github.com/JhuangLab/annovarR) is an novel genomic and transcriptome variants annotation tool. It collected and integrated massive public and unpublished database resources to facilitate the annotation work of variants data, [click](https://github.com/JhuangLab/BioInstaller/blob/master/inst/extdata/config/db/db_annovar.toml) to view supported databases detail.
+[annovarR](https://github.com/JhuangLab/annovarR) is a novel integrated open source tool to annotate genetic variants data based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public annotation databases, such as [varcards](http://varcards.biols.ac.cn/), [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
 
-Besides, we provide another R package [BioInstaller](https://github.com/JhuangLab/BioInstaller/) to download bioinformatics related tools, files and databases (>200 types be supported) that can reduce the time cost on browser view.
+The development motivation of annovarR is to extend [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) supported database resources, increase the support type of database, make the annotation work in R more convenient, such as parallel and big file mode.
+
+In addition, to provide more transcription levels of variant database resources, we collected total 1285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data. This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from RNA-seq.
+
+Feature:
+
+-   One-click download ANNOVAR and other public databases in R based on our previous developed [BioInstaller](https://github.com/JhuangLab/BioInstaller) R package which can be used to download/install bioinformatics tools, dependences and databases in R relatively easily.
+-   The editable configuration file and external acceptable function to control the annotation behavior.
+-   Support for multiple data types both in input data and reference database(e.g. text file, SQLite, MySQL)
 
 ## Installation
 
@@ -49,7 +57,7 @@ devtools::install_github("JhuangLab/annovarR")
 
 ### Download database resource
 
-annovarR use a minor modified ([install.bioinfo](https://github.com/JhuangLab/BioInstaller/blob/master/R/install.R)) `download.database` function to download the annotation needed databases.
+annovarR use function `download.database` to download the annotation databases.
 
 ```{r}
 # Show all annovarR supported database
@@ -74,8 +82,6 @@ install.bioinfo(show.all.names = TRUE)
 ```
 
 ### Annotation
-
-annovarR defined the annotation behaviour in `system.file('extdata', 'config/databases.toml', package = 'annovarR')`. Besides, you can found the supported database in annovarR from the configuration file.
 
 ```{r}
 
@@ -131,22 +137,9 @@ x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed =
   table.name.fixed = "bed", db.type = "txt", format.dat.fun = "format.cols.plus.chr", 
   format.db.tb.fun = "format.db.region.tb")
 x
+
+# Convert snp rs number to genomic location
+snp.id <- c("rs775809821", "rs768019142")
+x <- annotation(dat = data.table(rs = rep(snp.id, 3)), database.dir = database.dir, anno.name = "rs2pos147", 
+    buildver = "hg19", verbose = FALSE, db.type = "txt")
 ```
-
-## How to contribute?
-
-Please fork the [GitHub BioInstaller repository](https://github.com/JhuangLab/annovarR), modify it, and submit a pull request to us.
-
-## Maintainer
-
-[Jianfeng Li](https://github.com/Miachol)
-
-## License
-
-R package:
-
-[MIT](https://en.wikipedia.org/wiki/MIT_License)
-
-Related Other Resources:
-
-[Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/)

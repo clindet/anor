@@ -1,5 +1,7 @@
-#' annovarR can be used to annotate genetic variants from genomic and transcriptome data. 
-#' Some of published and in-house database have been introduced in annovarR.
+#' annovarR is an novel integrated open source tool to annotate genetic variants data 
+#' based on ANNOVAR and other public annotation databases, 
+#' such as [varcards](http://varcards.biols.ac.cn/), 
+#' [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
 #' 
 #' @author
 #' Li Jianfeng \url{lee_jianfeng@sjtu.edu.cn}
