@@ -9,9 +9,144 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(comment = "#>", collapse = TRUE)
+library(BioInstaller)
+library(annovarR)
+library(data.table)
 ```
 
 ## Introduction
 
+[annovarR](https://github.com/JhuangLab/annovarR) is an novel genomic and transcriptome variants annotation tool. It collected and integrated massive public and unpublished database resources to facilitate the annotation work of variants data, [click](https://github.com/JhuangLab/BioInstaller/blob/master/inst/extdata/config/db/db_annovar.toml) to view supported databases detail.
+
+Besides, we provide another R package [BioInstaller](https://github.com/JhuangLab/BioInstaller/) to download bioinformatics related tools, files and databases (>200 types be supported) that can reduce the time cost on browser view.
+
+## Installation
+
+### CRAN
+
+``` r
+#You can install this package directly from CRAN by running (from within R):
+install.packages('annovarR')
+```
+
+### Github
+
+``` r
+# Install the cutting edge development version from GitHub:
+# install.packages("devtools")
+devtools::install_github("JhuangLab/annovarR")
+```
+
+### Zip/Tarball
+
+1. Download the appropriate zip file or tar.gz file from Github
+2. Unzip the file and change directories into the configr directory
+3. Run `R CMD INSTALL pkg`
+
+## Usage
+
+### Download database resource
+
+annovarR use a minor modified ([install.bioinfo](https://github.com/JhuangLab/BioInstaller/blob/master/R/install.R)) `download.database` function to download the annotation needed databases.
+
+```{r}
+# Show all annovarR supported database
+download.database(show.all.names = TRUE)
+
+# Show all supported version of database (e.g. db_annovar_avsnp)
+download.database(catgry.name = "db_annovar_avsnp", show.all.version = TRUE)
+
+# Show all supprted buildver of specific version database
+download.database(catgry.name = "db_annovar_avsnp", version = "avsnp147", show.all.buildvers = TRUE)
+
+# To reduce the download time, we use the local demo configuratin file to download demo file
+demo.cfg <- system.file("extdata", "demo/demo.cfg", package = "annovarR")
+download.database("download_demo", show.all.versions = T, database.cfg = demo.cfg)
+download.database("download_demo", "demo", buildver = "GRCh37", database.dir = sprintf("%s/databases/", 
+  tempdir()), database.cfg = demo.cfg)
+
+# If you want to download other resource in BioInstaller,
+# you can use function `install.bioinfo`
+install.bioinfo(show.all.names = TRUE)
+
+```
+
+### Annotation
+
+annovarR defined the annotation behaviour in `system.file('extdata', 'config/databases.toml', package = 'annovarR')`. Besides, you can found the supported database in annovarR from the configuration file.
+
+```{r}
+
+# Get all supprted anno.name in annovarR
+get.annotation.names()
+
+# build sqlite database
+for(i in c("hg19_ALL.sites.2015_08", "hg19_avsnp147")) {
+  database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
+  sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
+  file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
+  sqlite.build(database, sqlite.connect.params = list(dbname = sqlite.db, table.name = sprintf("%s", 
+    i)))
+}
+
+# use the defined rule to annotate 1000 Genome Project frequency
+database.dir <- tempdir()
+chr <- c("chr1", "chr2", "chr1")
+start <- c("10177", "10177", "10020")
+end <- c("10177", "10177", "10020")
+ref <- c("-", "A", "A")
+alt <- c("C", "AC", "-")
+dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+x <- annotation(dat = dat, anno.name = "1000g2015aug_all", database.dir = database.dir, db.type = "txt")
+x
+x <- annotation(dat = dat, anno.name = "1000g2015aug_all", database.dir = database.dir, db.type = "sqlite")
+x
+
+# Do annotation using full match function (default to use chr, start to select data 
+# and use chr, start, end, ref, and alt to match data)
+# Use `?annotation.cols.match` to see more detail about `annotation.cols.match`
+chr <- c("chr1", "chr2", "chr1")
+start <- c("10020", "10020", "10020")
+end <- c("10020", "10020", "10020")
+ref <- c("A", "A", "A")
+alt <- c("-", "-", "-")
+dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, 
+  return.col.names = "avSNP147", db.type = "sqlite")
+x
+
+# Region match mode
+bed.file <- system.file("extdata", "demo/example.bed", package = "annovarR")
+chr <- c("chr10", "chr1")
+start <- c("100188904", "100185955")
+end <- c("100188904", "100185955")
+dat <- data.table(chr = chr, start = start, end = end)
+
+# format.cols.plus.chr will add "chr" in chr colum 
+# if your input chr colum not contain string 'chr'
+# format.db.region.tb will process the region matched data
+x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.file, 
+  table.name.fixed = "bed", db.type = "txt", format.dat.fun = "format.cols.plus.chr", 
+  format.db.tb.fun = "format.db.region.tb")
+x
+```
+
+## How to contribute?
+
+Please fork the [GitHub BioInstaller repository](https://github.com/JhuangLab/annovarR), modify it, and submit a pull request to us.
+
+## Maintainer
+
+[Jianfeng Li](https://github.com/Miachol)
+
+## License
+
+R package:
+
+[MIT](https://en.wikipedia.org/wiki/MIT_License)
+
+Related Other Resources:
+
+[Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/)

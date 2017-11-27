@@ -29,7 +29,7 @@ input.dat.initial <- function(dat, format.dat.fun, verbose = FALSE) {
   print.vb(dat, verbose = verbose)
   # format.dat.fun can standardize the input data
   info.msg("Formating the input data.", verbose = verbose)
-  dat <- format.dat.fun(dat)
+  dat <- do.call(format.dat.fun, list(dat.input = dat))
   info.msg(sprintf("After formated, total %s lines be hold back, colnames is %s.", 
     nrow(dat), paste0(colnames(dat), collapse = ", ")), verbose = verbose)
   print.vb(dat, verbose = verbose)

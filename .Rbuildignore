@@ -6,3 +6,4 @@
 .travis.yml
 ^pre-db
 Makefile
+Dockerfile

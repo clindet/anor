@@ -5,17 +5,20 @@
 \title{R utils function to run ANNOVAR tool.}
 \usage{
 annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
-  "{{perl}} {{script}}{{extra.params}} -downdb {{buildver}} {{webfrom}} {{down.dbname}} {{database.dir}}",
-  script1.gene.based =
-  "{{perl}} {{script}}{{extra.params}} {{buildver}} {{input.file}} {{database.dir}}",
-  script1.region.based =
-  "{{perl}} {{script}} -regionanno{{extra.params}} {{buildver}} {{dbtype}} {{input.file}} {{database.dir}}",
-  script1.filter.based =
-  "{{perl}} {{script}} -filter{{extra.params}} {{buildver}} {{dbtype}} {{input.file}} {{database.dir}}",
-  script2 =
-  "{{perl}} {{script}} {{input.file}} {{database.dir}} {{buildver}} -remove -protocol {{dbtype}} -operation {{operation}} -nastring . -otherinfo -vcfinput"),
-  cmd.used = "script1.downdb", down.dbname = "", input.file = "",
-  annovar.dir = "", buildver = "hg19",
+  paste(c("{{perl}}", "{{script}}{{extra.params}}", "-downdb", "{{buildver}}",
+  "{{webfrom}}", "{{down.dbname}}", "{{database.dir}}"), collapse = " "),
+  script1.gene.based = paste(c("{{perl}}", "{{script}}{{extra.params}}",
+  "{{buildver}}", "{{input.file}}", "{{database.dir}}"), collapse = " "),
+  script1.region.based = paste(c("{{perl}}", "{{script}}",
+  " -regionanno{{extra.params}}", "{{buildver}}", "{{dbtype}}",
+  "{{input.file}}", "{{database.dir}}"), collapse = " "), script1.filter.based =
+  paste(c("{{perl}}",      "{{script}}", "-filter{{extra.params}}",
+  "{{buildver}}", "{{dbtype}}", "{{input.file}}", "{{database.dir}}"), collapse
+  = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}",
+  "{{database.dir}}", "{{buildver}}", "-remove", "-protocol {{dbtype}}",
+  "-operation", "{{operation}}", "-nastring .", "-otherinfo", "-vcfinput"),
+  collapse = " ")), cmd.used = "script1.downdb", down.dbname = "",
+  input.file = "", annovar.dir = "", buildver = "hg19",
   database.dir = "{{annovar.dir}}/humandb", webfrom = "annovar",
   dbtype = "", out = NULL, operation.type = list(gene.based = c("refGene",
   "knownGene", "ensGene", "ccdsGene"), region.based = c("cytoBand",

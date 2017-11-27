@@ -6,6 +6,9 @@
 #' @param index Index name in sqlite 
 #' @param db.type Setting the database type (sqlite, txt or mysql)
 #' @param database.cfg Configuration file of annovarR databases infomation
+#' @param sqlite.build.params Extra params pass to \code{\link{sqlite.build}}
+#' @param split.params Parameters pass to \code{\link[ngstk]{split_row_file}}, 
+#' default is list(each_file_lines = 1000000, use_system_split = FALSE)
 #' @param verbose Logical indicating wheather print the extra log infomation
 #' @export
 #' @examples
@@ -17,7 +20,8 @@
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
 sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/path/", 
   index = "chr_start_index", db.type = "sqlite", database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), verbose = TRUE) {
+    "config/databases.toml", package = "annovarR"), sqlite.build.params = list(fread.params = list(sep = "\t")), 
+  split.params = list(each_file_lines = 1e+06, use_system_split = FALSE), verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
@@ -29,12 +33,35 @@ sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/pat
   }
   filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
     buildver = buildver, database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
+  filename <- normalizePath(filename)
+  build.temp.dir <- sprintf("%s/%s", dirname(filename), stringi::stri_rand_strings(1, 
+    10))
+  dir.create(build.temp.dir)
+  filename.symlink <- sprintf("%s/%s", build.temp.dir, basename(filename))
+  file.symlink(filename, filename.symlink)
+  split.params <- config.list.merge(list(filename = filename.symlink), split.params)
+  do.call(split_row_file, split.params)
+  split.files <- list.files(build.temp.dir)
+  split.files <- split.files[split.files != basename(filename.symlink)]
+  
   dbname <- str_replace(filename, "txt$", "sqlite")
   table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
     buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
-  sqlite.build(filename = filename, sqlite.connect.params = sqlite.connect.params, 
-    verbose = verbose)
+  
+  for (i in 1:length(split.files)) {
+    fn <- sprintf("%s/%s", build.temp.dir, split.files[i])
+    if (i == 1) {
+      sqlite.build.params <- config.list.merge(sqlite.build.params, list(filename = fn, 
+        sqlite.connect.params = sqlite.connect.params, verbose = verbose))
+      do.call(sqlite.build, sqlite.build.params)
+    } else {
+      sqlite.build.params <- config.list.merge(sqlite.build.params, list(filename = fn, 
+        sqlite.connect.params = sqlite.connect.params, verbose = verbose, 
+        overwrite = FALSE, append = TRUE))
+      do.call(sqlite.build, sqlite.build.params)
+    }
+  }
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
   order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])

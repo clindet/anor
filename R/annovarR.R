@@ -1,5 +1,5 @@
-#' annovarR is an efficient software tool to utilize update-to-date information to 
-#' functionally annotate genetic variants detected from diverse genomes based on ANNOVAR.
+#' annovarR can be used to annotate genetic variants from genomic and transcriptome data. 
+#' Some of published and in-house database have been introduced in annovarR.
 #' 
 #' @author
 #' Li Jianfeng \url{lee_jianfeng@sjtu.edu.cn}
@@ -18,7 +18,7 @@
 #' @importFrom RMySQL MySQL dbRemoveTable mysqlHasDefault
 #' @importFrom RSQLite SQLite dbRemoveTable
 #' @importFrom methods formalArgs
-#' @importFrom ngstk split_list
+#' @importFrom ngstk split_list split_row_file
 #' @importFrom data.table is.data.table
 NULL
 

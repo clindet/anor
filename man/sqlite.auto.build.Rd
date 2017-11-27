@@ -7,7 +7,9 @@
 sqlite.auto.build(anno.name, buildver = "hg19", database.dir = "/path/",
   index = "chr_start_index", db.type = "sqlite",
   database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"), verbose = TRUE)
+  "annovarR"), sqlite.build.params = list(fread.params = list(sep = "\\t")),
+  split.params = list(each_file_lines = 1e+06, use_system_split = FALSE),
+  verbose = TRUE)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
@@ -21,6 +23,11 @@ sqlite.auto.build(anno.name, buildver = "hg19", database.dir = "/path/",
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
 
 \item{database.cfg}{Configuration file of annovarR databases infomation}
+
+\item{sqlite.build.params}{Extra params pass to \code{\link{sqlite.build}}}
+
+\item{split.params}{Parameters pass to \code{\link[ngstk]{split_row_file}}, 
+default is list(each_file_lines = 1000000, use_system_split = FALSE)}
 
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 }

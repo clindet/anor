@@ -1,3 +1,14 @@
+2017-11-27 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* use do.call process external function 
+		* document re-format
+
+2017-11-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* sqlite.auto.build use split_row_file to 
+		process big file
+		* vignettes be added
+
 2017-11-24 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* Function annovar be added in R/external_tools.R

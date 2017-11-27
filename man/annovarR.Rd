@@ -4,11 +4,11 @@
 \name{annovarR}
 \alias{annovarR}
 \alias{annovarR-package}
-\title{annovarR is an efficient software tool to utilize update-to-date information to 
-functionally annotate genetic variants detected from diverse genomes based on ANNOVAR.}
+\title{annovarR can be used to annotate genetic variants from genomic and transcriptome data. 
+Some of published and in-house database have been introduced in annovarR.}
 \description{
-annovarR is an efficient software tool to utilize update-to-date information to 
-functionally annotate genetic variants detected from diverse genomes based on ANNOVAR.
+annovarR can be used to annotate genetic variants from genomic and transcriptome data. 
+Some of published and in-house database have been introduced in annovarR.
 }
 \seealso{
 Useful links:

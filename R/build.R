@@ -33,9 +33,6 @@ sqlite.build <- function(filename = "", sqlite.connect.params = list(dbname = ""
         info.msg(sprintf("overwrite be setted TRUE, removing %s", dbname), 
           verbose = verbose)
         file.remove(dbname)
-      } else {
-        warning(sprintf("%s already exists.", dbname))
-        return(FALSE)
       }
     }
     info.msg(sprintf("Reading file %s.", filename), verbose = verbose)
