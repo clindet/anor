@@ -44,13 +44,13 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
   
-  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir, 
-    db.col.order = db.col.order, index.cols = index.cols, matched.cols = matched.cols, 
-    format.dat.fun = format.dat.fun, dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, 
-    setdb.fun = setdb.fun, set.table.fun = set.table.fun, db.type = db.type, 
-    db.file.prefix = db.file.prefix, mysql.connect.params = mysql.connect.params, 
-    sqlite.connect.params = sqlite.connect.params, verbose = verbose)
-  returned.list <- do.call(before.query.steps, pars)
+  returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
+    buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
+    index.cols = index.cols, matched.cols = matched.cols, format.dat.fun = format.dat.fun, 
+    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, setdb.fun = setdb.fun, 
+    set.table.fun = set.table.fun, db.type = db.type, db.file.prefix = db.file.prefix, 
+    mysql.connect.params = mysql.connect.params, sqlite.connect.params = sqlite.connect.params, 
+    verbose = verbose))
   dat <- returned.list$dat
   database.con <- returned.list$database.con
   table.name <- returned.list$table.name
@@ -64,12 +64,12 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   # Select data from database
   selected.db.tb <- select.dat.full.match(database.con, table.name, tb.colnames[index.cols.order], 
     params = params, db.type = db.type, verbose = verbose)
-  pars <- list(dat = dat, selected.db.tb = selected.db.tb, format.db.tb.fun = format.db.tb.fun, 
-    return.col.index = return.col.index, matched.cols = matched.cols, tb.matched.cols = tb.colnames[matched.cols.order], 
+  return(do.call(after.query.steps, list(dat = dat, selected.db.tb = selected.db.tb, 
+    format.db.tb.fun = format.db.tb.fun, return.col.index = return.col.index, 
+    matched.cols = matched.cols, tb.matched.cols = tb.colnames[matched.cols.order], 
     db.col.order = db.col.order, return.col.names = return.col.names, tb.colnames = tb.colnames, 
     database.con = database.con, db.type = db.type, dat.names = dat.names, get.final.table.fun = get.full.match.final.table, 
-    query.type = "full", verbose = verbose)
-  return(do.call(after.query.steps, pars))
+    query.type = "full", verbose = verbose)))
 }
 
 #' A regeion annotation utils that can be used to write a yourself annotation function
@@ -122,13 +122,13 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.region.tb, 
   db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
-  pars <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir, 
-    db.col.order = db.col.order, index.cols = index.cols, matched.cols = c(full.matched.cols, 
-      inferior.col, superior.col), format.dat.fun = format.dat.fun, dbname.fixed = dbname.fixed, 
+  returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
+    buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
+    index.cols = index.cols, matched.cols = c(full.matched.cols, inferior.col, 
+      superior.col), format.dat.fun = format.dat.fun, dbname.fixed = dbname.fixed, 
     table.name.fixed = table.name.fixed, setdb.fun = setdb.fun, set.table.fun = set.table.fun, 
     db.type = db.type, db.file.prefix = db.file.prefix, mysql.connect.params = mysql.connect.params, 
-    sqlite.connect.params = sqlite.connect.params, verbose = verbose)
-  returned.list <- do.call(before.query.steps, pars)
+    sqlite.connect.params = sqlite.connect.params, verbose = verbose))
   dat <- returned.list$dat
   database.con <- returned.list$database.con
   table.name <- returned.list$table.name
@@ -156,15 +156,14 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
     db.type = db.type, verbose = verbose)
   selected.db.tb <- do.call(select.dat.region.match, select.params)
   matched.cols = c(full.matched.cols.raw, inferior.col.raw, superior.col.raw)
-  pars <- list(dat = dat, selected.db.tb = selected.db.tb, format.db.tb.fun = format.db.tb.fun, 
-    return.col.index = return.col.index, full.matched.cols = full.matched.cols, 
-    full.matched.cols.raw = full.matched.cols.raw, inferior.col = inferior.col, 
-    inferior.col.raw = inferior.col.raw, superior.col = superior.col, superior.col.raw = superior.col.raw, 
-    db.col.order = db.col.order, params = params, return.col.names = return.col.names, 
-    tb.colnames = tb.colnames, database.con = database.con, db.type = db.type, 
-    dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
-    dbname = dbname, query.type = "region", verbose = verbose)
-  return(do.call(after.query.steps, pars))
+  return(do.call(after.query.steps, list(dat = dat, selected.db.tb = selected.db.tb, 
+    format.db.tb.fun = format.db.tb.fun, return.col.index = return.col.index, 
+    full.matched.cols = full.matched.cols, full.matched.cols.raw = full.matched.cols.raw, 
+    inferior.col = inferior.col, inferior.col.raw = inferior.col.raw, superior.col = superior.col, 
+    superior.col.raw = superior.col.raw, db.col.order = db.col.order, params = params, 
+    return.col.names = return.col.names, tb.colnames = tb.colnames, database.con = database.con, 
+    db.type = db.type, dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
+    dbname = dbname, query.type = "region", verbose = verbose)))
 }
 #' Annotation function (single name)
 #'

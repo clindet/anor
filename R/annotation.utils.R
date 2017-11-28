@@ -176,6 +176,8 @@ get.full.match.final.table <- function(dat, selected.db.tb, matched.cols = "", s
   eval(paste0(text = text))
   
   selected.db.tb <- merge(selected.db.tb, dat, all = TRUE, allow.cartesian = TRUE)
+  rm(dat)
+  gc()
   selected.db.tb$id <- as.numeric(selected.db.tb$id)
   setkey(selected.db.tb, id)
   selected.db.tb <- selected.db.tb[!is.na(selected.db.tb$id), ]
@@ -189,6 +191,8 @@ get.full.match.final.table <- function(dat, selected.db.tb, matched.cols = "", s
 # Merge selected data and input data and get final output
 get.region.match.final.table <- function(dat, selected.db.tb, inferior.col = "", 
   superior.col = "", selected.colnames = "", verbose = FALSE) {
+  rm(dat)
+  gc()
   setkey(selected.db.tb, "xid")
   selected.db.tb <- selected.db.tb[!duplicated(selected.db.tb$xid), ]
   selected.db.tb <- selected.db.tb[, selected.colnames, with = FALSE]

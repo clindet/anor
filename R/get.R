@@ -157,7 +157,7 @@ db.tb.colnames <- function(dbname = "", db.type = "sqlite", sqlite.connect.param
 select.dat.full.match.sqlite <- function(db, table.name, cols = c(), params = list(), 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
   params <- lapply(params, function(x) {
-    as.character(x)
+    if (!is.character(x)){ as.character(x)}else{x}
   })
   params.length <- length(params)
   if (is.null(sql.operator)) {
@@ -184,14 +184,14 @@ select.dat.full.match.sqlite <- function(db, table.name, cols = c(), params = li
   info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
   result <- dbGetQuery(db, sql, params = params)
   info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
-  result <- as.data.table(result)
+  as.data.table(result)
 }
 
 # select.dat.full.match.mysql
 select.dat.full.match.mysql <- function(db, table.name, cols = c(), params = list(), 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
   params <- lapply(params, function(x) {
-    as.character(x)
+    if (!is.character(x)){ as.character(x)}else{x}
   })
   params.length <- length(params)
   sql <- sprintf("SELECT %s FROM %s", select.cols, table.name)
@@ -218,7 +218,7 @@ select.dat.full.match.mysql <- function(db, table.name, cols = c(), params = lis
     result <- dbGetQuery(db, sql)
     info.msg(sprintf("Finish query: %s", sql), verbose = verbose)
   }
-  result <- as.data.table(result)
+  as.data.table(result)
 }
 
 # select.dat.full.match.txt
@@ -227,10 +227,10 @@ select.dat.full.match.txt <- function(db, table.name, cols = c(), params = list(
   ref.dat <- fread(db)
   ref.dat.colnames.raw <- colnames(ref.dat)
   ref.dat <- lapply(ref.dat, function(x) {
-    as.character(x)
+    if (!is.character(x)){ as.character(x)}else{x}
   })
   params <- lapply(params, function(x) {
-    as.character(x)
+    if (!is.character(x)){ as.character(x)}else{x}
   })
   ref.dat <- as.data.table(ref.dat)
   params <- as.data.table(params)
@@ -300,7 +300,7 @@ select.dat.region.match <- function(db, table.name, full.matched.cols = c(), inf
   superior.col = c(), params = list(), db.type = "txt", select.cols = "*", verbose = FALSE, 
   ...) {
   params <- lapply(params, function(x) {
-    as.character(x)
+    if (!is.character(x)){ as.character(x)}else{x}
   })
   params.length <- length(params)
   if (db.type == "sqlite") {
