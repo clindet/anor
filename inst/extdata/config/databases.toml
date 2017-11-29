@@ -456,3 +456,35 @@ format.dat.fun = "format.cols.plus.chr"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
+
+[hgnc_symbol_convert_1]
+versions = ["hgnc_coding_gene2pre"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+
+need.cols = ["gene"]
+return.col.names = ["hgnc_alias_symbol", "hgnc_prev_name"]
+db.col.order = 2
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [9, 11]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.hgnc.alias"
+set.table.fun = "set.table.hgnc.alias"
+format.db.tb.fun = "format.db.tb.unique"
+
+[hgnc_symbol_convert_2]
+versions = ["hgnc_coding_pre2gene"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+
+need.cols = ["gene"]
+return.col.names = ["hgnc_prev_name", "hgnc_alias_symbol"]
+db.col.order = 11
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [2, 9]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.hgnc.alias"
+set.table.fun = "set.table.hgnc.alias"
+format.db.tb.fun = "format.db.tb.unique"

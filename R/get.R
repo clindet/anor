@@ -224,7 +224,7 @@ select.dat.full.match.mysql <- function(db, table.name, cols = c(), params = lis
 # select.dat.full.match.txt
 select.dat.full.match.txt <- function(db, table.name, cols = c(), params = list(), 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
-  ref.dat <- fread(db)
+  suppressWarnings(ref.dat <- fread(db))
   ref.dat.colnames.raw <- colnames(ref.dat)
   ref.dat <- lapply(ref.dat, function(x) {
     if (!is.character(x)){ as.character(x)}else{x}
@@ -285,7 +285,7 @@ select.dat.region.match.sqlite <- function(db, table.name, full.matched.cols = c
 select.dat.region.match.txt <- function(db, table.name, full.matched.cols = c(), 
   inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
   ...) {
-  ref.dat <- fread(db)
+  suppressWarnings(ref.dat <- fread(db))
   result.list <- full.foverlaps(ref.dat, params, full.matched.cols, inferior.col, 
     superior.col)
   ref.dat <- result.list$ref.dat
