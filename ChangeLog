@@ -1,3 +1,7 @@
+2017-11-30 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* b_all_rnaseq_v1_core and b_all_rnaseq_v1_extra be added
+
 2017-11-29 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* hgnc_coding_gene2pre and hgnc_coding_pre2gene be supported

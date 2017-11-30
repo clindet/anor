@@ -488,3 +488,19 @@ format.dat.fun = "format.cols"
 setdb.fun = "set.db.hgnc.alias"
 set.table.fun = "set.table.hgnc.alias"
 format.db.tb.fun = "format.db.tb.unique"
+
+[b_all_rnaseq_sih]
+versions = ["b_all_rnaseq_v1_core", "b_all_rnaseq_v1_extra"]
+default.dbtype = ["txt", "txt"]
+func = "annotation.auto"
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{anno.name}}_frq"
+db.col.order = [1, 2, 3, 4, 5]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
