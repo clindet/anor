@@ -4,7 +4,7 @@ annovarR package
 ==============
 [annovarR](https://github.com/JhuangLab/annovarR) is a novel integrated open source tool to annotate genetic variants data based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public annotation databases, such as [varcards](http://varcards.biols.ac.cn/), [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
 
-The development motivation of annovarR is to extend [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) supported database resources, increase the support type of database, make the annotation work in R more convenient, such as parallel and big file mode.
+The main development motivation of annovarR is to increase [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) the supported database and facilitate the variants annotation work in R.
 
 In addition, to provide more transcription levels of variant database resources, we collected total 1285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data. This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from RNA-seq.
 
