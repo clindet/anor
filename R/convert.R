@@ -79,7 +79,7 @@ check.par.all.sample <- function(input.format = "vcf4", out.file = NULL, all.sam
 
 ## ALL.2015.08 => name = hg19_ALL.sites.2015.08.txt, mongh = aug, year = 2015,
 ## region = all
-convert.1000g.name <- function(anno.name) {
+convert.1000g.name <- function(anno.name = "") {
   month.hash <- list(jan = "01", feb = "02", mar = "03", apr = "04", may = "05", 
     jun = "06", jul = "07", aug = "08", sep = "09", oct = "10", nov = "11", dec = "12")
   month <- str_extract(anno.name, names(month.hash))

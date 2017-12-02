@@ -16,16 +16,16 @@
 #' table.name = 'snp_test'))
 #' test.sqlite <- normalizePath(test.sqlite, '/')
 #' file.remove(test.sqlite)
-sqlite.build <- function(filename = "", sqlite.connect.params = list(dbname = "", 
+sqlite.build <- function(filename = NULL, sqlite.connect.params = list(dbname = "", 
   table.name = ""), dat = data.table(), fread.params = list(), new.colnames = NULL, 
   overwrite = TRUE, verbose = FALSE, ...) {
-  if (!file.exists(filename)) {
-    stop(sprintf("%s not existed.", filename))
-  }
   dbname <- sqlite.connect.params[["dbname"]]
   table.name <- sqlite.connect.params[["table.name"]]
   status <- FALSE
-  if (filename != "") {
+  if (!is.null(filename) && filename != "") {
+    if (!file.exists(filename)) {
+      stop(sprintf("%s not existed.", filename))
+    }
     info.msg(sprintf("Running sqlite.build function [filename:%s, dbname:%s, table.name:%s].", 
       filename, dbname, table.name), verbose = verbose)
     if (file.exists(dbname)) {
@@ -415,5 +415,36 @@ sql2sqlite <- function(sql.file = "", statements = "", dbname = "", verbose = FA
     cmd <- sprintf("%s %s < %s", sqlite, out.sqlite, sql.file)
     info.msg(sprintf("Running CMD:%s", cmd), verbose = verbose)
     system2(sqlite, args = out.sqlite, stdin = sql.file)
+  }
+}
+
+#' Function to dump sqlite database (Now only use system version sqlite)
+#' @param sqlite_bin Sqlite executable file
+#' @param dbname Sqlite database path
+#' @param out.sql Output SQL (gzip format)
+#' @param cmd The command be used to dump 
+#' @param debug If set TRUE, only print the command
+#' @param ... Other parameters pass to \code{\link[base]{system}}
+#' @export
+#' @examples
+#' sqlite2sql('sqlite3', 'default.sqlite', debug = TRUE)
+sqlite2sql <- function(sqlite_bin = c(Sys.which("sqlite"), Sys.which("sqlite3")), 
+  dbname = "", out.sql = "", cmd = "{{sqlite_bin}} {{dbname}} '.dump' | gzip > {{out.sql}}", 
+  debug = FALSE, ...) {
+  if ("sqlite3" %in% names(sqlite_bin) && unname(sqlite_bin["sqlite3"]) != "") {
+    sqlite_bin <- unname(sqlite_bin["sqlite3"])
+  } else if (all(unname(sqlite_bin) == "")) {
+    stop("Not found sqlite executable file.")
+  } else {
+    sqlite_bin <- unname(sqlite_bin)[1]
+  }
+  cmd <- parse.extra(cmd, extra.list = list(sqlite_bin = sqlite_bin, dbname = dbname, 
+    out.sql = out.sql))
+  if (debug) {
+    cat(cmd, sep = "\n")
+    return(cmd)
+  } else {
+    cat(cmd, sep = "\n")
+    system(cmd, ...)
   }
 }

@@ -1,6 +1,6 @@
 # annovarR default function: setdb.fun, set.table.fun, format.db.tb.fun You can
 # re-write this R source file
-format.cols <- function(dat.input) {
+format.cols <- function(dat.input = "") {
   dat.input <- dat.input
   if ("chr" %in% names(dat.input)) {
     if (str_detect(dat.input[["chr"]][1], "chr|Chr")) {
@@ -12,7 +12,7 @@ format.cols <- function(dat.input) {
 }
 
 # Some of database format of Chr col have 'chr' flag
-format.cols.plus.chr <- function(dat.input) {
+format.cols.plus.chr <- function(dat.input = "") {
   if (!str_detect(dat.input$chr[1], "chr|Chr|CHR")) {
     dat.input$chr <- paste0("chr", dat.input$chr)
   } else if (str_detect(dat.input$chr[1], "Chr|CHR")) {
@@ -22,7 +22,7 @@ format.cols.plus.chr <- function(dat.input) {
 }
 
 # Default set database name function
-set.db <- function(anno.name, buildver = "hg19", database.dir = "", db.type = "", 
+set.db <- function(anno.name = "", buildver = "hg19", database.dir = "", db.type = "", 
   db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list()) {
   if (is.null(db.file.prefix)) {
     db.file.prefix <- db.type
@@ -40,6 +40,19 @@ set.db <- function(anno.name, buildver = "hg19", database.dir = "", db.type = ""
   }
   return(dbname)
 }
+
+set.db.toupper <- function(...) {
+  params <- list(...)
+  params$anno.name <- toupper(params$anno.name)
+  do.call(set.db, params)
+}
+
+set.db.tolower <- function(...) {
+  params <- list(...)
+  params$anno.name <- tolower(params$anno.name)
+  do.call(set.db, params)
+}
+
 # Default set table name function
 set.table <- function(anno.name = "", buildver = "", db.type = "sqlite", mysql.connect.params = list(), 
   sqlite.connect.params = list()) {
@@ -50,6 +63,17 @@ set.table <- function(anno.name = "", buildver = "", db.type = "sqlite", mysql.c
   } else if (db.type == "mysql") {
     table.name <- paste0(buildver, "_", anno.name)
   }
+}
+set.table.tolower <- function(...) {
+  params <- list(...)
+  params$anno.name <- tolower(params$anno.name)
+  do.call(set.table, params)
+}
+
+set.table.toupper <- function(...) {
+  params <- list(...)
+  params$anno.name <- toupper(params$anno.name)
+  do.call(set.table, params)
 }
 
 format.db.tb <- function(...) {
@@ -115,7 +139,7 @@ format.db.region.tb <- function(...) {
 }
 
 # 1000G needed functions to set database name and table name
-set.1000g.db <- function(anno.name, buildver, database.dir = "", db.type = "sqlite") {
+set.1000g.db <- function(anno.name = "", buildver = "hg19", database.dir = "", db.type = "sqlite") {
   list.1000g <- convert.1000g.name(anno.name)
   if (db.type != "mysql") {
     if (database.dir != "") {
@@ -127,7 +151,7 @@ set.1000g.db <- function(anno.name, buildver, database.dir = "", db.type = "sqli
     }
   }
 }
-set.1000g.table <- function(anno.name, buildver) {
+set.1000g.table <- function(anno.name = "", buildver = "hg19") {
   list.1000g <- convert.1000g.name(anno.name)
   table <- sprintf("%s_%s.sites.%s_%s", buildver, list.1000g$region, list.1000g$year, 
     list.1000g$month)
@@ -162,7 +186,8 @@ format.1000g.db.tb <- function(db.tb = "", filename = "", ...) {
 }
 
 # Sih Normal Pool needed functions to set database name and table name
-set.sih.normal.pool.db <- function(anno.name, buildver, database.dir, db.type = "txt") {
+set.sih.normal.pool.db <- function(anno.name = "", buildver = "hg19", database.dir = "", 
+  db.type = "txt") {
   if (db.type == "sqlite") {
     db <- sprintf("%s/%s_normal%s.sqlite", database.dir, buildver, anno.name)
   } else if (db.type == "txt") {

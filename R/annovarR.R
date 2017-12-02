@@ -20,7 +20,7 @@
 #' @importFrom RMySQL MySQL dbRemoveTable mysqlHasDefault
 #' @importFrom RSQLite SQLite dbRemoveTable
 #' @importFrom methods formalArgs
-#' @importFrom ngstk split_list split_row_file
+#' @importFrom ngstk split_list split_row_file batch_file
 #' @importFrom data.table is.data.table
 NULL
 

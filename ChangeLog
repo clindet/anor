@@ -1,7 +1,16 @@
+2017-12-03 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* optimize sqlite.auto.build
+
 2017-12-02 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* download.database use default version
 		* update function annovar document
+		* download.database use download.name and download.cfg
+		* add function get.download.name
+		* dbname.fixed and table.name.fixed can be used in database.cfg
+		* new database be supoorted
+		* set function parameters default value
 
 2017-11-30 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 

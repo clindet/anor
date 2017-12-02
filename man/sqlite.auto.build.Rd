@@ -4,12 +4,11 @@
 \alias{sqlite.auto.build}
 \title{Build annovarR database in sqlite (auto from extdata/config/database.toml)}
 \usage{
-sqlite.auto.build(anno.name, buildver = "hg19", database.dir = "/path/",
-  index = "chr_start_index", db.type = "sqlite",
+sqlite.auto.build(anno.name = "", buildver = "hg19",
+  database.dir = "/path/", index = "chr_start_index", db.type = "sqlite",
   database.cfg = system.file("extdata", "config/databases.toml", package =
   "annovarR"), sqlite.build.params = list(fread.params = list(sep = "\\t")),
-  split.params = list(each_file_lines = 1e+06, use_system_split = FALSE),
-  verbose = TRUE)
+  batch_lines = 1e+07, new.colnames = NULL, verbose = TRUE)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
@@ -26,8 +25,10 @@ sqlite.auto.build(anno.name, buildver = "hg19", database.dir = "/path/",
 
 \item{sqlite.build.params}{Extra params pass to \code{\link{sqlite.build}}}
 
-\item{split.params}{Parameters pass to \code{\link[ngstk]{split_row_file}}, 
-default is list(each_file_lines = 1000000, use_system_split = FALSE)}
+\item{batch_lines}{Parameters pass to \code{\link[ngstk]{batch_file}}, 
+default is 10000000}
+
+\item{new.colnames}{Use the fread determined colnames or use new colnames}
 
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 }

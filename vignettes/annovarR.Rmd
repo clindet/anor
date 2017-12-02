@@ -64,16 +64,16 @@ annovarR use function `download.database` to download the annotation databases.
 download.database(show.all.names = TRUE)
 
 # Show all supported version of database (e.g. db_annovar_avsnp)
-download.database(catgry.name = "db_annovar_avsnp", show.all.version = TRUE)
+download.database(download.name = "db_annovar_avsnp", show.all.version = TRUE)
 
 # Show all supprted buildver of specific version database
-download.database(catgry.name = "db_annovar_avsnp", version = "avsnp147", show.all.buildvers = TRUE)
+download.database(download.name = "db_annovar_avsnp", version = "avsnp147", show.all.buildvers = TRUE)
 
 # To reduce the download time, we use the local demo configuratin file to download demo file
 demo.cfg <- system.file("extdata", "demo/demo.cfg", package = "annovarR")
-download.database("download_demo", show.all.versions = T, database.cfg = demo.cfg)
+download.database("download_demo", show.all.versions = T, download.cfg = demo.cfg)
 download.database("download_demo", "demo", buildver = "GRCh37", database.dir = sprintf("%s/databases/", 
-  tempdir()), database.cfg = demo.cfg)
+  tempdir()), download.cfg = demo.cfg)
 
 # If you want to download other resource in BioInstaller,
 # you can use function `install.bioinfo`

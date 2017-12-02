@@ -17,3 +17,7 @@ test_that("get.cfg", {
   x <- get.annotation.dbtype("2016sih_wes_ball")
   expect_that(x, equals("txt"))
 })
+
+test_that("get.download.name", {
+  x <- get.download.name("avsnp147")
+})

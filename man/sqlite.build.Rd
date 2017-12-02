@@ -4,7 +4,7 @@
 \alias{sqlite.build}
 \title{Build annovarR database in sqlite}
 \usage{
-sqlite.build(filename = "", sqlite.connect.params = list(dbname = "",
+sqlite.build(filename = NULL, sqlite.connect.params = list(dbname = "",
   table.name = ""), dat = data.table(), fread.params = list(),
   new.colnames = NULL, overwrite = TRUE, verbose = FALSE, ...)
 }

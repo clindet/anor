@@ -3,14 +3,15 @@ before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "h
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.cols = c("chr", 
     "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), format.dat.fun = format.cols, 
   dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
-  db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
+  db.type = NULL, db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
   verbose = FALSE) {
   db.type.check(db.type)
   dat <- input.dat.check(dat)
   if (is.null(dat)) {
     return(NULL)
   }
-  database.dir.check(dbname.fixed = dbname.fixed, database.dir = database.dir)
+  dbname.fixed <- database.dir.check(dbname.fixed = dbname.fixed, database.dir = database.dir, 
+    db.type = db.type)
   dat <- input.dat.initial(dat, format.dat.fun, verbose)
   dat <- dat[, 1:length(db.col.order)]
   dat.names <- names(dat)
@@ -125,13 +126,14 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
 }
 
 # Sync database and input table colnames
-sync.colnames <- function(result, col.order, col.names) {
+sync.colnames <- function(result = NULL, col.order = "", col.names = "") {
   colnames(result)[col.order] <- col.names
   return(result)
 }
 
 # Return NA cols using ordered colnames
-return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col.names) {
+return.empty.col <- function(dat.list = NULL, tb.colnames = "", return.col.index = "", 
+  return.col.names = "") {
   result <- NULL
   for (i in 1:length(return.col.index)) {
     result <- cbind(result, rep(NA, length(dat.list[[1]])))
@@ -146,7 +148,8 @@ return.empty.col <- function(dat.list, tb.colnames, return.col.index, return.col
 }
 
 # print.db.info Print the database info
-print.db.info <- function(dbname, db.type, mysql.connect.params, verbose = TRUE) {
+print.db.info <- function(dbname = NULL, db.type = NULL, mysql.connect.params = list(), 
+  verbose = TRUE) {
   if (db.type != "mysql" && !file.exists(dbname)) {
     stop(sprintf("%s database not existed, please check the database dir or setdb.fun function again.", 
       dbname))
@@ -160,8 +163,8 @@ print.db.info <- function(dbname, db.type, mysql.connect.params, verbose = TRUE)
 }
 
 # Merge selected data and input data and get final output
-get.full.match.final.table <- function(dat, selected.db.tb, matched.cols = "", selected.colnames = "", 
-  verbose = FALSE) {
+get.full.match.final.table <- function(dat = NULL, selected.db.tb = NULL, matched.cols = "", 
+  selected.colnames = "", verbose = FALSE) {
   # Generate a unique id to get final result according the input data table
   id <- 1:nrow(dat)
   dat <- cbind(dat, id)
@@ -189,7 +192,7 @@ get.full.match.final.table <- function(dat, selected.db.tb, matched.cols = "", s
 }
 
 # Merge selected data and input data and get final output
-get.region.match.final.table <- function(dat, selected.db.tb, inferior.col = "", 
+get.region.match.final.table <- function(dat = NULL, selected.db.tb = NULL, inferior.col = "", 
   superior.col = "", selected.colnames = "", verbose = FALSE) {
   rm(dat)
   gc()

@@ -1,12 +1,12 @@
 # Add verbose to decide wheather using flog.info infomation
-info.msg <- function(msg, verbose = FALSE, ...) {
+info.msg <- function(msg = "", verbose = FALSE, ...) {
   if (verbose) {
     flog.info(msg, ...)
   }
 }
 
 # Add verbose to decide wheather print infomation
-print.vb <- function(x, verbose = FALSE, ...) {
+print.vb <- function(x = "", verbose = FALSE, ...) {
   if (verbose) {
     print(x)
   }
@@ -14,7 +14,7 @@ print.vb <- function(x, verbose = FALSE, ...) {
 
 # Connect API for sqlite and mysql database, text file will return db dbname for
 # sqlite and txt database
-connect.db <- function(dbname, db.type = "sqlite", sqlite.connect.params = list(), 
+connect.db <- function(dbname = "", db.type = "sqlite", sqlite.connect.params = list(), 
   mysql.connect.params = list(), verbose = TRUE) {
   if (db.type == "mysql") {
     info.msg(sprintf("Setting up connection: Host:%s databse:%s.", mysql.connect.params$host, 
@@ -38,7 +38,7 @@ connect.db <- function(dbname, db.type = "sqlite", sqlite.connect.params = list(
   return(database)
 }
 # DisConnect API to avoid the error that db.type not is sqlite or mysql
-disconnect.db <- function(database, db.type = "sqlite") {
+disconnect.db <- function(database = "", db.type = "sqlite") {
   if (db.type == "sqlite" || db.type == "mysql") {
     dbDisconnect(database)
   }
@@ -47,9 +47,9 @@ disconnect.db <- function(database, db.type = "sqlite") {
 # Can be used to get the value from database.cfg, `name` is one of the first
 # level name of database.cfg, `key` is the key of first level name, `coincident`
 # decide wheather using one value to reprenst all of version
-get.cfg.value.by.name <- function(name, database.cfg = system.file("extdata", "config/databases.toml", 
-  package = "annovarR"), key = "", coincident = FALSE, extra.list = list(), rcmd.parse = TRUE, 
-  glue.parse = TRUE) {
+get.cfg.value.by.name <- function(name = "", database.cfg = system.file("extdata", 
+  "config/databases.toml", package = "annovarR"), key = "", coincident = FALSE, 
+  extra.list = list(), rcmd.parse = TRUE, glue.parse = TRUE) {
   config <- configr::read.config(database.cfg, extra.list = extra.list, rcmd.parse = rcmd.parse, 
     glue.parse = glue.parse)
   config <- config[names(config) != "Title"]

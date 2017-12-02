@@ -4,6 +4,7 @@ Title = "annovarR database annotation configuration file"
 versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp147.common"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
+dependence_db = "db_annovar_avsnp_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "@>@str_replace('{{anno.name}}', 'avsnp', 'avSNP')@<@"
@@ -20,6 +21,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["rs2pos138", "rs2pos142", "rs2pos144", "rs2pos147"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
+dependence_db = "db_annovar_avsnp_sqlite"
 
 need.cols = ["rs"]
 return.col.names = ["chr", "start", "end", "ref", "alt"]
@@ -36,6 +38,7 @@ format.db.tb.fun = "format.db.tb.unique"
 versions = ["cosmic70", "cosmic81"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
+dependence_db = "db_annovar_cosmic_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "@>@str_replace('{{anno.name}}', 'cosmic', 'COSMIC_')@<@"
@@ -53,6 +56,7 @@ versions = ["1000g2015aug_all", "1000g2015aug_afr", "1000g2015aug_amr",
             "1000g2015aug_eas", "1000g2015aug_eur", "1000g2015aug_sas"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
+dependence_db = "db_annovar_1000g_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -66,9 +70,10 @@ set.table.fun = "set.1000g.table"
 format.db.tb.fun = "format.1000g.db.tb"
 
 [radar]
-versions = ["RADAR2"]
+versions = ["radar2"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_radar_sqlite"
 
 need.cols = ["chr", "start"]
 return.col.names = "RADAR2.is.alu"
@@ -77,14 +82,15 @@ index.cols = ["chr", "start"]
 matched.cols = ["chr", "start"]
 return.col.index = 7
 format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
+setdb.fun = "set.db.toupper"
+set.table.fun = "set.table.toupper"
 format.db.tb.fun = "format.db.tb"
 
 [darned]
-versions = ["DARNED"]
+versions = ["darned"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_darned_sqlite"
 
 need.cols = ["chr", "start"]
 return.col.names = "DARNED.in.rna"
@@ -93,14 +99,15 @@ index.cols = ["chr", "start"]
 matched.cols = ["chr", "start"]
 return.col.index = 5
 format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
+setdb.fun = "set.db.toupper"
+set.table.fun = "set.table.toupper"
 format.db.tb.fun = "format.db.tb"
 
 [rediportal]
 versions = ["REDIportal"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_rediportal_sqlite"
 
 need.cols = ["chr", "start", "ref", "alt"]
 return.col.names = "REDIportal"
@@ -117,6 +124,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ['2016sih_wes_ball', '2016sih_wes_tall', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
 func = "annotation.auto"
 default.dbtype = ["txt", "txt", "txt", "txt", "txt"]
+dependence_db = "db_annovar_normal_pool"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -133,6 +141,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["clinvar_20170130"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_clinvar_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -149,6 +158,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["intervar_20170202"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_intervar_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -165,6 +175,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["cadd", "caddgt10", "caddgt20", "cadd13", "cadd13gt10", "cadd13gt20"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
+dependence_db = "db_annovar_cadd_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -181,6 +192,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["nci60"]
 func = "annotation.auto"
 default.dbtype = ["txt"]
+dependence_db = "db_annovar_nci60"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -197,6 +209,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["icgc21"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_icgc_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}_occurrence"
@@ -213,6 +226,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["dbnsfp30a", "dbnsfp31a_interpro", "dbnsfp33a"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite"]
+dependence_db = "db_annovar_dbnsfp_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -229,6 +243,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["gme"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_gme_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -245,6 +260,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["hrcr1"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_hrcr1_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -261,6 +277,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["revel"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_revel_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -277,6 +294,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["mcap"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_mcap_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -293,6 +311,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["exac03", "exac03nontcga", "exac03nonpsych"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite"]
+dependence_db = "db_annovar_exac03_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -309,6 +328,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["gnomad_exome", "gnomad_genome"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
+dependence_db = "db_annovar_gnomad_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -325,6 +345,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["kaviar_20150923"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_kaviar_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -341,6 +362,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["popfreq_max_20150413", "popfreq_all_20150413"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
+dependence_db = "db_annovar_popfreq_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -357,6 +379,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["gwava"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_gwava_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -373,6 +396,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["eigen"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_eigen_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "Eigen"
@@ -390,6 +414,7 @@ versions = ["ucsc_refgene", "ens_refgene"]
 func = "annotation.auto"
 default.dbtype = ["txt", "txt"]
 is.region = true
+dependence_db = ["db_annovar_refgene"]
 
 need.cols = ["chr", "start", "end"]
 return.col.names = ["Transcript","Gene"]
@@ -411,6 +436,7 @@ versions = ["cscd_cancer_circrna",
 func = "annotation.auto"
 default.dbtype = ["!!glue {rep('sqlite', 3)}"]
 is.region = true
+dependence_db = "db_annovar_cscd_sqlite"
 
 need.cols = ["chr", "start", "end"]
 return.col.names = ["cscd_main_info","cscd_main_tissue"]
@@ -429,6 +455,7 @@ format.db.tb.fun = "format.db.tb.unique"
 versions = ["epi_genes_v1"]
 default.dbtype = ["txt"]
 func = "annotation.auto"
+dependence_db = "db_annovar_epi_genes"
 
 need.cols = ["gene"]
 return.col.names = ["{{anno.name}}_type", "{{anno.name}}_pmid"]
@@ -445,6 +472,7 @@ format.db.tb.fun = "format.db.tb.unique"
 versions = ["varcards"]
 default.dbtype = ["sqlite"]
 func = "annotation.auto"
+dependence_db = "db_annovar_varcards_sqlite"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -461,6 +489,7 @@ format.db.tb.fun = "format.db.tb"
 versions = ["hgnc_coding_gene2pre"]
 default.dbtype = ["txt"]
 func = "annotation.auto"
+dependence_db = "db_annovar_hgnc"
 
 need.cols = ["gene"]
 return.col.names = ["hgnc_alias_symbol", "hgnc_prev_name"]
@@ -477,6 +506,7 @@ format.db.tb.fun = "format.db.tb.unique"
 versions = ["hgnc_coding_pre2gene"]
 default.dbtype = ["txt"]
 func = "annotation.auto"
+dependence_db = "db_annovar_hgnc"
 
 need.cols = ["gene"]
 return.col.names = ["hgnc_prev_name", "hgnc_alias_symbol"]
@@ -490,9 +520,10 @@ set.table.fun = "set.table.hgnc.alias"
 format.db.tb.fun = "format.db.tb.unique"
 
 [brvar]
-versions = ["BRVar_v1_core", "BRVar_v1_extra"]
+versions = ["brvar_v1_core", "brvar_v1_extra"]
 default.dbtype = ["txt", "txt"]
 func = "annotation.auto"
+dependence_db = "db_annovar_brvar"
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}_frq"
@@ -503,4 +534,72 @@ return.col.index = 6
 format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[tmcsnpdb]
+versions = "tmcsnpdb"
+default.dbtype = "txt"
+func = "annotation.auto"
+dependence_db = "db_annovar_tmcsnpdb"
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{anno.name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols.plus.chr"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[loftool_scores]
+versions = "loftool_scores"
+default.dbtype = "txt"
+func = "annotation.auto"
+dependence_db = "db_annovar_loftool_scores"
+
+need.cols = ["gene"]
+return.col.names = ""
+db.col.order = [1]
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = 2
+format.dat.fun = "format.cols"
+dbname.fixed = "LoFtool_scores" 
+table.name.fixed = "LoFtool_scores"
+format.db.tb.fun = "format.db.tb"
+
+[gdi_score]
+versions = "gdi_score_full_10282015"
+default.dbtype = "txt"
+func = "annotation.auto"
+dependence_db = "db_annovar_gdi_score"
+
+need.cols = ["gene"]
+return.col.names = ""
+db.col.order = [1]
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [2,3]
+format.dat.fun = "format.cols"
+dbname.fixed = "GDI_full_10282015" 
+table.name.fixed = "GDI_full_10282015"
+format.db.tb.fun = "format.db.tb"
+
+[rvis_esv_score]
+versions = "rvis_exac_4kw"
+default.dbtype = "txt"
+func = "annotation.auto"
+dependence_db = "db_annovar_rvis_esv_score"
+
+need.cols = ["gene"]
+return.col.names = ""
+db.col.order = [1]
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [6,7]
+format.dat.fun = "format.cols"
+dbname.fixed = "RVIS_ExAC_4KW"
+table.name.fixed = "RVIS_ExAC_4KW"
 format.db.tb.fun = "format.db.tb"

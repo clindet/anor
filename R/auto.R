@@ -7,8 +7,9 @@
 #' @param db.type Setting the database type (sqlite, txt or mysql)
 #' @param database.cfg Configuration file of annovarR databases infomation
 #' @param sqlite.build.params Extra params pass to \code{\link{sqlite.build}}
-#' @param split.params Parameters pass to \code{\link[ngstk]{split_row_file}}, 
-#' default is list(each_file_lines = 1000000, use_system_split = FALSE)
+#' @param batch_lines Parameters pass to \code{\link[ngstk]{batch_file}}, 
+#' default is 10000000
+#' @param new.colnames Use the fread determined colnames or use new colnames
 #' @param verbose Logical indicating wheather print the extra log infomation
 #' @export
 #' @examples
@@ -18,10 +19,10 @@
 #' sqlite.auto.build('avsnp147', 'hg19', database.dir = tempdir(), verbose = TRUE)
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
-sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/path/", 
+sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
   index = "chr_start_index", db.type = "sqlite", database.cfg = system.file("extdata", 
     "config/databases.toml", package = "annovarR"), sqlite.build.params = list(fread.params = list(sep = "\t")), 
-  split.params = list(each_file_lines = 1e+06, use_system_split = FALSE), verbose = TRUE) {
+  batch_lines = 1e+07, new.colnames = NULL, verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
@@ -34,34 +35,35 @@ sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/pat
   filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
     buildver = buildver, database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
   filename <- normalizePath(filename)
-  build.temp.dir <- sprintf("%s/%s", dirname(filename), stringi::stri_rand_strings(1, 
-    10))
-  dir.create(build.temp.dir)
-  filename.symlink <- sprintf("%s/%s", build.temp.dir, basename(filename))
-  file.symlink(filename, filename.symlink)
-  split.params <- config.list.merge(list(filename = filename.symlink), split.params)
-  do.call(split_row_file, split.params)
-  split.files <- list.files(build.temp.dir)
-  split.files <- split.files[split.files != basename(filename.symlink)]
-  
   dbname <- str_replace(filename, "txt$", "sqlite")
   table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
     buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   
-  for (i in 1:length(split.files)) {
-    fn <- sprintf("%s/%s", build.temp.dir, split.files[i])
+  build_fun <- function(x = "", i = 1, ...) {
+    params <- list(...)
+    new.colnames <- params$new.colnames
     if (i == 1) {
-      sqlite.build.params <- config.list.merge(sqlite.build.params, list(filename = fn, 
+      if (any(new.colnames != colnames(x))) {
+        colnames(x) <- new.colnames
+        x <- x[-1, ]
+      }
+      sqlite.build.params <- config.list.merge(sqlite.build.params, list(dat = x, 
         sqlite.connect.params = sqlite.connect.params, verbose = verbose))
       do.call(sqlite.build, sqlite.build.params)
     } else {
-      sqlite.build.params <- config.list.merge(sqlite.build.params, list(filename = fn, 
+      sqlite.build.params <- config.list.merge(sqlite.build.params, list(dat = x, 
         sqlite.connect.params = sqlite.connect.params, verbose = verbose, 
-        overwrite = FALSE, append = TRUE))
+        overwrite = FALSE, append = TRUE, new.colnames = new.colnames))
       do.call(sqlite.build, sqlite.build.params)
     }
   }
+  if (!is.null(new.colnames)) {
+    new.colnames <- colnames(fread(filename, nrows = 1))
+  }
+  batch_file(filename = filename, batch_lines = batch_lines, handler = build_fun, 
+    extra_params = list(new.colnames = new.colnames, sqlite.connect.params = sqlite.connect.params), 
+    extra_fread_params = list(sep = "\t", header = FALSE, return_1L = FALSE))
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
   order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])
@@ -94,7 +96,7 @@ sqlite.auto.build <- function(anno.name, buildver = "hg19", database.dir = "/pat
 #' verbose = TRUE)
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
-sqlite.auto.index <- function(anno.name, buildver = "hg19", database.dir = "/path/", 
+sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
   index = "chr_start_index", db.type = "sqlite", database.cfg = system.file("extdata", 
     "config/databases.toml", package = "annovarR"), verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
@@ -127,12 +129,12 @@ sqlite.auto.index <- function(anno.name, buildver = "hg19", database.dir = "/pat
 }
 
 # Auto to annotation accodring the database.cfg
-annotation.auto <- function(dat, anno.name, return.col.names = NULL, return.col.index = NULL, 
-  db.col.order = NULL, index.cols = NULL, matched.cols = NULL, full.matched.cols = NULL, 
-  inferior.col = NULL, superior.col = NULL, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, 
-  db.file.prefix = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
-    package = "annovarR"), is.region = NULL, ...) {
+annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NULL, 
+  return.col.index = NULL, db.col.order = NULL, index.cols = NULL, matched.cols = NULL, 
+  full.matched.cols = NULL, inferior.col = NULL, superior.col = NULL, dbname.fixed = NULL, 
+  table.name.fixed = NULL, setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, 
+  format.dat.fun = NULL, db.file.prefix = NULL, database.cfg = system.file("extdata", 
+    "config/databases.toml", package = "annovarR"), is.region = NULL, ...) {
   
   # dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key =
   # 'need.cols', coincident = TRUE, extra.list = list(anno.name = anno.name),
@@ -149,7 +151,7 @@ annotation.auto <- function(dat, anno.name, return.col.names = NULL, return.col.
   auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
     "index.cols", "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", 
     "format.dat.fun", "db.file.prefix", "full.matched.cols", "inferior.col", 
-    "superior.col", "is.region")
+    "superior.col", "is.region", "dbname.fixed", "table.name.fixed")
   params <- list()
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
@@ -165,24 +167,24 @@ annotation.auto <- function(dat, anno.name, return.col.names = NULL, return.col.
     annotation.cols.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
       return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
       index.cols = params[["index.cols"]], matched.cols = params[["matched.cols"]], 
-      setdb.fun = eval(parse(text = params[["setdb.fun"]])), set.table.fun = eval(parse(text = params[["set.table.fun"]])), 
-      format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), 
-      dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
+      setdb.fun = eval.parse.null(params[["setdb.fun"]]), set.table.fun = eval.parse.null(params[["set.table.fun"]]), 
+      format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), dbname.fixed = params[["dbname.fixed"]], 
+      table.name.fixed = params[["table.name.fixed"]], format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), 
       db.file.prefix = params[["db.file.prefix"]], ...)
   } else {
     annotation.region.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
       return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
       index.cols = params[["index.cols"]], full.matched.cols = params[["full.matched.cols"]], 
       inferior.col = params[["inferior.col"]], superior.col = params[["superior.col"]], 
-      setdb.fun = eval(parse(text = params[["setdb.fun"]])), set.table.fun = eval(parse(text = params[["set.table.fun"]])), 
-      format.db.tb.fun = eval(parse(text = params[["format.db.tb.fun"]])), 
-      dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, format.dat.fun = eval(parse(text = params[["format.dat.fun"]])), 
+      setdb.fun = eval.parse.null(params[["setdb.fun"]]), set.table.fun = eval.parse.null(params[["set.table.fun"]]), 
+      format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), dbname.fixed = params[["dbname.fixed"]], 
+      table.name.fixed = params[["table.name.fixed"]], format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), 
       db.file.prefix = params[["db.file.prefix"]], ...)
   }
 }
 
 # A auto recognition function to get the annotation function from database.cfg
-get.annotation.func <- function(anno.name, database.cfg = system.file("extdata", 
+get.annotation.func <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
   all.supported.db <- get.annotation.names(database.cfg)
   if (!(anno.name %in% all.supported.db)) {
@@ -196,4 +198,13 @@ get.annotation.func <- function(anno.name, database.cfg = system.file("extdata",
   index <- unlist(index)
   config <- config[[names(config)[index]]]
   return(config$func)
+}
+
+eval.parse.null <- function(text = "") {
+  if (is.null(text)) {
+    return(NULL)
+  } else {
+    x <- eval(parse(text = text))
+  }
+  return(x)
 }

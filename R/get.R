@@ -69,7 +69,7 @@ get.annotation.names <- function(database.cfg = system.file("extdata", "config/d
 #' @export
 #' @examples
 #' get.annotation.dbtype('avsnp147') 
-get.annotation.dbtype <- function(anno.name, database.cfg = system.file("extdata", 
+get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
   dbtype <- get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype")
   if (is.null(dbtype)) {
@@ -154,7 +154,7 @@ db.tb.colnames <- function(dbname = "", db.type = "sqlite", sqlite.connect.param
 }
 
 # select.dat.full.match.sqlite
-select.dat.full.match.sqlite <- function(db, table.name, cols = c(), params = list(), 
+select.dat.full.match.sqlite <- function(db = NULL, table.name, cols = c(), params = list(), 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
   params <- lapply(params, function(x) {
     if (!is.character(x)) {
@@ -192,7 +192,7 @@ select.dat.full.match.sqlite <- function(db, table.name, cols = c(), params = li
 }
 
 # select.dat.full.match.mysql
-select.dat.full.match.mysql <- function(db, table.name, cols = c(), params = list(), 
+select.dat.full.match.mysql <- function(db = NULL, table.name, cols = c(), params = list(), 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
   params <- lapply(params, function(x) {
     if (!is.character(x)) {
@@ -230,7 +230,7 @@ select.dat.full.match.mysql <- function(db, table.name, cols = c(), params = lis
 }
 
 # select.dat.full.match.txt
-select.dat.full.match.txt <- function(db, table.name, cols = c(), params = list(), 
+select.dat.full.match.txt <- function(db = NULL, table.name, cols = c(), params = list(), 
   select.cols = "*", sql.operator = NULL, verbose = FALSE) {
   suppressWarnings(ref.dat <- fread(db))
   ref.dat.colnames.raw <- colnames(ref.dat)
@@ -268,8 +268,8 @@ select.dat.full.match.txt <- function(db, table.name, cols = c(), params = list(
 # Select data from text file, sqlite or mysql database cols: database colnames
 # (Simultaneously satisfy the cols SQL conditions) used to match params: a list
 # that record to match database using cols
-select.dat.full.match <- function(db, table.name, cols = c(), params = list(), db.type = "sqlite", 
-  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
+select.dat.full.match <- function(db = NULL, table.name = NULL, cols = c(), params = list(), 
+  db.type = "sqlite", select.cols = "*", sql.operator = NULL, verbose = FALSE) {
   params.length <- length(params)
   if (is.null(sql.operator)) {
     sql.operator <- rep("==", length(params))
@@ -288,7 +288,7 @@ select.dat.full.match <- function(db, table.name, cols = c(), params = list(), d
 }
 
 # Region match from txt file (eg. gff, gtf, bed)
-select.dat.region.match.sqlite <- function(db, table.name, full.matched.cols = c(), 
+select.dat.region.match.sqlite <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
   inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
   ...) {
   sql.operator <- c(rep("==", length(full.matched.cols)), "<=", ">=")
@@ -298,7 +298,7 @@ select.dat.region.match.sqlite <- function(db, table.name, full.matched.cols = c
   result <- result[!duplicated(result), ]
 }
 # Region match from txt file (eg. gff, gtf, bed)
-select.dat.region.match.txt <- function(db, table.name, full.matched.cols = c(), 
+select.dat.region.match.txt <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
   inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
   ...) {
   suppressWarnings(ref.dat <- fread(db))
@@ -312,9 +312,9 @@ select.dat.region.match.txt <- function(db, table.name, full.matched.cols = c(),
 }
 
 # Read GFF and BED file or database
-select.dat.region.match <- function(db, table.name, full.matched.cols = c(), inferior.col = c(), 
-  superior.col = c(), params = list(), db.type = "txt", select.cols = "*", verbose = FALSE, 
-  ...) {
+select.dat.region.match <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
+  inferior.col = c(), superior.col = c(), params = list(), db.type = "txt", select.cols = "*", 
+  verbose = FALSE, ...) {
   params <- lapply(params, function(x) {
     if (!is.character(x)) {
       as.character(x)
@@ -333,7 +333,8 @@ select.dat.region.match <- function(db, table.name, full.matched.cols = c(), inf
   return(result)
 }
 
-full.foverlaps <- function(ref.dat, input.dat, full.matched.cols, inferior.col, superior.col) {
+full.foverlaps <- function(ref.dat = NULL, input.dat = NULL, full.matched.cols = NULL, 
+  inferior.col = NULL, superior.col = NULL) {
   ref.dat <- as.data.table(ref.dat)
   ref.dat.colnames.raw <- colnames(ref.dat)
   input.dat <- as.data.table(input.dat)
