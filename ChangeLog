@@ -1,3 +1,8 @@
+2017-12-02 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* download.database use default version
+		* update function annovar document
+
 2017-11-30 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* b_all_rnaseq_v1_core and b_all_rnaseq_v1_extra be added

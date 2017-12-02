@@ -1,7 +1,9 @@
 #' Download annovarR databases
 #'
-#' @param catgry.name Name of download catgry eg. cosmic, avsnp, 1000g
-#' @param version Version of download database
+#' @param catgry.name Name of download catgry eg. db_annovar_avsnp, db_annovar_1000g,
+#' all supported catgry.name can be get by `download.database(show.all.names = TRUE)`
+#' @param version Version of download database, supported version can be get by 
+#' download.database('db_annovar_avsnp', show.all.versions = TRUE)
 #' @param buildver Genome version, e.g hg19, hg38, mm10
 #' @param database.dir Dir of the databases
 #' @param database.cfg Configuration file for download, most of annovarR database 
@@ -48,10 +50,13 @@ download.database <- function(catgry.name = c(), version = c(), buildver = "hg19
       show.all.names = TRUE, verbose = verbose)
     return(all.names)
   }
+  all.versions <- install.bioinfo(name = catgry.name, github.cfg = github.cfg.null, 
+    nongithub.cfg = database.cfg, show.all.versions = TRUE, verbose = verbose)
   if (show.all.versions) {
-    all.versions <- install.bioinfo(name = catgry.name, github.cfg = github.cfg.null, 
-      nongithub.cfg = database.cfg, show.all.versions = TRUE, verbose = verbose)
     return(all.versions)
+  }
+  if (length(version) == 0) {
+    version = all.versions[1]
   }
   filenames <- mapply(get.finished.filename, catgry.name = catgry.name, version = version, 
     buildver = rep(buildver, length(version)), database.cfg = rep(database.cfg, 

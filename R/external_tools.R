@@ -20,8 +20,30 @@
 #' @export
 #' 
 #' @examples
+#' # original ANNOVAR download.database
 #' down.dbname <- 'refGene'
-#' annovar('perl', down.dbname = 'avsnp147', annovar.dir = '/opt/annovar', debug = TRUE)
+#' annovar('perl', cmd.used = 'script1.downdb', down.dbname = 'avsnp147', 
+#'         annovar.dir = '/opt/annovar', debug = TRUE)
+#'
+#' # ANNOVAR gene-based annotation
+#' annovar('perl', cmd.used = 'script1.gene.based', input.file = 'example.avinput', 
+#'         annovar.dir = '/opt/annovar', debug = TRUE)
+#'
+#' # ANNOVAR gene-based annotation
+#' annovar('perl', cmd.used = 'script1.region.based', dbtype = 'cytoBand', 
+#'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
+#' 
+#' # ANNOVAR filter-based annotation 
+#' annovar('perl', cmd.used = 'script1.filter.based', dbtype = 'avsnp147', 
+#'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
+#' 
+#' # ANNOVAR table_annovar.pl
+#' annovar('perl', cmd.used = 'script2', dbtype = 'refGene,cytoBand,genomicSuperDups,avsnp147,avsnp144', 
+#'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
+#'
+#' # ANNOVAR convert2annovar.pl
+#' annovar('perl', cmd.used = 'script3', input.file = 'example.vcf', format = 'vcf4old', 
+#'         convert.out = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = paste(c("{{perl}}", 
   "{{script}}{{extra.params}}", "-downdb", "{{buildver}}", "{{webfrom}}", "{{down.dbname}}", 
   "{{database.dir}}"), collapse = " "), script1.gene.based = paste(c("{{perl}}", 

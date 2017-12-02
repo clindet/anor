@@ -203,7 +203,7 @@ set.table.refgene <- function(...) {
 }
 
 ### hgnc section ###
-set.db.hgnc.alias <- function(...){
+set.db.hgnc.alias <- function(...) {
   params <- list(...)
   params$anno.name <- str_replace(params$anno.name, "_gene2pre|_pre2gene", "")
   do.call(set.db, params)

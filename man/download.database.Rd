@@ -11,9 +11,11 @@ download.database(catgry.name = c(), version = c(), buildver = "hg19",
   show.all.buildvers = FALSE, verbose = FALSE, ...)
 }
 \arguments{
-\item{catgry.name}{Name of download catgry eg. cosmic, avsnp, 1000g}
+\item{catgry.name}{Name of download catgry eg. db_annovar_avsnp, db_annovar_1000g,
+all supported catgry.name can be get by `download.database(show.all.names = TRUE)`}
 
-\item{version}{Version of download database}
+\item{version}{Version of download database, supported version can be get by 
+download.database('db_annovar_avsnp', show.all.versions = TRUE)}
 
 \item{buildver}{Genome version, e.g hg19, hg38, mm10}
 
