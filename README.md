@@ -6,7 +6,13 @@ annovarR package
 
 The main development motivation of annovarR is to increase [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) the supported database and facilitate the variants annotation work in R.
 
-In addition, to provide more transcription levels of variant database resources, we collected total 1285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data. This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from RNA-seq.
+In addition, to provide more transcription levels of variant database resources, we collected total 1285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data (Database called BRVar). This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from RNA-seq.
+
+```r
+# Download BRVar database
+library(annovarR)
+download.database("db_annovar_brvar", "/path/annovar.dir")
+```
 
 Feature:
 

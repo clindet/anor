@@ -489,8 +489,8 @@ setdb.fun = "set.db.hgnc.alias"
 set.table.fun = "set.table.hgnc.alias"
 format.db.tb.fun = "format.db.tb.unique"
 
-[b_all_rnaseq_sih]
-versions = ["b_all_rnaseq_v1_core", "b_all_rnaseq_v1_extra"]
+[brvar]
+versions = ["BRVar_v1_core", "BRVar_v1_extra"]
 default.dbtype = ["txt", "txt"]
 func = "annotation.auto"
 
