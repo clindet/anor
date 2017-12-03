@@ -115,6 +115,11 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
 get.download.name <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
   download.name <- get.cfg.value.by.name(anno.name, database.cfg, key = "dependence_db")
+  if (is.null(download.name) || is.na(download.name)) {
+    download.name <- get.cfg.value.by.name(anno.name, database.cfg, key = "dependence_db", 
+      coincident = TRUE)
+  }
+  return(download.name)
 }
 
 # Get download and decomparessd filename

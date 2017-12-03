@@ -1,6 +1,7 @@
 2017-12-03 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* optimize sqlite.auto.build
+		* add func get.annotation.needcols in R/get.R
 
 2017-12-02 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 

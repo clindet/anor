@@ -18,14 +18,17 @@ Feature:
 
 -   One-click download ANNOVAR and other public databases in R based on our previous developed [BioInstaller](https://github.com/JhuangLab/BioInstaller) R package which can be used to download/install bioinformatics tools, dependences and databases in R relatively easily.
 -   The editable configuration file and external acceptable function to control the annotation behavior.
--   Support for multiple data types both in input data and reference database(e.g. text file, SQLite, MySQL)
+-   Support for multiple data types both in input data and reference database(e.g. text file, SQLite, MySQL).
 -   Provide support for parallel computing, by additional R package [pannovar](http://github.com/JhuangLab/pannovar) that can be used to parallelly finish annotation work using external annotation tool.
+-   Annotate 5000000 unique lines genetic variants from two database (cosmic81 and avsnp147 be tested) in single thread mode noly need 20 seconds.
+-   Easily to convert very large files to sqlite database in R.
+-   Access the database meta information in R conveniently.
 
 ## Installation
 
 ### CRAN
 ``` r
-#You can install this package directly from CRAN by running (from within R):
+#You can install this package directly from CRAN in the next release version (from within R):
 install.packages('annovarR')
 ```
 
@@ -41,6 +44,45 @@ devtools::install_github("JhuangLab/annovarR")
 -   1285 cases B-ALL RNA-seq variants 
 -   Public RNA-editing databases
 -   Other public database
+
+## Basic Usage
+
+```r
+# Get all annovarR supported annotation name
+get.annotation.names()
+
+# Get annotation name needed download.name and 
+# you can use download.database to download database using the download.name.
+download.name <- get.download.name('avsnp147')
+
+# Show download.name avaliable all versions database
+download.database(download.name = download.name, show.all.versions = TRUE)
+# Download database in annotation database directory
+# Buildver default is hg19
+download.database(download.name = download.name, version = "avsnp147", buildver = "hg19", 
+  database.dir = "/path/database.dir")
+
+# Annotation variants from avsnp147 database
+library(data.table)
+database.dir <- "/path/database.dir"
+chr <- c("chr1", "chr2", "chr1")
+start <- c("10020", "10020", "10020")
+end <- c("10020", "10020", "10020")
+ref <- c("A", "A", "A")
+alt <- c("-", "-", "-")
+database.dir <- tempdir()
+dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+x <- annotation(dat = dat, anno.name = "avsnp147", database.dir = database.dir)
+
+# Annotation multiple database
+x <- annotation.merge(dat = dat, anno.names = c("cosmic81", "avsnp147"), database.dir = database.dir)
+
+# Database configuration file
+database.cfg <- system.file('extdata', 'config/databases.toml', package = "annovarR")
+
+# Get anno.name needed input cols
+get.annotation.needcols('avsnp147')
+```
 
 ## Docker
 

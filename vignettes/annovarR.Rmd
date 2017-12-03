@@ -88,6 +88,16 @@ install.bioinfo(show.all.names = TRUE)
 # Get all supprted anno.name in annovarR
 get.annotation.names()
 
+# Get annotation name needed download.name and 
+# you can use download.database to download database using the download.name.
+download.name <- get.download.name('avsnp147')
+
+# Database configuration file
+database.cfg <- system.file('extdata', 'config/databases.toml', package = "annovarR")
+
+# Get anno.name needed input cols
+get.annotation.needcols('avsnp147')
+
 # build sqlite database
 for(i in c("hg19_ALL.sites.2015_08", "hg19_avsnp147")) {
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")

@@ -79,6 +79,23 @@ get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("ex
   return(dbtype)
 }
 
+#' Get annovarR annotation needed colnames according the anno.name
+#'
+#' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
+#' @param database.cfg Configuration file of annovarR databases infomation
+#' @export
+#' @examples
+#' get.annotation.dbtype('avsnp147') 
+get.annotation.needcols <- function(anno.name = "", database.cfg = system.file("extdata", 
+  "config/databases.toml", package = "annovarR")) {
+  need.cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols")
+  if (is.null(need.cols) || is.na(need.cols)) {
+    need.cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols", 
+      coincident = TRUE)
+  }
+  return(need.cols)
+}
+
 #' Get colnames of table of database in sqlite
 #'
 #' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
