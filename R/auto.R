@@ -3,12 +3,16 @@
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases (mysql no need)
+#' @param overwrite Logical indicating wheather overwrite sqlite database, default is FALSE
+#' @param append Logical indicating wheather append the data to sqlite database, 
+#' default is FALSE
 #' @param index Index name in sqlite 
 #' @param db.type Setting the database type (sqlite, txt or mysql)
 #' @param database.cfg Configuration file of annovarR databases infomation
 #' @param sqlite.build.params Extra params pass to \code{\link{sqlite.build}}
 #' @param batch_lines Parameters pass to \code{\link[ngstk]{batch_file}}, 
 #' default is 10000000
+#' @param start_index default is 1, control the skip rows, n = (i-1) * batch_lines
 #' @param new.colnames Use the fread determined colnames or use new colnames
 #' @param verbose Logical indicating wheather print the extra log infomation
 #' @export
@@ -20,9 +24,10 @@
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
 sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
-  index = "chr_start_index", db.type = "sqlite", database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), sqlite.build.params = list(fread.params = list(sep = "\t")), 
-  batch_lines = 1e+07, new.colnames = NULL, verbose = TRUE) {
+  overwrite = FALSE, append = FALSE, index = "chr_start_index", db.type = "sqlite", 
+  database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
+  sqlite.build.params = list(fread.params = list(sep = "\t")), batch_lines = 1e+07, 
+  start_index = 1, new.colnames = NULL, verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
@@ -44,12 +49,15 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
     params <- list(...)
     new.colnames <- params$new.colnames
     if (i == 1) {
-      if (any(new.colnames != colnames(x))) {
+      if (new.colnames == x[1, ]) {
         colnames(x) <- new.colnames
         x <- x[-1, ]
+      } else if (new.colnames != colnames(x)) {
+        colnames(x) <- new.colnames
       }
       sqlite.build.params <- config.list.merge(sqlite.build.params, list(dat = x, 
-        sqlite.connect.params = sqlite.connect.params, verbose = verbose))
+        sqlite.connect.params = sqlite.connect.params, verbose = verbose, 
+        overwrite = overwrite, append = append, new.colnames = new.colnames))
       do.call(sqlite.build, sqlite.build.params)
     } else {
       sqlite.build.params <- config.list.merge(sqlite.build.params, list(dat = x, 
@@ -58,12 +66,13 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
       do.call(sqlite.build, sqlite.build.params)
     }
   }
-  if (!is.null(new.colnames)) {
+  if (is.null(new.colnames)) {
     new.colnames <- colnames(fread(filename, nrows = 1))
   }
   batch_file(filename = filename, batch_lines = batch_lines, handler = build_fun, 
     extra_params = list(new.colnames = new.colnames, sqlite.connect.params = sqlite.connect.params), 
-    extra_fread_params = list(sep = "\t", header = FALSE, return_1L = FALSE))
+    extra_fread_params = list(sep = "\t", header = FALSE, return_1L = FALSE), 
+    start_index = start_index)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
   order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])

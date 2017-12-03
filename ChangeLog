@@ -2,6 +2,7 @@
 
 		* optimize sqlite.auto.build
 		* add func get.annotation.needcols in R/get.R
+		* add param overwrite and append in sqlite.auto.build 
 
 2017-12-02 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 

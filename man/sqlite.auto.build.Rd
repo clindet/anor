@@ -5,10 +5,12 @@
 \title{Build annovarR database in sqlite (auto from extdata/config/database.toml)}
 \usage{
 sqlite.auto.build(anno.name = "", buildver = "hg19",
-  database.dir = "/path/", index = "chr_start_index", db.type = "sqlite",
+  database.dir = "/path/", overwrite = FALSE, append = FALSE,
+  index = "chr_start_index", db.type = "sqlite",
   database.cfg = system.file("extdata", "config/databases.toml", package =
   "annovarR"), sqlite.build.params = list(fread.params = list(sep = "\\t")),
-  batch_lines = 1e+07, new.colnames = NULL, verbose = TRUE)
+  batch_lines = 1e+07, start_index = 1, new.colnames = NULL,
+  verbose = TRUE)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
@@ -16,6 +18,11 @@ sqlite.auto.build(anno.name = "", buildver = "hg19",
 \item{buildver}{Genome version, hg19, hg38, mm10 and others}
 
 \item{database.dir}{Dir of the databases (mysql no need)}
+
+\item{overwrite}{Logical indicating wheather overwrite sqlite database, default is FALSE}
+
+\item{append}{Logical indicating wheather append the data to sqlite database, 
+default is FALSE}
 
 \item{index}{Index name in sqlite}
 
@@ -27,6 +34,8 @@ sqlite.auto.build(anno.name = "", buildver = "hg19",
 
 \item{batch_lines}{Parameters pass to \code{\link[ngstk]{batch_file}}, 
 default is 10000000}
+
+\item{start_index}{default is 1, control the skip rows, n = (i-1) * batch_lines}
 
 \item{new.colnames}{Use the fread determined colnames or use new colnames}
 
