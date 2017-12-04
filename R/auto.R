@@ -48,13 +48,11 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
   build_fun <- function(x = "", i = 1, ...) {
     params <- list(...)
     new.colnames <- params$new.colnames
+    if (all(new.colnames == x[1, ])) {
+      colnames(x) <- new.colnames
+      x <- x[-1, ]
+    }
     if (i == 1) {
-      if (new.colnames == x[1, ]) {
-        colnames(x) <- new.colnames
-        x <- x[-1, ]
-      } else if (new.colnames != colnames(x)) {
-        colnames(x) <- new.colnames
-      }
       sqlite.build.params <- config.list.merge(sqlite.build.params, list(dat = x, 
         sqlite.connect.params = sqlite.connect.params, verbose = verbose, 
         overwrite = overwrite, append = append, new.colnames = new.colnames))

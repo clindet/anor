@@ -1,3 +1,7 @@
+2017-12-04 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* fix start_index length error
+
 2017-12-03 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* optimize sqlite.auto.build
