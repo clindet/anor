@@ -141,11 +141,12 @@ sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = 
 
 # Auto to annotation accodring the database.cfg
 annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NULL, 
-  return.col.index = NULL, db.col.order = NULL, index.cols = NULL, matched.cols = NULL, 
-  full.matched.cols = NULL, inferior.col = NULL, superior.col = NULL, dbname.fixed = NULL, 
-  table.name.fixed = NULL, setdb.fun = NULL, set.table.fun = NULL, format.db.tb.fun = NULL, 
-  format.dat.fun = NULL, db.file.prefix = NULL, database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), is.region = NULL, ...) {
+  return.col.names.profix = NULL, return.col.index = NULL, db.col.order = NULL, 
+  index.cols = NULL, matched.cols = NULL, full.matched.cols = NULL, inferior.col = NULL, 
+  superior.col = NULL, dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = NULL, 
+  set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, db.file.prefix = NULL, 
+  database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
+  is.region = NULL, ...) {
   
   # dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key =
   # 'need.cols', coincident = TRUE, extra.list = list(anno.name = anno.name),
@@ -162,7 +163,7 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
   auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
     "index.cols", "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", 
     "format.dat.fun", "db.file.prefix", "full.matched.cols", "inferior.col", 
-    "superior.col", "is.region", "dbname.fixed", "table.name.fixed")
+    "superior.col", "is.region", "dbname.fixed", "table.name.fixed", "return.col.names.profix")
   params <- list()
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
@@ -176,21 +177,23 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
   is.region <- params[["is.region"]]
   if (is.null(is.region) || !is.region) {
     annotation.cols.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
-      return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
-      index.cols = params[["index.cols"]], matched.cols = params[["matched.cols"]], 
-      setdb.fun = eval.parse.null(params[["setdb.fun"]]), set.table.fun = eval.parse.null(params[["set.table.fun"]]), 
-      format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), dbname.fixed = params[["dbname.fixed"]], 
-      table.name.fixed = params[["table.name.fixed"]], format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), 
-      db.file.prefix = params[["db.file.prefix"]], ...)
+      return.col.names.profix = params[["return.col.names.profix"]], return.col.index = params[["return.col.index"]], 
+      db.col.order = params[["db.col.order"]], index.cols = params[["index.cols"]], 
+      matched.cols = params[["matched.cols"]], setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
+      set.table.fun = eval.parse.null(params[["set.table.fun"]]), format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), 
+      dbname.fixed = params[["dbname.fixed"]], table.name.fixed = params[["table.name.fixed"]], 
+      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), db.file.prefix = params[["db.file.prefix"]], 
+      ...)
   } else {
     annotation.region.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
-      return.col.index = params[["return.col.index"]], db.col.order = params[["db.col.order"]], 
-      index.cols = params[["index.cols"]], full.matched.cols = params[["full.matched.cols"]], 
-      inferior.col = params[["inferior.col"]], superior.col = params[["superior.col"]], 
-      setdb.fun = eval.parse.null(params[["setdb.fun"]]), set.table.fun = eval.parse.null(params[["set.table.fun"]]), 
-      format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), dbname.fixed = params[["dbname.fixed"]], 
-      table.name.fixed = params[["table.name.fixed"]], format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), 
-      db.file.prefix = params[["db.file.prefix"]], ...)
+      return.col.names.profix = params[["return.col.names.profix"]], return.col.index = params[["return.col.index"]], 
+      db.col.order = params[["db.col.order"]], index.cols = params[["index.cols"]], 
+      full.matched.cols = params[["full.matched.cols"]], inferior.col = params[["inferior.col"]], 
+      superior.col = params[["superior.col"]], setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
+      set.table.fun = eval.parse.null(params[["set.table.fun"]]), format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), 
+      dbname.fixed = params[["dbname.fixed"]], table.name.fixed = params[["table.name.fixed"]], 
+      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), db.file.prefix = params[["db.file.prefix"]], 
+      ...)
   }
 }
 

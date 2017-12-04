@@ -85,7 +85,8 @@ annovar('perl', cmd.used = 'script1.filter.based', dbtype = 'avsnp147',
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR table_annovar.pl
-annovar('perl', cmd.used = 'script2', dbtype = 'refGene,cytoBand,genomicSuperDups,avsnp147,avsnp144', 
+annovar('perl', cmd.used = 'script2', 
+        dbtype = 'refGene,cytoBand,genomicSuperDups,avsnp147,avsnp144', 
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR convert2annovar.pl

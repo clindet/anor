@@ -638,3 +638,43 @@ format.dat.fun = "format.cols"
 dbname.fixed = "RVIS_ExAC_4KW"
 table.name.fixed = "RVIS_ExAC_4KW"
 format.db.tb.fun = "format.db.tb"
+
+[dhs_gene_connectivity]
+versions = ["dhs_gene_connectivity_2012"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+is.region = true
+dependence_db = ["db_annovar_dhs_gene_connectivity"]
+header = true
+
+need.cols = ["chr", "start", "end"]
+return.col.names = ""
+db.col.order = [1, 2, 3]
+index.cols = ["chr", "start", "end"]
+full.matched.cols = "chr"
+inferior.col = "start"
+superior.col = "end"
+return.col.index = [4]
+format.dat.fun = "format.cols.plus.chr"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[seeqtl_rs2qvalue]
+versions = ["seeqtl_qvalue_hapmap3_cis", "seeqtl_qvalue_hapmap3_trans", "seeqtl_qvalue_myers_cis", "seeqtl_qvalue_myers_trans"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+dependence_db = ["db_annovar_seeqtl"]
+header = true
+
+need.cols = ["rs"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = [1]
+index.cols = ["rs"]
+matched.cols = ["rs"]
+return.col.index = [6]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"

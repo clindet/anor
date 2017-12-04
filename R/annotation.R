@@ -9,6 +9,7 @@
 #' @param matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
 #' @param return.col.index Setting the colnums need be returned
 #' @param return.col.names Setting the returned colnum names
+#' @param return.col.names.profix Setting the returned colnum names profix
 #' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
 #' @param dbname.fixed Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
 #' (Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)
@@ -39,10 +40,10 @@
 annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.cols = c("chr", 
     "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), return.col.index = 6, 
-  return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, table.name.fixed = NULL, 
-  setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.tb, 
-  db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
-  verbose = FALSE) {
+  return.col.names = "", return.col.names.profix = "", format.dat.fun = format.cols, 
+  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
+  format.db.tb.fun = format.db.tb, db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), 
+  sqlite.connect.params = list(), verbose = FALSE) {
   
   returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
     buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
@@ -67,8 +68,9 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   return(do.call(after.query.steps, list(dat = dat, selected.db.tb = selected.db.tb, 
     format.db.tb.fun = format.db.tb.fun, return.col.index = return.col.index, 
     matched.cols = matched.cols, tb.matched.cols = tb.colnames[matched.cols.order], 
-    db.col.order = db.col.order, return.col.names = return.col.names, tb.colnames = tb.colnames, 
-    database.con = database.con, db.type = db.type, dat.names = dat.names, get.final.table.fun = get.full.match.final.table, 
+    db.col.order = db.col.order, return.col.names = return.col.names, return.col.names.profix = return.col.names.profix, 
+    tb.colnames = tb.colnames, database.con = database.con, db.type = db.type, 
+    dat.names = dat.names, get.final.table.fun = get.full.match.final.table, 
     query.type = "full", verbose = verbose)))
 }
 
@@ -85,6 +87,7 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 #' @param superior.col Superior limit col, e.g. end
 #' @param return.col.index Setting the colnums need be returned
 #' @param return.col.names Setting the returned colnum names
+#' @param return.col.names.profix Setting the returned colnum names profix
 #' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
 #' @param dbname.fixed Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
 #' (Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)
@@ -118,10 +121,10 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 annotation.region.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:3, index.cols = c("chr", 
     "start", "end"), full.matched.cols = "chr", inferior.col = "start", superior.col = "end", 
-  return.col.index = 4, return.col.names = "", format.dat.fun = format.cols, dbname.fixed = NULL, 
-  table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, format.db.tb.fun = format.db.region.tb, 
-  db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 
-  verbose = FALSE) {
+  return.col.index = 4, return.col.names = "", return.col.names.profix = "", format.dat.fun = format.cols, 
+  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
+  format.db.tb.fun = format.db.region.tb, db.type = "sqlite", db.file.prefix = NULL, 
+  mysql.connect.params = list(), sqlite.connect.params = list(), verbose = FALSE) {
   returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
     buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
     index.cols = index.cols, matched.cols = c(full.matched.cols, inferior.col, 
@@ -161,8 +164,9 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
     full.matched.cols = full.matched.cols, full.matched.cols.raw = full.matched.cols.raw, 
     inferior.col = inferior.col, inferior.col.raw = inferior.col.raw, superior.col = superior.col, 
     superior.col.raw = superior.col.raw, db.col.order = db.col.order, params = params, 
-    return.col.names = return.col.names, tb.colnames = tb.colnames, database.con = database.con, 
-    db.type = db.type, dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
+    return.col.names = return.col.names, return.col.names.profix = return.col.names.profix, 
+    tb.colnames = tb.colnames, database.con = database.con, db.type = db.type, 
+    dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
     dbname = dbname, query.type = "region", verbose = verbose)))
 }
 #' Annotation function (single name)
@@ -177,7 +181,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
-#' @param ... Other parameters see \code{\link{annotation.cols.match}}
+#' @param ... Other parameters see \code{\link{annotation.cols.match}} and \code{\link{annotation.region.match}}
 #' @export
 #' @examples
 #' library(data.table)

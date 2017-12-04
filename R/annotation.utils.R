@@ -64,8 +64,8 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
   db.col.order = NULL, tb.colnames = NULL, tb.matched.cols = NULL, matched.cols = NULL, 
   full.matched.cols = NULL, full.matched.cols.raw = NULL, inferior.col = NULL, 
   inferior.col.raw = NULL, superior.col = NULL, superior.col.raw = NULL, dbname = NULL, 
-  return.col.index = NULL, return.col.names = NULL, database.con = NULL, db.type = NULL, 
-  dat.names = NULL, params = NULL, get.final.table.fun = get.full.match.final.table, 
+  return.col.index = NULL, return.col.names = NULL, return.col.names.profix = NULL, 
+  database.con = NULL, db.type = NULL, dat.names = NULL, params = NULL, get.final.table.fun = get.full.match.final.table, 
   query.type = "full", verbose = FALSE) {
   if (query.type == "full") {
     selected.db.tb <- do.call(format.db.tb.fun, list(db.tb = selected.db.tb, 
@@ -89,7 +89,8 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
   # If selected data is empty, return NA matrix according the return.col.index and
   # return.col.names
   if (nrow(selected.db.tb) == 0) {
-    empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names)
+    empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names, 
+      return.col.names.profix)
     disconnect.db(database.con, db.type)
     return(empty.col)
   }
@@ -120,6 +121,9 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
   } else {
     colnames(result) <- tb.colnames[return.col.index]
   }
+  if (!is.null(return.col.names.profix) && return.col.names.profix != "") {
+    colnames(result) <- paste0(return.col.names.profix, colnames(result))
+  }
   info.msg("Returned data:", verbose = verbose)
   print.vb(result, verbose = verbose)
   return(result)
@@ -133,7 +137,7 @@ sync.colnames <- function(result = NULL, col.order = "", col.names = "") {
 
 # Return NA cols using ordered colnames
 return.empty.col <- function(dat.list = NULL, tb.colnames = "", return.col.index = "", 
-  return.col.names = "") {
+  return.col.names = "", return.col.names.profix = "") {
   result <- NULL
   for (i in 1:length(return.col.index)) {
     result <- cbind(result, rep(NA, length(dat.list[[1]])))
@@ -143,6 +147,9 @@ return.empty.col <- function(dat.list = NULL, tb.colnames = "", return.col.index
     colnames(result) <- return.col.names
   } else {
     colnames(result) <- tb.colnames[return.col.index]
+  }
+  if (!is.null(return.col.names.profix) && return.col.names.profix != "") {
+    colnames(result) <- paste0(return.col.names.profix, colnames(result))
   }
   return(result)
 }

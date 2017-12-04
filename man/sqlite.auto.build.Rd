@@ -8,7 +8,8 @@ sqlite.auto.build(anno.name = "", buildver = "hg19",
   database.dir = "/path/", overwrite = FALSE, append = FALSE,
   index = "chr_start_index", db.type = "sqlite",
   database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"), sqlite.build.params = list(fread.params = list(sep = "\\t")),
+  "annovarR"), extra_fread_params = list(sep = "\\t", header = TRUE, return_1L
+  = FALSE), sqlite.build.params = list(fread.params = list(sep = "\\t")),
   batch_lines = 1e+07, start_index = 1, new.colnames = NULL,
   verbose = TRUE)
 }
@@ -29,6 +30,9 @@ default is FALSE}
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
 
 \item{database.cfg}{Configuration file of annovarR databases infomation}
+
+\item{extra_fread_params}{Pass to \code{\link[ngstk]{batch_file}}, 
+default is to get value from database.cfg}
 
 \item{sqlite.build.params}{Extra params pass to \code{\link{sqlite.build}}}
 
