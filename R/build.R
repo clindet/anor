@@ -44,7 +44,6 @@ sqlite.build <- function(filename = NULL, sqlite.connect.params = list(dbname = 
   } else {
     stop("Please set filenmae or dat at least one!")
   }
-  
   info.msg(sprintf("Setting up connection: %s sqlite databse.", dbname), verbose = verbose)
   sqlite.connect.params <- config.list.merge(list(SQLite()), sqlite.connect.params)
   sqlite.db <- do.call(dbConnect, sqlite.connect.params)

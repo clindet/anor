@@ -9,6 +9,8 @@
 #' @param index Index name in sqlite 
 #' @param db.type Setting the database type (sqlite, txt or mysql)
 #' @param database.cfg Configuration file of annovarR databases infomation
+#' @param extra_fread_params Pass to \code{\link[ngstk]{batch_file}}, 
+#' default is to get value from database.cfg
 #' @param sqlite.build.params Extra params pass to \code{\link{sqlite.build}}
 #' @param batch_lines Parameters pass to \code{\link[ngstk]{batch_file}}, 
 #' default is 10000000
@@ -26,12 +28,12 @@
 sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
   overwrite = FALSE, append = FALSE, index = "chr_start_index", db.type = "sqlite", 
   database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
-  sqlite.build.params = list(fread.params = list(sep = "\t")), batch_lines = 1e+07, 
-  start_index = 1, new.colnames = NULL, verbose = TRUE) {
+  extra_fread_params = list(sep = "\t", header = TRUE, return_1L = FALSE), sqlite.build.params = list(fread.params = list(sep = "\t")), 
+  batch_lines = 1e+07, start_index = 1, new.colnames = NULL, verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
-    "index.cols")
+    "index.cols", "header")
   default.pars <- list()
   for (item in auto.parameters) {
     default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
@@ -44,6 +46,9 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
   table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
     buildver = buildver))
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
+  if (is.logical(default.pars[["header"]])) {
+    extra_fread_params$header <- default.pars[["header"]]
+  }
   
   build_fun <- function(x = "", i = 1, ...) {
     params <- list(...)
@@ -69,8 +74,7 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
   }
   batch_file(filename = filename, batch_lines = batch_lines, handler = build_fun, 
     extra_params = list(new.colnames = new.colnames, sqlite.connect.params = sqlite.connect.params), 
-    extra_fread_params = list(sep = "\t", header = FALSE, return_1L = FALSE), 
-    start_index = start_index)
+    extra_fread_params = extra_fread_params, start_index = start_index)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
   db.colnames <- db.colnames[default.pars[["db.col.order"]]]
   order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])

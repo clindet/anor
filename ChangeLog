@@ -1,6 +1,7 @@
 2017-12-04 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* fix start_index length error
+		* when skip != 0, the header set FALSE in fread (sqlite.auto.build)
 
 2017-12-03 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 

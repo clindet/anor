@@ -5,6 +5,7 @@ versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp147.common"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_avsnp_sqlite"
+header = false
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "@>@str_replace('{{anno.name}}', 'avsnp', 'avSNP')@<@"
@@ -22,6 +23,7 @@ versions = ["rs2pos138", "rs2pos142", "rs2pos144", "rs2pos147"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_avsnp_sqlite"
+header = false
 
 need.cols = ["rs"]
 return.col.names = ["chr", "start", "end", "ref", "alt"]
@@ -39,6 +41,7 @@ versions = ["cosmic70", "cosmic81"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
 dependence_db = "db_annovar_cosmic_sqlite"
+header = false
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "@>@str_replace('{{anno.name}}', 'cosmic', 'COSMIC_')@<@"
@@ -57,6 +60,7 @@ versions = ["1000g2015aug_all", "1000g2015aug_afr", "1000g2015aug_amr",
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_1000g_sqlite"
+header = false
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -74,6 +78,7 @@ versions = ["radar2"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_radar_sqlite"
+header = true
 
 need.cols = ["chr", "start"]
 return.col.names = "RADAR2.is.alu"
@@ -91,6 +96,7 @@ versions = ["darned"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_darned_sqlite"
+header = true
 
 need.cols = ["chr", "start"]
 return.col.names = "DARNED.in.rna"
@@ -108,6 +114,7 @@ versions = ["REDIportal"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_rediportal_sqlite"
+header = false
 
 need.cols = ["chr", "start", "ref", "alt"]
 return.col.names = "REDIportal"
@@ -125,6 +132,7 @@ versions = ['2016sih_wes_ball', '2016sih_wes_tall', '2016sih_wes_nkt', '2016sih_
 func = "annotation.auto"
 default.dbtype = ["txt", "txt", "txt", "txt", "txt"]
 dependence_db = "db_annovar_normal_pool"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -142,6 +150,7 @@ versions = ["clinvar_20170130"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_clinvar_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -159,6 +168,7 @@ versions = ["intervar_20170202"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_intervar_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -176,6 +186,7 @@ versions = ["cadd", "caddgt10", "caddgt20", "cadd13", "cadd13gt10", "cadd13gt20"
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_cadd_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -193,6 +204,7 @@ versions = ["nci60"]
 func = "annotation.auto"
 default.dbtype = ["txt"]
 dependence_db = "db_annovar_nci60"
+header = false
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -210,6 +222,7 @@ versions = ["icgc21"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_icgc_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}_occurrence"
@@ -227,6 +240,7 @@ versions = ["dbnsfp30a", "dbnsfp31a_interpro", "dbnsfp33a"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_dbnsfp_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -244,6 +258,7 @@ versions = ["gme"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_gme_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -261,6 +276,7 @@ versions = ["hrcr1"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_hrcr1_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -278,6 +294,7 @@ versions = ["revel"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_revel_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -295,6 +312,7 @@ versions = ["mcap"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_mcap_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -312,6 +330,7 @@ versions = ["exac03", "exac03nontcga", "exac03nonpsych"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_exac03_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -329,6 +348,7 @@ versions = ["gnomad_exome", "gnomad_genome"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
 dependence_db = "db_annovar_gnomad_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -346,6 +366,7 @@ versions = ["kaviar_20150923"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_kaviar_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -363,6 +384,7 @@ versions = ["popfreq_max_20150413", "popfreq_all_20150413"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
 dependence_db = "db_annovar_popfreq_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -380,6 +402,7 @@ versions = ["gwava"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_gwava_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -397,6 +420,7 @@ versions = ["eigen"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_eigen_sqlite"
+header = false
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "Eigen"
@@ -415,6 +439,7 @@ func = "annotation.auto"
 default.dbtype = ["txt", "txt"]
 is.region = true
 dependence_db = ["db_annovar_refgene"]
+header = false
 
 need.cols = ["chr", "start", "end"]
 return.col.names = ["Transcript","Gene"]
@@ -437,6 +462,7 @@ func = "annotation.auto"
 default.dbtype = ["!!glue {rep('sqlite', 3)}"]
 is.region = true
 dependence_db = "db_annovar_cscd_sqlite"
+header = false
 
 need.cols = ["chr", "start", "end"]
 return.col.names = ["cscd_main_info","cscd_main_tissue"]
@@ -456,6 +482,7 @@ versions = ["epi_genes_v1"]
 default.dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_epi_genes"
+header = true
 
 need.cols = ["gene"]
 return.col.names = ["{{anno.name}}_type", "{{anno.name}}_pmid"]
@@ -473,6 +500,7 @@ versions = ["varcards"]
 default.dbtype = ["sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_varcards_sqlite"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = ""
@@ -490,6 +518,7 @@ versions = ["hgnc_coding_gene2pre"]
 default.dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_hgnc"
+header = true
 
 need.cols = ["gene"]
 return.col.names = ["hgnc_alias_symbol", "hgnc_prev_name"]
@@ -507,6 +536,7 @@ versions = ["hgnc_coding_pre2gene"]
 default.dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_hgnc"
+header = true
 
 need.cols = ["gene"]
 return.col.names = ["hgnc_prev_name", "hgnc_alias_symbol"]
@@ -524,6 +554,7 @@ versions = ["brvar_v1_core", "brvar_v1_extra"]
 default.dbtype = ["txt", "txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_brvar"
+header = true
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}_frq"
@@ -541,6 +572,7 @@ versions = "tmcsnpdb"
 default.dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_tmcsnpdb"
+header = false
 
 need.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.names = "{{anno.name}}"
@@ -558,6 +590,7 @@ versions = "loftool_scores"
 default.dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_loftool_scores"
+header = true
 
 need.cols = ["gene"]
 return.col.names = ""
@@ -575,6 +608,7 @@ versions = "gdi_score_full_10282015"
 default.dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_gdi_score"
+header = true
 
 need.cols = ["gene"]
 return.col.names = ""
@@ -592,6 +626,7 @@ versions = "rvis_exac_4kw"
 default.dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_rvis_esv_score"
+header = true
 
 need.cols = ["gene"]
 return.col.names = ""
