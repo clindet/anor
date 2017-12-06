@@ -1,5 +1,5 @@
 database.dir <- tempdir()
-for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
+for (i in c("hg19_avsnp147", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 
@@ -59,17 +59,6 @@ test_that("annotation.snp", {
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
   
-  dat$start[1] <- "10177"
-  dat$end[1] <- "10177"
-  dat$ref[1] <- "-"
-  dat$alt[1] <- "C"
-  x <- annotation(dat, "avsnp147.common", database.dir = database.dir, db.type = "txt")
-  x <- as.data.frame(x)
-  expect_that(colnames(x), equals("avSNP147.common"))
-  x[, 1] <- as.character(x[, 1])
-  expect_that(x[1, 1], equals("rs367896724"))
-  expect_that(is.na(x[2, 1]), equals(TRUE))
-  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
 test_that("annotation.1000g", {
@@ -570,7 +559,7 @@ test_that("eigen", {
   
 })
 
-for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
+for (i in c("hg19_avsnp147", "hg19_cosmic81", "hg19_ALL.sites.2015_08", 
   "hg19_RADAR2", "hg19_DARNED", "hg19_normal2016sih_wes_ball", "hg19_normal2016sih_wes_nkt", 
   "hg19_normal2016sih_wes_tall", "hg19_normal2016sih_wgs_nkt", "hg19_normal2016sih_wgs_dlbcl", 
   "hg19_clinvar_20170130", "hg19_intervar_20170202", "hg19_REDIportal", "hg19_caddgt10", 

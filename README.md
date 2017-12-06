@@ -12,7 +12,7 @@ In addition, to provide more transcription levels of variant database resources,
 # Download BRVar database
 # Firstly, you need to apply a licence code contact Jianfeng: lee_jianfeng@sjtu.edu.cn
 library(annovarR)
-download.database("db_annovar_brvar", "/path/annovar.dir", extra.list = list(licence = "licence_code"))
+download.database("db_annovar_brvar", "/path/annovar.dir",  license = "licence_code")
 ```
 
 Feature:

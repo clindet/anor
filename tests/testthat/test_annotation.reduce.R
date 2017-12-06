@@ -1,5 +1,5 @@
 database.dir <- tempdir()
-for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cscd_cancer_circrna")) {
+for (i in c("hg19_avsnp147", "hg19_cscd_cancer_circrna")) {
   #database <- system.file("extdata", sprintf("demo/sqlite/%s.sqlite", i), package = "annovarR")
   #file.copy(database, sprintf("%s/%s.sqlite", tempdir(), i))
   #database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
@@ -51,20 +51,9 @@ test_that("annotation.snp", {
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
   
-  dat$start[1] <- "10177"
-  dat$end[1] <- "10177"
-  dat$ref[1] <- "-"
-  dat$alt[1] <- "C"
-  x <- annotation(dat, "avsnp147.common", database.dir = database.dir, db.type = "txt")
-  x <- as.data.frame(x)
-  expect_that(colnames(x), equals("avSNP147.common"))
-  x[, 1] <- as.character(x[, 1])
-  expect_that(x[1, 1], equals("rs367896724"))
-  expect_that(is.na(x[2, 1]), equals(TRUE))
-  expect_that(is.na(x[3, 1]), equals(TRUE))
 })
 
-for (i in c("hg19_avsnp147", "hg19_avsnp147.common", "hg19_cscd_cancer_circrna")) {
+for (i in c("hg19_avsnp147", "hg19_cscd_cancer_circrna")) {
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   txt.db <- sprintf("%s/%s.txt", tempdir(), i)
   sqlite.db <- normalizePath(sqlite.db, "/")

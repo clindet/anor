@@ -1,7 +1,7 @@
 Title = "annovarR database annotation configuration file"
 
 [avsnp]
-versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp147.common"]
+versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp150"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_avsnp_sqlite"
@@ -19,7 +19,7 @@ set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
 
 [rs2pos]
-versions = ["rs2pos138", "rs2pos142", "rs2pos144", "rs2pos147"]
+versions = ["rs2pos138", "rs2pos142", "rs2pos144", "rs2pos147", "rs2pos150"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_avsnp_sqlite"
@@ -678,3 +678,153 @@ format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
+
+[gtex_eqtl_egenes]
+versions = ["gtex_adipose_subcutaneous.v7.egenes", "gtex_adipose_visceral_omentum.v7.egenes", "gtex_adrenal_gland.v7.egenes", "gtex_artery_aorta.v7.egenes", "gtex_artery_coronary.v7.egenes", "gtex_artery_tibial.v7.egenes", "gtex_brain_amygdala.v7.egenes", "gtex_brain_anterior_cingulate_cortex_ba24.v7.egenes", "gtex_brain_caudate_basal_ganglia.v7.egenes", "gtex_brain_cerebellar_hemisphere.v7.egenes", "gtex_brain_cerebellum.v7.egenes", "gtex_brain_cortex.v7.egenes", "gtex_brain_frontal_cortex_ba9.v7.egenes", "gtex_brain_hippocampus.v7.egenes", "gtex_brain_hypothalamus.v7.egenes", "gtex_brain_nucleus_accumbens_basal_ganglia.v7.egenes", "gtex_brain_putamen_basal_ganglia.v7.egenes", "gtex_brain_spinal_cord_cervical_c_1.v7.egenes", "gtex_brain_substantia_nigra.v7.egenes", "gtex_breast_mammary_tissue.v7.egenes", "gtex_cells_ebv_transformed_lymphocytes.v7.egenes", "gtex_cells_transformed_fibroblasts.v7.egenes", "gtex_colon_sigmoid.v7.egenes", "gtex_colon_transverse.v7.egenes", "gtex_esophagus_gastroesophageal_junction.v7.egenes", "gtex_esophagus_mucosa.v7.egenes", "gtex_esophagus_muscularis.v7.egenes", "gtex_heart_atrial_appendage.v7.egenes", "gtex_heart_left_ventricle.v7.egenes", "gtex_liver.v7.egenes", "gtex_lung.v7.egenes", "gtex_minor_salivary_gland.v7.egenes", "gtex_muscle_skeletal.v7.egenes", "gtex_nerve_tibial.v7.egenes", "gtex_ovary.v7.egenes", "gtex_pancreas.v7.egenes", "gtex_pituitary.v7.egenes", "gtex_prostate.v7.egenes", "gtex_skin_not_sun_exposed_suprapubic.v7.egenes", "gtex_skin_sun_exposed_lower_leg.v7.egenes", "gtex_small_intestine_terminal_ileum.v7.egenes", "gtex_spleen.v7.egenes", "gtex_stomach.v7.egenes", "gtex_testis.v7.egenes", "gtex_thyroid.v7.egenes", "gtex_uterus.v7.egenes", "gtex_vagina.v7.egenes", "gtex_whole_blood.v7.egenes"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+dependence_db = ["db_annovar_gtex_eqtl_egenes"]
+header = true
+
+need.cols = ["rs"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = [19]
+index.cols = ["rs"]
+matched.cols = ["rs"]
+return.col.index = [29]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[rddpred]
+versions = ["rddpred_mes"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_rddpred_sqlite"
+header = true
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 6
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[lncediting]
+versions = ["lncediting"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_lncediting_sqlite"
+header = true
+
+need.cols = ["chr", "start"]
+return.col.names = ""
+db.col.order = [1, 2]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start"]
+return.col.index = [4, 5]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb.unique"
+
+[civic_gene_summaries]
+versions = ["nightly_civic_gene_summaries"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+dependence_db = "db_annovar_civic_gene_summaries"
+header = true
+
+need.cols = ["gene"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = 3
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [1, 2, 5]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.sync.version"
+set.table.fun = "set.table.sync.version"
+format.db.tb.fun = "format.db.tb.unique"
+
+[omim_genemap2_symbol2phenotype]
+versions = ["omim_genemap2_symbol2phenotype"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+dependence_db = "db_annovar_omim_genemap2"
+header = true
+
+need.cols = ["gene"]
+return.col.names = ""
+return.col.names.profix = "omim_"
+db.col.order = 9
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [13]
+format.dat.fun = "format.cols"
+dbname.fixed = "omim_genemap2" 
+table.name.fixed = "omim_genemap2"
+format.db.tb.fun = "format.db.tb.unique"
+
+[omim_genemap2_entrez_gene_id2phenotype]
+versions = ["omim_genemap2_entrez_gene_id2phenotype"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+dependence_db = "db_annovar_omim_genemap2"
+header = true
+
+need.cols = ["entrez_gene_id"]
+return.col.names = ""
+return.col.names.profix = "omim_"
+db.col.order = 10
+index.cols = ["entrez_gene_id"]
+matched.cols = ["entrez_gene_id"]
+return.col.index = [13]
+format.dat.fun = "format.cols"
+dbname.fixed = "omim_genemap2" 
+table.name.fixed = "omim_genemap2"
+format.db.tb.fun = "format.db.tb.unique"
+
+[omim_genemap2_ensembl_gene_id2phenotype]
+versions = ["omim_genemap2_ensembl_gene_id2phenotype"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+dependence_db = "db_annovar_omim_genemap2"
+header = true
+
+need.cols = ["ensemble_gene_id"]
+return.col.names = ""
+return.col.names.profix = "omim_"
+db.col.order = 11
+index.cols = ["ensemble_gene_id"]
+matched.cols = ["ensemble_gene_id"]
+return.col.index = [13]
+format.dat.fun = "format.cols"
+dbname.fixed = "omim_genemap2" 
+table.name.fixed = "omim_genemap2"
+format.db.tb.fun = "format.db.tb.unique"
+
+[tall_somatic_genes]
+versions = ["tall_somatic_genes_20171206"]
+default.dbtype = ["txt"]
+func = "annotation.auto"
+dependence_db = "db_annovar_tall_somatic_genes"
+header = true
+
+need.cols = ["gene"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = 1
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [2]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.sync.version"
+set.table.fun = "set.table.sync.version"
+format.db.tb.fun = "format.db.tb.unique"

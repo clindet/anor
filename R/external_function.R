@@ -27,10 +27,12 @@ set.db <- function(anno.name = "", buildver = "hg19", database.dir = "", db.type
   if (is.null(db.file.prefix)) {
     db.file.prefix <- db.type
   }
-  if (db.type == "sqlite") {
-    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, anno.name, db.file.prefix)
-  } else if (db.type == "txt") {
-    dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, anno.name, db.file.prefix)
+  if (db.type %in% c("sqlite", "txt")) {
+    if (buildver != "") {
+      dbname <- sprintf("%s/%s_%s.%s", database.dir, buildver, anno.name, db.file.prefix)
+    } else {
+      dbname <- sprintf("%s/%s.%s", database.dir, anno.name, db.file.prefix)
+    }
   } else if (db.type == "mysql") {
     if (is.null(sqlite.connect.params$dbname)) {
       dbname <- sprintf("%s_%s", buildver, anno.name)
@@ -53,17 +55,22 @@ set.db.tolower <- function(...) {
   do.call(set.db, params)
 }
 
+set.db.sync.version <- function(...) {
+  params <- list(...)
+  params$buildver <- ""
+  do.call(set.db, params)
+}
+
 # Default set table name function
 set.table <- function(anno.name = "", buildver = "", db.type = "sqlite", mysql.connect.params = list(), 
   sqlite.connect.params = list()) {
-  if (db.type == "sqlite") {
+  if (buildver != "") {
     table.name <- paste0(buildver, "_", anno.name)
-  } else if (db.type == "txt") {
-    table.name <- paste0(buildver, "_", anno.name)
-  } else if (db.type == "mysql") {
-    table.name <- paste0(buildver, "_", anno.name)
+  } else {
+    table.name <- anno.name
   }
 }
+
 set.table.tolower <- function(...) {
   params <- list(...)
   params$anno.name <- tolower(params$anno.name)
@@ -73,6 +80,12 @@ set.table.tolower <- function(...) {
 set.table.toupper <- function(...) {
   params <- list(...)
   params$anno.name <- toupper(params$anno.name)
+  do.call(set.table, params)
+}
+
+set.table.sync.version <- function(...) {
+  params <- list(...)
+  params$buildver <- ""
   do.call(set.table, params)
 }
 
