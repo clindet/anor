@@ -31,7 +31,8 @@ e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')}
 
 \item{sqlite.connect.params}{Connect SqLite database other paramertes, default is not need}
 
-\item{...}{Other parameters see \code{\link{annotation.cols.match}} and \code{\link{annotation.region.match}}}
+\item{...}{Other parameters see \code{\link{annotation.cols.match}}, \code{\link{annotation.region.match}}, 
+\code{\link{annovar}}}
 }
 \description{
 Annotation function (single name)

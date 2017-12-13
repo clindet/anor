@@ -181,7 +181,8 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
-#' @param ... Other parameters see \code{\link{annotation.cols.match}} and \code{\link{annotation.region.match}}
+#' @param ... Other parameters see \code{\link{annotation.cols.match}}, \code{\link{annotation.region.match}}, 
+#' \code{\link{annovar}}
 #' @export
 #' @examples
 #' library(data.table)
@@ -208,14 +209,9 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
     func <- get.annotation.func(anno.name, database.cfg = database.cfg)
     func <- eval(parse(text = func))
   }
-  if (!is.data.table(dat)) {
-    raw.names <- names(dat)
-    dat <- as.data.table(dat)
-    colnames(dat) <- raw.names[ncol(dat)]
-  }
   params <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir, 
     db.type = db.type, mysql.connect.params = mysql.connect.params, sqlite.connect.params = sqlite.connect.params, 
-    ...)
+    database.cfg = database.cfg, ...)
   result <- do.call(func, params)
   return(result)
 }

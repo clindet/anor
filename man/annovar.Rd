@@ -10,23 +10,24 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
   script1.gene.based = paste(c("{{perl}}", "{{script}}{{extra.params}}",
   "{{buildver}}", "{{input.file}}", "{{database.dir}}"), collapse = " "),
   script1.region.based = paste(c("{{perl}}", "{{script}}",
-  " -regionanno{{extra.params}}", "{{buildver}}", "{{dbtype}}",
+  " -regionanno{{extra.params}}", "{{buildver}}", "{{anno.names}}",
   "{{input.file}}", "{{database.dir}}"), collapse = " "), script1.filter.based =
   paste(c("{{perl}}",      "{{script}}", "-filter{{extra.params}}",
-  "{{buildver}}", "{{dbtype}}", "{{input.file}}", "{{database.dir}}"), collapse
-  = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}",
-  "{{database.dir}}", "{{buildver}}", "-remove", "-protocol {{dbtype}}",
-  "-operation", "{{operation}}", "-nastring .", "-otherinfo", "-vcfinput"),
-  collapse = " "), script3 = paste("{{perl}}", "{{script}}{{extra.params}}",
-  "-format", "{{format}}", "{{input.file}}", "> {{convert.out}}", collapse =
-  " ")), cmd.used = "script1.downdb", down.dbname = "", input.file = "",
-  annovar.dir = "", buildver = "hg19",
-  database.dir = "{{annovar.dir}}/humandb", webfrom = "annovar",
-  dbtype = "", out = NULL, convert.out = "", format = "vcf4",
-  operation.type = list(gene.based = c("refGene", "knownGene", "ensGene",
-  "ccdsGene"), region.based = c("cytoBand", "genomicSuperDups")),
-  cmd.profix.flag = list(buildver = "-buildver", dbtype = "-dbtype", webfrom =
-  "-webfrom", out = "-out"), extra.params = "", debug = FALSE)
+  "{{buildver}}", "{{anno.names}}", "{{input.file}}", "{{database.dir}}"),
+  collapse = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}",
+  "{{database.dir}}", "{{buildver}}", "{{out}}", "-remove{{extra.params}}",
+  "-protocol {{anno.names}}", "-operation", "{{operation}}", "-nastring .",
+  "{{otherinfo}}", "{{vcfinput}}"), collapse = " "), script3 = paste("{{perl}}",
+  "{{script}}{{extra.params}}", "-format", "{{format}}", "{{input.file}}",
+  "> {{convert.out}}",      collapse = " ")), cmd.used = "script1.downdb",
+  down.dbname = "", input.file = "", annovar.dir = "",
+  buildver = "hg19", database.dir = "{{annovar.dir}}/humandb",
+  webfrom = "annovar", anno.names = "", out = "", convert.out = "",
+  format = "vcf4", operation.type = list(gene.based = c("refGene",
+  "knownGene", "ensGene", "ccdsGene"), region.based = c("cytoBand",
+  "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver",
+  anno.names = "-dbtype", webfrom = "-webfrom", out = "-out"),
+  otherinfo = FALSE, vcfinput = FALSE, extra.params = "", debug = FALSE)
 }
 \arguments{
 \item{perl}{Executable file of perl}
@@ -47,7 +48,7 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
 
 \item{webfrom}{Database resource warehouse, e.g. ucsc, annovar}
 
-\item{dbtype}{ANNOVAR annotation name}
+\item{anno.names}{ANNOVAR annotation names}
 
 \item{out}{ANNOVAR -out parameter value}
 
@@ -58,6 +59,10 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
 \item{operation.type}{Operation types used in table_annovar.pl}
 
 \item{cmd.profix.flag}{Profix used in ANNOVAR command}
+
+\item{otherinfo}{Used in table_annovar.pl, -otherinfo}
+
+\item{vcfinput}{Specify that input is in VCF format and output will be in VCF format, table_annovar.pl, -vcfinput}
 
 \item{extra.params}{Extra paramters in ANNOVAR command}
 
@@ -77,16 +82,19 @@ annovar('perl', cmd.used = 'script1.gene.based', input.file = 'example.avinput',
         annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR gene-based annotation
-annovar('perl', cmd.used = 'script1.region.based', dbtype = 'cytoBand', 
+annovar('perl', cmd.used = 'script1.region.based', anno.names = 'cytoBand', 
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR filter-based annotation 
-annovar('perl', cmd.used = 'script1.filter.based', dbtype = 'avsnp147', 
+annovar('perl', cmd.used = 'script1.filter.based', anno.names = 'avsnp147', 
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR table_annovar.pl
+anno.names <- c('refGene','cytoBand','genomicSuperDups','esp6500siv2_all', 
+'1000g2015aug_all','1000g2015aug_afr','1000g2015aug_eas','1000g2015aug_eur', 
+'snp138','avsnp142','avsnp144','avsnp147','ljb26_all','cosmic70','cosmic81')
 annovar('perl', cmd.used = 'script2', 
-        dbtype = 'refGene,cytoBand,genomicSuperDups,avsnp147,avsnp144', 
+        anno.names = anno.names, 
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR convert2annovar.pl

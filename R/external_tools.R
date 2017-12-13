@@ -9,11 +9,13 @@
 #' @param buildver Genome version e.g. hg19, mm10
 #' @param database.dir Database directory, e.g. /opt/annovar/humandb
 #' @param webfrom Database resource warehouse, e.g. ucsc, annovar
-#' @param dbtype ANNOVAR annotation name
+#' @param anno.names ANNOVAR annotation names
 #' @param out ANNOVAR -out parameter value 
 #' @param convert.out ANNOVAR convert2annovar.pl output file, e.g. out.avinput
 #' @param format ANNOVAR convert2annovar.pl input format option
 #' @param operation.type Operation types used in table_annovar.pl
+#' @param otherinfo Used in table_annovar.pl, -otherinfo
+#' @param vcfinput Specify that input is in VCF format and output will be in VCF format, table_annovar.pl, -vcfinput
 #' @param cmd.profix.flag Profix used in ANNOVAR command
 #' @param extra.params Extra paramters in ANNOVAR command
 #' @param debug If set TRUE, only print the command
@@ -30,16 +32,19 @@
 #'         annovar.dir = '/opt/annovar', debug = TRUE)
 #'
 #' # ANNOVAR gene-based annotation
-#' annovar('perl', cmd.used = 'script1.region.based', dbtype = 'cytoBand', 
+#' annovar('perl', cmd.used = 'script1.region.based', anno.names = 'cytoBand', 
 #'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 #' 
 #' # ANNOVAR filter-based annotation 
-#' annovar('perl', cmd.used = 'script1.filter.based', dbtype = 'avsnp147', 
+#' annovar('perl', cmd.used = 'script1.filter.based', anno.names = 'avsnp147', 
 #'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 #' 
 #' # ANNOVAR table_annovar.pl
+#' anno.names <- c('refGene','cytoBand','genomicSuperDups','esp6500siv2_all', 
+#' '1000g2015aug_all','1000g2015aug_afr','1000g2015aug_eas','1000g2015aug_eur', 
+#' 'snp138','avsnp142','avsnp144','avsnp147','ljb26_all','cosmic70','cosmic81')
 #' annovar('perl', cmd.used = 'script2', 
-#'         dbtype = 'refGene,cytoBand,genomicSuperDups,avsnp147,avsnp144', 
+#'         anno.names = anno.names, 
 #'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 #'
 #' # ANNOVAR convert2annovar.pl
@@ -50,24 +55,25 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   "{{database.dir}}"), collapse = " "), script1.gene.based = paste(c("{{perl}}", 
   "{{script}}{{extra.params}}", "{{buildver}}", "{{input.file}}", "{{database.dir}}"), 
   collapse = " "), script1.region.based = paste(c("{{perl}}", "{{script}}", " -regionanno{{extra.params}}", 
-  "{{buildver}}", "{{dbtype}}", "{{input.file}}", "{{database.dir}}"), collapse = " "), 
+  "{{buildver}}", "{{anno.names}}", "{{input.file}}", "{{database.dir}}"), collapse = " "), 
   script1.filter.based = paste(c("{{perl}}", "{{script}}", "-filter{{extra.params}}", 
-    "{{buildver}}", "{{dbtype}}", "{{input.file}}", "{{database.dir}}"), collapse = " "), 
-  script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}", "{{database.dir}}", 
-    "{{buildver}}", "-remove", "-protocol {{dbtype}}", "-operation", "{{operation}}", 
-    "-nastring .", "-otherinfo", "-vcfinput"), collapse = " "), script3 = paste("{{perl}}", 
+    "{{buildver}}", "{{anno.names}}", "{{input.file}}", "{{database.dir}}"), 
+    collapse = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}", 
+    "{{database.dir}}", "{{buildver}}", "{{out}}", "-remove{{extra.params}}", 
+    "-protocol {{anno.names}}", "-operation", "{{operation}}", "-nastring .", 
+    "{{otherinfo}}", "{{vcfinput}}"), collapse = " "), script3 = paste("{{perl}}", 
     "{{script}}{{extra.params}}", "-format", "{{format}}", "{{input.file}}", 
     "> {{convert.out}}", collapse = " ")), cmd.used = "script1.downdb", down.dbname = "", 
   input.file = "", annovar.dir = "", buildver = "hg19", database.dir = "{{annovar.dir}}/humandb", 
-  webfrom = "annovar", dbtype = "", out = NULL, convert.out = "", format = "vcf4", 
+  webfrom = "annovar", anno.names = "", out = "", convert.out = "", format = "vcf4", 
   operation.type = list(gene.based = c("refGene", "knownGene", "ensGene", "ccdsGene"), 
     region.based = c("cytoBand", "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver", 
-    dbtype = "-dbtype", webfrom = "-webfrom", out = "-out"), extra.params = "", 
-  debug = FALSE) {
+    anno.names = "-dbtype", webfrom = "-webfrom", out = "-out"), otherinfo = FALSE, 
+  vcfinput = FALSE, extra.params = "", debug = FALSE) {
   operation <- ""
   if (cmd.used == "script2") {
     operation <- c()
-    for (i in str_split(dbtype, ",")[[1]]) {
+    for (i in anno.names) {
       if (i %in% operation.type$gene.based) {
         operation <- c(operation, "g")
       } else if (i %in% operation.type$region.based) {
@@ -79,6 +85,9 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     operation <- paste0(operation, collapse = ",")
   }
   for (i in names(cmd.profix.flag)) {
+    if (cmd.used == "script2" && i == "anno.names") {
+      next
+    }
     if (!is.null(get(i)) && get(i) != "") {
       assign(i, paste(cmd.profix.flag[[i]], get(i), sep = " "))
     }
@@ -96,12 +105,33 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   } else if (cmd.used == "script3") {
     script <- convert2annovar.pl
   }
+  if (!file.exists(script) && !debug) {
+    stop("Please set correct annovar.dir path!")
+  }
+  if (database.dir == "") {
+    database.dir <- "{{annovar.dir}}/humandb"
+  }
   database.dir <- parse.extra(database.dir, extra.list = list(annovar.dir = annovar.dir))
+  if (!file.exists(database.dir) && !debug) {
+    stop("Please set correct database.dir path!")
+  }
+  anno.names <- paste0(anno.names, collapse = ",")
+  for (i in c("vcfinput", "otherinfo")) {
+    if (get(i)) {
+      if (i == "vcfinput") {
+        extra.params <- str_replace_all(extra.params, "--csvout", "")
+      }
+      assign(i, paste0("-", i))
+    } else {
+      assign(i, "")
+    }
+  }
   cmd <- parse.extra(cmd.pool[[cmd.used]], extra.list = list(perl = perl, script = script, 
     input.file = input.file, annovar.dir = annovar.dir, down.dbname = down.dbname, 
-    buildver = buildver, database.dir = database.dir, webfrom = webfrom, dbtype = dbtype, 
+    buildver = buildver, database.dir = database.dir, webfrom = webfrom, anno.names = anno.names, 
     out = out, format = format, extra.params = extra.params, down.dbname = down.dbname, 
-    operation = operation, convert.out = convert.out))
+    operation = operation, convert.out = convert.out, otherinfo = otherinfo, 
+    vcfinput = vcfinput))
   cat(cmd, sep = "\n")
   if (!debug) {
     system(cmd)
@@ -109,5 +139,3 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     return(cmd)
   }
 }
-
-

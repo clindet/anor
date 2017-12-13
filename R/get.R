@@ -71,10 +71,15 @@ get.annotation.names <- function(database.cfg = system.file("extdata", "config/d
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
-  dbtype <- get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype")
+  dbtype <- tryCatch(get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype"), 
+    error = function(e) {
+      return("txt")
+    })
   if (is.null(dbtype)) {
-    dbtype <- get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype", 
-      coincident = TRUE)[1]
+    dbtype <- tryCatch(get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype", 
+      coincident = TRUE)[1], error = function(e) {
+      return("txt")
+    })
   }
   return(dbtype)
 }

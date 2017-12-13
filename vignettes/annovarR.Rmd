@@ -152,4 +152,21 @@ x
 snp.id <- c("rs775809821", "rs768019142")
 x <- annotation(dat = data.table(rs = rep(snp.id, 3)), database.dir = database.dir, anno.name = "rs2pos147", 
     buildver = "hg19", verbose = FALSE, db.type = "txt")
+
+# Annotation avinput format R data use ANNOVAR
+# set debug to TRUE will not to run command
+chr = "chr1"
+start = "123"
+end = "123"
+ref = "A"
+alt = "C"
+dat <- data.table(chr, start, end, ref, alt)
+x <- annotation(dat, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar", 
+             database.dir = "{{annovar.dir}}/humandb", debug = TRUE)
+
+# Annotation VCF file use ANNOVAR
+# set debug to TRUE will not to run command
+x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
+             annovar.dir = "/opt/bin/annovar/", database.dir = "{{annovar.dir}}/humandb", 
+             out = tempfile(), vcfinput = TRUE, debug = TRUE)
 ```

@@ -2,9 +2,11 @@
 
 annovarR package
 ==============
-[annovarR](https://github.com/JhuangLab/annovarR) is a novel integrated open source tool to annotate genetic variants data based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public annotation databases, such as [varcards](http://varcards.biols.ac.cn/), [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
+[annovarR](https://github.com/JhuangLab/annovarR) is an integrated open source tool to annotate genetic variants data based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public annotation databases, such as [varcards](http://varcards.biols.ac.cn/), [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
 
-The main development motivation of annovarR is to increase [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) the supported database and facilitate the variants annotation work in R.
+The main development motivation of annovarR is to increase the supported database and facilitate the variants annotation work. There are already too many tools and databases available and the usage is quite different.
+
+annovarR will not only provide annotation functions (both internal and external) but also established an annotation database pool including published and community contributed.
 
 In addition, to provide more transcription levels of variant database resources, we collected total 1285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data (Database called BRVar). This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from RNA-seq.
 
@@ -14,16 +16,6 @@ In addition, to provide more transcription levels of variant database resources,
 library(annovarR)
 download.database("db_annovar_brvar", "/path/annovar.dir",  license = "licence_code")
 ```
-
-Feature:
-
--   One-click download ANNOVAR and other public databases in R based on our previous developed [BioInstaller](https://github.com/JhuangLab/BioInstaller) R package which can be used to download/install bioinformatics tools, dependences and databases in R relatively easily.
--   The editable configuration file and external acceptable function to control the annotation behavior.
--   Support for multiple data types both in input data and reference database(e.g. text file, SQLite, MySQL).
--   Provide support for parallel computing, by additional R package [pannovar](http://github.com/JhuangLab/pannovar) that can be used to parallelly finish annotation work using external annotation tool.
--   Annotate 5000000 unique lines genetic variants from two database (cosmic81 and avsnp147 be tested) in single thread mode noly need 20 seconds.
--   Easily to convert very large files to sqlite database in R.
--   Access the database meta information in R conveniently.
 
 ## Installation
 
@@ -83,6 +75,21 @@ database.cfg <- system.file('extdata', 'config/databases.toml', package = "annov
 
 # Get anno.name needed input cols
 get.annotation.needcols('avsnp147')
+
+# Annotation avinput format R data use ANNOVAR
+chr = "chr1"
+start = "123"
+end = "123"
+ref = "A"
+alt = "C"
+dat <- data.table(chr, start, end, ref, alt)
+x <- annotation(dat, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar", 
+             database.dir = "{{annovar.dir}}/humandb", debug = TRUE)
+
+# Annotation VCF file use ANNOVAR
+x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
+             annovar.dir = "/opt/bin/annovar/", database.dir = "{{annovar.dir}}/humandb", 
+             out = tempfile(), vcfinput = TRUE)
 ```
 
 ## Docker

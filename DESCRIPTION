@@ -1,7 +1,7 @@
 Package: annovarR
 Type: Package
 Title: Integrated Tool to Annotate Genetic Variants
-Version: 0.3.4.2
+Version: 0.3.5
 Authors@R: person("Jianfeng", "Li", email = "lee_jianfeng@sjtu.edu.cn", role = c("aut", "cre"))
 Description: 
     Can be used to annotate genetic variants from genomic and transcriptome data. Some of published and in-house database have been introduced in annovarR.

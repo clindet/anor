@@ -210,4 +210,3 @@ get.region.match.final.table <- function(dat = NULL, selected.db.tb = NULL, infe
   print.vb(selected.db.tb, verbose = verbose)
   return(selected.db.tb)
 }
-

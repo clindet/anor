@@ -139,14 +139,13 @@ sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = 
   }
 }
 
-# Auto to annotation accodring the database.cfg
+# Auto to annotation accodring the database.cfg annovarR supported anno.names
 annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NULL, 
   return.col.names.profix = NULL, return.col.index = NULL, db.col.order = NULL, 
   index.cols = NULL, matched.cols = NULL, full.matched.cols = NULL, inferior.col = NULL, 
   superior.col = NULL, dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = NULL, 
   set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, db.file.prefix = NULL, 
-  database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
-  is.region = NULL, ...) {
+  is.region = NULL, database.cfg = NULL, ...) {
   
   # dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key =
   # 'need.cols', coincident = TRUE, extra.list = list(anno.name = anno.name),
@@ -221,4 +220,64 @@ eval.parse.null <- function(text = "") {
     x <- eval(parse(text = text))
   }
   return(x)
+}
+
+# Function to annotate variants use ANNOVAR
+annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL, 
+  ...) {
+  params <- list(...)
+  used.names <- formalArgs(annovar)
+  auto.parameters <- c("cmd.used")
+  for (item in auto.parameters) {
+    item.value <- eval(parse(text = item))
+    if (is.null(item.value)) {
+      params[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
+        coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
+    } else {
+      params[[item]] <- item.value
+    }
+  }
+  if (!is.null(params$dat) && is.data.table(params$dat) && nrow(params$dat) > 0) {
+    tmpfn <- tempfile()
+    fwrite(params$dat, tmpfn, sep = "\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+    params$dat <- NULL
+    params$input.file <- tmpfn
+  }
+  params[!names(params) %in% used.names] <- NULL
+  anno.name <- str_replace(anno.name, "perl_annovar_", "")
+  params <- config.list.merge(params, list(anno.names = anno.name))
+  if (!is.null(params$extra.params) && !params$vcfinput && str_detect(params$extra.params, 
+    "--csvout")) {
+    out_prefix <- "csv"
+    sep = ","
+  } else {
+    out_prefix <- "txt"
+    sep = "\t"
+  }
+  if (is.null(params$out) || params$out == "") {
+    outfn <- sprintf("%s.%s_multianno.%s", params$input.file, params$buildver, 
+      out_prefix)
+  } else {
+    outfn <- sprintf("%s.%s_multianno.%s", params$out, params$buildver, out_prefix)
+    outfn.dirname <- dirname(outfn)
+    if (!dir.exists(outfn.dirname)) {
+      dir.create(outfn.dirname, recursive = TRUE)
+    }
+  }
+  do.call(annovar, params)
+  if (file.exists(outfn)) {
+    fn <- file(outfn, "r")
+    header <- readLines(outfn, n = 1)
+    header <- str_split(header, sep)[[1]]
+    close(fn)
+    outdat <- fread(outfn, sep = sep, header = FALSE, skip = 1)
+    colnames(outdat)[1:length(header)] <- header
+    if (all(outdat[1, 1:length(header)] == header)) {
+      outdat <- outdat[-1, ]
+    }
+    attr(outdat, "path") <- outfn
+    return(outdat)
+  } else if (!params$debug) {
+    return(FALSE)
+  }
 }

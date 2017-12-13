@@ -828,3 +828,10 @@ format.dat.fun = "format.cols"
 setdb.fun = "set.db.sync.version"
 set.table.fun = "set.table.sync.version"
 format.db.tb.fun = "format.db.tb.unique"
+
+[annovar_refgene]
+versions = ["perl_annovar_refGene", "perl_annovar_ensGene"]
+func = "annovar.auto"
+dependence_db = ["db_annovar_refgene", "db_annovar_ensgene"]
+
+cmd.used = 'script2'
