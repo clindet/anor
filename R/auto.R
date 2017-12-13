@@ -147,6 +147,11 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
   set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, db.file.prefix = NULL, 
   is.region = NULL, database.cfg = NULL, ...) {
   
+  used.names.1 <- formalArgs(annotation.cols.match)
+  used.names.2 <- formalArgs(annotation.region.match)
+  used.names <- unique(c(used.names.1, used.names.2))
+  params <- list(...)
+  params[!names(params) %in% used.names] <- NULL
   # dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key =
   # 'need.cols', coincident = TRUE, extra.list = list(anno.name = anno.name),
   # rcmd.parse = TRUE)
@@ -163,7 +168,6 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
     "index.cols", "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", 
     "format.dat.fun", "db.file.prefix", "full.matched.cols", "inferior.col", 
     "superior.col", "is.region", "dbname.fixed", "table.name.fixed", "return.col.names.profix")
-  params <- list()
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
     if (is.null(item.value)) {
@@ -174,25 +178,17 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
     }
   }
   is.region <- params[["is.region"]]
+  params$is.region <- NULL
   if (is.null(is.region) || !is.region) {
-    annotation.cols.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
-      return.col.names.profix = params[["return.col.names.profix"]], return.col.index = params[["return.col.index"]], 
-      db.col.order = params[["db.col.order"]], index.cols = params[["index.cols"]], 
-      matched.cols = params[["matched.cols"]], setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
+    do.call("annotation.cols.match", config.list.merge(params, list(dat = dat, 
+      anno.name = anno.name, setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
       set.table.fun = eval.parse.null(params[["set.table.fun"]]), format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), 
-      dbname.fixed = params[["dbname.fixed"]], table.name.fixed = params[["table.name.fixed"]], 
-      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), db.file.prefix = params[["db.file.prefix"]], 
-      ...)
+      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]))))
   } else {
-    annotation.region.match(dat = dat, anno.name = anno.name, return.col.names = params[["return.col.names"]], 
-      return.col.names.profix = params[["return.col.names.profix"]], return.col.index = params[["return.col.index"]], 
-      db.col.order = params[["db.col.order"]], index.cols = params[["index.cols"]], 
-      full.matched.cols = params[["full.matched.cols"]], inferior.col = params[["inferior.col"]], 
-      superior.col = params[["superior.col"]], setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
+    do.call("annotation.region.match", config.list.merge(params, list(dat = dat, 
+      anno.name = anno.name, setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
       set.table.fun = eval.parse.null(params[["set.table.fun"]]), format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), 
-      dbname.fixed = params[["dbname.fixed"]], table.name.fixed = params[["table.name.fixed"]], 
-      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]), db.file.prefix = params[["db.file.prefix"]], 
-      ...)
+      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]))))
   }
 }
 
@@ -224,7 +220,7 @@ eval.parse.null <- function(text = "") {
 
 # Function to annotate variants use ANNOVAR
 annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL, 
-  ...) {
+  merged.names = "", ...) {
   params <- list(...)
   used.names <- formalArgs(annovar)
   auto.parameters <- c("cmd.used")
@@ -245,7 +241,11 @@ annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL,
   }
   params[!names(params) %in% used.names] <- NULL
   anno.name <- str_replace(anno.name, "perl_annovar_", "")
-  params <- config.list.merge(params, list(anno.names = anno.name))
+  if (anno.name == "merge") {
+    params <- config.list.merge(params, list(anno.names = merged.names))
+  } else {
+    params <- config.list.merge(params, list(anno.names = anno.name))
+  }
   if (!is.null(params$extra.params) && !params$vcfinput && str_detect(params$extra.params, 
     "--csvout")) {
     out_prefix <- "csv"
@@ -275,7 +275,7 @@ annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL,
     if (all(outdat[1, 1:length(header)] == header)) {
       outdat <- outdat[-1, ]
     }
-    attr(outdat, "path") <- outfn
+    attr(outdat, "annovar_out_file") <- outfn
     return(outdat)
   } else if (!params$debug) {
     return(FALSE)

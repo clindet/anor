@@ -4,7 +4,7 @@ annovarR package
 ==============
 [annovarR](https://github.com/JhuangLab/annovarR) is an integrated open source tool to annotate genetic variants data based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public annotation databases, such as [varcards](http://varcards.biols.ac.cn/), [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
 
-The main development motivation of annovarR is to increase the supported database and facilitate the variants annotation work. There are already too many tools and databases available and the usage is quite different.
+The main development motivation of annovarR is to increase the supported database and facilitate the variants annotation work. There are already too many tools and databases available and the usage is quite different. annovarR will integrate these annotation tools and get the merged annotation result in R.
 
 annovarR will not only provide annotation functions (both internal and external) but also established an annotation database pool including published and community contributed.
 
@@ -55,7 +55,7 @@ download.database(download.name = download.name, show.all.versions = TRUE)
 download.database(download.name = download.name, version = "avsnp147", buildver = "hg19", 
   database.dir = "/path/database.dir")
 
-# Annotation variants from avsnp147 database
+# Annotation variants from avsnp147 database use annovarR
 library(data.table)
 database.dir <- "/path/database.dir"
 chr <- c("chr1", "chr2", "chr1")
@@ -76,20 +76,34 @@ database.cfg <- system.file('extdata', 'config/databases.toml', package = "annov
 # Get anno.name needed input cols
 get.annotation.needcols('avsnp147')
 
-# Annotation avinput format R data use ANNOVAR
+# Annotation avinput format R data and file use ANNOVAR
+annovar.dir <- "/opt/bin/annovar"
+database.dir <- "/opt/bin/annovar/humandb"
 chr = "chr1"
 start = "123"
 end = "123"
 ref = "A"
 alt = "C"
 dat <- data.table(chr, start, end, ref, alt)
+tmpfn <- tempfile()
+write.table(dat, fn, row.names = FALSE, quote = FALSE, sep = "\t", col.names = FALSE)
 x <- annotation(dat, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar", 
-             database.dir = "{{annovar.dir}}/humandb", debug = TRUE)
+             database.dir = database.dir)
+x <- annotation(input.file = tmpfn, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar", 
+             database.dir = database.dir)
+
+# Annotation avinput format R data use annovarR and ANNOVAR
+x <-annotation.merge(dat = dat, anno.names = c('avsnp147', 'perl_annovar_refGene'), 
+  annovar.dir = annovar.dir, database.dir = database.dir)
+x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all', 
+  'perl_annovar_refGene', 'perl_annovar_ensGene'), annovar.dir = annovar.dir, database.dir = database.dir)
 
 # Annotation VCF file use ANNOVAR
+
 x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
-             annovar.dir = "/opt/bin/annovar/", database.dir = "{{annovar.dir}}/humandb", 
+             annovar.dir = annovar.dir, database.dir = "{{annovar.dir}}/humandb", 
              out = tempfile(), vcfinput = TRUE)
+
 ```
 
 ## Docker

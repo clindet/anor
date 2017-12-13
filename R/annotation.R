@@ -201,6 +201,9 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
   package = "annovarR"), func = NULL, mysql.connect.params = list(host = "", dbname = "", 
   table.name = "", user = "", password = ""), sqlite.connect.params = list(dbname = ""), 
   ...) {
+  if (length(anno.name) > 1) {
+    stop("Length of anno.name > 1, please use annotation.merge.")
+  }
   result <- NULL
   if (is.null(db.type)) {
     db.type <- get.annotation.dbtype(anno.name, database.cfg = database.cfg)
@@ -234,8 +237,22 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
 #' x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all'), 
 #' database.dir = database.dir, db.type = 'txt')
 annotation.merge <- function(anno.names, ...) {
-  result.list <- lapply(anno.names, function(x) {
+  perl_annovar_names <- anno.names[str_detect(anno.names, "perl_annovar_")]
+  result.list.1 <- lapply(anno.names[!anno.names %in% perl_annovar_names], function(x) {
     annotation(anno.name = x, ...)
   })
-  return(as.data.table(result.list))
+  if (length(perl_annovar_names) > 0) {
+    result.list.2 <- lapply(perl_annovar_names, function(x) {
+      y <- annotation(anno.name = x, ...)
+      return(y)
+    })
+    names(result.list.2) <- perl_annovar_names
+    if (length(result.list.1) != 0) {
+      return(list(annovarR = as.data.table(result.list.1), annovar = result.list.2))
+    } else {
+      return(list(annovar = result.list.2))
+    }
+  } else {
+    return(as.data.table(result.list.1))
+  }
 }

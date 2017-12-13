@@ -15,7 +15,7 @@ LazyData: true
 Imports:
     stringr (>= 1.2.0),
     configr (>= 0.2.2),
-    BioInstaller (>= 0.3.1.6),
+    BioInstaller (>= 0.3.1.7),
     ngstk (>= 0.2.0.2),
     DBI (>= 0.6-1),
     data.table (>= 1.10.4),

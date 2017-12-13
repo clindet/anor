@@ -37,7 +37,7 @@ set.table.fun = "set.table.rs2pos"
 format.db.tb.fun = "format.db.tb.unique"
 
 [cosmic]
-versions = ["cosmic70", "cosmic81"]
+versions = ["cosmic70", "cosmic81", "cosmic82"]
 func = "annotation.auto"
 default.dbtype = ["sqlite", "sqlite"]
 dependence_db = "db_annovar_cosmic_sqlite"
@@ -829,9 +829,42 @@ setdb.fun = "set.db.sync.version"
 set.table.fun = "set.table.sync.version"
 format.db.tb.fun = "format.db.tb.unique"
 
-[annovar_refgene]
-versions = ["perl_annovar_refGene", "perl_annovar_ensGene"]
-func = "annovar.auto"
-dependence_db = ["db_annovar_refgene", "db_annovar_ensgene"]
+[dbscsnv]
+versions = ["dbscsnv11"]
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_dbscsnv_sqlite"
+header = true
 
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4, 5]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = [7, 8]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+
+[annovar_supported_single]
+versions = ["perl_annovar_refGene", "perl_annovar_ensGene", "perl_annovar_knownGene",
+            "perl_annovar_cytoBand", "perl_annovar_genomicSuperDups", "perl_annovar_clinvar_20170905",
+            "perl_annovar_esp6500siv2_all", "perl_annovar_1000g2015aug_all", 
+            "perl_annovar_1000g2015aug_afr", "perl_annovar_1000g2015aug_eas", "perl_annovar1000g2015aug_eur", 
+            "perl_annovar_avsnp142", "perl_annovar_avsnp144", "perl_annovar_avsnp147", "perl_annovar_avsnp150", 
+            "perl_annovar_dbnsfp33a", "perl_annovar_cosmic70", "perl_annovar_cosmic81", "perl_annovar_cosmic82",
+            "perl_annovar_eigen", "perl_annovar_gwava", "perl_annovar_cadd13", 
+            "perl_annovar_cadd13gt10", "perl_annovar_cadd13gt20", "perl_annovar_regsnpintron", 
+            "perl_annovar_mitimpact24", "perl_annovar_popfreq_all_20150413", "perl_annovar_popfreq_max_20150413", 
+            "perl_annovar_icgc21", "perl_annovar_nci60", "perl_annovar_gme", "perl_annovar_hrcr1", 
+            "perl_annovar_kaviar_20150923", "perl_annovar_gnomad_genome", "perl_annovar_gnomad_exome", 
+            "perl_annovar_exac03nonpsych", "perl_annovar_exac03nontcga", "perl_annovar_exac03", 
+            "perl_annovar_cg69", "perl_annovar_cg46", "perl_annovar_intervar_20170202",
+            "perl_annovar_dbscsnv11"]
+func = "annovar.auto"
+cmd.used = 'script2'
+
+[annovar_supported_mege]
+versions = "perl_annovar_merge"
+func = "annovar.auto"
 cmd.used = 'script2'

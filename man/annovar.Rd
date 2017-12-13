@@ -16,7 +16,7 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
   "{{buildver}}", "{{anno.names}}", "{{input.file}}", "{{database.dir}}"),
   collapse = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}",
   "{{database.dir}}", "{{buildver}}", "{{out}}", "-remove{{extra.params}}",
-  "-protocol {{anno.names}}", "-operation", "{{operation}}", "-nastring .",
+  "-protocol {{anno.names}}", "-operation", "{{operation}}", "{{nastring}}",
   "{{otherinfo}}", "{{vcfinput}}"), collapse = " "), script3 = paste("{{perl}}",
   "{{script}}{{extra.params}}", "-format", "{{format}}", "{{input.file}}",
   "> {{convert.out}}",      collapse = " ")), cmd.used = "script1.downdb",
@@ -26,8 +26,9 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
   format = "vcf4", operation.type = list(gene.based = c("refGene",
   "knownGene", "ensGene", "ccdsGene"), region.based = c("cytoBand",
   "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver",
-  anno.names = "-dbtype", webfrom = "-webfrom", out = "-out"),
-  otherinfo = FALSE, vcfinput = FALSE, extra.params = "", debug = FALSE)
+  anno.names = "-dbtype", webfrom = "-webfrom", out = "-out", nastring =
+  "-nastring"), otherinfo = FALSE, nastring = "NA", vcfinput = FALSE,
+  extra.params = "", debug = FALSE)
 }
 \arguments{
 \item{perl}{Executable file of perl}
@@ -61,6 +62,8 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
 \item{cmd.profix.flag}{Profix used in ANNOVAR command}
 
 \item{otherinfo}{Used in table_annovar.pl, -otherinfo}
+
+\item{nastring}{ANNOVAR -nastring value, default is NA.}
 
 \item{vcfinput}{Specify that input is in VCF format and output will be in VCF format, table_annovar.pl, -vcfinput}
 

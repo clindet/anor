@@ -14,6 +14,7 @@
 #' @param convert.out ANNOVAR convert2annovar.pl output file, e.g. out.avinput
 #' @param format ANNOVAR convert2annovar.pl input format option
 #' @param operation.type Operation types used in table_annovar.pl
+#' @param nastring ANNOVAR -nastring value, default is NA.
 #' @param otherinfo Used in table_annovar.pl, -otherinfo
 #' @param vcfinput Specify that input is in VCF format and output will be in VCF format, table_annovar.pl, -vcfinput
 #' @param cmd.profix.flag Profix used in ANNOVAR command
@@ -60,7 +61,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     "{{buildver}}", "{{anno.names}}", "{{input.file}}", "{{database.dir}}"), 
     collapse = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}", 
     "{{database.dir}}", "{{buildver}}", "{{out}}", "-remove{{extra.params}}", 
-    "-protocol {{anno.names}}", "-operation", "{{operation}}", "-nastring .", 
+    "-protocol {{anno.names}}", "-operation", "{{operation}}", "{{nastring}}", 
     "{{otherinfo}}", "{{vcfinput}}"), collapse = " "), script3 = paste("{{perl}}", 
     "{{script}}{{extra.params}}", "-format", "{{format}}", "{{input.file}}", 
     "> {{convert.out}}", collapse = " ")), cmd.used = "script1.downdb", down.dbname = "", 
@@ -68,8 +69,8 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   webfrom = "annovar", anno.names = "", out = "", convert.out = "", format = "vcf4", 
   operation.type = list(gene.based = c("refGene", "knownGene", "ensGene", "ccdsGene"), 
     region.based = c("cytoBand", "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver", 
-    anno.names = "-dbtype", webfrom = "-webfrom", out = "-out"), otherinfo = FALSE, 
-  vcfinput = FALSE, extra.params = "", debug = FALSE) {
+    anno.names = "-dbtype", webfrom = "-webfrom", out = "-out", nastring = "-nastring"), 
+  otherinfo = FALSE, nastring = "NA", vcfinput = FALSE, extra.params = "", debug = FALSE) {
   operation <- ""
   if (cmd.used == "script2") {
     operation <- c()
@@ -131,7 +132,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     buildver = buildver, database.dir = database.dir, webfrom = webfrom, anno.names = anno.names, 
     out = out, format = format, extra.params = extra.params, down.dbname = down.dbname, 
     operation = operation, convert.out = convert.out, otherinfo = otherinfo, 
-    vcfinput = vcfinput))
+    nastring = nastring, vcfinput = vcfinput))
   cat(cmd, sep = "\n")
   if (!debug) {
     system(cmd)
