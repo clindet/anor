@@ -20,4 +20,5 @@ test_that("get.cfg", {
 
 test_that("get.download.name", {
   x <- get.download.name("avsnp147")
+  expect_that(x, equals("db_annovar_avsnp_sqlite"))
 })

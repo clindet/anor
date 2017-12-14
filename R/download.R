@@ -22,6 +22,16 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
   database.dir = c(), download.cfg = system.file("extdata", "config/db/db_annovar.toml", 
     package = "BioInstaller"), show.all.versions = FALSE, show.all.names = FALSE, 
   show.all.buildvers = FALSE, verbose = FALSE, ...) {
+  if (!is.null(download.name) && str_detect(download.name, "^db_bioc_") && !show.all.names && 
+    !show.all.versions) {
+    download.name <- str_replace(download.name, "^db_bioc_", "")
+    if (length(setdiff(download.name, rownames(installed.packages()))) > 0) {
+      source("https://bioconductor.org/biocLite.R")
+      do.call("biocLite", list(download.name))
+      return(TRUE)
+    }
+    return(TRUE)
+  }
   if (!is.null(database.dir)) {
     database.dir <- normalizePath(database.dir, "/", mustWork = FALSE)
   }
@@ -106,7 +116,7 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
 }
 
 #' Use annotation name to get download.name that can be used 
-#' to download the database use \code{{download.database}}
+#' to download the database use \code{download.database}
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param database.cfg Configuration file of annovarR databases infomation
 #' @export

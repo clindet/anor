@@ -428,7 +428,7 @@ sql2sqlite <- function(sql.file = "", statements = "", dbname = "", verbose = FA
 #' @examples
 #' sqlite2sql('sqlite3', 'default.sqlite', debug = TRUE)
 sqlite2sql <- function(sqlite_bin = c(Sys.which("sqlite"), Sys.which("sqlite3")), 
-  dbname = "", out.sql = "", cmd = "{{sqlite_bin}} {{dbname}} '.dump' | gzip > {{out.sql}}", 
+  dbname = "", out.sql = "", cmd = "{sqlite_bin} {dbname} '.dump' | gzip > {out.sql}", 
   debug = FALSE, ...) {
   if ("sqlite3" %in% names(sqlite_bin) && unname(sqlite_bin["sqlite3"]) != "") {
     sqlite_bin <- unname(sqlite_bin["sqlite3"])
@@ -437,8 +437,8 @@ sqlite2sql <- function(sqlite_bin = c(Sys.which("sqlite"), Sys.which("sqlite3"))
   } else {
     sqlite_bin <- unname(sqlite_bin)[1]
   }
-  cmd <- parse.extra(cmd, extra.list = list(sqlite_bin = sqlite_bin, dbname = dbname, 
-    out.sql = out.sql))
+  
+  cmd <- glue(cmd)
   if (debug) {
     cat(cmd, sep = "\n")
     return(cmd)

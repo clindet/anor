@@ -14,3 +14,11 @@ test_that("sqlite.auto.build", {
   unlink(sprintf("%s/%s.txt", tempdir(), i))
   unlink(sprintf("%s/%s.sqlite", tempdir(), i))
 })
+
+test_that("BioConductor", {
+  gene <- c("TP53", "NSD2")
+  x <- annotation(dat = gene, anno.name = "bioc_gene2alias")
+  expect_that(is.data.table(x), equals(TRUE))
+  expect_that(colnames(x)[1], equals("SYMBOL"))
+  expect_that(colnames(x)[2], equals("ALIAS"))
+})

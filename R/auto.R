@@ -281,3 +281,39 @@ annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL,
     return(FALSE)
   }
 }
+
+bioc.auto <- function(anno.name = NULL, database.cfg = NULL, bioc_dbname = NULL, 
+  keytype = NULL, columns = NULL, ...) {
+  dependence_db <- NULL
+  params <- list(...)
+  auto.parameters <- c("dependence_db", "keytype", "columns")
+  for (item in auto.parameters) {
+    item.value <- eval(parse(text = item))
+    if (is.null(item.value)) {
+      params[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
+        coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
+    } else {
+      params[[item]] <- item.value
+    }
+  }
+  if (is.null(bioc_dbname)) {
+    bioc_dbname_raw <- params[["dependence_db"]]
+    bioc_dbname <- str_replace(bioc_dbname_raw, "^db_bioc_", "")
+  } else if (!str_detect(bioc_dbname, "^db_bioc_")) {
+    bioc_dbname_raw <- paste0("db_bioc_", bioc_dbname)
+  } else {
+    bioc_dbname_raw <- bioc_dbname
+  }
+  pkg.raw <- (.packages())
+  download.database(bioc_dbname_raw)
+  tryCatch(suppressMessages(do.call("require", list(package = bioc_dbname))))
+  pkg.new <- (.packages())
+  params$x <- eval.parse.null(bioc_dbname)
+  params$keys <- params$dat
+  params$dat <- NULL
+  x <- as.data.table(do.call("select", params))
+  for (i in pkg.new[!pkg.new %in% pkg.raw]) {
+    detach(paste0("package:", i), character.only = TRUE)
+  }
+  return(x)
+}

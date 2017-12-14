@@ -3,7 +3,7 @@
 \name{get.download.name}
 \alias{get.download.name}
 \title{Use annotation name to get download.name that can be used 
-to download the database use \code{{download.database}}}
+to download the database use \code{download.database}}
 \usage{
 get.download.name(anno.name = "", database.cfg = system.file("extdata",
   "config/databases.toml", package = "annovarR"))
@@ -15,7 +15,7 @@ get.download.name(anno.name = "", database.cfg = system.file("extdata",
 }
 \description{
 Use annotation name to get download.name that can be used 
-to download the database use \code{{download.database}}
+to download the database use \code{download.database}
 }
 \examples{
 get.download.name('avsnp147')

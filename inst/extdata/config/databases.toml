@@ -514,7 +514,7 @@ set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
 
 [hgnc_symbol_convert_1]
-versions = ["hgnc_coding_gene2pre"]
+versions = ["hgnc_coding_gene2alias"]
 default.dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_hgnc"
@@ -846,7 +846,7 @@ format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
 
-[annovar_supported_single]
+[annovar_supported_gene_anno]
 versions = ["perl_annovar_refGene", "perl_annovar_ensGene", "perl_annovar_knownGene",
             "perl_annovar_cytoBand", "perl_annovar_genomicSuperDups", "perl_annovar_clinvar_20170905",
             "perl_annovar_esp6500siv2_all", "perl_annovar_1000g2015aug_all", 
@@ -861,10 +861,58 @@ versions = ["perl_annovar_refGene", "perl_annovar_ensGene", "perl_annovar_knownG
             "perl_annovar_exac03nonpsych", "perl_annovar_exac03nontcga", "perl_annovar_exac03", 
             "perl_annovar_cg69", "perl_annovar_cg46", "perl_annovar_intervar_20170202",
             "perl_annovar_dbscsnv11"]
+need.cols = ["chr", "start", "end", "ref", "alt"]
 func = "annovar.auto"
 cmd.used = 'script2'
 
 [annovar_supported_mege]
 versions = "perl_annovar_merge"
+need.cols = ["chr", "start", "end", "ref", "alt"]
 func = "annovar.auto"
 cmd.used = 'script2'
+
+[bioc_org_hs_eg]
+need.cols = ""
+versions = "bioc_org_hs_eg"
+func = "bioc.auto"
+dependence_db = "db_bioc_org.Hs.eg.db"
+
+[bioc_org_hs_eg_gene2entrez_gene_id]
+need.cols = "gene"
+versions = "bioc_gene2entrez_gene_id"
+func = "bioc.auto"
+keytype = "SYMBOL"
+columns = "ENTREZID"
+dependence_db = "db_bioc_org.Hs.eg.db"
+
+[bioc_org_hs_eg_gene2alias]
+need.cols = "gene"
+versions = "bioc_gene2alias"
+func = "bioc.auto"
+keytype = "SYMBOL"
+columns = "ALIAS"
+dependence_db = "db_bioc_org.Hs.eg.db"
+
+[bioc_org_hs_eg_gene2ensembl_gene_id]
+need.cols = "gene"
+versions = "bioc_gene2ensembl_gene_id"
+func = "bioc.auto"
+keytype = "SYMBOL"
+columns = "ENSEMBL"
+dependence_db = "db_bioc_org.Hs.eg.db"
+
+[bioc_org_hs_eg_gene2gene_full_name]
+need.cols = "gene"
+versions = "bioc_gene2gene_full_name"
+func = "bioc.auto"
+keytype = "SYMBOL"
+columns = "GENENAME"
+dependence_db = "db_bioc_org.Hs.eg.db"
+
+[bioc_org_hs_eg_gene2]
+need.cols = "gene"
+versions = "bioc_gene2"
+func = "bioc.auto"
+keytype = "SYMBOL"
+columns = ""
+dependence_db = "db_bioc_org.Hs.eg.db"

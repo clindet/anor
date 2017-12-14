@@ -14,14 +14,14 @@
 #'
 #' @docType package
 #' @name annovarR
-#' @import stringr DBI data.table futile.logger configr BioInstaller
+#' @import stringr DBI data.table futile.logger configr BioInstaller glue
 #' @importFrom stringi stri_rand_strings
-#' @importFrom utils packageVersion head
+#' @importFrom utils packageVersion head installed.packages
 #' @importFrom RMySQL MySQL dbRemoveTable mysqlHasDefault
 #' @importFrom RSQLite SQLite dbRemoveTable
 #' @importFrom methods formalArgs
 #' @importFrom ngstk split_list split_row_file batch_file
-#' @importFrom data.table is.data.table
+#' @importFrom AnnotationDbi select
 NULL
 
 .onAttach <- function(libname, pkgname) {

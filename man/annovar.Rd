@@ -5,29 +5,29 @@
 \title{R utils function to run ANNOVAR tool.}
 \usage{
 annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
-  paste(c("{{perl}}", "{{script}}{{extra.params}}", "-downdb", "{{buildver}}",
-  "{{webfrom}}", "{{down.dbname}}", "{{database.dir}}"), collapse = " "),
-  script1.gene.based = paste(c("{{perl}}", "{{script}}{{extra.params}}",
-  "{{buildver}}", "{{input.file}}", "{{database.dir}}"), collapse = " "),
-  script1.region.based = paste(c("{{perl}}", "{{script}}",
-  " -regionanno{{extra.params}}", "{{buildver}}", "{{anno.names}}",
-  "{{input.file}}", "{{database.dir}}"), collapse = " "), script1.filter.based =
-  paste(c("{{perl}}",      "{{script}}", "-filter{{extra.params}}",
-  "{{buildver}}", "{{anno.names}}", "{{input.file}}", "{{database.dir}}"),
-  collapse = " "), script2 = paste(c("{{perl}}", "{{script}}", "{{input.file}}",
-  "{{database.dir}}", "{{buildver}}", "{{out}}", "-remove{{extra.params}}",
-  "-protocol {{anno.names}}", "-operation", "{{operation}}", "{{nastring}}",
-  "{{otherinfo}}", "{{vcfinput}}"), collapse = " "), script3 = paste("{{perl}}",
-  "{{script}}{{extra.params}}", "-format", "{{format}}", "{{input.file}}",
-  "> {{convert.out}}",      collapse = " ")), cmd.used = "script1.downdb",
-  down.dbname = "", input.file = "", annovar.dir = "",
-  buildver = "hg19", database.dir = "{{annovar.dir}}/humandb",
-  webfrom = "annovar", anno.names = "", out = "", convert.out = "",
-  format = "vcf4", operation.type = list(gene.based = c("refGene",
-  "knownGene", "ensGene", "ccdsGene"), region.based = c("cytoBand",
-  "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver",
-  anno.names = "-dbtype", webfrom = "-webfrom", out = "-out", nastring =
-  "-nastring"), otherinfo = FALSE, nastring = "NA", vcfinput = FALSE,
+  paste(c("{perl}", "{script}{extra.params}", "-downdb", "{buildver}",
+  "{webfrom}", "{down.dbname}", "{database.dir}"), collapse = " "),
+  script1.gene.based = paste(c("{perl}", "{script}{extra.params}", "{buildver}",
+  "{input.file}", "{database.dir}"), collapse = " "), script1.region.based =
+  paste(c("{perl}", "{script}", " -regionanno{extra.params}", "{buildver}",
+  "{anno.names}", "{input.file}", "{database.dir}"), collapse = " "),
+  script1.filter.based = paste(c("{perl}", "{script}",     
+  "-filter{extra.params}", "{buildver}", "{anno.names}", "{input.file}",
+  "{database.dir}"), collapse = " "), script2 = paste(c("{perl}", "{script}",
+  "{input.file}", "{database.dir}", "{buildver}", "{out}",
+  "-remove{extra.params}", "-protocol {anno.names}", "-operation",
+  "{operation}", "{nastring}", "{otherinfo}", "{vcfinput}"), collapse = " "),
+  script3 = paste("{perl}", "{script}{extra.params}", "-format", "{format}",
+  "{input.file}", "> {convert.out}", collapse = " ")),
+  cmd.used = "script1.downdb", down.dbname = "", input.file = "",
+  annovar.dir = "", buildver = "hg19",
+  database.dir = "{annovar.dir}/humandb", webfrom = "annovar",
+  anno.names = "", out = "", convert.out = "", format = "vcf4",
+  operation.type = list(gene.based = c("refGene", "knownGene", "ensGene",
+  "ccdsGene"), region.based = c("cytoBand", "genomicSuperDups")),
+  cmd.profix.flag = list(buildver = "-buildver", anno.names = "-dbtype",
+  webfrom = "-webfrom", out = "-out", nastring = "-nastring"),
+  otherinfo = FALSE, nastring = "NA", vcfinput = FALSE,
   extra.params = "", debug = FALSE)
 }
 \arguments{

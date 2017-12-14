@@ -208,6 +208,10 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
   if (is.null(db.type)) {
     db.type <- get.annotation.dbtype(anno.name, database.cfg = database.cfg)
   }
+  needcols <- get.annotation.needcols <- function(anno.name = anno.name, database.cfg = database.cfg) if (dim(dat) > 
+    1 && colnames(dat)) {
+    colnames(dat)[1:length(needcols)] <- needcols
+  }
   if (is.null(func)) {
     func <- get.annotation.func(anno.name, database.cfg = database.cfg)
     func <- eval(parse(text = func))

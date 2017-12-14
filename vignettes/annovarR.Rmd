@@ -169,4 +169,8 @@ x <- annotation(dat, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar",
 x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
              annovar.dir = "/opt/bin/annovar/", database.dir = "{{annovar.dir}}/humandb", 
              out = tempfile(), vcfinput = TRUE, debug = TRUE)
+
+# Annotation from BioConductor org.hs.eg.db
+gene <- c("TP53", "NSD2")
+annotation(dat = gene, anno.name = "bioc_gene2alias")
 ```

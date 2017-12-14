@@ -104,6 +104,9 @@ test_that("auto:refgene", {
   dat <- data.table(chr = chr, start = start, end = end)
   x <- annotation(anno.name = "ucsc_refgene", dat = dat, database.dir = tempdir(), 
     db.type = "sqlite", verbose = FALSE)
+  expect_that(is.data.table(x), equals(TRUE))
+  expect_that(nrow(x), equals(3))
+  expect_that(colnames(x)[1], equals("Transcript"))
 })
 
 
