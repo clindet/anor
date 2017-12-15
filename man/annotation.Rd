@@ -5,11 +5,11 @@
 \title{Annotation function (single name)}
 \usage{
 annotation(dat = data.table(), anno.name = "", buildver = "hg19",
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL,
-  database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"), func = NULL, mysql.connect.params = list(host = "", dbname =
-  "", table.name = "", user = "", password = ""),
-  sqlite.connect.params = list(dbname = ""), ...)
+  annovar.anno.names = "", database.dir = Sys.getenv("annovarR_DB_DIR", ""),
+  db.type = NULL, database.cfg = system.file("extdata",
+  "config/databases.toml", package = "annovarR"), func = NULL,
+  mysql.connect.params = list(host = "", dbname = "", table.name = "", user =
+  "", password = ""), sqlite.connect.params = list(dbname = ""), ...)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -17,6 +17,10 @@ annotation(dat = data.table(), anno.name = "", buildver = "hg19",
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.}
 
 \item{buildver}{Genome version, hg19, hg38, mm10 and others}
+
+\item{annovar.anno.names}{If anno.name equal perl_annovar_merge, 
+you can use annovar.anno.names to annotate multiple database supported by ANNOVAR,
+the names can be found on the http://annovar.openbioinformatics.org/en/latest/user-guide/download/}
 
 \item{database.dir}{Dir of the databases}
 

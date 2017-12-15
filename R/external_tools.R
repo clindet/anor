@@ -143,7 +143,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   if (!debug) {
     os <- Sys.info()["sysname"][[1]]
     if (os == "Windows") {
-      Sys.setenv(PATH=paste0(Sys.getenv('PATH'), ';', annovar.dir))
+      Sys.setenv(PATH = paste0(Sys.getenv("PATH"), ";", annovar.dir))
     }
     system(cmd)
     return(cmd)

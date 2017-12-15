@@ -174,6 +174,9 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' @param dat A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all .etc.
 #' @param buildver Genome version, hg19, hg38, mm10 and others
+#' @param annovar.anno.names If anno.name equal perl_annovar_merge, 
+#' you can use annovar.anno.names to annotate multiple database supported by ANNOVAR,
+#' the names can be found on the http://annovar.openbioinformatics.org/en/latest/user-guide/download/
 #' @param database.dir Dir of the databases
 #' @param db.type Setting the database type (sqlite or txt)
 #' @param database.cfg Configuration file of annovarR databases infomation
@@ -196,10 +199,10 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation(dat, 'avsnp147', database.dir = database.dir, 
 #' return.col.names = 'avSNP147', db.type = 'txt')
-annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", 
-  ""), db.type = NULL, database.cfg = system.file("extdata", "config/databases.toml", 
-  package = "annovarR"), func = NULL, mysql.connect.params = list(host = "", dbname = "", 
-  table.name = "", user = "", password = ""), sqlite.connect.params = list(dbname = ""), 
+annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", annovar.anno.names = "", 
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL, database.cfg = system.file("extdata", 
+    "config/databases.toml", package = "annovarR"), func = NULL, mysql.connect.params = list(host = "", 
+    dbname = "", table.name = "", user = "", password = ""), sqlite.connect.params = list(dbname = ""), 
   ...) {
   if (length(anno.name) > 1) {
     stop("Length of anno.name > 1, please use annotation.merge.")
@@ -216,9 +219,10 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", da
     func <- get.annotation.func(anno.name, database.cfg = database.cfg)
     func <- eval(parse(text = func))
   }
-  params <- list(dat = dat, anno.name = anno.name, buildver = buildver, database.dir = database.dir, 
-    db.type = db.type, mysql.connect.params = mysql.connect.params, sqlite.connect.params = sqlite.connect.params, 
-    database.cfg = database.cfg, ...)
+  params <- list(dat = dat, anno.name = anno.name, buildver = buildver, annovar.anno.names = annovar.anno.names, 
+    database.dir = database.dir, db.type = db.type, mysql.connect.params = mysql.connect.params, 
+    sqlite.connect.params = sqlite.connect.params, database.cfg = database.cfg, 
+    ...)
   result <- do.call(func, params)
   return(result)
 }

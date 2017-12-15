@@ -220,7 +220,7 @@ eval.parse.null <- function(text = "") {
 
 # Function to annotate variants use ANNOVAR
 annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL, 
-  merged.names = "", ...) {
+  annovar.anno.names = "", ...) {
   params <- list(...)
   used.names <- formalArgs(annovar)
   auto.parameters <- c("cmd.used")
@@ -242,7 +242,7 @@ annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL,
   params[!names(params) %in% used.names] <- NULL
   anno.name <- str_replace(anno.name, "perl_annovar_", "")
   if (anno.name == "merge") {
-    params <- config.list.merge(params, list(anno.names = merged.names))
+    params <- config.list.merge(params, list(anno.names = annovar.anno.names))
   } else {
     params <- config.list.merge(params, list(anno.names = anno.name))
   }

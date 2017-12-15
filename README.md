@@ -93,16 +93,33 @@ x <- annotation(input.file = tmpfn, "perl_annovar_refGene", annovar.dir = "/opt/
              database.dir = database.dir)
 
 # Annotation avinput format R data use annovarR and ANNOVAR
+# It will return a list contatin two data.table object that 
+# one is annovarR annotation system and the another is ANNOVAR output 
 x <-annotation.merge(dat = dat, anno.names = c('avsnp147', 'perl_annovar_refGene'), 
   annovar.dir = annovar.dir, database.dir = database.dir)
 x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all', 
   'perl_annovar_refGene', 'perl_annovar_ensGene'), annovar.dir = annovar.dir, database.dir = database.dir)
+# If use perl_annovar_merge as the anno.name, you can use annovar.anno.names to 
+# run all original ANNOVAR supported annotation names, see http://annovar.openbioinformatics.org/en/latest/user-guide/download/
+x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all', 
+  'perl_annovar_merge'), annovar.anno.names = c('refGene', 'ensGene'), annovar.dir = annovar.dir, database.dir = database.dir)
 
 # Annotation VCF file use ANNOVAR
 
 x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
              annovar.dir = annovar.dir, database.dir = "{{annovar.dir}}/humandb", 
              out = tempfile(), vcfinput = TRUE)
+
+# Annotation data use BioConductor database
+# The example below will use the org.Hs.eg.db to get the alias of TP53 and NSD2
+# It is more simple than the previous annotation API
+gene <- c("TP53", "NSD2")
+x <- annotation(dat = gene, anno.name = "bioc_gene2alias")
+
+# Do same things use AnnotationDbi
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+select(keys = gene, keytype = "SYMBOL", columns = "ALIAS")
 
 ```
 
