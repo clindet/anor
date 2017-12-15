@@ -67,7 +67,9 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
   }
   if (length(version) == 0) {
     if (length(names(all.versions)) > 1) {
-      version = sapply(all.versions, function(x){return(x[[1]])})
+      version = sapply(all.versions, function(x) {
+        return(x[[1]])
+      })
     } else {
       version = all.versions[1]
     }
@@ -87,9 +89,9 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
     return(TRUE)
   }
   temp.download.dir <- c()
-  for(i in 1:length(download.name)) {
-    temp.download.dir = c(temp.download.dir, sprintf("%s/%s", database.dir[i], stringi::stri_rand_strings(1, 
-      10)))
+  for (i in 1:length(download.name)) {
+    temp.download.dir = c(temp.download.dir, sprintf("%s/%s", database.dir[i], 
+      stringi::stri_rand_strings(1, 10)))
   }
   info.msg(sprintf("Setted download.name:%s", download.name), verbose = verbose)
   info.msg(sprintf("Setted version:%s", version), verbose = verbose)
@@ -101,19 +103,19 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
     github.cfg = github.cfg.null, nongithub.cfg = download.cfg, download.only = FALSE, 
     extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 
     ...)
-  for(i in 1:length(temp.download.dir)) {
+  for (i in 1:length(temp.download.dir)) {
     files.and.dirs <- list.files(temp.download.dir[i], ".*")
     if (length(files.and.dirs) == 0) {
-      info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], version[i], 
-        download.name[i]), verbose = verbose)
+      info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], 
+        version[i], download.name[i]), verbose = verbose)
       return(FALSE)
     } else {
       status <- file.rename(sprintf("%s/%s", temp.download.dir[i], files.and.dirs), 
         sprintf("%s/%s", database.dir[i], files.and.dirs))
       unlink(temp.download.dir[i], recursive = TRUE, force = TRUE)
       if (all(status)) {
-        info.msg(sprintf("Download %s %s version %s database successful.", buildver[i], 
-          version[i], download.name[i]), verbose = verbose)
+        info.msg(sprintf("Download %s %s version %s database successful.", 
+          buildver[i], version[i], download.name[i]), verbose = verbose)
       } else {
         info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], 
           version[i], download.name[i]), verbose = verbose)
