@@ -17,18 +17,49 @@ library(annovarR)
 download.database("db_annovar_brvar", "/path/annovar.dir",  license = "licence_code")
 ```
 
+## Requirements
+
+annovarR annotation system:
+
+- R >= 3.3.0
+- [SQLite](http://www.sqlite.org/download.html)
+
+ANNOVAR annotation system:
+
+- [perl](http://strawberryperl.com/)
+- [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/)
+
 ## Installation
 
-### CRAN
-``` r
-#You can install this package directly from CRAN in the next release version (from within R):
-install.packages('annovarR')
-```
+### Core softwares
 
-### Github
-``` bash
+``` r
+# CRAN to install annovarR (The R package BioInstaller will be installed)
+install.packages('annovarR')
+
+# Github to install annovarR (The R package BioInstaller will be installed)
 # install.packages("devtools")
 devtools::install_github("JhuangLab/annovarR")
+
+# Use BioInstaller to install ANNOVAR easily in R
+library(BioInstaller)
+install.bioinfo('annovar', '/path/annovar.dir')
+```
+
+### Annotation Database
+
+``` r
+# Use download.database to download databases supported by annovarR and ANNOVAR
+library(annovarR)
+download.database('db_annovar_refgene', database.dir = "/path/database.dir/humandb", buildver = "hg19")
+download.database('db_annovar_cytoband', database.dir = "/path/database.dir/humandb", buildver = "hg19")
+download.database('db_annovar_avsnp147', database.dir = "/path/database.dir/humandb", buildver = "hg19")
+# Or
+download.database(c("db_annovar_refgene", "db_annovar_cytoband", "db_annovar_avsnp147"), 
+  database.dir = "/path/database.dir/humandb", buildver = "hg19")
+
+# All annovarR supported big annotation database required SQLite format
+download.database('db_annovar_avsnp147_sqlite', database.dir = "/path/database.dir/humandb", buildver = "hg19")
 ```
 
 ## Support Summary

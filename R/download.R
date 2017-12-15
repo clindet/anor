@@ -66,7 +66,11 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
     return(all.versions)
   }
   if (length(version) == 0) {
-    version = all.versions[1]
+    if (length(names(all.versions)) > 1) {
+      version = sapply(all.versions, function(x){return(x[[1]])})
+    } else {
+      version = all.versions[1]
+    }
   }
   filenames <- mapply(get.finished.filename, download.name = download.name, version = version, 
     buildver = rep(buildver, length(version)), download.cfg = rep(download.cfg, 
@@ -82,8 +86,11 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
   if (length(download.name) == 0) {
     return(TRUE)
   }
-  temp.download.dir = sprintf("%s/%s", database.dir, stringi::stri_rand_strings(1, 
-    10))
+  temp.download.dir <- c()
+  for(i in 1:length(download.name)) {
+    temp.download.dir = c(temp.download.dir, sprintf("%s/%s", database.dir[i], stringi::stri_rand_strings(1, 
+      10)))
+  }
   info.msg(sprintf("Setted download.name:%s", download.name), verbose = verbose)
   info.msg(sprintf("Setted version:%s", version), verbose = verbose)
   info.msg(sprintf("Setted buildver:%s", buildver), verbose = verbose)
@@ -94,25 +101,27 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
     github.cfg = github.cfg.null, nongithub.cfg = download.cfg, download.only = FALSE, 
     extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 
     ...)
-  files.and.dirs <- list.files(temp.download.dir, ".*")
-  if (length(files.and.dirs) == 0) {
-    info.msg(sprintf("Download %s %s version %s database fail.", buildver, version, 
-      download.name), verbose = verbose)
-    return(FALSE)
-  } else {
-    status <- file.rename(sprintf("%s/%s", temp.download.dir, files.and.dirs), 
-      sprintf("%s/%s", database.dir, files.and.dirs))
-    unlink(temp.download.dir, recursive = TRUE, force = TRUE)
-    if (all(status)) {
-      info.msg(sprintf("Download %s %s version %s database successful.", buildver, 
-        version, download.name), verbose = verbose)
-      return(TRUE)
-    } else {
-      info.msg(sprintf("Download %s %s version %s database fail.", buildver, 
-        version, download.name), verbose = verbose)
+  for(i in 1:length(temp.download.dir)) {
+    files.and.dirs <- list.files(temp.download.dir[i], ".*")
+    if (length(files.and.dirs) == 0) {
+      info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], version[i], 
+        download.name[i]), verbose = verbose)
       return(FALSE)
+    } else {
+      status <- file.rename(sprintf("%s/%s", temp.download.dir[i], files.and.dirs), 
+        sprintf("%s/%s", database.dir[i], files.and.dirs))
+      unlink(temp.download.dir[i], recursive = TRUE, force = TRUE)
+      if (all(status)) {
+        info.msg(sprintf("Download %s %s version %s database successful.", buildver[i], 
+          version[i], download.name[i]), verbose = verbose)
+      } else {
+        info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], 
+          version[i], download.name[i]), verbose = verbose)
+        return(FALSE)
+      }
     }
   }
+  return(TRUE)
 }
 
 #' Use annotation name to get download.name that can be used 

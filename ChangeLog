@@ -2,6 +2,7 @@
 
 		* if os is windows set annovar.dir in PATH
 		* use annovar.anno.names when anno.name equal perl_annovar_merge
+		* download.database support multiple download.name
 
 2017-12-14 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
