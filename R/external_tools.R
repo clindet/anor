@@ -141,6 +141,10 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   cmd <- glue(cmd.pool[[cmd.used]])
   cat(cmd, sep = "\n")
   if (!debug) {
+    os <- Sys.info()["sysname"][[1]]
+    if (os == "Windows") {
+      Sys.setenv(PATH=paste0(Sys.getenv('PATH'), ';', annovar.dir))
+    }
     system(cmd)
     return(cmd)
   } else {

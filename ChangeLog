@@ -1,3 +1,7 @@
+2017-12-15 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* if os is windows set annovar.dir in PATH
+
 2017-12-14 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* fix testthat 2.0 check error
