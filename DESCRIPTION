@@ -23,7 +23,7 @@ Imports:
     futile.logger (>= 1.4.3),
     stringi (>= 1.1.5),
     RMySQL (>= 0.10.11),
-    AnnotationDbi(>= 1.38.2),
+    AnnotationDbi,
     glue,
     methods,
 RoxygenNote: 6.0.1

@@ -35,6 +35,7 @@ ANNOVAR annotation system:
 
 ``` r
 # CRAN to install annovarR (The R package BioInstaller will be installed)
+setRepositories(ind=1:2)
 install.packages('annovarR')
 
 # Github to install annovarR (The R package BioInstaller will be installed)
