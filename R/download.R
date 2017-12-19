@@ -2,10 +2,10 @@
 #'
 #' @param download.name Download name, default is NULL and get value from database.cfg 
 #' dependence_db
+#' @param database.dir Destination directory to store databases
 #' @param version Version of download database, supported version can be get by 
 #' download.database('db_annovar_avsnp', show.all.versions = TRUE)
 #' @param buildver Genome version, e.g hg19, hg38, mm10
-#' @param database.dir Dir of the databases
 #' @param download.cfg Configuration file for download, most of annovarR database 
 #' resources can be found in system.file('extdata', 
 #' 'config/db/db_annovar.toml', package = 'BioInstaller')
@@ -18,8 +18,8 @@
 #' @examples
 #' download.database('db_annovar_avsnp', database.dir = sprintf('%s/databases/', tempdir()), 
 #' show.all.versions = TRUE)
-download.database <- function(download.name = NULL, version = c(), buildver = "hg19", 
-  database.dir = c(), download.cfg = system.file("extdata", "config/db/db_annovar.toml", 
+download.database <- function(download.name = NULL, database.dir = tempdir(), version = c(), 
+  buildver = "hg19", download.cfg = system.file("extdata", "config/db/db_annovar.toml", 
     package = "BioInstaller"), show.all.versions = FALSE, show.all.names = FALSE, 
   show.all.buildvers = FALSE, verbose = FALSE, ...) {
   if (!is.null(download.name) && str_detect(download.name, "^db_bioc_") && !show.all.names && 
@@ -88,6 +88,10 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
   if (length(download.name) == 0) {
     return(TRUE)
   }
+  if (any(tolower(download.name) %in% c("db_annovar_brvar")) && (!"license" %in% 
+    names(list(...)))) {
+    stop("Please set licese code.")
+  }
   temp.download.dir <- c()
   for (i in 1:length(download.name)) {
     temp.download.dir = c(temp.download.dir, sprintf("%s/%s", database.dir[i], 
@@ -99,31 +103,46 @@ download.database <- function(download.name = NULL, version = c(), buildver = "h
   info.msg(sprintf("Setted database.dir:%s", database.dir), verbose = verbose)
   info.msg(sprintf("Using %s as the temp install dir pass to BioInstaller::install.bioinfo.", 
     temp.download.dir), verbose = verbose)
-  install.bioinfo(name = download.name, version = version, download.dir = temp.download.dir, 
+  params <- list(name = download.name, version = version, download.dir = temp.download.dir, 
     github.cfg = github.cfg.null, nongithub.cfg = download.cfg, download.only = FALSE, 
     extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 
     ...)
+  x <- do.call("install.bioinfo", params)
+  if (x$fail.list != "") {
+    info.msg(sprintf("%s download fail.", x$fail.list, sep = "\n"))
+  }
+  if (x$success.list == "") {
+    return(FALSE)
+  }
+  success.index <- download.name %in% str_split(x$success.list, ",")[[1]]
+  unlink(sprintf("%s", temp.download.dir[!success.index]), recursive = TRUE, force = TRUE)
+  temp.download.dir <- temp.download.dir[success.index]
+  buildver <- buildver[success.index]
+  version <- version[success.index]
+  download.name <- download.name[success.index]
+  status_all_names <- c()
   for (i in 1:length(temp.download.dir)) {
     files.and.dirs <- list.files(temp.download.dir[i], ".*")
     if (length(files.and.dirs) == 0) {
       info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], 
         version[i], download.name[i]), verbose = verbose)
-      return(FALSE)
+      status_all_names <- c(status_all_names, FALSE)
     } else {
       status <- file.rename(sprintf("%s/%s", temp.download.dir[i], files.and.dirs), 
         sprintf("%s/%s", database.dir[i], files.and.dirs))
-      unlink(temp.download.dir[i], recursive = TRUE, force = TRUE)
       if (all(status)) {
         info.msg(sprintf("Download %s %s version %s database successful.", 
           buildver[i], version[i], download.name[i]), verbose = verbose)
+        status_all_names <- c(status_all_names, TRUE)
       } else {
         info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], 
           version[i], download.name[i]), verbose = verbose)
-        return(FALSE)
+        status_all_names <- c(status_all_names, FALSE)
       }
     }
   }
-  return(TRUE)
+  unlink(temp.download.dir, recursive = TRUE, force = TRUE)
+  return(status_all_names)
 }
 
 #' Use annotation name to get download.name that can be used 

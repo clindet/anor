@@ -4,8 +4,8 @@
 \alias{download.database}
 \title{Download annovarR databases}
 \usage{
-download.database(download.name = NULL, version = c(), buildver = "hg19",
-  database.dir = c(), download.cfg = system.file("extdata",
+download.database(download.name = NULL, database.dir = tempdir(),
+  version = c(), buildver = "hg19", download.cfg = system.file("extdata",
   "config/db/db_annovar.toml", package = "BioInstaller"),
   show.all.versions = FALSE, show.all.names = FALSE,
   show.all.buildvers = FALSE, verbose = FALSE, ...)
@@ -14,12 +14,12 @@ download.database(download.name = NULL, version = c(), buildver = "hg19",
 \item{download.name}{Download name, default is NULL and get value from database.cfg 
 dependence_db}
 
+\item{database.dir}{Destination directory to store databases}
+
 \item{version}{Version of download database, supported version can be get by 
 download.database('db_annovar_avsnp', show.all.versions = TRUE)}
 
 \item{buildver}{Genome version, e.g hg19, hg38, mm10}
-
-\item{database.dir}{Dir of the databases}
 
 \item{download.cfg}{Configuration file for download, most of annovarR database 
 resources can be found in system.file('extdata', 

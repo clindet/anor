@@ -23,6 +23,7 @@ annovarR annotation system:
 
 - R >= 3.3.0
 - [SQLite](http://www.sqlite.org/download.html)
+- AnnotationDbi
 
 ANNOVAR annotation system:
 
@@ -51,12 +52,13 @@ install.bioinfo('annovar', '/path/annovar.dir')
 
 ``` r
 # Use download.database to download databases supported by annovarR and ANNOVAR
+# Some of examples as shown as below
 library(annovarR)
 download.database('db_annovar_refgene', database.dir = "/path/database.dir/humandb", buildver = "hg19")
-download.database('db_annovar_cytoband', database.dir = "/path/database.dir/humandb", buildver = "hg19")
+download.database('db_ucsc_cytoband', database.dir = "/path/database.dir/humandb", buildver = "hg19")
 download.database('db_annovar_avsnp147', database.dir = "/path/database.dir/humandb", buildver = "hg19")
 # Or
-download.database(c("db_annovar_refgene", "db_annovar_cytoband", "db_annovar_avsnp147"), 
+download.database(c("db_annovar_refgene", "db_ucsc_cytoband"), 
   database.dir = "/path/database.dir/humandb", buildver = "hg19")
 
 # All annovarR supported big annotation database required SQLite format
