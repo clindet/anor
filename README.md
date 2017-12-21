@@ -8,11 +8,13 @@ The main development motivation of annovarR is to increase the supported databas
 
 annovarR will not only provide annotation functions (both internal and external) but also established an annotation database pool including published and community contributed.
 
-In addition, to provide more transcription levels of variant database resources, we collected total 1285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data (Database called BRVar). This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from RNA-seq.
+In addition, to provide more transcription levels of variant database resources, we collected total 1,285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data (Database called BRVar). This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from B-ALL RNA-seq.
+
+If you want to download the 1,285 RNA-seq variants frequency database, you need click [here](http://bioinfo.rjh.com.cn/labs/jhuang/contact.php) and send us a short application message (Whether it is for commercial use?). If the application is applied, we will reply you within 24 hours with a download required license code.
 
 ```r
 # Download BRVar database
-# Firstly, you need to apply a licence code contact Jianfeng: lee_jianfeng@sjtu.edu.cn
+# You must input the applied license code
 library(annovarR)
 download.database("db_annovar_brvar", "/path/annovar.dir",  license = "licence_code")
 ```
