@@ -15,3 +15,11 @@ test_that("annovar", {
                input.file = "example.vcf", convert.out = "example.avinput", annovar.dir = "~/tmp/annovar.dir", debug = TRUE)
   expect_that(is.character(x), equals(TRUE))
 })
+
+test_that("vep", {
+  vep(debug = TRUE)
+})
+
+test_that("vcfanno", {
+  vcfanno(debug = TRUE)
+})

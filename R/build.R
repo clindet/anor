@@ -56,7 +56,7 @@ sqlite.build <- function(filename = NULL, sqlite.connect.params = list(dbname = 
   }
   info.msg(sprintf("Writing table %s in %s sqlite database.", table.name, dbname), 
     verbose = verbose)
-  status <- dbWriteTable(sqlite.db, table.name, dat, ...)
+  status <- dbWriteTable(sqlite.db, table.name, dat, row.names = FALSE, ...)
   print.vb(status, verbose = verbose)
   info.msg(sprintf("Disconnect the connection with the %s sqlite databse.", dbname), 
     verbose = verbose)
@@ -201,7 +201,7 @@ mysql.build <- function(filename = "", mysql.connect.params = list(host = "", db
   }
   info.msg(sprintf("Writing table %s in %s mysql database.", table.name, dbname), 
     verbose = verbose)
-  status <- dbWriteTable(mysql.db, table.name, dat, ...)
+  status <- dbWriteTable(mysql.db, table.name, dat, row.names = FALSE, ...)
   print.vb(status, verbose = verbose)
   info.msg(sprintf("Disconnect the connection with the %s mysql databse.", dbname), 
     verbose = verbose)
@@ -239,8 +239,8 @@ mysql.index <- function(mysql.connect.params = list(host = "", dbname = "", tabl
     info.msg(sprintf("%s index already exists.", index), verbose)
     return(FALSE)
   }
-  cols <- paste0(cols, collapse = ", ")
-  sql <- sprintf("CREATE INDEX %s ON %s (%s)", index, table.name, cols)
+  cols <- paste0(cols, collapse = "(20), ")
+  sql <- sprintf("CREATE INDEX %s ON %s (%s(20))", index, table.name, cols)
   status <- FALSE
   info.msg(sprintf("Quering sql: %s", sql), verbose = verbose)
   status <- dbSendQuery(mysql.db, sql, ...)

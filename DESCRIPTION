@@ -1,10 +1,10 @@
 Package: annovarR
 Type: Package
 Title: Integrated Tool to Annotate Genetic Variants
-Version: 0.3.7
+Version: 1.0.0
 Authors@R: person("Jianfeng", "Li", email = "lee_jianfeng@sjtu.edu.cn", role = c("aut", "cre"))
 Description: 
-    Can be used to annotate genetic variants from genomic and transcriptome data. Some of published and in-house database have been introduced in annovarR.
+    Can be used to annotate genetic variants from genomic and transcriptome data. Published and in-house databases were introduced in annovarR.
 Depends:
     R (>= 3.3.0)
 URL: https://github.com/JhuangLab/annovarR
@@ -16,13 +16,14 @@ Imports:
     stringr (>= 1.2.0),
     configr (>= 0.2.2),
     BioInstaller (>= 0.3.2),
-    ngstk (>= 0.2.0.2),
+    ngstk (>= 0.2.1),
     DBI (>= 0.6-1),
     data.table (>= 1.10.4),
     RSQLite (>= 2.0),
     futile.logger (>= 1.4.3),
     stringi (>= 1.1.5),
     RMySQL (>= 0.10.11),
+    vcfR (>= 1.6.0),
     AnnotationDbi,
     glue,
     methods,

@@ -185,7 +185,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
 #' @param ... Other parameters see \code{\link{annotation.cols.match}}, \code{\link{annotation.region.match}}, 
-#' \code{\link{annovar}}
+#' \code{\link{annovar}} and \code{\link{vep}}
 #' @export
 #' @examples
 #' library(data.table)

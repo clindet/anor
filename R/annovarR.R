@@ -1,7 +1,6 @@
-#' annovarR is an novel integrated open source tool to annotate genetic variants data 
-#' based on ANNOVAR and other public annotation databases, 
-#' such as [varcards](http://varcards.biols.ac.cn/), 
-#' [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
+#' annovarR is an integrated database and tool to annotate genetic variants 
+#' from genomic and transcriptome sequencing data.
+#' This work mainly based on ANNOVAR and other public annotation databases.
 #' 
 #' @author
 #' Li Jianfeng \url{lee_jianfeng@sjtu.edu.cn}
@@ -22,6 +21,7 @@
 #' @importFrom methods formalArgs
 #' @importFrom ngstk split_list split_row_file batch_file
 #' @importFrom AnnotationDbi select
+#' @importFrom vcfR read.vcfR INFO2df getID getINFO getCHROM getPOS getFILTER getALT getFIX
 NULL
 
 .onAttach <- function(libname, pkgname) {

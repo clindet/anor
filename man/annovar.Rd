@@ -2,7 +2,7 @@
 % Please edit documentation in R/external_tools.R
 \name{annovar}
 \alias{annovar}
-\title{R utils function to run ANNOVAR tool.}
+\title{R function to run ANNOVAR.}
 \usage{
 annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
   paste(c("{perl}", "{script}{extra.params}", "-downdb", "{buildver}",
@@ -72,7 +72,7 @@ annovar(perl = Sys.which("perl"), cmd.pool = list(script1.downdb =
 \item{debug}{If set TRUE, only print the command}
 }
 \description{
-R utils function to run ANNOVAR tool.
+R function to run ANNOVAR.
 }
 \examples{
 # original ANNOVAR download.database

@@ -1,4 +1,4 @@
-#' R utils function to run ANNOVAR tool. 
+#' R function to run ANNOVAR. 
 #'
 #' @param perl Executable file of perl
 #' @param cmd.pool Un-parsed commands of ANNOVAR
@@ -145,9 +145,142 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     if (os == "Windows") {
       Sys.setenv(PATH = paste0(Sys.getenv("PATH"), ";", annovar.dir))
     }
-    system(cmd)
+    status <- system(cmd)
+    attr(cmd, "status") <- status
     return(cmd)
   } else {
+    return(cmd)
+  }
+}
+
+#' R function to run VEP
+#'
+#' @param vep Executable file of vep
+#' @param cache Enables use of the cache. Add --refseq or 
+#' --merged to use the refseq or merged cache, (if installed).
+#' @param cache_version Use a different cache version than the assumed default (the VEP version). 
+#' This should be used with Ensembl Genomes caches since their version numbers do not 
+#' match Ensembl versions. For example, the VEP/Ensembl version may be 88 and the 
+#' Ensembl Genomes version 35. Not used by default
+#' @param offline Enable offline mode. No database connections will be made, 
+#' and a cache file or GFF/GTF file is required for annotation. 
+#' Add --refseq to use the refseq cache (if installed). Not used by default
+#' @param buildver Select the assembly version to use if more than one available. 
+#' If using the cache, you must have the appropriate assembly's cache file installed. 
+#' If not specified and you have only 1 assembly version installed, this will be chosen by default. 
+#' Default = use found assembly version (GRch37)
+#' @param input.file Input file name. If not specified, the script will attempt to read from STDIN.
+#' @param dir Specify the base cache/plugin directory to use. Default = '$HOME/.vep/'
+#' @param out Output file name. The script can write to STDOUT by 
+#' specifying STDOUT as the output file name - this will force quiet mode. 
+#' Default = 'variant_effect_output.txt'
+#' @param fasta Specify a FASTA file or a directory containing FASTA files to use to look up reference sequence. 
+#' The first time you run the script with this parameter an index will be built 
+#' which can take a few minutes. This is required if fetching HGVS annotations (--hgvs) 
+#' or checking reference sequences (--check_ref) in offline mode (--offline), 
+#' and optional with some performance increase in cache mode (--cache). 
+#' See documentation for more details. Not used by default
+#' @param everything    Shortcut flag to switch on all of the following:
+#' --sift b, --polyphen b, --ccds, --uniprot, --hgvs, --symbol, --numbers, 
+#' --domains, --regulatory, --canonical, --protein, --biotype, --uniprot, 
+#' --tsl, --appris, --gene_phenotype --af, --af_1kg, --af_esp, --af_gnomad, 
+#' --max_af, --pubmed, --variant_class
+#' @param extra.params Extra paramters in vep command
+#' @param debug If set TRUE, only print the command
+#' @export 
+#' @examples
+#' vep(debug = TRUE)
+vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offline = TRUE, 
+  buildver = "GRCh37", dir = file.path(Sys.getenv("HOME"), ".vep"), input.file = "", 
+  out = "variant_effect_output.txt", fasta = "", everything = TRUE, extra.params = "", 
+  debug = FALSE) {
+  if (!file.exists(vep) & !debug) {
+    stop("Please set correctly VEP path.")
+  } else if (debug) {
+    vep <- "vep"
+  }
+  alias_var = list(buildver = "assembly", input.file = "input_file", out = "output_file")
+  for (i in names(alias_var)) {
+    assign(alias_var[[i]], get(i))
+  }
+  var <- c("cache_version", "assembly", "dir", "output_file", "input_file")
+  flag_var <- c("cache", "offline", "everything")
+  cmd <- vep
+  for (i in var) {
+    if (!is.null(get(i)) && get(i) != "") {
+      cmd <- paste(cmd, paste0("--", i), get(i), sep = " ")
+    }
+  }
+  for (i in flag_var) {
+    if (get(i)) {
+      cmd <- paste0(cmd, " --", i)
+    }
+  }
+  cmd <- sprintf("%s %s", cmd, extra.params)
+  cat(cmd, sep = "\n")
+  if (debug) {
+    return(cmd)
+  } else {
+    status <- system(cmd)
+    attr(cmd, "status") <- status
+    return(cmd)
+  }
+}
+
+#' R function to run vcfanno
+#' 
+#' @param vcfanno Executable file of vcfanno (Download from https://github.com/brentp/vcfanno/releases)
+#' @param vcfanno.database.cfg vcfanno required database configuration file 
+#' (Not the annovarR database.cfg)
+#' @param base_path Optional base_path to prepend to annotation files in the config
+#' @param lua Optional path to a file containing custom javascript functions to be used as ops
+#' @param ends Annotate the start and end as well as the interval itself.
+#' @param input.file Input file path (VCF only)
+#' @param out Output file path
+#' @param thread number of processes to use. (default 2)
+#' @param permissive_overlap annotate with an overlapping variant even it doesn't share the same ref and alt alleles. 
+#' Default is to require exact match between variants.
+#' @param debug If set TRUE, only print the command
+#' @export
+#' @examples
+#' vcfanno(debug = TRUE)
+vcfanno <- function(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")), 
+  vcfanno.database.cfg = system.file("extdata", "demo/vcfanno_demo/conf.toml", 
+    package = "annovarR"), base_path = "", lua = "", ends = FALSE, input.file = "input.vcf", 
+  out = "output.vcf", thread = 2, permissive_overlap = FALSE, debug = FALSE) {
+  vcfanno <- vcfanno[vcfanno != ""][1]
+  if (!file.exists(vcfanno) & !debug) {
+    stop("Please set correctly vcfanno path.")
+  } else if (debug) {
+    vcfanno <- "vcfanno_linux64"
+  }
+  if (out != "" && !dir.exists(dirname(out))) {
+    dir.create(dirname(out))
+  }
+  alias_var = list(thread = "p")
+  for (i in names(alias_var)) {
+    assign(alias_var[[i]], get(i))
+  }
+  var <- c("base_path", "lua", "p")
+  flag_var <- c("ends", "permissive_overlap")
+  cmd <- vcfanno
+  for (i in var) {
+    if (!is.null(get(i)) && get(i) != "") {
+      cmd <- paste(cmd, paste0("-", str_replace(i, "_", "-")), get(i), sep = " ")
+    }
+  }
+  for (i in flag_var) {
+    if (get(i)) {
+      cmd <- paste0(cmd, " -", i)
+    }
+  }
+  cmd <- sprintf("%s %s %s > %s", cmd, vcfanno.database.cfg, input.file, out)
+  cat(cmd, sep = "\n")
+  if (debug) {
+    return(cmd)
+  } else {
+    status <- system(cmd)
+    attr(cmd, "status") <- status
     return(cmd)
   }
 }

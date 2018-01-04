@@ -62,6 +62,9 @@ get.cfg.value.by.name <- function(name = "", database.cfg = system.file("extdata
     return(NULL)
   }
   if (coincident) {
+    if (!key %in% names(config)) {
+      return(NULL)
+    }
     return(config[[key]])
   } else {
     index <- name == config$versions

@@ -14,7 +14,7 @@ sqlite.auto.index(anno.name = "", buildver = "hg19",
 
 \item{buildver}{Genome version, hg19, hg38, mm10 and others}
 
-\item{database.dir}{Dir of the databases (mysql no need)}
+\item{database.dir}{Dir of the databases}
 
 \item{index}{Index name in sqlite}
 

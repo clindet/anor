@@ -93,11 +93,8 @@ get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("ex
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.needcols <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
-  need.cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols")
-  if (is.null(need.cols) || is.na(need.cols)) {
-    need.cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols", 
-      coincident = TRUE)
-  }
+  need.cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols", 
+    coincident = TRUE)
   return(need.cols)
 }
 
@@ -159,6 +156,24 @@ sqlite.tb.indexes <- function(sqlite.connect.params = list(dbname = "", table.na
   sql <- "SELECT * FROM sqlite_master WHERE type = 'index'"
   indexes <- dbGetQuery(sqlite.db, sql)
   dbDisconnect(sqlite.db)
+  return(indexes)
+}
+
+#' Get mysql table indexes
+#'
+#' @param mysql.connect.params Connect to mysql database params [dbname, table.name, host, user, password]
+#' @export
+#' @examples
+#' NULL
+mysql.tb.indexes <- function(mysql.connect.params = list(dbname = "", table.name = "")) {
+  mysql.db <- connect.db("", "mysql", mysql.connect.params = mysql.connect.params, 
+    verbose = FALSE)
+  sql <- sprintf("SHOW INDEX FROM %s", mysql.connect.params$table.name)
+  indexes <- dbGetQuery(mysql.db, sql)
+  indexes <- as.data.frame(indexes)
+  indexes <- indexes[!duplicated(indexes$Key_name), ]
+  colnames(indexes)[3] <- "name"
+  dbDisconnect(mysql.db)
   return(indexes)
 }
 

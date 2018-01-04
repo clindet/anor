@@ -34,7 +34,7 @@ set.db <- function(anno.name = "", buildver = "hg19", database.dir = "", db.type
       dbname <- sprintf("%s/%s.%s", database.dir, anno.name, db.file.prefix)
     }
   } else if (db.type == "mysql") {
-    if (is.null(sqlite.connect.params$dbname)) {
+    if (is.null(mysql.connect.params$dbname)) {
       dbname <- sprintf("%s_%s", buildver, anno.name)
     } else {
       dbname <- mysql.connect.params[["dbname"]]

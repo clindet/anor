@@ -43,3 +43,9 @@ test_that("get.cfg.value.by.name", {
   expect_that(x, equals("1000g2015aug_all"))
 })
 
+test_that("msg", {
+  x <- info.msg("info.msg", verbose = TRUE)
+  expect_that(is.character(x), equals(TRUE))
+  x <- print.vb("print.vb", verbose = TRUE)
+  expect_that(is.character(x), equals(TRUE))
+})

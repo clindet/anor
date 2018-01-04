@@ -153,7 +153,7 @@ snp.id <- c("rs775809821", "rs768019142")
 x <- annotation(dat = data.table(rs = rep(snp.id, 3)), database.dir = database.dir, anno.name = "rs2pos147", 
     buildver = "hg19", verbose = FALSE, db.type = "txt")
 
-# Annotation avinput format R data use ANNOVAR
+# Annotate avinput format R data using ANNOVAR
 # set debug to TRUE will not to run command
 chr = "chr1"
 start = "123"
@@ -164,13 +164,24 @@ dat <- data.table(chr, start, end, ref, alt)
 x <- annotation(dat, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar", 
              database.dir = "{{annovar.dir}}/humandb", debug = TRUE)
 
-# Annotation VCF file use ANNOVAR
+# Annotate VCF file using ANNOVAR
 # set debug to TRUE will not to run command
 x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
              annovar.dir = "/opt/bin/annovar/", database.dir = "{{annovar.dir}}/humandb", 
              out = tempfile(), vcfinput = TRUE, debug = TRUE)
 
-# Annotation from BioConductor org.hs.eg.db
+# Annotation VCF file use VEP
+vep(debug = TRUE)
+x <- annotation(anno.name = "vep_all", input.file = "/tmp/test.vcf",
+             out = tempfile(), debug = TRUE)
+
+# Annotation VCF file use vcfanno
+vcfanno(debug = TRUE)
+x <- annotation(anno.name = "vcfanno_demo", input.file = system.file("extdata", "demo/vcfanno_demo/query.vcf.gz", 
+                   package = "annovarR"), out = "test.vcf", vcfanno = "/path/vcfanno", debug = TRUE)
+
+
+# Annotate gene from BioConductor org.hs.eg.db
 gene <- c("TP53", "NSD2")
 annotation(dat = gene, anno.name = "bioc_gene2alias")
 ```

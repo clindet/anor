@@ -1,5 +1,7 @@
 Title = "annovarR database annotation configuration file"
 
+# Section of annovarR text, SQLite and MySQL format mode (Now only support R data.frame or data.table object)
+# All anno.name in this section will not to contain any software or programming language prefix
 [avsnp]
 versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp150"]
 default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
@@ -846,6 +848,10 @@ format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
 
+# ANNOVAR section
+# annovar_supported_gene_anno is a single anno.name mode
+# If you want to annotate the file in multiple mode, 
+# you need try use perl_annovar_merge as the anno.name and set the annovar.anno.names
 [annovar_supported_gene_anno]
 versions = ["perl_annovar_refGene", "perl_annovar_ensGene", "perl_annovar_knownGene",
             "perl_annovar_cytoBand", "perl_annovar_genomicSuperDups", "perl_annovar_clinvar_20170905",
@@ -871,6 +877,8 @@ need.cols = ["chr", "start", "end", "ref", "alt"]
 func = "annovar.auto"
 cmd.used = 'script2'
 
+# BioConductior section
+# Now only support org.hs.eg.db by AnnotationDbi
 [bioc_org_hs_eg]
 need.cols = ""
 versions = "bioc_org_hs_eg"
@@ -916,3 +924,23 @@ func = "bioc.auto"
 keytype = "SYMBOL"
 columns = ""
 dependence_db = "db_bioc_org.Hs.eg.db"
+
+# VEP section
+# vep_default dependence_db now is demo status
+# Now can be download use function install.bioinfo of BioInstaller package
+[vep_default]
+versions = "vep_all"
+func = "vep.auto"
+dependence_db = "db_vep"
+
+# vcfanno section
+# vcfanno_default dependence_db now is demo status
+# Will be supported in the BioInstaller next release
+# In the future, annovarR can as the database resource manager
+[vcfanno_default]
+versions = "vcfanno_demo"
+func = "vcfanno.auto"
+vcfanno.database.cfg = "@>@system.file('extdata', 'demo/vcfanno_demo/conf.toml', package = 'annovarR')@<@"
+base_path = "@>@system.file('extdata', 'demo/vcfanno_demo/', package = 'annovarR')@<@"
+lua = "@>@system.file('extdata', 'demo/vcfanno_demo/custom.lua', package = 'annovarR')@<@"
+dependence_db = "db_vcfanno_demo"

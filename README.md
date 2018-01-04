@@ -23,14 +23,23 @@ download.database("db_annovar_brvar", "/path/annovar.dir",  license = "licence_c
 
 annovarR annotation system:
 
-- R >= 3.3.0
+- [R](https://cran.r-project.org/) >= 3.3.0
+- [perl](http://strawberryperl.com/)
 - [SQLite](http://www.sqlite.org/download.html)
-- AnnotationDbi
+- [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html)
 
 ANNOVAR annotation system:
 
-- [perl](http://strawberryperl.com/)
 - [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/)
+
+VEP annotation system
+
+- [perl](http://strawberryperl.com/)
+- [VEP](http://asia.ensembl.org/info/docs/tools/vep/index.html)
+
+vcfanno annotationo system
+
+- [vcfanno](https://github.com/brentp/vcfanno)
 
 ## Installation
 
@@ -48,6 +57,9 @@ devtools::install_github("JhuangLab/annovarR")
 # Use BioInstaller to install ANNOVAR easily in R
 library(BioInstaller)
 install.bioinfo('annovar', '/path/annovar.dir')
+
+# Use BioInstaller to install vcfanno easily in R
+install.bioinfo('vcfanno', '/path/vcfanno.dir')
 ```
 
 ### Annotation Database
@@ -91,7 +103,7 @@ download.database(download.name = download.name, show.all.versions = TRUE)
 download.database(download.name = download.name, version = "avsnp147", buildver = "hg19", 
   database.dir = "/path/database.dir")
 
-# Annotation variants from avsnp147 database use annovarR
+# Annotate variants from avsnp147 database use annovarR
 library(data.table)
 database.dir <- "/path/database.dir"
 chr <- c("chr1", "chr2", "chr1")
@@ -103,7 +115,7 @@ database.dir <- tempdir()
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation(dat = dat, anno.name = "avsnp147", database.dir = database.dir)
 
-# Annotation multiple database
+# Annotate using multiple database
 x <- annotation.merge(dat = dat, anno.names = c("cosmic81", "avsnp147"), database.dir = database.dir)
 
 # Database configuration file
@@ -112,7 +124,7 @@ database.cfg <- system.file('extdata', 'config/databases.toml', package = "annov
 # Get anno.name needed input cols
 get.annotation.needcols('avsnp147')
 
-# Annotation avinput format R data and file use ANNOVAR
+# Annotate avinput format R data and file using ANNOVAR
 annovar.dir <- "/opt/bin/annovar"
 database.dir <- "/opt/bin/annovar/humandb"
 chr = "chr1"
@@ -128,7 +140,7 @@ x <- annotation(dat, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar",
 x <- annotation(input.file = tmpfn, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar", 
              database.dir = database.dir)
 
-# Annotation avinput format R data use annovarR and ANNOVAR
+# Annotate avinput format R data using annovarR and ANNOVAR
 # It will return a list contatin two data.table object that 
 # one is annovarR annotation system and the another is ANNOVAR output 
 x <-annotation.merge(dat = dat, anno.names = c('avsnp147', 'perl_annovar_refGene'), 
@@ -140,13 +152,23 @@ x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all',
 x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all', 
   'perl_annovar_merge'), annovar.anno.names = c('refGene', 'ensGene'), annovar.dir = annovar.dir, database.dir = database.dir)
 
-# Annotation VCF file use ANNOVAR
-
+# Annotate VCF file using ANNOVAR
 x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
              annovar.dir = annovar.dir, database.dir = "{{annovar.dir}}/humandb", 
              out = tempfile(), vcfinput = TRUE)
 
-# Annotation data use BioConductor database
+# Annotation VCF file use VEP
+vep(debug = TRUE)
+x <- annotation(anno.name = "vep_all", input.file = "/tmp/test.vcf",
+             out = tempfile())
+
+# Annotation VCF file use vcfanno
+vcfanno(debug = TRUE)
+x <- annotation(anno.name = "vcfanno_demo")
+annotation(anno.name = "vcfanno_demo", input.file = system.file("extdata", "demo/vcfanno_demo/query.vcf.gz", 
+                   package = "annovarR"), out = "test.vcf", vcfanno = "/path/vcfanno")
+
+# Annotate gene using BioConductor database
 # The example below will use the org.Hs.eg.db to get the alias of TP53 and NSD2
 # It is more simple than the previous annotation API
 gene <- c("TP53", "NSD2")

@@ -1,3 +1,9 @@
+2017-01-05 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* added mysql.auto.build and mysql.auto.index
+		* supported external tools vep and vcfanno 
+		* use vcfR package to parse VCF files to data.table object
+
 2017-12-19 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* modified in dependence

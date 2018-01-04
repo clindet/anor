@@ -22,3 +22,8 @@ test_that("get.download.name", {
   x <- get.download.name("avsnp147")
   expect_that(x, equals("db_annovar_avsnp_sqlite"))
 })
+
+test_that("get.annotation.needcols", {
+  x <- get.annotation.needcols("avsnp147")
+  expect_that(x[1], equals("chr"))
+})
