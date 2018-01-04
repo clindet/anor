@@ -18,40 +18,32 @@ library(data.table)
 
 ## Introduction
 
-[annovarR](https://github.com/JhuangLab/annovarR) is a novel integrated open source tool to annotate genetic variants data based on [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) and other public annotation databases, such as [varcards](http://varcards.biols.ac.cn/), [REDIportal](http://srv00.recas.ba.infn.it/atlas/), .etc. 
+Interpretation of genetic variation data is a crucial step to understand the relationship between gene sequence changes and biological function. There are several annotation tools, such as [ANNOVAR](http://annovar.openbioinformatics.org/), [VEP](https://asia.ensembl.org/info/docs/tools/vep/index.html), [vcfanno](https://github.com/brentp/vcfanno), have been developed. These tools make gene variation data annotation more convenient and faster than before. However, because different annotation tools have their own methods of use and design architecture, this increases the difficulty for bioinfomatics beginner to utilize these tools. In addition, many of existing database resources and annotation scripts have not been well integrated and shared.
 
-The development motivation of annovarR is to extend [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/) supported database resources, increase the support type of database, make the annotation work in R more convenient, such as parallel and big file mode.
-
-In addition, to provide more transcription levels of variant database resources, we collected total 1285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data. This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from RNA-seq.
-
-Feature:
-
--   One-click download ANNOVAR and other public databases in R based on our previous developed [BioInstaller](https://github.com/JhuangLab/BioInstaller) R package which can be used to download/install bioinformatics tools, dependences and databases in R relatively easily.
--   The editable configuration file and external acceptable function to control the annotation behavior.
--   Support for multiple data types both in input data and reference database(e.g. text file, SQLite, MySQL)
+So, it is worth us to develop an integrated annotation system that not only include the integration of different annotation tools but also integrate the relevant database resources. Here, we present a integrated annotation R package '[annovarR](https://github.com/JhuangLab/annovarR)' to do this. It provides a series R functions to integrate external annotation tools and annotation databases.
 
 ## Installation
 
-### CRAN
+To install annovarR, first you need to install [R](https://cran.r-project.org/) interpreter (Supported Linux, MAC and Windows). This package have been uploaded on The Comprehensive R Archive Network (CRAN, https://cran.r-project.org). You can use the command to install annovarR package easily:
 
 ``` r
-#You can install this package directly from CRAN by running (from within R):
+# setRepositories ind 1 is CRAN, 2 is Bioconductor
+setRepositories(ind=1:2)
 install.packages('annovarR')
 ```
 
-### Github
+If you want to use the latest development version, you need to use [devtools](https://github.com/hadley/devtools) `install_github` function.
 
 ``` r
 # Install the cutting edge development version from GitHub:
 # install.packages("devtools")
-devtools::install_github("JhuangLab/annovarR")
+devtools::install_github("JhuangLab/annovarR", ref = "develop")
 ```
 
-### Zip/Tarball
+Lastly, annovarR can also be installed using the source code archive (`R CMD INSTALL`). In this situation, you need to manually handle dependencies on many packages.
 
-1. Download the appropriate zip file or tar.gz file from Github
-2. Unzip the file and change directories into the configr directory
-3. Run `R CMD INSTALL pkg`
+
+**Tips**: When the [RMySQL](https://github.com/r-dbi/RMySQL) or [RSQLite](https://github.com/r-dbi/RSQLite) package can not directly installed by R, [conda](https://conda.io/docs/) is an optional solution: `conda install -c r r-rmysql r-rsqlite`. Or you need root permissions to install the corresponding system dependency.
 
 ## Usage
 
