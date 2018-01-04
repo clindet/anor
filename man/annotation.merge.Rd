@@ -24,6 +24,6 @@ alt <- c('-', '-', '-')
 database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 database.dir <- dirname(database)
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all'), 
+x <- annotation.merge(dat = dat, anno.names = c('avsnp147'), 
 database.dir = database.dir, db.type = 'txt')
 }

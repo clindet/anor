@@ -242,7 +242,7 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", an
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-#' x <- annotation.merge(dat = dat, anno.names = c('avsnp147', '1000g2015aug_all'), 
+#' x <- annotation.merge(dat = dat, anno.names = c('avsnp147'), 
 #' database.dir = database.dir, db.type = 'txt')
 annotation.merge <- function(anno.names, ...) {
   perl_annovar_names <- anno.names[str_detect(anno.names, "perl_annovar_")]
