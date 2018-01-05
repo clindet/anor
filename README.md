@@ -89,6 +89,9 @@ download.database('db_annovar_avsnp147_sqlite', database.dir = "/path/database.d
 ## Basic Usage
 
 ```r
+# View the vignettes in annovarR package
+browseVignettes("annovarR")
+
 # Get all annovarR supported annotation name
 get.annotation.names()
 
