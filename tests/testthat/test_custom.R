@@ -34,8 +34,8 @@ test_that("rs2genomic", {
   expect_that(x[1, 5], equals("T//-"))
   
   # Auto set params
-  x <- annotation(dat = data.table(rs = rep(snp.id, 3)), database.dir = database.dir, anno.name = "rs2pos147", 
-    buildver = "hg19", verbose = FALSE, db.type = "txt")
+  x <- annotation(dat = data.table(rs = rep(snp.id, 3)), database.dir = database.dir, 
+    anno.name = "rs2pos147", buildver = "hg19", verbose = FALSE, db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals(c("chr", "start", "end", "ref", "alt")))
   expect_that(x[1, 1], equals("1//1"))

@@ -18,7 +18,7 @@ Imports:
     BioInstaller (>= 0.3.2),
     ngstk (>= 0.2.1),
     DBI (>= 0.6-1),
-    data.table (>= 1.10.4-3),
+    data.table (>= 1.10.0),
     RSQLite (>= 2.0),
     futile.logger (>= 1.4.3),
     stringi (>= 1.1.5),

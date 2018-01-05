@@ -52,7 +52,7 @@ test2:
 
 format:
 	cd .;\
-	Rscript -e "library(formatR);options('formatR.indent'=2);tidy_dir('./R');"
+	Rscript -e "library(formatR);options('formatR.indent'=2);tidy_dir('./R');tidy_dir('./tests/testthat');"
 
 reduce_test:
 	mkdir ./tests/testthat/bak;\

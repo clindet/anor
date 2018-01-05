@@ -1,9 +1,9 @@
 database.dir <- tempdir()
 for (i in c("hg19_avsnp147", "hg19_cscd_cancer_circrna")) {
-  #database <- system.file("extdata", sprintf("demo/sqlite/%s.sqlite", i), package = "annovarR")
-  #file.copy(database, sprintf("%s/%s.sqlite", tempdir(), i))
-  #database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
-  #file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
+  # database <- system.file('extdata', sprintf('demo/sqlite/%s.sqlite', i), package
+  # = 'annovarR') file.copy(database, sprintf('%s/%s.sqlite', tempdir(), i))
+  # database <- system.file('extdata', sprintf('demo/%s.txt', i), package =
+  # 'annovarR') file.copy(database, sprintf('%s/%s.txt', tempdir(), i))
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
   sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))

@@ -31,7 +31,7 @@ test_that("annotation.cscd", {
   start <- c("18631138", "123668609", "10020", "1234")
   end <- c("18669104", "123668736", "10020", "4567")
   dat <- data.table(chr = chr, start = start, end = end)
-  database.dir <- system.file('extdata', 'demo', package = 'annovarR')
+  database.dir <- system.file("extdata", "demo", package = "annovarR")
   x <- annotation(dat, "cscd_cancer_circrna", database.dir = database.dir, db.type = "txt")
   x <- as.data.frame(x)
   expect_that(nrow(x), equals(4))
@@ -39,7 +39,7 @@ test_that("annotation.cscd", {
   expect_that(x[2, 2], equals("cancer"))
   expect_that(is.na(x[3, 1]), equals(TRUE))
   expect_that(is.na(x[4, 1]), equals(TRUE))
-
+  
 })
 
 

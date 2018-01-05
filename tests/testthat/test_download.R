@@ -4,7 +4,7 @@ test_that("download.database", {
   expect_that(x, equals("demo"))
   database.dir <- sprintf("%s/databases/", tempdir())
   file.remove(sprintf("%s/%s", database.dir, list.files(database.dir, ".*")))
-  x <- download.database("download_demo", "demo", buildver = "GRCh37", database.dir = database.dir,
+  x <- download.database("download_demo", "demo", buildver = "GRCh37", database.dir = database.dir, 
     download.cfg = demo.cfg)
   expect_that(x, equals(TRUE))
   finalfn <- sprintf("%s/databases/GRCh37_MT_ensGene.txt", tempdir())
