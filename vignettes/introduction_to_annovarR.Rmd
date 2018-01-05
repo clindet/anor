@@ -135,10 +135,10 @@ dat <- data.table(chr = chr, start = start, end = end)
 # format.cols.plus.chr will add "chr" in chr colum 
 # if your input chr colum not contain string 'chr'
 # format.db.region.tb will process the region matched data
-x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.file, 
-  table.name.fixed = "bed", db.type = "txt", format.dat.fun = "format.cols.plus.chr", 
-  format.db.tb.fun = "format.db.region.tb")
-x
+#x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.file, 
+#  table.name.fixed = "bed", db.type = "txt", format.dat.fun = "format.cols.plus.chr", 
+#  format.db.tb.fun = "format.db.region.tb")
+#x
 
 # Convert snp rs number to genomic location
 snp.id <- c("rs775809821", "rs768019142")

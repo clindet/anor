@@ -23,6 +23,7 @@
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
+#' @param fread.db.params For text format database, you can use fread.db.params to control the fread behavior
 #' @param verbose Logical indicating wheather print the extra log infomation
 #' @export
 #' @examples
@@ -43,7 +44,7 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   return.col.names = "", return.col.names.profix = "", format.dat.fun = format.cols, 
   dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
   format.db.tb.fun = format.db.tb, db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), 
-  sqlite.connect.params = list(), verbose = FALSE) {
+  sqlite.connect.params = list(), fread.db.params = list(), verbose = FALSE) {
   
   returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
     buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
@@ -64,7 +65,7 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   gc()
   # Select data from database
   selected.db.tb <- select.dat.full.match(database.con, table.name, tb.colnames[index.cols.order], 
-    params = params, db.type = db.type, verbose = verbose)
+    params = params, db.type = db.type, fread.db.params = fread.db.params, verbose = verbose)
   return(do.call(after.query.steps, list(dat = dat, selected.db.tb = selected.db.tb, 
     format.db.tb.fun = format.db.tb.fun, return.col.index = return.col.index, 
     matched.cols = matched.cols, tb.matched.cols = tb.colnames[matched.cols.order], 
@@ -101,6 +102,7 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
 #' @param sqlite.connect.params Connect SqLite database other paramertes, default is not need
+#' @param fread.db.params For text format database, you can use fread.db.params to control the fread behavior
 #' @param verbose Logical indicating wheather print the extra log infomation
 #' @export
 #' @examples
@@ -113,10 +115,10 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 #' start <- c('100188904', '100185955')
 #' end <- c('100188904', '100185955')
 #' dat <- data.table(chr = chr, start = start, end = end)
-#' x <- annotation.region.match(dat = dat, database.dir = tempdir(),
-#' dbname.fixed = bed.sqlite, table.name.fixed = 'bed', 
-#' db.type = 'sqlite', format.dat.fun = function(...) {
-#' params = list(...);return(params[[1]])})
+#' ##x <- annotation.region.match(dat = dat, database.dir = tempdir(),
+#' ##dbname.fixed = bed.sqlite, table.name.fixed = 'bed', 
+#' ##db.type = 'sqlite', format.dat.fun = function(...) {
+#' ##params = list(...);return(params[[1]])})
 #' file.remove(bed.sqlite)
 annotation.region.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:3, index.cols = c("chr", 
@@ -124,7 +126,8 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   return.col.index = 4, return.col.names = "", return.col.names.profix = "", format.dat.fun = format.cols, 
   dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
   format.db.tb.fun = format.db.region.tb, db.type = "sqlite", db.file.prefix = NULL, 
-  mysql.connect.params = list(), sqlite.connect.params = list(), verbose = FALSE) {
+  mysql.connect.params = list(), sqlite.connect.params = list(), fread.db.params = list(), 
+  verbose = FALSE) {
   returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
     buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
     index.cols = index.cols, matched.cols = c(full.matched.cols, inferior.col, 
@@ -156,7 +159,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   # Select data from database
   select.params <- list(db = database.con, table.name = table.name, full.matched.cols = full.matched.cols, 
     inferior.col = inferior.col, superior.col = superior.col, params = params, 
-    db.type = db.type, verbose = verbose)
+    db.type = db.type, fread.db.params = fread.db.params, verbose = verbose)
   selected.db.tb <- do.call(select.dat.region.match, select.params)
   matched.cols = c(full.matched.cols.raw, inferior.col.raw, superior.col.raw)
   return(do.call(after.query.steps, list(dat = dat, selected.db.tb = selected.db.tb, 

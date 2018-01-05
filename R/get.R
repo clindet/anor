@@ -268,8 +268,13 @@ select.dat.full.match.mysql <- function(db = NULL, table.name, cols = c(), param
 
 # select.dat.full.match.txt
 select.dat.full.match.txt <- function(db = NULL, table.name, cols = c(), params = list(), 
-  select.cols = "*", sql.operator = NULL, verbose = FALSE) {
-  suppressWarnings(ref.dat <- fread(db))
+  select.cols = "*", sql.operator = NULL, fread.db.params = list(), verbose = FALSE) {
+  fread.params <- list(input = db)
+  if ("logical01" %in% formalArgs(fread)) {
+    config.list.merge(fread.params, list(logical01 = FALSE))
+  }
+  fread.params <- config.list.merge(fread.params, fread.db.params)
+  suppressWarnings(ref.dat <- do.call(fread, fread.params))
   ref.dat.colnames.raw <- colnames(ref.dat)
   ref.dat <- lapply(ref.dat, function(x) {
     if (!is.character(x)) {
@@ -306,7 +311,8 @@ select.dat.full.match.txt <- function(db = NULL, table.name, cols = c(), params 
 # (Simultaneously satisfy the cols SQL conditions) used to match params: a list
 # that record to match database using cols
 select.dat.full.match <- function(db = NULL, table.name = NULL, cols = c(), params = list(), 
-  db.type = "sqlite", select.cols = "*", sql.operator = NULL, verbose = FALSE) {
+  db.type = "sqlite", select.cols = "*", sql.operator = NULL, fread.db.params = list(), 
+  verbose = FALSE) {
   params.length <- length(params)
   if (is.null(sql.operator)) {
     sql.operator <- rep("==", length(params))
@@ -319,7 +325,7 @@ select.dat.full.match <- function(db = NULL, table.name = NULL, cols = c(), para
       sql.operator, verbose)
   } else if (db.type == "txt") {
     result <- select.dat.full.match.txt(db, table.name, cols, params, select.cols, 
-      sql.operator, verbose)
+      sql.operator, fread.db.params, verbose)
   }
   return(result)
 }
@@ -336,9 +342,14 @@ select.dat.region.match.sqlite <- function(db = NULL, table.name = NULL, full.ma
 }
 # Region match from txt file (eg. gff, gtf, bed)
 select.dat.region.match.txt <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
-  inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
-  ...) {
-  suppressWarnings(ref.dat <- fread(db))
+  inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", fread.db.params = list(), 
+  verbose = FALSE, ...) {
+  fread.params <- list(input = db)
+  if ("logical01" %in% formalArgs(fread)) {
+    config.list.merge(fread.params, list(logical01 = FALSE))
+  }
+  fread.params <- config.list.merge(fread.params, fread.db.params)
+  suppressWarnings(ref.dat <- do.call(fread, fread.params))
   result.list <- full.foverlaps(ref.dat, params, full.matched.cols, inferior.col, 
     superior.col)
   ref.dat <- result.list$ref.dat
@@ -351,7 +362,7 @@ select.dat.region.match.txt <- function(db = NULL, table.name = NULL, full.match
 # Read GFF and BED file or database
 select.dat.region.match <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
   inferior.col = c(), superior.col = c(), params = list(), db.type = "txt", select.cols = "*", 
-  verbose = FALSE, ...) {
+  fread.db.params = list(), verbose = FALSE, ...) {
   params <- lapply(params, function(x) {
     if (!is.character(x)) {
       as.character(x)
@@ -365,7 +376,7 @@ select.dat.region.match <- function(db = NULL, table.name = NULL, full.matched.c
       inferior.col, superior.col, params, select.cols, verbose)
   } else if (db.type == "txt") {
     result <- select.dat.region.match.txt(db, table.name, full.matched.cols, 
-      inferior.col, superior.col, params, select.cols, verbose)
+      inferior.col, superior.col, params, select.cols, fread.db.params, verbose)
   }
   return(result)
 }

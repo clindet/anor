@@ -1,3 +1,8 @@
+2017-01-06 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* R/annotation.R annotation.cols.match and 
+		annotation.region.match added parameter fread.db.params
+
 2017-01-05 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* added mysql.auto.build and mysql.auto.index

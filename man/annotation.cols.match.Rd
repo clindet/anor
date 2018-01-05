@@ -14,7 +14,7 @@ annotation.cols.match(dat = data.table(), anno.name = "",
   set.table.fun = set.table, format.db.tb.fun = format.db.tb,
   db.type = "sqlite", db.file.prefix = NULL,
   mysql.connect.params = list(), sqlite.connect.params = list(),
-  verbose = FALSE)
+  fread.db.params = list(), verbose = FALSE)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -59,6 +59,8 @@ annotation.cols.match(dat = data.table(), anno.name = "",
 e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')}
 
 \item{sqlite.connect.params}{Connect SqLite database other paramertes, default is not need}
+
+\item{fread.db.params}{For text format database, you can use fread.db.params to control the fread behavior}
 
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 }
