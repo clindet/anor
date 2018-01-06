@@ -24,6 +24,8 @@ Generate search index of annovarR database table in mysql
 }
 \examples{
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-##mysql.index(list(host = 'host', dbname = 'db', table.name = 'table', 
-##user = 'user', password = 'password'), index = 'index_name', cols = c('V1', 'V2'))
+\dontrun{
+mysql.index(list(host = 'host', dbname = 'db', table.name = 'table', 
+user = 'user', password = 'password'), index = 'index_name', cols = c('V1', 'V2'))
+}
 }

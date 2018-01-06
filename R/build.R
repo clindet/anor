@@ -169,8 +169,10 @@ drop.sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.na
 #' @export
 #' @examples
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' ##mysql.build(test.dat, list(host = 'host', dbname = 'db', 
-#' ##table.name = 'table', user = 'user', password = 'password'))
+#' \dontrun{
+#' mysql.build(test.dat, list(host = 'host', dbname = 'db', 
+#' table.name = 'table', user = 'user', password = 'password'))
+#' }
 mysql.build <- function(filename = "", mysql.connect.params = list(host = "", dbname = "", 
   table.name = "", user = "", password = ""), dat = data.table(), fread.params = list(), 
   new.colnames = NULL, verbose = FALSE, ...) {
@@ -219,8 +221,10 @@ mysql.build <- function(filename = "", mysql.connect.params = list(host = "", db
 #' @export
 #' @examples
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' ##mysql.index(list(host = 'host', dbname = 'db', table.name = 'table', 
-#' ##user = 'user', password = 'password'), index = 'index_name', cols = c('V1', 'V2'))
+#' \dontrun{
+#' mysql.index(list(host = 'host', dbname = 'db', table.name = 'table', 
+#' user = 'user', password = 'password'), index = 'index_name', cols = c('V1', 'V2'))
+#' }
 mysql.index <- function(mysql.connect.params = list(host = "", dbname = "", table.name = "", 
   user = "user", password = "password"), index = "", cols = c(), verbose = FALSE, 
   ...) {
@@ -262,8 +266,10 @@ mysql.index <- function(mysql.connect.params = list(host = "", dbname = "", tabl
 #' @export
 #' @examples
 #' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-#' ##drop.mysql.index(list(host = 'host', dbname = 'db', user = 'user', password = 'password'), 
-#' ##index = 'index_name')
+#' \dontrun{
+#' drop.mysql.index(list(host = 'host', dbname = 'db', user = 'user', password = 'password'), 
+#' index = 'index_name')
+#' }
 drop.mysql.index <- function(mysql.connect.params = list(host = "", dbname = "", 
   table.name = "", user = "user", password = "password"), index = "", verbose = FALSE, 
   ...) {

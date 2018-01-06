@@ -28,6 +28,8 @@ Build annovarR database in mysql
 }
 \examples{
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-##mysql.build(test.dat, list(host = 'host', dbname = 'db', 
-##table.name = 'table', user = 'user', password = 'password'))
+\dontrun{
+mysql.build(test.dat, list(host = 'host', dbname = 'db', 
+table.name = 'table', user = 'user', password = 'password'))
+}
 }

@@ -22,6 +22,8 @@ Drop search index of annovarR database table in mysql
 }
 \examples{
 test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
-##drop.mysql.index(list(host = 'host', dbname = 'db', user = 'user', password = 'password'), 
-##index = 'index_name')
+\dontrun{
+drop.mysql.index(list(host = 'host', dbname = 'db', user = 'user', password = 'password'), 
+index = 'index_name')
+}
 }

@@ -124,8 +124,10 @@ sqlite.tb.colnames <- function(sqlite.connect.params = list(dbname = "", table.n
 #' @param ... Other parameters pass to dbConnect
 #' @export
 #' @examples
-#' ##mysql.db.colnames(list(host = 'host', dbname = 'db', user = 'user', 
-#' ##password = 'password', table.name = 'table'))
+#' \dontrun{
+#' mysql.db.colnames(list(host = 'host', dbname = 'db', user = 'user', 
+#' password = 'password', table.name = 'table'))
+#' }
 mysql.tb.colnames <- function(mysql.connect.params = list(host = "", dbname = "", 
   user = "", password = "", table.name = ""), ...) {
   mysql.connect.params <- config.list.merge(list(MySQL()), mysql.connect.params)

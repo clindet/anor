@@ -16,6 +16,8 @@ mysql.tb.colnames(mysql.connect.params = list(host = "", dbname = "", user =
 Get colnames of table of database in mysql
 }
 \examples{
-##mysql.db.colnames(list(host = 'host', dbname = 'db', user = 'user', 
-##password = 'password', table.name = 'table'))
+\dontrun{
+mysql.db.colnames(list(host = 'host', dbname = 'db', user = 'user', 
+password = 'password', table.name = 'table'))
+}
 }

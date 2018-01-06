@@ -34,7 +34,9 @@ Index annovarR database in mysql (auto from extdata/config/database.toml)
 i <- 'hg19_avsnp147'
 database <- system.file('extdata', sprintf('demo/\%s.txt', i), package = 'annovarR')
 file.copy(database, sprintf('\%s/\%s.txt', tempdir(), i))
-## mysql.auto.index(anno.name = 'avsnp147', database.dir = tempdir(), 
-## mysql.connect.params = list(user = 'username', password = 'password', 
-## host = 'localhost', port = 3306, dbname = 'annovarR'))
+\dontrun{
+ mysql.auto.index(anno.name = 'avsnp147', database.dir = tempdir(), 
+ mysql.connect.params = list(user = 'username', password = 'password', 
+ host = 'localhost', port = 3306, dbname = 'annovarR'))
+}
 }
