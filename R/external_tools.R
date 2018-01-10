@@ -95,6 +95,9 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
       next
     }
     if (!is.null(get(i)) && get(i) != "") {
+      if (i == "nastring" && vcfinput) {
+        nastring <- "."
+      }
       assign(i, paste(cmd.profix.flag[[i]], get(i), sep = " "))
     }
   }
@@ -119,7 +122,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   }
   database.dir <- glue(database.dir)
   database.dir <- normalizePath(database.dir, mustWork = FALSE)
-  if (!file.exists(database.dir) && !debug) {
+  if (!dir.exists(database.dir) && !debug) {
     stop("Please set correct database.dir path!")
   }
   anno.names <- paste0(anno.names, collapse = ",")
@@ -249,7 +252,7 @@ vcfanno <- function(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_lin
     package = "annovarR"), base_path = "", lua = "", ends = FALSE, input.file = "input.vcf", 
   out = "output.vcf", thread = 2, permissive_overlap = FALSE, debug = FALSE) {
   vcfanno <- vcfanno[vcfanno != ""][1]
-  if (!file.exists(vcfanno) & !debug) {
+  if (!file.exists(vcfanno) && !debug) {
     stop("Please set correctly vcfanno path.")
   } else if (debug) {
     vcfanno <- "vcfanno_linux64"

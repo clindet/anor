@@ -216,8 +216,8 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", an
   if (is.null(db.type)) {
     db.type <- get.annotation.dbtype(anno.name, database.cfg = database.cfg)
   }
-  needcols <- get.annotation.needcols <- function(anno.name = anno.name, database.cfg = database.cfg) if (dim(dat) > 
-    1 && colnames(dat)) {
+  needcols <- get.annotation.needcols(anno.name = anno.name, database.cfg = database.cfg) 
+  if (dim(dat) > 1 && length(colnames(dat)) > 0) {
     colnames(dat)[1:length(needcols)] <- needcols
   }
   if (is.null(func)) {
@@ -251,7 +251,8 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", an
 #' database.dir = database.dir, db.type = 'txt')
 annotation.merge <- function(anno.names, ...) {
   perl_annovar_names <- anno.names[str_detect(anno.names, "perl_annovar_")]
-  result.list.1 <- lapply(anno.names[!anno.names %in% perl_annovar_names], function(x) {
+  other_names <- anno.names[!anno.names %in% perl_annovar_names]
+  result.list.1 <- lapply(other_names, function(x) {
     annotation(anno.name = x, ...)
   })
   if (length(perl_annovar_names) > 0) {

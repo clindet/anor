@@ -548,10 +548,14 @@ vcfanno.auto <- function(anno.name = NULL, database.cfg = NULL, ...) {
       params[[item]] <- item.value
     }
   }
-  params$input.file <- normalizePath(params$input.file, mustWork = FALSE)
-  params$out <- normalizePath(params$out, mustWork = FALSE)
-  params$vcfanno <- normalizePath(params$vcfanno, mustWork = FALSE)
-  params$lua <- normalizePath(params$lua, mustWork = FALSE)
+  for(i in c("input.file", "out", "vcfanno", "lua")) {
+    if (is.null(params[[i]]) && i == "out") {
+      params[[i]] <- tempfile()
+    } else if (is.null(params[[i]])){
+      stop(sprintf("Please set correctly %s.", i))
+    }
+    params[[i]] <- normalizePath(params[[i]], mustWork = FALSE)
+  }
   out <- params$out
   if (!dir.exists(dirname(out))) {
     dir.create(dirname(out))
