@@ -44,6 +44,7 @@ before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "h
   
   # Sync the colnames between input cols and database table cols which be used to
   # select data
+  tb.colnames.raw <- tb.colnames
   tb.colnames <- tb.colnames[db.col.order]
   index.cols.order <- match(colnames(dat), index.cols)
   index.cols.order <- index.cols.order[!is.na(index.cols.order)]
@@ -55,16 +56,17 @@ before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "h
     verbose = verbose)
   print.vb(params, verbose = verbose)
   return(list(dat = dat, dat.names = dat.names, params = params, database.con = database.con, 
-    tb.colnames = tb.colnames, table.name = table.name, index.cols.order = index.cols.order, 
-    matched.cols.order = matched.cols.order, dbname = dbname))
+    tb.colnames = tb.colnames, tb.colnames.raw = tb.colnames.raw, table.name = table.name, 
+    index.cols.order = index.cols.order, matched.cols.order = matched.cols.order, 
+    dbname = dbname))
 }
 
 # after query process
 after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fun = NULL, 
-  db.col.order = NULL, tb.colnames = NULL, tb.matched.cols = NULL, matched.cols = NULL, 
-  full.matched.cols = NULL, full.matched.cols.raw = NULL, inferior.col = NULL, 
-  inferior.col.raw = NULL, superior.col = NULL, superior.col.raw = NULL, dbname = NULL, 
-  return.col.index = NULL, return.col.names = NULL, return.col.names.profix = NULL, 
+  db.col.order = NULL, tb.colnames = NULL, tb.colnames.raw = NULL, tb.matched.cols = NULL, 
+  matched.cols = NULL, full.matched.cols = NULL, full.matched.cols.raw = NULL, 
+  inferior.col = NULL, inferior.col.raw = NULL, superior.col = NULL, superior.col.raw = NULL, 
+  dbname = NULL, return.col.index = NULL, return.col.names = NULL, return.col.names.profix = NULL, 
   database.con = NULL, db.type = NULL, dat.names = NULL, params = NULL, get.final.table.fun = get.full.match.final.table, 
   query.type = "full", verbose = FALSE) {
   if (query.type == "full") {
@@ -89,7 +91,7 @@ after.query.steps <- function(dat = NULL, selected.db.tb = NULL, format.db.tb.fu
   # If selected data is empty, return NA matrix according the return.col.index and
   # return.col.names
   if (nrow(selected.db.tb) == 0) {
-    empty.col <- return.empty.col(dat, tb.colnames, return.col.index, return.col.names, 
+    empty.col <- return.empty.col(dat, tb.colnames.raw, return.col.index, return.col.names, 
       return.col.names.profix)
     disconnect.db(database.con, db.type)
     return(empty.col)

@@ -1,3 +1,7 @@
+2017-01-18 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* add returned colnames test
+
 2017-01-17 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* fix a check bug in annovar

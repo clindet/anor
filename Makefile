@@ -42,7 +42,7 @@ cleanall:
 
 test:
 	cd .;\
-    Rscript -e "devtools::test()"
+    Rscript -e "devtools::test(reporter = 'summary')"
 
 test2:
 	cd ./tests/testthat/;\

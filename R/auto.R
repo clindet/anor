@@ -548,10 +548,10 @@ vcfanno.auto <- function(anno.name = NULL, database.cfg = NULL, ...) {
       params[[item]] <- item.value
     }
   }
-  for(i in c("input.file", "out", "vcfanno", "lua")) {
+  for (i in c("input.file", "out", "vcfanno", "lua")) {
     if (is.null(params[[i]]) && i == "out") {
       params[[i]] <- tempfile()
-    } else if (is.null(params[[i]])){
+    } else if (is.null(params[[i]])) {
       stop(sprintf("Please set correctly %s.", i))
     }
     params[[i]] <- normalizePath(params[[i]], mustWork = FALSE)

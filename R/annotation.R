@@ -57,6 +57,7 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   database.con <- returned.list$database.con
   table.name <- returned.list$table.name
   tb.colnames <- returned.list$tb.colnames
+  tb.colnames.raw <- returned.list$tb.colnames.raw
   index.cols.order <- returned.list$index.cols.order
   matched.cols.order <- returned.list$matched.cols.order
   dat.names <- returned.list$dat.names
@@ -70,8 +71,8 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
     format.db.tb.fun = format.db.tb.fun, return.col.index = return.col.index, 
     matched.cols = matched.cols, tb.matched.cols = tb.colnames[matched.cols.order], 
     db.col.order = db.col.order, return.col.names = return.col.names, return.col.names.profix = return.col.names.profix, 
-    tb.colnames = tb.colnames, database.con = database.con, db.type = db.type, 
-    dat.names = dat.names, get.final.table.fun = get.full.match.final.table, 
+    tb.colnames = tb.colnames, tb.colnames.raw = tb.colnames.raw, database.con = database.con, 
+    db.type = db.type, dat.names = dat.names, get.final.table.fun = get.full.match.final.table, 
     query.type = "full", verbose = verbose)))
 }
 
@@ -141,6 +142,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   database.con <- returned.list$database.con
   table.name <- returned.list$table.name
   tb.colnames <- returned.list$tb.colnames
+  tb.colnames.raw <- returned.list$tb.colnames.raw
   index.cols.order <- returned.list$index.cols.order
   dat.names <- returned.list$dat.names
   params <- returned.list$params
@@ -170,8 +172,8 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
     inferior.col = inferior.col, inferior.col.raw = inferior.col.raw, superior.col = superior.col, 
     superior.col.raw = superior.col.raw, db.col.order = db.col.order, params = params, 
     return.col.names = return.col.names, return.col.names.profix = return.col.names.profix, 
-    tb.colnames = tb.colnames, database.con = database.con, db.type = db.type, 
-    dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
+    tb.colnames = tb.colnames, tb.colnames.raw = tb.colnames.raw, database.con = database.con, 
+    db.type = db.type, dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
     dbname = dbname, query.type = "region", verbose = verbose)))
 }
 #' Annotation function (single name)
@@ -216,7 +218,7 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", an
   if (is.null(db.type)) {
     db.type <- get.annotation.dbtype(anno.name, database.cfg = database.cfg)
   }
-  needcols <- get.annotation.needcols(anno.name = anno.name, database.cfg = database.cfg) 
+  needcols <- get.annotation.needcols(anno.name = anno.name, database.cfg = database.cfg)
   if (dim(dat) > 1 && length(colnames(dat)) > 0) {
     colnames(dat)[1:length(needcols)] <- needcols
   }
