@@ -1,3 +1,10 @@
+2017-01-19 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* improve download.database for single 
+		download.name and multiple version
+		* add docm, intogen, disgenet and cancer_hotspots
+		databases support
+
 2017-01-18 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* add returned colnames test

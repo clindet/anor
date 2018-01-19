@@ -847,6 +847,101 @@ return.col.index = [7, 8]
 format.dat.fun = "format.cols"
 setdb.fun = "set.db"
 set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[intogen]
+versions = "intogen_20180119"
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_intogen_sqlite"
+header = true
+
+need.cols = ["chr", "start", "ref", "alt"]
+return.col.names = ""
+db.col.order = [1, 2, 3, 4]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "ref", "alt"]
+return.col.index = [10]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[docm]
+versions = "docm_3.2"
+func = "annotation.auto"
+default.dbtype = ["txt"]
+dependence_db = "db_annovar_docm"
+header = true
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = [2, 3, 4, 5, 6]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = [11]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[disgenet_gene]
+versions = ["disgenet_gene_disease", "disgenet_befree_gene_disease", "disgenet_curated_gene_disease"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+dependence_db = "db_annovar_disgenet"
+header = true
+
+need.cols = ["gene"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = [2]
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [4]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.sync.version"
+set.table.fun = "set.table.sync.version"
+format.db.tb.fun = "format.db.tb.unique"
+
+[disgenet_rs]
+versions = ["disgenet_rs_disease", "disgenet_befree_rs_disease", "disgenet_curated_rs_disease", "disgenet_pubannotator_rs_disease"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+dependence_db = "db_annovar_disgenet"
+header = true
+
+need.cols = ["rs"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = [1]
+index.cols = ["rs"]
+matched.cols = ["rs"]
+return.col.index = [3]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.sync.version"
+set.table.fun = "set.table.sync.version"
+format.db.tb.fun = "format.db.tb.unique"
+
+[cancer_hotspots]
+versions = ["cancer_hotspots_v2"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+dependence_db = "db_annovar_cancer_hotspots"
+header = true
+
+need.cols = ["gene"]
+return.col.names = ""
+return.col.names.profix = "{{anno.name}}_"
+db.col.order = [1]
+index.cols = ["gene"]
+matched.cols = ["gene"]
+return.col.index = [4, 6]
+format.dat.fun = "format.cols"
+setdb.fun = "set.db.sync.version"
+set.table.fun = "set.table.sync.version"
+format.db.tb.fun = "format.db.tb"
 
 # ANNOVAR section
 # annovar_supported_gene_anno is a single anno.name mode

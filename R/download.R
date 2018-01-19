@@ -32,6 +32,17 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
     }
     return(TRUE)
   }
+  if (length(download.name) == 1 && length(version) > 1) {
+    return(sapply(version, function(x) {
+                  download.database(download.name = download.name, 
+                                    database.dir = database.dir, version = x, 
+                                    buildver = buildver, download.cfg = download.cfg, 
+                                    show.all.versions = show.all.versions, 
+                                    show.all.names = show.all.names, 
+                                    show.all.buildvers = show.all.buildvers,
+                                    verbose = verbose, ...)
+    }))
+  }
   if (!is.null(database.dir)) {
     database.dir <- normalizePath(database.dir, "/", mustWork = FALSE)
   }
