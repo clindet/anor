@@ -198,6 +198,14 @@ select(keys = gene, keytype = "SYMBOL", columns = "ALIAS")
 
 There are still plenty of places to go for this tool. More annotation tools and annotation databases are being integrated. We hope this tool can provide some help for your variants annotation work.
 
+## Shiny App
+
+A annovarR shiny APP is being developed. You can use a single function `web` to run the shiny APP. In the future, graphical interface of annovarR may get better.
+
+```r
+web()
+```
+
 ## Docker
 
 You can use the annovarR in Docker.

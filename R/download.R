@@ -34,13 +34,10 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
   }
   if (length(download.name) == 1 && length(version) > 1) {
     return(sapply(version, function(x) {
-                  download.database(download.name = download.name, 
-                                    database.dir = database.dir, version = x, 
-                                    buildver = buildver, download.cfg = download.cfg, 
-                                    show.all.versions = show.all.versions, 
-                                    show.all.names = show.all.names, 
-                                    show.all.buildvers = show.all.buildvers,
-                                    verbose = verbose, ...)
+      download.database(download.name = download.name, database.dir = database.dir, 
+        version = x, buildver = buildver, download.cfg = download.cfg, show.all.versions = show.all.versions, 
+        show.all.names = show.all.names, show.all.buildvers = show.all.buildvers, 
+        verbose = verbose, ...)
     }))
   }
   if (!is.null(database.dir)) {
@@ -60,8 +57,9 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
     }
   }
   if (show.all.buildvers) {
-    buildvers <- eval.config(value = "buildver_available", config = download.name, 
-      file = download.cfg)
+    buildvers <- sapply(download.name, function(x) {
+      eval.config(value = "buildver_available", config = x, file = download.cfg)
+    })
     return(buildvers)
   }
   github.cfg.null <- tempfile()
@@ -72,7 +70,7 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
     return(all.names)
   }
   all.versions <- install.bioinfo(name = download.name, github.cfg = github.cfg.null, 
-    nongithub.cfg = download.cfg, show.all.versions = TRUE, verbose = verbose)
+    nongithub.cfg = download.cfg, show.all.versions = TRUE, verbose = FALSE)
   if (show.all.versions) {
     return(all.versions)
   }
@@ -112,8 +110,6 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
   info.msg(sprintf("Setted version:%s", version), verbose = verbose)
   info.msg(sprintf("Setted buildver:%s", buildver), verbose = verbose)
   info.msg(sprintf("Setted database.dir:%s", database.dir), verbose = verbose)
-  info.msg(sprintf("Using %s as the temp install dir pass to BioInstaller::install.bioinfo.", 
-    temp.download.dir), verbose = verbose)
   params <- list(name = download.name, version = version, download.dir = temp.download.dir, 
     github.cfg = github.cfg.null, nongithub.cfg = download.cfg, download.only = FALSE, 
     extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 

@@ -1,3 +1,7 @@
+2017-02-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* initial annovarR shiny App (inst/extdata/tools/shiny)
+
 2017-01-19 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* improve download.database for single 
