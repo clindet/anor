@@ -1,4 +1,4 @@
-pkgs.shiny <- c("shinydashboard", "configr", "annovarR")
+pkgs.shiny <- c("shinydashboard", "configr", "annovarR", "data.table", "shinyjs", "DT", "DBI", "RSQLite")
 sapply(pkgs.shiny, function(x) {
   status <- suppressWarnings(require(x, character.only = TRUE))
   if (!status) {
@@ -11,6 +11,11 @@ for(i in pkgs.shiny) {
 
 skin <- Sys.getenv("DASHBOARD_SKIN")
 skin <- tolower(skin)
+
+config.file <-  Sys.getenv("ANNOVARR_SHINY_CONFIG", 
+                             system.file("extdata", "config/shiny.config.toml", package = "annovarR"))
+config <- read.config(config.file, file.type = "toml")
+
 if (skin == "")
   skin <- "blue"
 
@@ -20,6 +25,7 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Introduction", tabName = "introduction", icon = icon("home")),
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+    menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
     menuItem("Download", icon = icon("cloud-download"), tabName = "download"
     ),
     menuItem("Charts", icon = icon("bar-chart-o"),
@@ -114,6 +120,35 @@ body <- dashboardBody(
         )
 
       )
+    ),
+    tabItem("upload",
+            fluidRow(
+              box(
+                title = "Upload",
+                width = 12,
+                status = "primary",
+                # Input: Select a file ----
+                fileInput("upload.file", "Choose Need Uploaded File",
+                          multiple = TRUE,
+                          accept = c("text/csv",
+                                     "text/comma-separated-values,text/plain",
+                                     "application/octet-stream",
+                                     config$shiny_upload$supported_file_type)),
+                selectInput("upload.file.type", "FileType",
+                            choices = config$shiny_upload$supported_file_type),
+                selectInput("upload.genome.version", "GenomeVersion",
+                            choices = config$shiny_upload$supported_genome_version),
+                textAreaInput("upload.file.description", "Description", row = 10),
+                actionButton("upload_save", "Save")
+                ),
+              box(
+                title = "Preview",
+                width = 12,
+                status = "primary",
+                DT::dataTableOutput("upload_file_preview_DT"),
+                textOutput("upload_file_preview")
+                )
+            )
     ),
     tabItem("download",
             fluidRow(
@@ -217,6 +252,10 @@ header <- dashboardHeader(
 ui <- dashboardPage(header, sidebar, body, skin = skin)
 
 server <- function(input, output, session) {
+
+  
+  
+  ## Dashbord section
   set.seed(122)
   histdata <- rnorm(500)
 
@@ -244,6 +283,68 @@ server <- function(input, output, session) {
     y <- x + rnorm(1000) * spread
     plot(x, y, pch = ".", col = "red")
   })
+  
+    output$upload_file_preview_DT <- DT::renderDataTable({
+      
+      # input$file1 will be NULL initially. After the user selects
+      # and uploads a file, head of that data file by default,
+      # or all rows if selected, will be shown.
+      
+      req(input$upload.file)
+      if (input$upload.file.type %in% c("txt", "csv")) {
+        df <- fread(input$upload.file$datapath)
+        return(df)
+      }
+    })
+
+    output$upload_file_preview <- renderText({
+      req(input$upload.file)
+      if (!input$upload.file.type %in% c("txt", "csv")) {
+        return(input$upload.file$datapath)
+      }
+    })
+
+  observeEvent(input$upload_save, {
+    req(input$upload.file) 
+    db_type <- config$shiny_db$db_type
+    stored_table <- config$shiny_db_table$upload_data_table_name
+    stored_table_colnames <- config$shiny_db_table$upload_data_table_colnames
+    if (db_type == "sqlite") {
+      db_path <- normalizePath(config$shiny_db$db_path, mustWork = FALSE)
+      con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+      if (stored_table %in% DBI::dbListTables(con)) {
+        sql <- sprintf("select last_insert_rowid() from %s", stored_table)
+        ids <- DBI::dbGetQuery(con, sql)
+        id <- as.numeric(rownames(ids)[nrow(ids)]) + 1
+      } else {
+        id <- 1
+      }
+      assign(stored_table_colnames[1], input$upload.file$name)
+      assign(stored_table_colnames[2], input$upload.file$datapath)
+      assign(stored_table_colnames[3], file.size(input$upload.file$datapath))
+      assign(stored_table_colnames[4], input$upload.file.type)
+      assign(stored_table_colnames[5], format(Sys.time(), "%Y %H:%M:%S"))
+      row_data <- NULL
+      for(var in c("id", stored_table_colnames)) {
+        row_data <- c(row_data, get(var))
+      }
+      row_data <- data.frame(row_data)
+      row_data <- t(row_data)
+      row_data <- as.data.frame(row_data)
+      colnames(row_data) <- c("id", stored_table_colnames)
+      print(row_data)
+      
+      DBI::dbWriteTable(con, config$shiny_db_table$upload_data_table_name, row_data, append = TRUE, row.names = FALSE)
+      DBI::dbDisconnect(con)
+      shinyjs::alert("Upload and update database successful!")
+      shinyjs::runjs("window.location.reload();")
+    }
+  })
+
+
+  
+  
+  ## Download section
   observeEvent(input$download_run, {
     if (is.null(input$show.all.names) || input$show.all.names == FALSE) {
       if (input$database.dir == "") {

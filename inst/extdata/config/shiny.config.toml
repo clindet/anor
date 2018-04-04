@@ -1,0 +1,22 @@
+## annovarR shiny APP configuration file
+
+[shiny_db]
+db_type = "sqlite"
+db_path = "~/.annovarR.shiny.sqlite"
+db_username = ""
+db_password = ""
+db_port = 3306
+
+[shiny_db_table]
+# user_table for storing users information, e.g username, passsword, uid
+user_table_name = "users"
+user_talbe_colnames = ["uid", "username", "password"]
+
+# data_table for storing the uploaded files information
+upload_data_table_name = "upload_data"
+upload_data_table_colnames = ["file_name", "file_path", "file_size", "file_type", "upload_time"]
+
+[shiny_upload]
+supported_file_type = ["csv.gz", "csv", "vcf", "vcf.gz", "txt", "txt.gz"]
+supported_genome_version = ["hg19", "hg38", "mm10", "mm9"]
+upload_dir = "~/.annovarR/upload"
