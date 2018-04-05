@@ -17,6 +17,6 @@ upload_data_table_name = "upload_data"
 upload_data_table_colnames = ["file_name", "file_path", "file_size", "file_type", "genome_version", "upload_time", "md5", "description"]
 
 [shiny_upload]
-supported_file_type = ["csv.gz", "csv", "vcf", "vcf.gz", "txt", "txt.gz"]
+supported_file_type = ["txt", "txt.gz", "csv.gz", "csv", "vcf", "vcf.gz", "avinput", "avinput.gz"]
 supported_genome_version = ["hg19", "hg38", "mm10", "mm9"]
 upload_dir = "~/.annovarR/upload"

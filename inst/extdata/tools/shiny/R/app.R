@@ -20,6 +20,9 @@ db_type <- config$shiny_db$db_type
 db_path <- normalizePath(config$shiny_db$db_path, mustWork = FALSE)
 upload_table <- config$shiny_db_table$upload_data_table_name
 upload_table_colnames <- config$shiny_db_table$upload_data_table_colnames
+upload_dir <- normalizePath(config$shiny_upload$upload_dir, mustWork = FALSE)
+
+
 options(shiny.maxRequestSize=30000*1024^2) 
 
 
@@ -30,9 +33,10 @@ if (skin == "")
 sidebar <- dashboardSidebar(
   sidebarSearchForm(label = "Search...", "searchText", "searchButton"),
   sidebarMenu(
+    id = "tabs",
     menuItem("Introduction", tabName = "introduction", icon = icon("home")),
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-    menuItem("Files Viewer", tabName = "file_viewer", icon = icon("file")),
+    menuItem("File Viewer", tabName = "file_viewer", icon = icon("file")),
     menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
     menuItem("Downloader", icon = icon("cloud-download"), tabName = "download"),
     menuItem("Charts", icon = icon("bar-chart-o"),
@@ -131,7 +135,7 @@ body <- dashboardBody(
     tabItem("file_viewer",
       fluidRow(
         box(
-          title = "Files Viewer",
+          title = "File List",
           status = "primary",
           width = 12,
           DT::dataTableOutput("files_info_DT")
@@ -163,7 +167,8 @@ body <- dashboardBody(
                 selectInput("upload.genome.version", "GenomeVersion",
                             choices = config$shiny_upload$supported_genome_version),
                 textAreaInput("upload.file.description", "Description", row = 10),
-                actionButton("upload_save", "Save")
+                actionButton("upload_save", "Save", class = "btn btn-primary", disabled = "disabled"),
+                inlineCSS(list("#upload_save" = "color: white"))
                 ),
               box(
                 title = "Preview",
@@ -277,8 +282,6 @@ ui <- dashboardPage(header, sidebar, body, skin = skin)
 
 server <- function(input, output, session) {
 
-  
-  
   ## Dashbord section
   set.seed(122)
   histdata <- rnorm(500)
@@ -320,25 +323,69 @@ server <- function(input, output, session) {
      } else {
        info <- dbGetQuery(con, sql)
      }
-     colnames(info)[1] <- "Files ID"
-     view_button <- sprintf("<button id = 'files_view_%s' class = 'btn btn-primary action-button shiny-bound-input'>View</button>", info[,1])
-     info <- cbind(info, view_button)
+     colnames(info)[1] <- "ID"
+     Action <- sprintf("<button id = 'files_view_%s' name = 'files_view_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>View</button>", info[,1], info[,1])
+     Action <- sprintf("%s <button id = 'files_del_%s' name = 'files_del_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>Del</button>", Action, info[,1], info[,1])
+     info <- cbind(info[1], Action, info[2:ncol(info)])
      DBI::dbDisconnect(con)
      return(info)
   }, rownames = FALSE, editable = TRUE,
     caption = 'All files stored in annovarR shinyapp Web service', escape = FALSE,
-    extensions = c("Buttons", "FixedColumns", "Responsive", "Scroller"),
+    extensions = c("Buttons", "FixedColumns", "Scroller"),
     options = list(
-      dom = 'Bfrtip',
+      autoWidth = TRUE,
+      dom = 'Bfrtlip',
       deferRender = TRUE,
       searchHighlight = TRUE,
       scrollX = TRUE,
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      columnDefs = list(list(width = "100px", targets = "_all")),
+      initComplete = JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+        "}")
       ),
       selection = "none"
   )
 
-  
+con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+if (upload_table %in% DBI::dbListTables(con)) {
+  sql <- sprintf("SELECT id FROM %s", upload_table)
+  upload_table_data <- DBI::dbGetQuery(con, sql)
+  files_ids <- upload_table_data[,1]
+  set_preview <- function(id) {
+    shinyjs::onclick(sprintf("files_view_%s", id), function(event){
+      shinyjs::reset("file_preview_DT")
+          output$file_preview_DT <- DT::renderDataTable({
+            sql <- sprintf("SELECT file_path,file_type FROM %s where id=%s", upload_table, id)
+              upload_table_data <- DBI::dbGetQuery(con, sql)
+              print(upload_table_data)
+              if (upload_table_data$file_type %in% c("txt", "csv")) {
+                file_content <- fread(upload_table_data$file_path)
+                return(file_content)
+              }
+            }, rownames = FALSE, editable = FALSE,
+            caption = 'All files stored in annovarR shinyapp Web service', escape = FALSE,
+            extensions = c("Buttons", "Scroller"),
+            options = list(
+              dom = 'Bfrtlip',
+              searchHighlight = TRUE,
+              scrollX = TRUE,
+              buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+              initComplete = JS(
+                "function(settings, json) {",
+                "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+                "}")
+            ), selection = "single")
+    })
+  }
+  for(i in files_ids) {
+    set_preview(i)
+  }
+
+}
+
+
 
 
   # Upload section
@@ -349,6 +396,7 @@ server <- function(input, output, session) {
       # or all rows if selected, will be shown.
       
       req(input$upload.file)
+      shinyjs::toggleState(id="upload_save")
       if (input$upload.file.type %in% c("txt", "csv")) {
         df <- fread(input$upload.file$datapath)
         return(df)
@@ -356,10 +404,14 @@ server <- function(input, output, session) {
   }, 
   extensions = c("Buttons", "FixedColumns", "Responsive"),
     options = list(
-      dom = 'Bfrtip',
+      dom = 'Bfrtlip',
       searchHighlight = TRUE,
       scrollX = TRUE,
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      initComplete = JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+        "}")
     ),
     selection = "none"
   )
@@ -370,7 +422,7 @@ server <- function(input, output, session) {
         return(input$upload.file$datapath)
       }
   })
-
+  #shinyjs::addClass(class="btn btn-primary", id="upload_save")
   observeEvent(input$upload_save, {
     req(input$upload.file) 
 
@@ -384,12 +436,17 @@ server <- function(input, output, session) {
         id <- 1
       }
       assign(upload_table_colnames[1], input$upload.file$name)
-      assign(upload_table_colnames[2], input$upload.file$datapath)
-      assign(upload_table_colnames[3], file.size(input$upload.file$datapath))
+      destfile <- sprintf("%s/%s", upload_dir, id)
+      if (!dir.exists(upload_dir)) {
+        dir.create(upload_dir, recursive = TRUE)
+      }
+      assign(upload_table_colnames[7], tools::md5sum(input$upload.file$datapath))
+      file.rename(input$upload.file$datapath, destfile)
+      assign(upload_table_colnames[2], destfile)
+      assign(upload_table_colnames[3], file.size(destfile))
       assign(upload_table_colnames[4], input$upload.file.type)
       assign(upload_table_colnames[5], input$upload.genome.version)
       assign(upload_table_colnames[6], format(Sys.time(), "%Y %H:%M:%S"))
-      assign(upload_table_colnames[7], tools::md5sum(input$upload.file$datapat))
       assign(upload_table_colnames[8], input$upload.file.description)
       row_data <- NULL
       for(var in c("id", upload_table_colnames)) {
@@ -404,9 +461,14 @@ server <- function(input, output, session) {
       DBI::dbWriteTable(con, config$shiny_db_table$upload_data_table_name, row_data, append = TRUE, row.names = FALSE)
       DBI::dbDisconnect(con)
       shinyjs::alert("Upload and update database successful!")
-      shinyjs::runjs("window.location.reload();")
+      shinyjs::reset("upload.file")
+      shinyjs::toggleState(id="upload_save")
+      #shinyjs::toggleClass(id="shiny-tab-file_viewer")
+      #shinyjs::runjs("$(.sidebar-menu a:last).tab('show')")
+      #shinyjs::addClass(class="active", id="shiny-tab-file_viewer")
     }
   })
+
   
   ## Download section
   observeEvent(input$download_run, {
@@ -447,4 +509,4 @@ server <- function(input, output, session) {
   })
 }
 
-shinyApp(ui, server)
+shinyApp(ui, server, enableBookmarking = "url")
