@@ -14,7 +14,7 @@ user_talbe_colnames = ["uid", "username", "password"]
 
 # data_table for storing the uploaded files information
 upload_data_table_name = "upload_data"
-upload_data_table_colnames = ["file_name", "file_path", "file_size", "file_type", "upload_time"]
+upload_data_table_colnames = ["file_name", "file_path", "file_size", "file_type", "genome_version", "upload_time", "md5", "description"]
 
 [shiny_upload]
 supported_file_type = ["csv.gz", "csv", "vcf", "vcf.gz", "txt", "txt.gz"]
