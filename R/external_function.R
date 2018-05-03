@@ -200,11 +200,14 @@ format.1000g.db.tb <- function(db.tb = "", filename = "", ...) {
 
 # Sih Normal Pool needed functions to set database name and table name
 set.sih.normal.pool.db <- function(anno.name = "", buildver = "hg19", database.dir = "", 
-  db.type = "txt") {
+  db.type = "txt", db.file.prefix = NULL, ...) {
+  if (is.null(db.file.prefix)) {
+    db.file.prefix <- db.type
+  }
   if (db.type == "sqlite") {
-    db <- sprintf("%s/%s_normal%s.sqlite", database.dir, buildver, anno.name)
+    db <- sprintf("%s/%s_normal%s.%s", database.dir, buildver, anno.name, db.file.prefix)
   } else if (db.type == "txt") {
-    db <- sprintf("%s/%s_normal%s.txt", database.dir, buildver, anno.name)
+    db <- sprintf("%s/%s_normal%s.%s", database.dir, buildver, anno.name, db.file.prefix)
   }
 }
 

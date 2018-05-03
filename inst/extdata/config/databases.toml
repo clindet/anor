@@ -129,7 +129,7 @@ setdb.fun = "set.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
 
-[normal_pool]
+[normal_pool_a]
 versions = ['2016sih_wes_ball', '2016sih_wes_tall', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
 func = "annotation.auto"
 default.dbtype = ["txt", "txt", "txt", "txt", "txt"]
@@ -143,6 +143,42 @@ index.cols = ["chr", "start"]
 matched.cols = ["chr", "start", "end", "ref", "alt"]
 return.col.index = 6
 format.dat.fun = "format.cols"
+setdb.fun = "set.sih.normal.pool.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[normal_pool_b]
+versions = ["2018sih_wgs_nkt_full"]
+func = "annotation.auto"
+default.dbtype = ["txt"]
+dependence_db = "db_annovar_normal_pool"
+header = true
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{anno.name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 8
+format.dat.fun = "format.cols.plus.chr"
+setdb.fun = "set.sih.normal.pool.db"
+set.table.fun = "set.table"
+format.db.tb.fun = "format.db.tb"
+
+[normal_pool_sqlite]
+versions = ['2018sih_wgs_nkt_full_sqlite']
+func = "annotation.auto"
+default.dbtype = ["sqlite"]
+dependence_db = "db_annovar_normal_pool_sqlite"
+header = true
+
+need.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.names = "{{anno.name}}"
+db.col.order = [1, 2, 3, 4, 5]
+index.cols = ["chr", "start"]
+matched.cols = ["chr", "start", "end", "ref", "alt"]
+return.col.index = 8
+format.dat.fun = "format.cols.plus.chr"
 setdb.fun = "set.sih.normal.pool.db"
 set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"

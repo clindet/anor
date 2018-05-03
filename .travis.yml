@@ -5,23 +5,44 @@ sudo: required
 
 cache: packages
 
-dist: trusty
+r:
+  - devel
 
-before_install:
-  - curl -OLs http://eddelbuettel.github.io/r-travis/run.sh && chmod 0755 run.sh
-  # optionally add our launchpad repo, but not needed here
-  # - sudo add-apt-repository -y ppa:edd/misc
-  - Rscript -e 'install.packages(c("covr", "devtools", "roxygen2", "knitr", "testthat", "configr", "RSQLite", "futile.logger", "RMySQL", "data.table", "rmarkdown", "vcfR"))'
-  - Rscript -e "source('https://bioconductor.org/biocLite.R'); biocLite(c('AnnotationDbi', 'org.Hs.eg.db'))"
-  - Rscript -e 'devtools::install_github("JhuangLab/BioInstaller")'
-  - Rscript -e 'devtools::install_github("JhuangLab/ngstk")'
-  - ./run.sh bootstrap
+bioc_required: true
+bioc_use_devel: true
 
-install:
-  - Rscript -e 'library("devtools");install_github("JhuangLab/annovarR")'
+os:
+  - linux
+  - osx
+
+apt_packages:
+  - libcurl4-openssl-dev
+
+r_packages:
+  - covr
+  - devtools
+  - knitr
+  - roxygen2
+  - rmarkdown
+  - testthat
+  - futile.logger
+  - configr
+  - RSQLite
+  - RMySQL
+  - data.table
+  - vcfR
+  - prettydoc
+
+bioc_packages:
+  - AnnotationDbi
+  - org.Hs.eg.db
+
+r_github_packages:
+  - JhuangLab/BioInstaller
+  - JhuangLab/ngstk
 
 after_failure:
-  - ./run.sh dump_logs
+  - ./travis-tool.sh dump_logs
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

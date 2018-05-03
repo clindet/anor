@@ -1,28 +1,32 @@
-2017-02-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+2018-05-03 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* add 2018sih_wgs_nkt_full_sqlite in normal pool
+
+2018-02-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* initial annovarR shiny App (inst/extdata/tools/shiny)
 
-2017-01-19 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+2018-01-19 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* improve download.database for single 
 		download.name and multiple version
 		* add docm, intogen, disgenet and cancer_hotspots
 		databases support
 
-2017-01-18 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+2018-01-18 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* add returned colnames test
 
-2017-01-17 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+2018-01-17 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* fix a check bug in annovar
 
-2017-01-06 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+2018-01-06 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* R/annotation.R annotation.cols.match and 
 		annotation.region.match added parameter fread.db.params
 
-2017-01-05 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+2018-01-05 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* added mysql.auto.build and mysql.auto.index
 		* supported external tools vep and vcfanno 
