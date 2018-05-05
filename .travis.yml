@@ -17,6 +17,7 @@ os:
 
 apt_packages:
   - libcurl4-openssl-dev
+  - libmariadbclient-dev
 
 r_packages:
   - covr
@@ -32,6 +33,9 @@ r_packages:
   - data.table
   - vcfR
   - prettydoc
+
+brew_packages:
+  - mariadb-connector-c
 
 bioc_packages:
   - AnnotationDbi

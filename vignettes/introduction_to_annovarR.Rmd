@@ -4,15 +4,16 @@ author: "Jianfeng Li"
 date: "`r Sys.Date()`"
 output:
   prettydoc::html_pretty:
-      toc: true
-      theme: cayman
-      highlight: github
-      pdf_document:
-  toc: true
+    toc: true
+    theme: cayman
+    highlight: github
+  pdf_document:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Introduction to annovarR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, echo = FALSE, message = FALSE}
@@ -182,4 +183,12 @@ x <- annotation(anno.name = "vcfanno_demo", input.file = system.file("extdata", 
 # Annotate gene from BioConductor org.hs.eg.db
 gene <- c("TP53", "NSD2")
 annotation(dat = gene, anno.name = "bioc_gene2alias")
+```
+
+## Session info
+
+Here is the output of `sessionInfo()` on the system on which this document was compiled:
+
+```{r echo=FALSE}
+sessionInfo()
 ```
