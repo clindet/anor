@@ -16,9 +16,9 @@ navbar:
   - text: Articles
     menu:
     - text: Database in annovarR
-      href: articles/databases_in_annovarR.html
+      href: articles/database_in_annovarR.html
   - text: News
     href: news/index.html
   right:
   - icon: fa-github fa-lg
-    href: https://github.com/JhuangLab/BioInstaller
+    href: https://github.com/JhuangLab/annovarR

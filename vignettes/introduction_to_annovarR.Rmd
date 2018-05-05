@@ -18,20 +18,17 @@ vignette: >
 
 ```{r, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(comment = "#>", collapse = TRUE)
-library(BioInstaller)
-library(annovarR)
-library(data.table)
 ```
 
 ## Introduction
 
-Interpretation of genetic variation data is a crucial step to understand the relationship between gene sequence changes and biological function. There are several annotation tools, such as [ANNOVAR](http://annovar.openbioinformatics.org/), [VEP](https://asia.ensembl.org/info/docs/tools/vep/index.html), [vcfanno](https://github.com/brentp/vcfanno), have been developed. These tools make gene variation data annotation more convenient and faster than before. However, because different annotation tools have their own methods of use and design architecture, this increases the difficulty for bioinfomatics beginner to utilize these tools. In addition, many of existing database resources and annotation scripts have not been well integrated and shared.
+Interpretation of genetic variation data is a crucial step to understand the relationship between gene sequence changes and biological function. There are several annotation tools, such as [ANNOVAR](http://annovar.openbioinformatics.org/), [VEP](https://asia.ensembl.org/info/docs/tools/vep/index.html), [vcfanno](https://github.com/brentp/vcfanno), have been developed. These tools make gene variation data annotation more convenient and faster than before. However, because different annotation tools have their own methods of use and design architecture, this increases the difficulty for bioinformatics beginner to utilize these tools. In addition, many of existing database resources and annotation scripts have not been well integrated and shared.
 
-So, it is worth us to develop an integrated annotation system that not only include the integration of different annotation tools but also integrate the relevant database resources. Here, we present a integrated annotation R package '[annovarR](https://github.com/JhuangLab/annovarR)' to do this. It provides a series R functions to integrate external annotation tools and annotation databases.
+So, it is worth us to develop an integrated annotation system that not only includes the integration of different annotation tools but also integrate the relevant database resources. Here, we present an integrated annotation R package '[annovarR](https://github.com/JhuangLab/annovarR)' to do this. It provides a series R functions to integrate external annotation tools and annotation databases.
 
 ## Installation
 
-To install annovarR, first you need to install [R](https://cran.r-project.org/) interpreter (Supported Linux, MAC and Windows). This package have been uploaded on The Comprehensive R Archive Network (CRAN, https://cran.r-project.org). You can use the command to install annovarR package easily:
+To install annovarR, firstly you need to install [R](https://cran.r-project.org/) interpreter (Supported Linux, MAC, and Windows). This package has been uploaded on The Comprehensive R Archive Network (CRAN, https://cran.r-project.org). You can use the command to install annovarR package easily:
 
 ``` r
 # setRepositories ind 1 is CRAN, 2 is Bioconductor
@@ -47,21 +44,30 @@ If you want to use the latest development version, you need to use [devtools](ht
 devtools::install_github("JhuangLab/annovarR", ref = "develop")
 ```
 
-Lastly, annovarR can also be installed using the source code archive (`R CMD INSTALL`). In this situation, you need to manually handle dependencies on many packages.
+annovarR can also be installed using the source code archive (`R CMD INSTALL`). In this situation, you need to manually handle dependencies on many packages.
 
 
 **Tips**: When the [RMySQL](https://github.com/r-dbi/RMySQL) or [RSQLite](https://github.com/r-dbi/RSQLite) package can not directly installed by R, [conda](https://conda.io/docs/) is an optional solution: `conda install -c r r-rmysql r-rsqlite`. Or you need root permissions to install the corresponding system dependency.
 
-## Usage
-
-### Download database resource
+## Download database resource
 
 annovarR use function `download.database` to download the annotation databases.
 
 ```{r}
-# Show all annovarR supported database
-download.database(show.all.names = TRUE)
+# Library needed R package
+library(BioInstaller)
+library(annovarR)
+library(data.table)
 
+# Show all annovarR supported database
+x <- download.database(show.all.names = TRUE)
+```
+```{r echo = FALSE}
+suppressWarnings(
+  DT::datatable(matrix(x, ncol=3), caption = sprintf("Annotation database supported by annovarR (n=%s)", length(x)))
+)
+```
+```{r}
 # Show all supported version of database (e.g. db_annovar_avsnp)
 download.database(download.name = "db_annovar_avsnp", show.all.version = TRUE)
 
@@ -76,27 +82,54 @@ download.database("download_demo", "demo", buildver = "GRCh37", database.dir = s
 
 # If you want to download other resource in BioInstaller,
 # you can use function `install.bioinfo`
-install.bioinfo(show.all.names = TRUE)
-
+x <- install.bioinfo(show.all.names = TRUE)
+```
+```{r echo = FALSE}
+suppressWarnings(
+  DT::datatable(matrix(x, ncol=3), caption = sprintf("Annotation database supported by annovarR (n=%s)", length(x)))
+)
 ```
 
-### Annotation
+## Basic annotation
+
+Firstly, to use the annovarR annotation system, you need to get the annotation name through function `get.annotation.names()`. Then, you can use the function `get.download.name` to get the `download.name`. It can be used to download and install pointed annotation database. 
+
+Besides, you can search the [vignette](https://life2cloud.com/tools/annovarR/articles/database_in_annovarR.html#overview-of-supported-database.html) to get the `annotation name` and `download name`.
 
 ```{r}
-
 # Get all supprted anno.name in annovarR
-get.annotation.names()
-
+x <- get.annotation.names()
+```
+```{r echo = FALSE}
+suppressWarnings(
+  DT::datatable(matrix(x, ncol=3), caption = sprintf("Annotation database supported by annovarR (n=%s)", length(x)))
+)
+```
+```{r}
 # Get annotation name needed download.name and 
 # you can use download.database to download database using the download.name.
 download.name <- get.download.name('avsnp147')
+```
 
+Both R object and external file can be input in annovarR, and you need get the needed columns by `get.annotation.needcols()`. If only want to utilze the ANNOVAR supported database, you need prepare the followed format, refer the [tutorial](http://annovar.openbioinformatics.org/en/latest/user-guide/input/#annovar-input-file):
+
+- chr
+- start
+- end
+- ref
+- alt
+
+```{r}
 # Database configuration file
 database.cfg <- system.file('extdata', 'config/databases.toml', package = "annovarR")
 
 # Get anno.name needed input cols
 get.annotation.needcols('avsnp147')
+```
 
+annovarR not only supported the text file but also supported the sqlite format database. We provide a simple function `sqlite.build` to build sqlite format database: input a text file and output a sqlite format database.
+
+```{r}
 # build sqlite database
 for(i in c("hg19_ALL.sites.2015_08", "hg19_avsnp147")) {
   database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
@@ -105,7 +138,15 @@ for(i in c("hg19_ALL.sites.2015_08", "hg19_avsnp147")) {
   sqlite.build(database, sqlite.connect.params = list(dbname = sqlite.db, table.name = sprintf("%s", 
     i)))
 }
+```
 
+The `annotation` is the main function to access various annotation system including [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/), [AnnotationDbi](http://www.bioconductor.org/packages/devel/bioc/html/AnnotationDbi.html), [vcfanno](https://github.com/brentp/vcfanno), [vep](http://asia.ensembl.org/info/docs/tools/vep/index.html), and built-in annotation system in annovarR.
+
+If the `anno.name` contains `perl_annovar`, it will use the external `ANNOVAR` to finish the annotation step and read the output file as `data.table` object. 
+
+Default annovarR use the R annotation system, mainly [data.table](https://github.com/Rdatatable/data.table) package. For the database with very large size, annovarR will convert the text file to `sqlite` format and generate the indexes.
+
+```{r}
 # use the defined rule to annotate 1000 Genome Project frequency
 database.dir <- tempdir()
 chr <- c("chr1", "chr2", "chr1")
@@ -118,7 +159,11 @@ x <- annotation(dat = dat, anno.name = "1000g2015aug_all", database.dir = databa
 x
 x <- annotation(dat = dat, anno.name = "1000g2015aug_all", database.dir = database.dir, db.type = "sqlite")
 x
+```
 
+## Advanced annotation
+
+```{r}
 # Do annotation using full match function (default to use chr, start to select data 
 # and use chr, start, end, ref, and alt to match data)
 # Use `?annotation.cols.match` to see more detail about `annotation.cols.match`
@@ -152,6 +197,23 @@ snp.id <- c("rs775809821", "rs768019142")
 x <- annotation(dat = data.table(rs = rep(snp.id, 3)), database.dir = database.dir, anno.name = "rs2pos147", 
     buildver = "hg19", verbose = FALSE, db.type = "txt")
 
+# Annotate gene from BioConductor org.hs.eg.db
+gene <- c("TP53", "NSD2")
+annotation(dat = gene, anno.name = "bioc_gene2alias")
+```
+
+## External annotation system
+
+If you want to use the ANNOVAR of perl version, you need to download the ANNOVAR source code using R package [BioInstaller](https://life2cloud.com/tools/bioinstaller/).
+
+```{r eval=FALSE}
+library(BioInstaller)
+install.bioinfo('annovar', annovar.dir)
+```
+
+To reduce the test time, we set `debug` to `TRUE`, and it will returend the command to run ANNOVAR.
+
+```{r}
 # Annotate avinput format R data using ANNOVAR
 # set debug to TRUE will not to run command
 chr = "chr1"
@@ -162,7 +224,11 @@ alt = "C"
 dat <- data.table(chr, start, end, ref, alt)
 x <- annotation(dat, "perl_annovar_refGene", annovar.dir = "/opt/bin/annovar", 
              database.dir = "{{annovar.dir}}/humandb", debug = TRUE)
+```
 
+VCF format files can be processed by [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/), [VEP](http://asia.ensembl.org/info/docs/tools/vep/index.html) and [vcfanno](https://github.com/brentp/vcfanno). If you don't want to read the output files in R, you can set the parameter `debug` to `TRUE`, and paste/run the returend command to shell client.
+
+```{r}
 # Annotate VCF file using ANNOVAR
 # set debug to TRUE will not to run command
 x <- annotation(anno.name = "perl_annovar_ensGene", input.file = "/tmp/test.vcf",
@@ -178,12 +244,11 @@ x <- annotation(anno.name = "vep_all", input.file = "/tmp/test.vcf",
 vcfanno(debug = TRUE)
 x <- annotation(anno.name = "vcfanno_demo", input.file = system.file("extdata", "demo/vcfanno_demo/query.vcf.gz", 
                    package = "annovarR"), out = "test.vcf", vcfanno = "/path/vcfanno", debug = TRUE)
-
-
-# Annotate gene from BioConductor org.hs.eg.db
-gene <- c("TP53", "NSD2")
-annotation(dat = gene, anno.name = "bioc_gene2alias")
 ```
+
+## Databases in annovarR
+
+Detail about supported annotation database can be found in the another [vignette](https://life2cloud.com/tools/annovarR/articles/database_in_annovarR.html).
 
 ## Session info
 

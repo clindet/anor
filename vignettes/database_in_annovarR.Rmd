@@ -1,0 +1,143 @@
+---
+title: "Database in annovarR"
+author: "Jianfeng Li"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    toc: true
+    theme: cayman
+    highlight: github
+  pdf_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Database in annovarR}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(comment = "#>", collapse = TRUE)
+library(stringr)
+```
+
+## Introduction
+
+In this reference manual, we arranged the databases in annovarR and provide several meta information about the annovarR supported databases and other BioInstaller supported (download only) databases. Some of description or comments have been described in [the download configuration file](https://github.com/JhuangLab/BioInstaller/blob/master/inst/extdata/config/db/db_annovar.toml) (BioInstaller package) and [the annotation configuration file](https://github.com/JhuangLab/annovarR/blob/master/inst/extdata/config/databases.toml) (annovarR).
+
+annovarR supported databases will firstly be supported to download from original sites (exclude the authentication part) in BioInstaller. A portion of BioInstaller supported databases will be introduced in annovarR to as the candidate annotation databases (process method: remain unchanged, re-formate, re-analysis).
+
+## Overview of supported database
+
+The followed table shows all annotation names with its required download name.
+
+```{r echo = FALSE}
+options(stringsAsFactors = FALSE)
+config <- system.file('extdata', 'config/databases.toml', package = "annovarR")
+config <- configr::read.config(config)
+config$Title <- NULL
+anno.names <- lapply(config, function(x){return(x[c("versions", "dependence_db")])})
+anno.names$Title <- NULL
+item.download.name.tbl <- NULL
+for(i in 1:length(anno.names)) {
+  items <- anno.names[[i]][["versions"]]
+  dependence_db <- anno.names[[i]][["dependence_db"]]
+  dependence_db[is.null(dependence_db)] <- ""
+  tmp <- cbind(items, dependence_db)
+  item.download.name.tbl <- rbind(item.download.name.tbl, tmp)
+}
+item.download.name.tbl <- as.data.frame(item.download.name.tbl)
+index <- str_detect(item.download.name.tbl$items, "perl_annovar_")
+item.download.name.tbl$dependence_db[index] <- str_replace(item.download.name.tbl$items[index], "perl_annovar_", "db_annovar_")
+index <- item.download.name.tbl$items == "perl_annovar_merge"
+item.download.name.tbl$dependence_db[index] <- "*" 
+```
+```{r echo=FALSE}
+colnames(item.download.name.tbl) <- c("anno.name", "download.name")
+suppressWarnings(
+  DT::datatable(item.download.name.tbl, caption = "Download name of annovarR database.")
+)
+```
+
+The followed table shows all database names with its versions and description.
+
+```{r echo = FALSE}
+config <- system.file("extdata", "config/db/db_annovar.toml", package = "BioInstaller")
+config <- configr::read.config(config)
+config$Title <- NULL
+config$title <- NULL
+config <- lapply(config, function(x) {
+  return(x[c("description", "version_available")])
+})
+
+db.desc.tbl <- NULL
+for(i in 1:length(config)) {
+  condition_a <- length(config[[i]][[1]]) == length(config[[i]][[2]])
+  condition_b <- length(config[[i]][[1]]) == 1
+  if (condition_b) {
+    if (is.null(config[[i]][[1]])) config[[i]][[1]] <- ""
+      tmp <- data.frame(names(config)[i], config[[i]][[2]], config[[i]][[1]])
+      colnames(tmp) <- c("Database", "Version", "Description")
+      db.desc.tbl <- rbind(db.desc.tbl, tmp)
+  } else if (condition_a && !condition_b) {
+    if (is.null(config[[i]][[1]])) config[[i]][[1]] <- ""
+    desc.tmp <- unlist(config[[i]][[1]])
+    index <- match(names(desc.tmp), config[[i]][[2]])
+    tmp <- data.frame(names(config)[i], config[[i]][[2]], desc.tmp[index])
+    colnames(tmp) <- c("Database", "Version", "Description")
+    db.desc.tbl <- rbind(db.desc.tbl, tmp)
+  } else if (!"description" %in% names(config[[i]])){
+    tmp <- data.frame(names(config)[i], config[[i]][[2]], "Same with ANNOVAR item")
+    colnames(tmp) <- c("Database", "Version", "Description")
+    db.desc.tbl <- rbind(db.desc.tbl, tmp)
+  } else if (names(config)[i] == "db_annovar_cosmic"){
+     desc.tmp <- unlist(config[[i]][[1]])
+     desc.tmp.new <- rep("", length(config[[i]][[2]]))
+     index <- str_detect(config[[i]][[2]], "wgs")
+     desc.tmp.new[index] <- desc.tmp[1]
+     desc.tmp.new[!index] <- desc.tmp[2]
+     tmp <- data.frame(names(config)[i], config[[i]][[2]], desc.tmp.new)
+     colnames(tmp) <- c("Database", "Version", "Description")
+     db.desc.tbl <- rbind(db.desc.tbl, tmp)
+  }
+}
+rownames(db.desc.tbl) <- 1:nrow(db.desc.tbl)
+suppressWarnings(
+  DT::datatable(db.desc.tbl, caption = "Description of database", extensions = c("Buttons", "FixedColumns", "Responsive"))
+)
+```
+
+Besides, you can use the function `download.database` with parameter `show.all.buildvers = TRUE` get all available buildver.
+
+```{r}
+x <- annovarR::download.database(download.name = "db_annovar_cosmic", show.all.buildvers = TRUE)
+as.data.frame(x)
+```
+
+## Gene and clincal annotation
+
+Gene annotation databases contain the gene classification, gene function and phenotype correlation, such as [HGNC](https://www.genenames.org/), [OMIM](http://www.omim.org/) [DoCM](http://docm.genome.wustl.edu/), [CIVic](https://civic.genome.wustl.edu/), [DisGeNET](http://www.disgenet.org/web/DisGeNET/menu/browser?1), [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/), and Gene Ontology (GO), .etc.
+
+## Variant effect prediction
+
+Variant effect prediction databases contain the various databases generated by the algorithms for prediction of variants effect on protein or RNA structural, such as [SIFT](http://sift.jcvi.org/), [PolyPhen2](http://genetics.bwh.harvard.edu/pph2/), [PROVEAN](http://provean.jcvi.org), [MutationTaster](http://www.mutationtaster.org/), [MutationAssessor](http://mutationassessor.org/r3/), [FATHMM](http://fathmm.biocompute.org.uk/), .etc.
+
+## Population allele frequency
+
+Population allele frequency databases contain the databases based on the population cohort genome sequencing data (mainly include whole genome sequencing and whole exome sequencing), such as [1000 Genome Project](https://www.ncbi.nlm.nih.gov/projects/faspftp/1000genomes/), [NHLBI GO Exome Sequencing Project (ESP)](https://esp.gs.washington.edu/drupal/), [gnomAD](http://gnomad.broadinstitute.org/) and [ExAC](http://exac.broadinstitute.org/), .etc.
+
+## Cancer somatic mutation
+
+Cancer somatic mutation databases generated by the cancer patients case-control paired genomic sequence data, such as [COSMIC](http://cancer.sanger.ac.uk/cosmic), [Cancer Hotspots](http://cancerhotspots.org/#/home), [intogen](https://www.intogen.org/downloads) and [Cancer Biomarkers database](https://www.cancergenomeinterpreter.org/biomarkers), .etc.
+
+## RNA-seq variants
+
+RNA-seq variants databases contributed by variants called from RNA-seq including expressed allele and RNA-editing. annovarR built an RNA-seq variants database, BRVar, based on 1285 cases B-cell lymphoblastic leukemia (B-ALL) patients RNA-seq data (Four different variants detection method be applied).
+
+## Expression quantitative trait locus (eQTL)
+
+eQTL databases contain the candidate locus of genome that have an candidate impact on gene expression level, such as [Genotype-Tissue Expression (GTEx)](https://www.gtexportal.org/home/) QTL, [seeQTL](http://www.bios.unc.edu/research/genomic_software/seeQTL/) and [PancanQTL](http://bioinfo.life.hust.edu.cn/PancanQTL/), .etc.
+
+## Non-coding RNA
+
+Non-coding RNA databases contain the candidate biomarkers or non-coding RNA targeted transcriptional regulation region, such as [Cancer-Specific CirRNA Database](http://gb.whu.edu.cn/CSCD/) and (LNCediting)[http://bioinfo.life.hust.edu.cn/LNCediting/], .etc.
