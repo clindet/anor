@@ -6,7 +6,7 @@ sudo: required
 cache: packages
 
 r:
-  - devel
+  - release
 
 bioc_required: true
 bioc_use_devel: true
@@ -37,6 +37,7 @@ r_packages:
 
 brew_packages:
   - mariadb-connector-c
+  - llvm
 
 bioc_packages:
   - AnnotationDbi
