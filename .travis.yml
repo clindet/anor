@@ -33,6 +33,7 @@ r_packages:
   - data.table
   - vcfR
   - prettydoc
+  - DT
 
 brew_packages:
   - mariadb-connector-c

@@ -33,5 +33,6 @@ Suggests: testthat,
     knitr,
     rmarkdown,
     org.Hs.eg.db,
-    prettydoc
+    prettydoc,
+    DT
 VignetteBuilder: knitr

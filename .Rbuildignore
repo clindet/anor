@@ -4,6 +4,8 @@
 ^.*\.test
 ^data-raw$
 .travis.yml
+^_pkgdown.yml$
 ^pre-db
-Makefile
-Dockerfile
+^Makefile$
+^Dockerfile$
+^README.Rmd$
