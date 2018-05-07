@@ -28,7 +28,7 @@ So, it is worth us to develop an integrated annotation system that not only incl
 
 ## Installation
 
-To install annovarR, firstly you need to install [R](https://cran.r-project.org/) interpreter (Supported Linux, MAC, and Windows). This package has been uploaded on The Comprehensive R Archive Network (CRAN, https://cran.r-project.org). You can use the command to install annovarR package easily:
+To install annovarR, you need to install [R](https://cran.r-project.org/) interpreter (Supported Linux, MAC, and Windows). This package has been uploaded on The Comprehensive R Archive Network (CRAN, https://cran.r-project.org). You can use the command to install annovarR package easily:
 
 ``` r
 # setRepositories ind 1 is CRAN, 2 is Bioconductor
@@ -51,7 +51,7 @@ annovarR can also be installed using the source code archive (`R CMD INSTALL`). 
 
 ## Download database resource
 
-annovarR use function `download.database` to download the annotation databases.
+To reduce the procedure of download database and other material, annovarR provides single function `download.database` to download various annotation databases for [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/), [AnnotationDbi](http://www.bioconductor.org/packages/devel/bioc/html/AnnotationDbi.html), [vcfanno](https://github.com/brentp/vcfanno), [vep](http://asia.ensembl.org/info/docs/tools/vep/index.html), [oncotator](http://portals.broadinstitute.org/oncotator/) and [giggle](https://github.com/ryanlayer/giggle). Moreover, you can share the database configuration for others to download your database in protected (license code required) or unprotected mode.
 
 ```{r}
 # Library needed R package
@@ -80,21 +80,25 @@ download.database("download_demo", show.all.versions = T, download.cfg = demo.cf
 download.database("download_demo", "demo", buildver = "GRCh37", database.dir = sprintf("%s/databases/", 
   tempdir()), download.cfg = demo.cfg)
 
+# Protected mode
+# download.database("your_db_name", license = "license_code")
+
 # If you want to download other resource in BioInstaller,
 # you can use function `install.bioinfo`
 x <- install.bioinfo(show.all.names = TRUE)
 ```
 ```{r echo = FALSE}
 suppressWarnings(
-  DT::datatable(matrix(x, ncol=3), caption = sprintf("Annotation database supported by annovarR (n=%s)", length(x)))
+  DT::datatable(matrix(x, ncol=3), caption = sprintf("Items supported by BioInstaller (n=%s)", length(x)))
 )
 ```
 
 ## Basic annotation
 
-Firstly, to use the annovarR annotation system, you need to get the annotation name through function `get.annotation.names()`. Then, you can use the function `get.download.name` to get the `download.name`. It can be used to download and install pointed annotation database. 
+`anno.name` is the key of shortcut annotation, you can get the annotation name through function `get.annotation.names()`, or you can search the [vignette](https://life2cloud.com/tools/annovarR/articles/database_in_annovarR.html#overview-of-supported-database.html) to get the `annotation name`
 
-Besides, you can search the [vignette](https://life2cloud.com/tools/annovarR/articles/database_in_annovarR.html#overview-of-supported-database.html) to get the `annotation name` and `download name`.
+Besides, `download.name` is also required for you to download the related database resource connected with `anno.name`. Now, we provides the function `get.download.name` to get it.
+
 
 ```{r}
 # Get all supprted anno.name in annovarR
@@ -111,13 +115,9 @@ suppressWarnings(
 download.name <- get.download.name('avsnp147')
 ```
 
-Both R object and external file can be input in annovarR, and you need get the needed columns by `get.annotation.needcols()`. If only want to utilze the ANNOVAR supported database, you need prepare the followed format, refer the [tutorial](http://annovar.openbioinformatics.org/en/latest/user-guide/input/#annovar-input-file):
+Notably, annovarR is not a command-line program, and only provides the R function and an shiny APP (dev) to do the annotation steps. 
 
-- chr
-- start
-- end
-- ref
-- alt
+But, compared with [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/), both R object and external file were supported to input in annovarR. and you can get the required columns of matched database by `get.annotation.needcols()`. 
 
 ```{r}
 # Database configuration file
@@ -127,7 +127,9 @@ database.cfg <- system.file('extdata', 'config/databases.toml', package = "annov
 get.annotation.needcols('avsnp147')
 ```
 
-annovarR not only supported the text file but also supported the sqlite format database. We provide a simple function `sqlite.build` to build sqlite format database: input a text file and output a sqlite format database.
+To facilitate the SQLite format database annotation. annovarR also provides a simple function `sqlite.build` to build your sqlite format database: input a text file and output a sqlite format database. 
+
+It is helpful for the annotation database with very large size file. Because the SQLite or other SQL format database with the indexes can singlificantly reduce the search and analysis time without any other bio-annotation tools, and just need the powerful SQL database client.
 
 ```{r}
 # build sqlite database
@@ -140,11 +142,9 @@ for(i in c("hg19_ALL.sites.2015_08", "hg19_avsnp147")) {
 }
 ```
 
-The `annotation` is the main function to access various annotation system including [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/), [AnnotationDbi](http://www.bioconductor.org/packages/devel/bioc/html/AnnotationDbi.html), [vcfanno](https://github.com/brentp/vcfanno), [vep](http://asia.ensembl.org/info/docs/tools/vep/index.html), and built-in annotation system in annovarR.
+Function `annotation` is the main interface to access various annotation system including [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/),  [vcfanno](https://github.com/brentp/vcfanno), [vep](http://asia.ensembl.org/info/docs/tools/vep/index.html), and R annotation system, such as [AnnotationDbi](http://www.bioconductor.org/packages/devel/bioc/html/AnnotationDbi.html) and other R format anntotation script.
 
-If the `anno.name` contains `perl_annovar`, it will use the external `ANNOVAR` to finish the annotation step and read the output file as `data.table` object. 
-
-Default annovarR use the R annotation system, mainly [data.table](https://github.com/Rdatatable/data.table) package. For the database with very large size, annovarR will convert the text file to `sqlite` format and generate the indexes.
+For example, if the `anno.name` contains `perl_annovar`, it will use the external `ANNOVAR` to finish the annotation step and read the output file (VCF by [vcfR](https://CRAN.R-project.org/package=vcfR )) as the `data.table` object.
 
 ```{r}
 # use the defined rule to annotate 1000 Genome Project frequency
@@ -162,6 +162,8 @@ x
 ```
 
 ## Advanced annotation
+
+Excepting the predetermined shortcut `anno.name`, annovarR also provides the austomizable functions `annotation.cols.match` and `annotation.region.match` for the full match and region match respectively. 
 
 ```{r}
 # Do annotation using full match function (default to use chr, start to select data 
@@ -187,12 +189,17 @@ dat <- data.table(chr = chr, start = start, end = end)
 # format.cols.plus.chr will add "chr" in chr colum 
 # if your input chr colum not contain string 'chr'
 # format.db.region.tb will process the region matched data
-#x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.file, 
-#  table.name.fixed = "bed", db.type = "txt", format.dat.fun = "format.cols.plus.chr", 
-#  format.db.tb.fun = "format.db.region.tb")
-#x
+x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.file, 
+  table.name.fixed = "bed", db.type = "txt", format.dat.fun = "format.cols.plus.chr", 
+  format.db.tb.fun = "format.db.region.tb")
+x
+```
 
-# Convert snp rs number to genomic location
+Other various small annotation functions/script also be provided, and the number of the annotation function will continue to increase. 
+
+```{r}
+# Demo of `convert dbsnp rs number to genomic location` and `alias of human gene symbol`.
+# rs2pos: convert snp rs number to genomic location
 snp.id <- c("rs775809821", "rs768019142")
 x <- annotation(dat = data.table(rs = rep(snp.id, 3)), database.dir = database.dir, anno.name = "rs2pos147", 
     buildver = "hg19", verbose = FALSE, db.type = "txt")
@@ -204,7 +211,14 @@ annotation(dat = gene, anno.name = "bioc_gene2alias")
 
 ## External annotation system
 
-If you want to use the ANNOVAR of perl version, you need to download the ANNOVAR source code using R package [BioInstaller](https://life2cloud.com/tools/bioinstaller/).
+If you want to use the ANNOVAR of perl version, you need to download the ANNOVAR source code using R package [BioInstaller](https://life2cloud.com/tools/bioinstaller/), and also need to prepare the `avinput` format refer the [tutorial](http://annovar.openbioinformatics.org/en/latest/user-guide/input/#annovar-input-file):
+
+chr|start|end|ref|alt
+--|--|--|--|--
+chr1|100000|100000|A|T
+chr1|100000|100001|AA|-
+chr1|100000|100000|-|T
+chr1|100000|100000|-|CAC
 
 ```{r eval=FALSE}
 library(BioInstaller)
