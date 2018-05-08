@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# annovarR <img src="man/figures/logo.png" align="right" />
+# annovarR <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/logo.png" align="right" />
 
 [![Build
 Status](https://travis-ci.org/JhuangLab/annovarR.svg)](https://travis-ci.org/JhuangLab/annovarR)
@@ -32,7 +32,7 @@ too many tools and databases available and the usage is quite different.
 annovarR will integrate these annotation tools and get the merged
 annotation result in R.
 
-<img src="man/figures/annovarR_package-1.jpg" align="center" />
+<img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/annovarR_package-1.jpg" align="center" />
 
 annovarR will not only provides annotation functions (both internal and
 external) but also hope to establish a shared annotation database
@@ -51,7 +51,7 @@ the RNA-seq data (Database called BRVar). This work can help us to
 screen candidate systematic sequencing bias and evaluate variant calling
 trait from B-ALL RNA-seq.
 
-<img src="man/figures//BRVar_databases-1.jpg" align="center" />
+<img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/BRVar_databases-1.jpg" align="center" />
 
 If you want to download the 1,285 RNA-seq variants frequency database,
 you need click [here](http://bioinfo.rjh.com.cn/labs/jhuang/contact.php)

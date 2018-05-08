@@ -1,50 +1,44 @@
-pkgs.shiny <- c("shinydashboard", "configr", "annovarR", "data.table", "shinyjs", "DT", "DBI", "RSQLite")
+pkgs.shiny <- c("Cairo", "maftools", "shinydashboard", "configr", "annovarR", "data.table", "shinyjs", "DT", "DBI", "RSQLite")
 sapply(pkgs.shiny, function(x) {
   status <- suppressWarnings(require(x, character.only = TRUE))
   if (!status) {
-    install.packages(x)
+    tryCatch(install.packages(x),
+             error = function(e) {
+               source("https://bioconductor.org/biocLite.R")
+               biocLite(x)
+             })
   }
 })
 for(i in pkgs.shiny) {
   suppressMessages(require(i, character.only = TRUE))
 }
 
-skin <- Sys.getenv("DASHBOARD_SKIN")
-skin <- tolower(skin)
+# source UI required code
+# config.R sourced in the body_upload_ui.R
+files <- list.files(".", "^ui_")
+files <- files[!files %in% c("app.R", "config.R")]
+for(i in files) {
+  source(i)
+}
 
-# Read configuration file and set the environment vars
-config.file <-  Sys.getenv("ANNOVARR_SHINY_CONFIG",
-                             system.file("extdata", "config/shiny.config.toml", package = "annovarR"))
-config <- read.config(config.file, file.type = "toml")
-db_type <- config$shiny_db$db_type
-db_path <- normalizePath(config$shiny_db$db_path, mustWork = FALSE)
-upload_table <- config$shiny_db_table$upload_data_table_name
-upload_table_colnames <- config$shiny_db_table$upload_data_table_colnames
-upload_dir <- normalizePath(config$shiny_upload$upload_dir, mustWork = FALSE)
-
-
-options(shiny.maxRequestSize=30000*1024^2)
-
-
-if (skin == "")
-  skin <- "blue"
-
+header <- dashboardHeader(
+  title = "annovarR Shiny APP",
+  messages,
+  notifications,
+  tasks
+)
 
 sidebar <- dashboardSidebar(
   sidebarSearchForm(label = "Search...", "searchText", "searchButton"),
   sidebarMenu(
     id = "tabs",
     menuItem("Introduction", tabName = "introduction", icon = icon("home")),
-    menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+    menuItem("Visulization", tabName = "dashboard", icon = icon("dashboard")),
     menuItem("File Viewer", tabName = "file_viewer", icon = icon("file")),
     menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
     menuItem("Downloader", icon = icon("cloud-download"), tabName = "download"),
-    menuItem("Charts", icon = icon("bar-chart-o"),
-      menuSubItem("Chart sub-item 1", tabName = "subitem1"),
-      menuSubItem("Chart sub-item 2", tabName = "subitem2")
-    ),
     menuItem("Source code for app", icon = icon("file-code-o"),
-      href = "https://github.com/JhuangLab/annovarR/blob/master/R/app.R"
+             href = "https://github.com/JhuangLab/annovarR/blob/master/inst/extdata/tools/shiny/R/app.R"
     )
   )
 )
@@ -56,265 +50,28 @@ body <- dashboardBody(
     tags$link(type = "text/javascript", src = "custom.js")
   ),
   tabItems(
-    tabItem("introduction",
-            fluidRow(
-              box(
-                title = "Introduction",
-                width = 12,
-                status = "primary",
-                collapsible = TRUE,
-                collapsed = FALSE,
-                includeMarkdown("https://raw.githubusercontent.com/JhuangLab/annovarR/master/README.md")
-              )
-            )
-    ),
-    tabItem("dashboard",
-      fluidRow(
-        box(
-          title = "Distribution",
-          status = "primary",
-          plotOutput("plot1", height = 240),
-          height = 300
-        ),
-        tabBox(
-          height = 300,
-          tabPanel("View 1",
-            plotOutput("scatter1", height = 230)
-          ),
-          tabPanel("View 2",
-            plotOutput("scatter2", height = 230)
-          )
-        )
-      ),
-
-      # Boxes with solid headers
-      fluidRow(
-        box(
-          title = "Histogram control", width = 4, solidHeader = TRUE, status = "primary",
-          sliderInput("count", "Count", min = 1, max = 500, value = 120)
-        ),
-        box(
-          title = "Appearance",
-          width = 4, solidHeader = TRUE,
-          radioButtons("fill", "Fill", # inline = TRUE,
-            c(None = "none", Blue = "blue", Black = "black", red = "red")
-          )
-        ),
-        box(
-          title = "Scatterplot control",
-          width = 4, solidHeader = TRUE, status = "warning",
-          selectInput("spread", "Spread",
-            choices = c("0%" = 0, "20%" = 20, "40%" = 40, "60%" = 60, "80%" = 80, "100%" = 100),
-            selected = "60"
-          )
-        )
-      ),
-
-      # Solid backgrounds
-      fluidRow(
-        box(
-          title = "Title 4",
-          width = 4,
-          background = "black",
-          "A box with a solid black background"
-        ),
-        box(
-          title = "Title 5",
-          width = 4,
-          background = "light-blue",
-          "A box with a solid light-blue background"
-        ),
-        box(
-          title = "Title 6",
-          width = 4,
-          background = "maroon",
-          "A box with a solid maroon background"
-        )
-
-      )
-    ),
-    tabItem("file_viewer",
-      fluidRow(
-        box(
-          title = "File List",
-          status = "primary",
-          width = 12,
-          DT::dataTableOutput("files_info_DT")
-        ),
-        actionButton("delete_confirmed", "", class = "btn btn-primary", style = "display:none"),
-        box(
-          title = "File Preview",
-          width = 12,
-          status = "primary",
-          DT::dataTableOutput("file_preview_DT"),
-          textOutput("file_preview")
-          )
-      )
-    ),
-    tabItem("upload",
-            fluidRow(
-              box(
-                title = "Upload",
-                width = 12,
-                status = "primary",
-                # Input: Select a file ----
-                fileInput("upload.file", "Choose Need Uploaded File",
-                          multiple = TRUE,
-                          accept = c("text/csv",
-                                     "text/comma-separated-values,text/plain",
-                                     "application/octet-stream",
-                                     config$shiny_upload$supported_file_type)),
-                selectInput("upload.file.type", "FileType",
-                            choices = config$shiny_upload$supported_file_type),
-                selectInput("upload.genome.version", "GenomeVersion",
-                            choices = config$shiny_upload$supported_genome_version),
-                textAreaInput("upload.file.description", "Description", row = 10),
-                actionButton("upload_save", "Save", class = "btn btn-primary", disabled = "disabled"),
-                inlineCSS(list("#upload_save" = "color: white"))
-                ),
-              box(
-                title = "Preview",
-                width = 12,
-                status = "primary",
-                DT::dataTableOutput("upload_file_preview_DT"),
-                textOutput("upload_file_preview")
-                )
-            )
-    ),
-    tabItem("download",
-            fluidRow(
-              box(
-                title = "Downloader for databases",
-                width = 12,
-                status = "primary",
-                checkboxInput("show.all.names", label = "Show all download names"),
-                selectInput("download.name", "Name of Database",
-                            choices = download.database(show.all.names = TRUE), multiple = TRUE),
-                textInput("version", "Version of Database"),
-                checkboxInput("show.all.versions", label = "Show all versions of database"),
-                checkboxInput("show.all.buildvers", label = "Show all buildver"),
-                #selectInput("database.dir.1", "Directory stored databases (Auto)",
-                #            choices = list.dirs('.')),
-                textInput("database.dir", "Directory stored databases",
-                          normalizePath(tempdir(), winslash = "/")),
-                checkboxInput("verbose", label = "Print debug message", value = TRUE),
-                textInput("extra.paramters", "Extra parameters", "list()"),
-                actionButton("download_run", "Run")
-              )
-            ),
-            fluidRow(
-              box(
-                title = "Output",
-                width = 6,
-                height = "100%",
-                status = "warning",
-                verbatimTextOutput("download_output")
-              ),
-              box(
-                title = "Output of Log",
-                width = 6,
-                height = "100%",
-                status = "warning",
-                verbatimTextOutput("log_output")
-              )
-            )
-    )
+    body_introduction_tabItem,
+    body_file_viewer_tabItem,
+    body_visulization_tabItem,
+    body_upload_tabItem,
+    body_download_tabItem
   )
 )
 
-messages <- dropdownMenu(type = "messages",
-  messageItem(
-    from = "Sales Dept",
-    message = "Sales are steady this month."
-  ),
-  messageItem(
-    from = "New User",
-    message = "How do I register?",
-    icon = icon("question"),
-    time = "13:45"
-  ),
-  messageItem(
-    from = "Support",
-    message = "The new server is ready.",
-    icon = icon("life-ring"),
-    time = "2014-12-01"
-  )
-)
-
-notifications <- dropdownMenu(type = "notifications", badgeStatus = "warning",
-  notificationItem(
-    text = "5 new users today",
-    icon("users")
-  ),
-  notificationItem(
-    text = "12 items delivered",
-    icon("truck"),
-    status = "success"
-  ),
-  notificationItem(
-    text = "Server load at 86%",
-    icon = icon("exclamation-triangle"),
-    status = "warning"
-  )
-)
-
-tasks <- dropdownMenu(type = "tasks", badgeStatus = "success",
-  taskItem(value = 90, color = "green",
-    "Documentation"
-  ),
-  taskItem(value = 17, color = "aqua",
-    "Project X"
-  ),
-  taskItem(value = 75, color = "yellow",
-    "Server deployment"
-  ),
-  taskItem(value = 80, color = "red",
-    "Overall project"
-  )
-)
-
-header <- dashboardHeader(
-  title = "annovarR Shiny APP",
-  messages,
-  notifications,
-  tasks
-)
-
+# Defined shiny UI
 ui <- dashboardPage(header, sidebar, body, skin = skin)
 
 server <- function(input, output, session) {
-  Sys.setenv(file_view_info_render_table_count=0)
-  ## Dashbord section
+  # Visulization section (maftools)
   set.seed(122)
-  histdata <- rnorm(500)
+  files <- c("server_maftools.R")
+  for(i in files) {
+    source(files)
+  }
+  output <- maftools_server(input, output)
 
-  output$plot1 <- renderPlot({
-    if (is.null(input$count) || is.null(input$fill))
-      return()
-
-    data <- histdata[seq(1, input$count)]
-    color <- input$fill
-    if (color == "none")
-      color <- NULL
-    hist(data, col = color, main = NULL)
-  })
-
-  output$scatter1 <- renderPlot({
-    spread <- as.numeric(input$spread) / 100
-    x <- rnorm(1000)
-    y <- x + rnorm(1000) * spread
-    plot(x, y, pch = ".", col = "blue")
-  })
-
-  output$scatter2 <- renderPlot({
-    spread <- as.numeric(input$spread) / 100
-    x <- rnorm(1000)
-    y <- x + rnorm(1000) * spread
-    plot(x, y, pch = ".", col = "red")
-  })
 
   # File viewr section
-
   render_files_info_DT <- function(){
     output$files_info_DT <- DT::renderDataTable({
        con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
@@ -333,7 +90,7 @@ server <- function(input, output, session) {
        info <- cbind(info[1], Action, info[2:ncol(info)])
        DBI::dbDisconnect(con)
        return(info)
-    }, rownames = FALSE, editable = TRUE,
+    }, rownames = FALSE, editable = FALSE,
       caption = 'All files stored in annovarR shinyapp Web service', escape = FALSE,
       extensions = c("Buttons", "FixedColumns", "Scroller"),
       options = list(
@@ -342,6 +99,7 @@ server <- function(input, output, session) {
         deferRender = TRUE,
         searchHighlight = TRUE,
         scrollX = TRUE,
+        lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
         buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
         columnDefs = list(list(width = "100px", targets = "_all")),
         initComplete = JS(
@@ -385,14 +143,15 @@ if (upload_table %in% DBI::dbListTables(con)) {
   }
   delete_file_item <- function(id) {
     shinyjs::onclick(sprintf("files_del_%s", id), function(event){
-      render_id <- Sys.getenv("file_view_info_render_table_count")
       shinyjs::runjs(sprintf("
          if(!confirm('Confirm to delete？')){
               window.event.returnValue = false;
          } else {
-              DataTables_Table_%s.deleteRow($('#files_del_%s').closest('tr').index() + 1);
+              var tb_id = $('#files_info_DT :first').attr('id').replace('_wrapper', '')
+              tb_id = eval(tb_id)
+              tb_id.deleteRow($('#files_del_%s').closest('tr').index() + 1);
               $('#delete_confirmed').click();
-         };", render_id, id));
+         };", id));
       updateQueryString(sprintf("?delete_id=%s", id), mode = "push")
     })
 
@@ -408,10 +167,7 @@ observeEvent(input$delete_confirmed, {
    status <- DBI::dbSendQuery(con, sprintf("DELETE FROM %s WHERE id=%s", upload_table, id))
    print(status)
    shinyjs::alert("Delete successful!")
-   render_id <- Sys.getenv("file_view_info_render_table_count")
    render_files_info_DT()
-   Sys.setenv(file_view_info_render_table_count=as.numeric(render_id) + 1)
-   updateQueryString(sprintf("?render_table=%s", render_id), mode = "push")
 })
 
 
@@ -423,12 +179,9 @@ observeEvent(input$delete_confirmed, {
       # input$file1 will be NULL initially. After the user selects
       # and uploads a file, head of that data file by default,
       # or all rows if selected, will be shown.
-
       req(input$upload.file)
       shinyjs::toggleState(id="upload_save")
       if (input$upload.file.type %in% c("txt", "csv")) {
-        render_id <- Sys.getenv("file_view_info_render_table_count")
-        Sys.setenv(file_view_info_render_table_count=as.numeric(render_id) + 1)
         df <- fread(input$upload.file$datapath)
         return(df)
       }
@@ -503,8 +256,10 @@ observeEvent(input$delete_confirmed, {
       shinyjs::reset("upload.file")
       shinyjs::toggleState(id="upload_save")
       render_files_info_DT()
-      render_id <- Sys.getenv("file_view_info_render_table_count")
-      Sys.setenv(file_view_info_render_table_count=as.numeric(render_id) + 1)
+      set_preview(id)
+      delete_file_item(id)
+
+
       #shinyjs::toggleClass(id="shiny-tab-file_viewer")
       #shinyjs::runjs("$(.sidebar-menu a:last).tab('show')")
       #shinyjs::addClass(class="active", id="shiny-tab-file_viewer")
