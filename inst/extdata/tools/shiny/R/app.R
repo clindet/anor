@@ -1,174 +1,153 @@
-pkgs.shiny <- c("Cairo", "maftools", "shinydashboard", "configr", "annovarR", "data.table", "shinyjs", "DT", "DBI", "RSQLite")
+pkgs.shiny <- c("shinycssloaders", "Cairo", "maftools", "shinydashboard", "configr",
+  "annovarR", "data.table", "shinyjs", "DT", "DBI", "RSQLite")
 sapply(pkgs.shiny, function(x) {
   status <- suppressWarnings(require(x, character.only = TRUE))
   if (!status) {
-    tryCatch(install.packages(x),
-             error = function(e) {
-               source("https://bioconductor.org/biocLite.R")
-               biocLite(x)
-             })
+    tryCatch(install.packages(x), error = function(e) {
+      source("https://bioconductor.org/biocLite.R")
+      biocLite(x)
+    })
   }
 })
-for(i in pkgs.shiny) {
+for (i in pkgs.shiny) {
   suppressMessages(require(i, character.only = TRUE))
 }
 
-# source UI required code
-# config.R sourced in the body_upload_ui.R
+# source UI required code config.R sourced in the body_upload_ui.R
 files <- list.files(".", "^ui_")
 files <- files[!files %in% c("app.R", "config.R")]
-for(i in files) {
+for (i in files) {
   source(i)
 }
 
-header <- dashboardHeader(
-  title = "annovarR Shiny APP",
-  messages,
-  notifications,
-  tasks
-)
+header <- dashboardHeader(title = "annovarR Shiny APP", messages, notifications,
+  tasks)
 
 sidebar <- dashboardSidebar(
   sidebarSearchForm(label = "Search...", "searchText", "searchButton"),
-  sidebarMenu(
-    id = "tabs",
+  sidebarMenu(id = "navbar_tabs",
     menuItem("Introduction", tabName = "introduction", icon = icon("home")),
     menuItem("Visulization", tabName = "dashboard", icon = icon("dashboard")),
     menuItem("File Viewer", tabName = "file_viewer", icon = icon("file")),
     menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
     menuItem("Downloader", icon = icon("cloud-download"), tabName = "download"),
     menuItem("Source code for app", icon = icon("file-code-o"),
-             href = "https://github.com/JhuangLab/annovarR/blob/master/inst/extdata/tools/shiny/R/app.R"
-    )
+             href = "https://github.com/JhuangLab/annovarR/blob/master/inst/extdata/tools/shiny/R/app.R")
   )
 )
 
 body <- dashboardBody(
   shinyjs::useShinyjs(),
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
-    tags$link(type = "text/javascript", src = "custom.js")
-  ),
-  tabItems(
-    body_introduction_tabItem,
-    body_file_viewer_tabItem,
-    body_visulization_tabItem,
-    body_upload_tabItem,
-    body_download_tabItem
+  tags$head(tags$link(rel = "stylesheet",
+  type = "text/css", href = "custom.css"),
+  tags$link(type = "text/javascript",
+  src = "custom.js")),
+  tabItems(body_introduction_tabItem,
+           body_file_viewer_tabItem,
+           body_visulization_tabItem,
+           body_upload_tabItem,
+           body_download_tabItem
+           )
   )
-)
 
 # Defined shiny UI
 ui <- dashboardPage(header, sidebar, body, skin = skin)
 
 server <- function(input, output, session) {
   # Visulization section (maftools)
-  set.seed(122)
   files <- c("server_maftools.R")
-  for(i in files) {
-    source(files)
+  for (i in files) {
+    source(i)
   }
   output <- maftools_server(input, output)
 
 
   # File viewr section
-  render_files_info_DT <- function(){
+  render_files_info_DT <- function() {
     output$files_info_DT <- DT::renderDataTable({
-       con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
-       sql <- sprintf("SELECT * FROM %s", upload_table)
-       if (!upload_table %in% DBI::dbListTables(con)) {
-         info <- matrix(data = NA, nrow = 1, ncol = length(upload_table_colnames))
-         info <- as.data.frame(info)
-         colnames(info) <- upload_table_colnames
-         info <- info[-1,]
-       } else {
-         info <- dbGetQuery(con, sql)
-       }
-       colnames(info)[1] <- "ID"
-       Action <- sprintf("<button id = 'files_view_%s' name = 'files_view_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>View</button>", info[,1], info[,1])
-       Action <- sprintf("%s <button id = 'files_del_%s' name = 'files_del_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>Del</button>", Action, info[,1], info[,1])
-       info <- cbind(info[1], Action, info[2:ncol(info)])
-       DBI::dbDisconnect(con)
-       return(info)
-    }, rownames = FALSE, editable = FALSE,
-      caption = 'All files stored in annovarR shinyapp Web service', escape = FALSE,
-      extensions = c("Buttons", "FixedColumns", "Scroller"),
-      options = list(
-        autoWidth = TRUE,
-        dom = 'Bfrtlip',
-        deferRender = TRUE,
-        searchHighlight = TRUE,
-        scrollX = TRUE,
-        lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-        buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-        columnDefs = list(list(width = "100px", targets = "_all")),
-        initComplete = JS(
-          "function(settings, json) {",
+      con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+      sql <- sprintf("SELECT * FROM %s", upload_table)
+      if (!upload_table %in% DBI::dbListTables(con)) {
+        info <- matrix(data = NA, nrow = 1, ncol = length(upload_table_colnames))
+        info <- as.data.frame(info)
+        colnames(info) <- upload_table_colnames
+        info <- info[-1, ]
+      } else {
+        info <- dbGetQuery(con, sql)
+      }
+      colnames(info)[1] <- "ID"
+      Action <- sprintf("<button id = 'files_view_%s' name = 'files_view_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>View</button>",
+        info[, 1], info[, 1])
+      Action <- sprintf("%s <button id = 'files_del_%s' name = 'files_del_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>Del</button>",
+        Action, info[, 1], info[, 1])
+      info <- cbind(info[1], Action, info[2:ncol(info)])
+      DBI::dbDisconnect(con)
+      return(info)
+    }, rownames = FALSE, editable = FALSE, caption = "All files stored in annovarR shinyapp Web service",
+      escape = FALSE, extensions = c("Buttons", "FixedColumns", "Scroller"),
+      options = list(autoWidth = TRUE, dom = "Bfrtlip", deferRender = TRUE,
+        searchHighlight = TRUE, scrollX = TRUE, lengthMenu = list(list(5,
+          10, 25, 50, -1), list(5, 10, 25, 50, "All")), buttons = c("copy",
+          "csv", "excel", "pdf", "print"), columnDefs = list(list(width = "100px",
+          targets = "_all")), initComplete = JS("function(settings, json) {",
           "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
-          "}")
-        ),
-        selection = "none"
-    )
+          "}")), selection = "none")
   }
   render_files_info_DT()
   con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
-if (upload_table %in% DBI::dbListTables(con)) {
-  sql <- sprintf("SELECT id FROM %s", upload_table)
-  upload_table_data <- DBI::dbGetQuery(con, sql)
-  files_ids <- upload_table_data[,1]
-  set_preview <- function(id) {
-    shinyjs::onclick(sprintf("files_view_%s", id), function(event){
-      shinyjs::reset("file_preview_DT")
-          output$file_preview_DT <- DT::renderDataTable({
-            sql <- sprintf("SELECT file_path,file_type FROM %s where id=%s", upload_table, id)
-              upload_table_data <- DBI::dbGetQuery(con, sql)
-              if (upload_table_data$file_type %in% c("txt", "csv")) {
-                file_content <- fread(upload_table_data$file_path)
-                return(file_content)
-              }
-            }, rownames = FALSE, editable = FALSE,
-            caption = 'All files stored in annovarR shinyapp Web service', escape = FALSE,
-            extensions = c("Buttons", "Scroller"),
-            options = list(
-              dom = 'Bfrtlip',
-              searchHighlight = TRUE,
-              scrollX = TRUE,
-              buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-              initComplete = JS(
-                "function(settings, json) {",
-                "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
-                "}")
-            ), selection = "single")
-    })
-  }
-  delete_file_item <- function(id) {
-    shinyjs::onclick(sprintf("files_del_%s", id), function(event){
-      shinyjs::runjs(sprintf("
-         if(!confirm('Confirm to delete？')){
-              window.event.returnValue = false;
-         } else {
-              var tb_id = $('#files_info_DT :first').attr('id').replace('_wrapper', '')
-              tb_id = eval(tb_id)
-              tb_id.deleteRow($('#files_del_%s').closest('tr').index() + 1);
-              $('#delete_confirmed').click();
-         };", id));
-      updateQueryString(sprintf("?delete_id=%s", id), mode = "push")
-    })
+  if (upload_table %in% DBI::dbListTables(con)) {
+    sql <- sprintf("SELECT id FROM %s", upload_table)
+    upload_table_data <- DBI::dbGetQuery(con, sql)
+    files_ids <- upload_table_data[, 1]
+    set_preview <- function(id) {
+      shinyjs::onclick(sprintf("files_view_%s", id), function(event) {
+        shinyjs::reset("file_preview_DT")
+        output$file_preview_DT <- DT::renderDataTable({
+          sql <- sprintf("SELECT file_path,file_type FROM %s where id=%s",
+          upload_table, id)
+          upload_table_data <- DBI::dbGetQuery(con, sql)
+          if (upload_table_data$file_type %in% c("txt", "csv")) {
+          file_content <- fread(upload_table_data$file_path)
+          return(file_content)
+          }
+        }, rownames = FALSE, editable = FALSE, caption = "All files stored in annovarR shinyapp Web service",
+          escape = FALSE, extensions = c("Buttons", "Scroller"), options = list(dom = "Bfrtlip",
+          searchHighlight = TRUE, scrollX = TRUE, buttons = c("copy", "csv",
+            "excel", "pdf", "print"), initComplete = JS("function(settings, json) {",
+            "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+            "}")), selection = "single")
+      })
+    }
+    delete_file_item <- function(id) {
+      shinyjs::onclick(sprintf("files_del_%s", id), function(event) {
+        shinyjs::runjs(sprintf("
+     if(!confirm('Confirm to delete？')){
+        window.event.returnValue = false;
+     } else {
+        var tb_id = $('#files_info_DT :first').attr('id').replace('_wrapper', '')
+        tb_id = eval(tb_id)
+        tb_id.deleteRow($('#files_del_%s').closest('tr').index() + 1);
+        $('#delete_confirmed').click();
+     };",
+          id))
+        updateQueryString(sprintf("?delete_id=%s", id), mode = "push")
+      })
 
+    }
+    for (i in files_ids) {
+      set_preview(i)
+      delete_file_item(i)
+    }
   }
-  for(i in files_ids) {
-    set_preview(i)
-    delete_file_item(i)
-  }
-}
 
-observeEvent(input$delete_confirmed, {
-   id <- getQueryString()
-   status <- DBI::dbSendQuery(con, sprintf("DELETE FROM %s WHERE id=%s", upload_table, id))
-   print(status)
-   shinyjs::alert("Delete successful!")
-   render_files_info_DT()
-})
+  observeEvent(input$delete_confirmed, {
+    id <- getQueryString()
+    status <- DBI::dbSendQuery(con, sprintf("DELETE FROM %s WHERE id=%s", upload_table,
+      id))
+    print(status)
+    shinyjs::alert("Delete successful!")
+    render_files_info_DT()
+  })
 
 
 
@@ -176,37 +155,26 @@ observeEvent(input$delete_confirmed, {
   # Upload section
   output$upload_file_preview_DT <- DT::renderDataTable({
 
-      # input$file1 will be NULL initially. After the user selects
-      # and uploads a file, head of that data file by default,
-      # or all rows if selected, will be shown.
-      req(input$upload.file)
-      shinyjs::toggleState(id="upload_save")
-      if (input$upload.file.type %in% c("txt", "csv")) {
-        df <- fread(input$upload.file$datapath)
-        return(df)
-      }
-  },
-  extensions = c("Buttons", "FixedColumns", "Responsive"),
-    options = list(
-      dom = 'Bfrtlip',
-      searchHighlight = TRUE,
-      scrollX = TRUE,
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-      initComplete = JS(
-        "function(settings, json) {",
-        "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
-        "}")
-    ),
-    selection = "none"
-  )
+    # input$file1 will be NULL initially. After the user selects and uploads a file,
+    # head of that data file by default, or all rows if selected, will be shown.
+    req(input$upload.file)
+    shinyjs::toggleState(id = "upload_save")
+    if (input$upload.file.type %in% c("txt", "csv")) {
+      df <- fread(input$upload.file$datapath)
+      return(df)
+    }
+  }, extensions = c("Buttons", "FixedColumns", "Responsive"), options = list(dom = "Bfrtlip",
+    searchHighlight = TRUE, scrollX = TRUE, buttons = c("copy", "csv", "excel",
+      "pdf", "print"), initComplete = JS("function(settings, json) {", "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+      "}")), selection = "none")
 
   output$upload_file_preview <- renderText({
-      req(input$upload.file)
-      if (!input$upload.file.type %in% c("txt", "csv")) {
-        return(input$upload.file$datapath)
-      }
+    req(input$upload.file)
+    if (!input$upload.file.type %in% c("txt", "csv")) {
+      return(input$upload.file$datapath)
+    }
   })
-  #shinyjs::addClass(class="btn btn-primary", id="upload_save")
+  # shinyjs::addClass(class='btn btn-primary', id='upload_save')
   observeEvent(input$upload_save, {
     req(input$upload.file)
 
@@ -219,13 +187,13 @@ observeEvent(input$delete_confirmed, {
         if (nrow(ids) == 0) {
           id <- 1
         } else {
-          id <- as.numeric(max(ids[,1])) + 1
+          id <- as.numeric(max(ids[, 1])) + 1
         }
         print(ids)
       } else {
-          id <- 1
-          sql <- system.file("extdata", "sql/upload_table.sql", package = "annovarR")
-          sql2sqlite(sql, dbname = db_path)
+        id <- 1
+        sql <- system.file("extdata", "sql/upload_table.sql", package = "annovarR")
+        sql2sqlite(sql, dbname = db_path)
       }
       assign(upload_table_colnames[1], input$upload.file$name)
       destfile <- sprintf("%s/%s", upload_dir, id)
@@ -241,7 +209,7 @@ observeEvent(input$delete_confirmed, {
       assign(upload_table_colnames[6], format(Sys.time(), "%Y %H:%M:%S"))
       assign(upload_table_colnames[8], input$upload.file.description)
       row_data <- NULL
-      for(var in c("id", upload_table_colnames)) {
+      for (var in c("id", upload_table_colnames)) {
         row_data <- c(row_data, get(var))
       }
       row_data <- data.frame(row_data)
@@ -250,19 +218,18 @@ observeEvent(input$delete_confirmed, {
       colnames(row_data) <- c("id", upload_table_colnames)
 
 
-      DBI::dbWriteTable(con, config$shiny_db_table$upload_data_table_name, row_data, append = TRUE, row.names = FALSE)
+      DBI::dbWriteTable(con, config$shiny_db_table$upload_data_table_name,
+        row_data, append = TRUE, row.names = FALSE)
       DBI::dbDisconnect(con)
       shinyjs::alert("Upload and update database successful!")
       shinyjs::reset("upload.file")
-      shinyjs::toggleState(id="upload_save")
+      shinyjs::toggleState(id = "upload_save")
+      # update file view UI and ovserve the preview and delete event
       render_files_info_DT()
       set_preview(id)
       delete_file_item(id)
-
-
-      #shinyjs::toggleClass(id="shiny-tab-file_viewer")
-      #shinyjs::runjs("$(.sidebar-menu a:last).tab('show')")
-      #shinyjs::addClass(class="active", id="shiny-tab-file_viewer")
+      # Chose the navbar
+      updateNavbarPage(session, "navbar_tabs", selected = "file_viewer")
     }
   })
 
@@ -283,25 +250,39 @@ observeEvent(input$delete_confirmed, {
       if (any(input$download.name != "")) {
         extra.params <- eval(parse(text = input$extra.paramters))
         params <- list(download.name = input$download.name, show.all.versions = input$show.all.versions,
-                       database.dir = database.dir, show.all.buildvers = input$show.all.buildvers,
-                       verbose = input$verbose, version = version)
+          database.dir = database.dir, show.all.buildvers = input$show.all.buildvers,
+          verbose = input$verbose, version = version)
         params <- config.list.merge(params, extra.params)
         messg <- capture.output(string <- do.call("download.database", params))
-        if (length(messg) == 0 ){
+        if (length(messg) == 0) {
           messg <- NULL
         }
-        tryCatch({output$log_output <- renderPrint({print(messg)})}, error = function(e) {
-          output$log_output <- renderPrint({print(NULL)})
+        tryCatch({
+          output$log_output <- renderPrint({
+          print(messg)
+          })
+        }, error = function(e) {
+          output$log_output <- renderPrint({
+          print(NULL)
+          })
         })
-        tryCatch({output$download_output <- renderPrint({print(string)})}, error = function(e) {
-          output$download_output <- renderPrint({print(NULL)})
+        tryCatch({
+          output$download_output <- renderPrint({
+          print(string)
+          })
+        }, error = function(e) {
+          output$download_output <- renderPrint({
+          print(NULL)
+          })
         })
       } else {
         return()
       }
     } else {
       string <- download.database(show.all.names = TRUE)
-      output$download_output <- renderPrint({print(string)})
+      output$download_output <- renderPrint({
+        print(string)
+      })
     }
   })
 }

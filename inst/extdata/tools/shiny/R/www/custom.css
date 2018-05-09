@@ -277,3 +277,7 @@
     word-break: break-all;
     display: block;
 }
+
+.maftools-input-section-p {
+  font-size:18px;
+}

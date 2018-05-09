@@ -1,163 +1,97 @@
-maftools_server <- function(input, output){
- # maftools-object-summary
-  laml.maf = system.file('extdata', 'tcga_laml.maf.gz', package = 'maftools') #path to TCGA LAML MAF file
-  laml.clin = system.file('extdata', 'tcga_laml_annot.tsv', package = 'maftools') # clinical information containing survival information and histology. This is optional
-  all.lesions <- system.file("extdata", "all_lesions.conf_99.txt", package = "maftools")
-  amp.genes <- system.file("extdata", "amp_genes.conf_99.txt", package = "maftools")
-  del.genes <- system.file("extdata", "del_genes.conf_99.txt", package = "maftools")
-  scores.gis <- system.file("extdata", "scores.gistic", package = "maftools")
-  laml.plus.gistic = read.maf(maf = laml.maf, gisticAllLesionsFile = all.lesions, gisticAmpGenesFile = amp.genes, gisticDelGenesFile = del.genes, gisticScoresFile = scores.gis, isTCGA = TRUE)
-  laml = read.maf(maf = laml.maf, clinicalData = laml.clin)
+maftools_server <- function(input, output) {
+  observeEvent(input$start_maftools_analysis, {
+    progress <- shiny::Progress$new()
+    for (i in 1:100) progress$set(message = "Running maftools analysis steps,  waiting please...",
+      value = i/100)
+    Sys.sleep(0.03)
+    on.exit(progress$close())
+    item_num <- 1
+    ui.sections <- config.maftools$maftools$ui$sections
+    params <- config.maftools$maftools$paramters
+    total_box_num <- length(ui.sections$order)
+    # shinyjs::runjs('$('div.pull-right:gt(1) button').click();')
+    for (item in ui.sections$order) {
+      # Set progress bar for every box
+      check_sprintf <- params[[item]][["rcmd_last_sprintf"]]
+      req_eval <- !is.null(check_sprintf) && check_sprintf
+      if (params[[item]]$section_type == "input") {
+        for (ui_section in params[[item]]$input_ui_order) {
+          input_section <- params[[item]]$input[[ui_section]]
+          if (!is.null(input_section$varname)) {
+          for (var_idx in 1:length(input_section$varname)) {
+            assign(input_section$varname[var_idx], input[[input_section$input_id[var_idx]]])
+          }
+          }
+          if ("ui_pre" %in% names(input_section)) {
+          for (code_block in names(input_section$ui_pre)) {
+            render_ui_pre <- function(code_block) {
+            render_id_pre <- paste0(item, "_", code_block, "_pre")
+            out_content <- eval(parse(text = sprintf("params$%s", input_section$ui_pre[[code_block]])))
+            output[[render_id_pre]] <- renderPrint({
+              out_content <- clean_parsed_item(out_content)
+              cat(out_content)
+            })
+            }
+            render_ui_pre(code_block)
+          }
+          }
+        }
+        cmd <- clean_parsed_item(params[[item]][["rcmd_last"]], req_eval)
+        eval(parse(text = cmd))
+      }
+      for (rcmd in c("rcmd_preprocess")) {
+        if (rcmd %in% names(params[[item]])) {
+          check_sprintf_2 <- params[[item]][[paste0(rcmd, "_sprintf")]]
+          req_eval_2 <- !is.null(check_sprintf_2) && check_sprintf_2
+          eval(parse(text = clean_parsed_item(params[[item]][[rcmd]]), req_eval_2))
+        }
+      }
+      render_type <- params[[item]]$render_type
+      if (!is.null(render_type) && render_type == "shiny::renderDataTable") {
 
-  output$maftools_fields_summary <- shiny::renderPrint(getFields(laml))
-  output$maftools_sample_summary <- shiny::renderDataTable(
-    getSampleSummary(laml), options = list(
-      pageLength = 10,
-      lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-      dom = 'Bfrtlip',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
-    ))
-  output$maftools_gene_summary <- shiny::renderDataTable(
-    getGeneSummary(laml), options = list(
-      pageLength = 10,
-      lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-      dom = 'Bfrtlip',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
-    ))
-  output$maftools_clinical_data <- shiny::renderDataTable(
-    getClinicalData(laml), options = list(
-      pageLength = 10,
-      lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-      dom = 'Bfrtlip',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
-    ))
+        DT_opt <- params[[item]]$render_DT_options
+        DT_opt <- eval(parse(text = clean_parsed_item(DT_opt)))
+        DT_opt <- list(pageLength = 10, lengthMenu = list(list(5, 10, 25,
+          50, -1), list(5, 10, 25, 50, "All")), dom = "Bfrtlip", buttons = c("copy",
+          "csv", "excel", "pdf", "print"))
+        render_dat <- eval(parse(text = clean_parsed_item(params[[item]]$rcmd_last,
+          req_eval)))
+        cmd <- sprintf("output$%s <- %s({render_dat}, options = DT_opt)",
+          params[[item]]$render_id, render_type)
+        eval(parse(text = cmd))
+      } else if (!is.null(render_type)) {
+        render_fun <- function(item) {
+          cmd <- sprintf("%s({%s})", params[[item]]$render_type, clean_parsed_item(params[[item]]$rcmd_last,
+          req_eval))
+          output[[params[[item]]$render_id]] <- eval(parse(text = cmd))
+          export_id <- paste0("export_", params[[item]]$render_id)
+          output[[export_id]] <- downloadHandler(sprintf("%s_%s.pdf",
+             export_id, stringi::stri_rand_strings(1, 6)),
+             function(theFile) {
+               make_pdf <- function(filename){
+                 export_dev <- params[[item]]$export_engine
+                 export_dev_param <- sprintf("list(%s)", params[[item]]$export_params)
+                 export_dev_param <- eval(parse(text = export_dev_param))
+                 export_dev_param$width <- input[[paste0(export_id, "_width")]]
+                 export_dev_param$height <- input[[paste0(export_id, "_height")]]
+                 export_dev_param$file <- filename
 
-  observeEvent(input$draw_maftools_plot_maf_summary, {
-    output$maftools_plot_maf_summary <- shiny::renderPlot(plotmafSummary(maf = laml,
-       rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
-    )
-  })
-  observeEvent(input$draw_maftools_plot_oncoplots, {
-    output$maftools_plot_oncoplots <- shiny::renderPlot(
-       oncoplot(maf = laml, top = 10, fontSize = 12)
-    )
-  })
+                 cmd <- clean_parsed_item(params[[item]]$rcmd_last,
+                                          req_eval)
+                 base::do.call(eval(parse(text = export_dev)), export_dev_param)
+                 eval(parse(text = cmd))
+                 dev.off()
+               }
+               make_pdf(theFile)
+             })
 
-  observeEvent(input$draw_maftools_plot_oncoplots_cnv, {
-    output$maftools_plot_oncoplots_cnv <- shiny::renderPlot(
-      oncoplot(maf = laml.plus.gistic, top = 10, fontSize = 12)
-    )
-  })
-  observeEvent(input$draw_maftools_plot_oncoplots_advanced, {
-    # for maftools_plot_oncoplots_advanced
-    col = RColorBrewer::brewer.pal(n = 8, name = 'Paired')
-    names(col) = c('Frame_Shift_Del','Missense_Mutation', 'Nonsense_Mutation', 'Multi_Hit', 'Frame_Shift_Ins',
-                   'In_Frame_Ins', 'Splice_Site', 'In_Frame_Del')
-
-    #Color coding for FAB classification; try getAnnotations(x = laml) to see available annotations.
-    fabcolors = RColorBrewer::brewer.pal(n = 8,name = 'Spectral')
-    names(fabcolors) = c("M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7")
-    fabcolors = list(FAB_classification = fabcolors)
-
-    #MutSig reusults
-    laml.mutsig <- system.file("extdata", "LAML_sig_genes.txt.gz", package = "maftools")
-    output$maftools_plot_oncoplots_advanced <- shiny::renderPlot(
-      oncoplot(maf = laml, colors = col, mutsig = laml.mutsig, mutsigQval = 0.01,
-      clinicalFeatures = 'FAB_classification', sortByAnnotation = TRUE,
-      annotationColor = fabcolors)
-    )
-  })
-  observeEvent(input$draw_maftools_plot_titv, {
-    laml.titv = titv(maf = laml, plot = FALSE, useSyn = TRUE)
-    #plot titv summary
-    output$maftools_plot_titv <- shiny::renderPlot(plotTiTv(res = laml.titv))
-  })
-
-  observeEvent(input$draw_maftools_plot_lollipop, {
-    #plot titv summary
-    output$maftools_plot_lollipop <- shiny::renderPlot(
-      lollipopPlot(maf = laml, gene = 'DNMT3A', AACol = 'Protein_Change',
-                   showMutationRate = TRUE)
-    )
-  })
-
-  output$export_maftools_plot_maf_summary <- downloadHandler(sprintf("%s.pdf", stringi::stri_rand_strings(1, 10)),
-    function(theFile) {
-    make_pdf <- function(filename) {
-      Cairo(type = 'pdf', file = filename, width = 21, height = 14, units='cm', bg='transparent')
-      plotmafSummary(maf = laml, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
-      dev.off()
+        }
+        render_fun(item)
+      }
+      progress$set(message = params[[item]]$progressbar_message, value = 1)
+      item_num <- item_num + 1
     }
-    make_pdf(theFile)
   })
-
-  output$export_maftools_plot_oncoplots <- downloadHandler(sprintf("%s.pdf", stringi::stri_rand_strings(1, 10)),
-    function(theFile) {
-      make_pdf <- function(filename) {
-      Cairo(type = 'pdf', file = filename, width = 21, height = 14, units='cm', bg='transparent')
-      oncoplot(maf = laml, top = 10, fontSize = 12)
-      dev.off()
-    }
-    make_pdf(theFile)
-  })
-
-  output$export_maftools_plot_oncoplots_cnv <- downloadHandler(sprintf("%s.pdf", stringi::stri_rand_strings(1, 10)),
-    function(theFile) {
-      make_pdf <- function(filename) {
-      Cairo(type = 'pdf', file = filename, width = 21, height = 14, units='cm', bg='transparent')
-      oncoplot(maf = laml.plus.gistic, top = 10, fontSize = 12)
-      dev.off()
-    }
-    make_pdf(theFile)
-  })
- output$export_maftools_plot_oncoplots_advanced <- downloadHandler(sprintf("%s.pdf", stringi::stri_rand_strings(1, 10)),
-    function(theFile) {
-      make_pdf <- function(filename) {
-        # for maftools_plot_oncoplots_advanced
-        col = RColorBrewer::brewer.pal(n = 8, name = 'Paired')
-        names(col) = c('Frame_Shift_Del','Missense_Mutation', 'Nonsense_Mutation', 'Multi_Hit', 'Frame_Shift_Ins',
-                       'In_Frame_Ins', 'Splice_Site', 'In_Frame_Del')
-
-        #Color coding for FAB classification; try getAnnotations(x = laml) to see available annotations.
-        fabcolors = RColorBrewer::brewer.pal(n = 8,name = 'Spectral')
-        names(fabcolors) = c("M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7")
-        fabcolors = list(FAB_classification = fabcolors)
-
-        #MutSig reusults
-        laml.mutsig <- system.file("extdata", "LAML_sig_genes.txt.gz", package = "maftools")
-
-        Cairo(type = 'pdf', file = filename, width = 21, height = 27, units='cm', bg='transparent')
-        oncoplot(maf = laml, colors = col, mutsig = laml.mutsig, mutsigQval = 0.01,
-                   clinicalFeatures = 'FAB_classification', sortByAnnotation = TRUE,
-                   annotationColor = fabcolors)
-        dev.off()
-    }
-    make_pdf(theFile)
- })
-
-  output$export_maftools_plot_titv <- downloadHandler(sprintf("%s.pdf", stringi::stri_rand_strings(1, 10)),
-    function(theFile) {
-      make_pdf <- function(filename) {
-      laml.titv = titv(maf = laml, plot = FALSE, useSyn = TRUE)
-      Cairo(type = 'pdf', file = filename, width = 21, height = 17, units='cm', bg='transparent')
-      plotTiTv(res = laml.titv)
-      dev.off()
-    }
-    make_pdf(theFile)
- })
-
-  output$export_maftools_plot_lollipop <- downloadHandler(sprintf("%s.pdf", stringi::stri_rand_strings(1, 11)),
-    function(theFile) {
-      make_pdf <- function(filename) {
-      Cairo(type = 'pdf', file = filename, width = 21, height = 17, units='cm', bg='transparent')
-
-      lollipopPlot(maf = laml, gene = 'DNMT3A', AACol = 'Protein_Change',
-               showMutationRate = TRUE)
-      dev.off()
-      file.copy(filename, "~/out.pdf")
-    }
-    make_pdf(theFile)
- })
   return(output)
 }
 
