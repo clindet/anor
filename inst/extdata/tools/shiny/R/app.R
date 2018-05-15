@@ -1,17 +1,8 @@
-pkgs.shiny <- c("shinycssloaders", "Cairo", "maftools", "shinydashboard", "configr",
-  "annovarR", "data.table", "shinyjs", "DT", "DBI", "RSQLite")
+pkgs.shiny <- c("shinycssloaders", "Cairo", "shinydashboard", "configr",
+  "data.table", "shinyjs")
 sapply(pkgs.shiny, function(x) {
-  status <- suppressWarnings(require(x, character.only = TRUE))
-  if (!status) {
-    tryCatch(install.packages(x), error = function(e) {
-      source("https://bioconductor.org/biocLite.R")
-      biocLite(x)
-    })
-  }
+  require(x, character.only = TRUE)
 })
-for (i in pkgs.shiny) {
-  suppressMessages(require(i, character.only = TRUE))
-}
 
 # source UI required code config.R sourced in the body_upload_ui.R
 files <- list.files(".", "^ui_")
@@ -30,7 +21,7 @@ sidebar <- dashboardSidebar(
     menuItem("Visulization", tabName = "dashboard", icon = icon("dashboard")),
     menuItem("File Viewer", tabName = "file_viewer", icon = icon("file")),
     menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
-    menuItem("Downloader", icon = icon("cloud-download"), tabName = "download"),
+    #menuItem("Downloader", icon = icon("cloud-download"), tabName = "download"),
     menuItem("Source code for app", icon = icon("file-code-o"),
              href = "https://github.com/JhuangLab/annovarR/blob/master/inst/extdata/tools/shiny/R/app.R")
   )
@@ -56,13 +47,15 @@ ui <- function(request) {
 
 server <- function(input, output, session) {
   # Visulization section (maftools)
-  files <- c("server_maftools.R", "server_download.R", "server_upload_file.R")
+  files <- c("server_utils.R", "server_download.R", "server_upload_file.R")
   for (i in files) {
     source(i)
   }
   output <- maftools_server(input, output)
-  output <- server_upload_file(input, output, session)$output
-  session <- server_upload_file(input, output, session)$session
-  output <- download_section_server(input, output)
+  output <- gvmap_server(input, output)
+  out <- server_upload_file(input, output, session)
+  output <- out$output
+  session <- out$session
+  #output <- download_section_server(input, output)
 }
 shinyApp(ui, server)

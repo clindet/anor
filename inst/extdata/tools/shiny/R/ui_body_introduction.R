@@ -6,7 +6,7 @@ body_introduction_tabItem <- tabItem("introduction",
                 status = "primary",
                 collapsible = TRUE,
                 collapsed = FALSE,
-                includeMarkdown("https://raw.githubusercontent.com/JhuangLab/annovarR/master/README.md")
+                includeMarkdown("index.md")
               )
             )
     )

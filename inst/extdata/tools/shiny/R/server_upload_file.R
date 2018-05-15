@@ -138,7 +138,10 @@ server_upload_file <- function(input, output, session) {
         dir.create(upload_dir, recursive = TRUE)
       }
       assign(upload_table_colnames[7], tools::md5sum(input$upload.file$datapath))
-      file.rename(input$upload.file$datapath, destfile)
+      tryCatch(file.rename(input$upload.file$datapath, destfile),
+        warning = function(w) {
+        file.copy(input$upload.file$datapath, destfile, overwrite = TRUE)
+      })
       assign(upload_table_colnames[2], destfile)
       assign(upload_table_colnames[3], file.size(destfile))
       assign(upload_table_colnames[4], input$upload.file.type)

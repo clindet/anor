@@ -1,5 +1,8 @@
 [maftools.ui.sections]
-order = ["readfiles", "getFields", "getSampleSummary", "getGeneSummary", "getClinicalData", "plotmafSummary", 
+order = ["readfiles", "getFields", "getSampleSummary", "plotmafSummary", 
+"oncoplot_default", "oncoplot_with_cnv", "oncoplot_advanced", "plotTiTv", "lollipopPlot2", "tcgaCompare", "plotVaf", 
+"somaticInteractions", "oncostrip", "plotEnrichmentResults", "plotClusters"]
+order_bak = ["readfiles", "getFields", "getSampleSummary", "getGeneSummary", "getClinicalData", "plotmafSummary", 
 "oncoplot_default", "oncoplot_with_cnv", "oncoplot_advanced", "plotTiTv", "lollipopPlot", "lollipopPlot2", "tcgaCompare", "plotVaf", 
 "gisticChromPlot", "gisticBubblePlot", "gisticOncoPlot", "somaticInteractions", "oncostrip", "plotOncodrive", 
 "mafSurvival", "plotEnrichmentResults", "plotClusters"]

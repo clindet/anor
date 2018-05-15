@@ -1,5 +1,5 @@
 parse_buildver_object <- function(download.name, download.version) {
-    buildver_object <- download.database(download.name,
+    buildver_object <- annovarR::download.database(download.name,
                       version = download.version,
                       show.all.buildvers = TRUE)
     x <- unique(unname(unlist(buildver_object)))
@@ -20,13 +20,13 @@ download_section_server <- function(input, output) {
       buildver <- input$download.buildver
       if (any(input$download.version == "")) {
         index <- input$download.version == ""
-        version[index] <- download.database(download.name = input$download.name[index],
+        version[index] <- annovarR::download.database(download.name = input$download.name[index],
                                                                    show.all.versions = TRUE)[1]
         input$download.version <- version
       }
       if (any(input$download.buildver == "")) {
         index <- input$download.buildver == ""
-        buildver[index] <- download.database(download.name = input$download.name[index],
+        buildver[index] <- annovarR::download.database(download.name = input$download.name[index],
                                              version = version[index], show.all.buildvers = TRUE)[1]
       }
       if (any(input$download.name != "")) {
@@ -40,13 +40,14 @@ download_section_server <- function(input, output) {
         Sys.sleep(2)
         on.exit(progress$close())
         print(params)
+        require(annovarR)
         messg <- capture.output(string <- do.call("download.database", params))
       }
   })
   observeEvent(input$download.name, {
     output$download.version.selector <- shiny::renderUI({
       selectInput("download.version", "Version of Database",
-                  choices = download.database(input$download.name, show.all.versions = TRUE), multiple = TRUE)
+                  choices = annovarR::download.database(input$download.name, show.all.versions = TRUE), multiple = TRUE)
     })
     observeEvent(input$download.version, {
       output$download.buildver.selector <- shiny::renderUI({
