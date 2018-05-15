@@ -64,6 +64,7 @@ primary_maf = read.maf(maf = primary_maf)
 relapse_maf = read.maf(maf = relapse_maf)
 """
 progressbar_message = "Reading related MAF and other files."
+render_id = "maftools_readfiles"
 
 #!!!!! input_ui_order required related section
 input_ui_order = ["single_input", "cnv_input", "comparsion_input", "other_params", "start_analysis"]
@@ -120,41 +121,14 @@ relapse_maf = "@>@system.file('extdata', 'APL_relapse.maf.gz', package = 'maftoo
 [maftools.paramters.readfiles.input.other_params]
 title = "Other paramters"
 title_control = "class = 'maftools-input-section-p'"
-varname = ["is_tcga", "maftools_box6_params", "maftools_box7_params", "maftools_box9_params"]
-input_id = ["maftools_is_tcga", "maftools_box6", "maftools_box7", "maftools_box9"]
-type = ["shiny::checkboxInput", "shiny::textInput", "shiny::textInput", "shiny::textAreaInput"]
+varname = ["is_tcga"]
+input_id = ["maftools_is_tcga"]
+type = ["shiny::checkboxInput"]
 label = ["Reading file: Maf file is TCGA format? (is_tcga is TRUE)", 
-         "Box6 parameters, plotmafSummary ()", "Box7 parameters, oncoplot ()", 
-         "Box9 parameters, R CMD to advanced plot oncoplot"]
-
-[maftools.paramters.readfiles.input.other_params.ui_pre]
-is_tcga = "readfiles$rcmd_last"
-maftools_box9_params = "oncoplot_advanced$rcmd_last"
+"Command to read files."]
 
 [maftools.paramters.readfiles.input.other_params.value]
 is_tcga = true
-maftools_box6_params = "rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE"
-maftools_box7_params = "top = 10, fontSize = 12"
-maftools_box9_params = """
-col = RColorBrewer::brewer.pal(n = 8, name = 'Paired')
-names(col) = c('Frame_Shift_Del','Missense_Mutation', 'Nonsense_Mutation', 'Multi_Hit', 'Frame_Shift_Ins',
-  'In_Frame_Ins', 'Splice_Site', 'In_Frame_Del')
-
-#Color coding for FAB classification; try getAnnotations(x = laml) to see available annotations.
-fabcolors = RColorBrewer::brewer.pal(n = 8,name = 'Spectral')
-names(fabcolors) = c("M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7")
-fabcolors = list(FAB_classification = fabcolors)
-mutsigQval = 0.01
-clinicalFeatures = "FAB_classification"
-sortByAnnotation = TRUE
-
-oncoplot_advanced_params <- list(maf = laml, colors = col, mutsig = laml_mutsig, 
-  mutsigQval = mutsigQval, clinicalFeatures = clinicalFeatures, 
-  sortByAnnotation = sortByAnnotation,
-  annotationColor = fabcolors)
-"""
-[maftools.paramters.readfiles.input.other_params.rows]
-maftools_box9_params = 10
 
 [maftools.paramters.readfiles.input.start_analysis]
 input_id = "start_maftools_analysis"
@@ -220,8 +194,7 @@ render_id = "maftools_plot_maf_summary"
 output_type = "shiny::plotOutput"
 export_engine = "Cairo"
 export_params = "type = 'pdf', width = 21, height = 14, units='cm', bg='transparent'"
-rcmd_last = """sprintf('plotmafSummary(maf = laml, %s)', maftools_box6_params)"""
-rcmd_last_sprintf = true
+rcmd_last = """plotmafSummary(maf = laml, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)"""
 progressbar_message = "Maftools plotmafSummary"
 
 [maftools.paramters.oncoplot_default]
@@ -230,9 +203,8 @@ render_type = "shiny::renderPlot"
 render_id = "maftools_plot_oncoplots"
 output_type = "shiny::plotOutput"
 export_engine = "Cairo"
-export_params = ""
-rcmd_last = "sprintf('oncoplot(maf = laml, %s)',maftools_box7_params)"
-rcmd_last_sprintf = true
+export_params = "type = 'pdf', width = 21, height = 14, units='cm', bg='transparent'"
+rcmd_last = "oncoplot(maf = laml, top = 10, fontSize = 12)"
 progressbar_message = "Maftools oncoplot_default"
 
 [maftools.paramters.oncoplot_with_cnv]
@@ -252,11 +224,27 @@ render_id = "maftools_plot_oncoplots_advanced"
 output_type = "shiny::plotOutput"
 export_engine = "Cairo"
 export_params = "type = 'pdf', width = 21, height = 27, units='cm', bg='transparent'"
-rcmd_preprocess = "eval(parse(text=clean_parsed_item(maftools_box9_params)))"
-rcmd_last = """
-'do.call(oncoplot, oncoplot_advanced_params)'
+rcmd_preprocess = """
+col = RColorBrewer::brewer.pal(n = 8, name = 'Paired')
+names(col) = c('Frame_Shift_Del','Missense_Mutation', 'Nonsense_Mutation', 'Multi_Hit', 'Frame_Shift_Ins',
+  'In_Frame_Ins', 'Splice_Site', 'In_Frame_Del')
+
+#Color coding for FAB classification; try getAnnotations(x = laml) to see available annotations.
+fabcolors = RColorBrewer::brewer.pal(n = 8,name = 'Spectral')
+names(fabcolors) = c("M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7")
+fabcolors = list(FAB_classification = fabcolors)
+mutsigQval = 0.01
+clinicalFeatures = "FAB_classification"
+sortByAnnotation = TRUE
+
+oncoplot_advanced_params <- list(maf = laml, colors = col, mutsig = laml_mutsig,
+  mutsigQval = mutsigQval, clinicalFeatures = clinicalFeatures,
+  sortByAnnotation = sortByAnnotation,
+  annotationColor = fabcolors)
 """
-rcmd_last_sprintf = true
+rcmd_last = """
+do.call(oncoplot, oncoplot_advanced_params)
+"""
 progressbar_message = "Maftools oncoplot with advanced"
 
 [maftools.paramters.plotTiTv]

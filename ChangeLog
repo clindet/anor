@@ -1,3 +1,7 @@
+2018-05-15 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* shiny APP support maftools demo plot with update function
+
 2018-05-08 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* delete upload items supported in shiny APP 

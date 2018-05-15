@@ -1,6 +1,14 @@
 clean_parsed_item <- function(item, req_parse = FALSE) {
+  if (is.null(item)) {
+    return(NULL)
+  }
   item <- stringr::str_replace_all(item, "\\\\n", "\n")
   item <- stringr::str_replace_all(item, "\\\\\"", "\"")
+  item <- stringr::str_replace_all(item, "‘", "'")
+  item <- stringr::str_replace_all(item, "’", "'")
+  item <- stringr::str_replace_all(item, "，", ", ")
+  item <- stringr::str_replace_all(item, '“', '"')
+  item <- stringr::str_replace_all(item, '”', '"')
   if (req_parse) {
     return(sprintf("eval(parse(text = %s))", item))
   }
@@ -38,31 +46,28 @@ generate_boxes_object <- function(config) {
           label[id_index])
           for (param_name in c("choices", "selected", "width", "multiple",
           "buttonLabel", "placeholder", "value", "height", "rows", "cols",
-          "resize", "ui_pre")) {
-          if (param_name %in% names(input_section_dat)) {
-            if (is.null(names(input_section_dat[[param_name]])))
-            var <- id_index
-            param_value <- input_section_dat[[param_name]][[var]]
-            if (is.null(param_value)) {
-            next
+          "resize")) {
+            if (param_name %in% names(input_section_dat)) {
+              if (is.null(names(input_section_dat[[param_name]])))
+              var <- id_index
+              param_value <- input_section_dat[[param_name]][[var]]
+              if (is.null(param_value)) {
+              next
+              }
+              if (is.character(param_value)) {
+              advanced_params <- sprintf("%s, %s=\"%s\"", advanced_params,
+                param_name, input_section_dat[[param_name]][[var]])
+              } else {
+              advanced_params <- sprintf("%s, %s=%s", advanced_params,
+                param_name, input_section_dat[[param_name]][[var]])
+              }
             }
-            if (param_name == "ui_pre") {
-            advanced_params <- sprintf("%s), shiny::verbatimTextOutput(outputId='%s'",
-              advanced_params, paste0(item, "_", var, "_pre"))
-            next
-            }
-            if (is.character(param_value)) {
-            advanced_params <- sprintf("%s, %s=\"%s\"", advanced_params,
-              param_name, input_section_dat[[param_name]][[var]])
-            } else {
-            advanced_params <- sprintf("%s, %s=%s", advanced_params,
-              param_name, input_section_dat[[param_name]][[var]])
-            }
-          }
           }
           advanced_params <- sprintf("%s)", advanced_params)
         }
       }
+      advanced_params <- sprintf("%s, hr(), shiny::uiOutput('lastcmd_ui_%s')",
+                                 advanced_params, config$maftools$paramters[[item]]$render_id)
     } else {
       render_id <- config$maftools$paramters[[item]]$render_id
       render_type <- config$maftools$paramters[[item]]$render_type
@@ -77,12 +82,25 @@ generate_boxes_object <- function(config) {
           "width = [0-9]*"), "width = ", "")
         height <- stringr::str_replace(stringr::str_extract(export_params,
           "height = [0-9]*"), "height = ", "")
+        advanced_params <- sprintf("%s, shiny::uiOutput('rcmd_preprocess_ui_%s')",
+                                   advanced_params, render_id)
+        advanced_params <- sprintf("%s, shiny::uiOutput('lastcmd_ui_%s')",
+                                   advanced_params, render_id)
         advanced_params <- sprintf("%s, shiny::column(6, wellPanel (shiny::sliderInput('export_%s_height', min = 0, max = 100, value = %s, label = 'height (cm)')))",
           advanced_params, render_id, height)
         advanced_params <- sprintf("%s, shiny::column(6, wellPanel (shiny::sliderInput('export_%s_width', min = 0, max = 100, value = %s, label = 'width (cm)')))",
           advanced_params, render_id, width)
-        advanced_params <- sprintf("%s, shiny::downloadButton('export_%s', label = 'Export PDF')",
+        advanced_params <- sprintf("%s, shiny::downloadButton('export_%s', label = 'Export PDF', disabled = 'disabled')",
           advanced_params, render_id)
+        advanced_params <- sprintf("%s, shiny::actionButton('update_%s', label = 'Update plot', icon = icon('refresh'), disabled = 'disabled')",
+                                   advanced_params, render_id)
+      } else {
+        advanced_params <- sprintf("%s, shiny::uiOutput('rcmd_preprocess_ui_%s')",
+                                   advanced_params, render_id)
+        advanced_params <- sprintf("%s, shiny::uiOutput('lastcmd_ui_%s')",
+                                   advanced_params, render_id)
+        advanced_params <- sprintf("%s, shiny::actionButton('update_%s', label = 'Update output', icon = icon('refresh'), disabled = 'disabled')",
+                                   advanced_params, render_id)
       }
     }
 
@@ -96,7 +114,10 @@ config.maftools <- configr::read.config(system.file("extdata", "config/shiny.maf
   package = "annovarR"), rcmd.parse = TRUE, file.type = "toml")
 boxes <- generate_boxes_object(config.maftools)
 
-cmd <- sprintf(paste0("body_visulization_tabItem <- tabItem('dashboard',", "tabsetPanel(type = 'pills',",
-  "tabPanel('maftools',", "fluidRow( %s )))", ")"), paste0(unname(boxes), collapse = ","))
+cmd <- sprintf(paste0("body_visulization_tabItem <- tabItem('dashboard',",
+                      "tabsetPanel(type = 'pills',",
+                      "tabPanel('maftools',",
+                        "fluidRow( %s )))",
+                      ")"), paste0(unname(boxes), collapse = ","))
 
 body_visulization_tabItem <- eval(parse(text = cmd))
