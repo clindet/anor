@@ -4,32 +4,32 @@
 \name{annovarR}
 \alias{annovarR}
 \alias{annovarR-package}
-\title{The 'annovarR' package provides R functions as well as database resources which offer an 
-integrated framework to annotate genetic variants from genome and transcriptome data. 
-The wrapper functions of 'annovarR' unified the interface of many published annotation tools, 
-such as 'VEP' (\url{http://asia.ensembl.org/info/docs/tools/vep/index.html}), 
+\title{The 'annovarR' package provides R functions as well as database resources which offer an
+integrated framework to annotate genetic variants from genome and transcriptome data.
+The wrapper functions of 'annovarR' unified the interface of many published annotation tools,
+such as 'VEP' (\url{http://asia.ensembl.org/info/docs/tools/vep/index.html}),
 'ANNOVAR' (\url{http://annovar.openbioinformatics.org/}), 'vcfanno' (\url{https://github.com/brentp/vcfanno})
-and 'AnnotationDbi' (\url{http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html}). 
-It also simplified the use of some of the external annotation tools in R. 
-Besides, massive published genetic variants annotation databases were integrated into 'annovarR'. 
-For example, 'annovarR' provides a newly RNA-seq allele frequency database, BRVar, 
+and 'AnnotationDbi' (\url{http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html}).
+It also simplified the use of some of the external annotation tools in R.
+Besides, massive published genetic variants annotation databases were integrated into 'annovarR'.
+For example, 'annovarR' provides a newly RNA-seq allele frequency database, BRVar,
 which built from total 1,285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data.}
 \description{
-The 'annovarR' package provides R functions as well as database resources which offer an 
-integrated framework to annotate genetic variants from genome and transcriptome data. 
-The wrapper functions of 'annovarR' unified the interface of many published annotation tools, 
-such as 'VEP' (\url{http://asia.ensembl.org/info/docs/tools/vep/index.html}), 
+The 'annovarR' package provides R functions as well as database resources which offer an
+integrated framework to annotate genetic variants from genome and transcriptome data.
+The wrapper functions of 'annovarR' unified the interface of many published annotation tools,
+such as 'VEP' (\url{http://asia.ensembl.org/info/docs/tools/vep/index.html}),
 'ANNOVAR' (\url{http://annovar.openbioinformatics.org/}), 'vcfanno' (\url{https://github.com/brentp/vcfanno})
-and 'AnnotationDbi' (\url{http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html}). 
-It also simplified the use of some of the external annotation tools in R. 
-Besides, massive published genetic variants annotation databases were integrated into 'annovarR'. 
-For example, 'annovarR' provides a newly RNA-seq allele frequency database, BRVar, 
+and 'AnnotationDbi' (\url{http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html}).
+It also simplified the use of some of the external annotation tools in R.
+Besides, massive published genetic variants annotation databases were integrated into 'annovarR'.
+For example, 'annovarR' provides a newly RNA-seq allele frequency database, BRVar,
 which built from total 1,285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data.
 }
 \seealso{
 Useful links:
 
-\url{https://github.com/JhuangLab/annovarR} 
+\url{https://github.com/JhuangLab/annovarR}
 
 Report bugs at \url{https://github.com/JhuangLab/annovarR/issues}
 }

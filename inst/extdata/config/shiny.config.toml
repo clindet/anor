@@ -2,7 +2,7 @@
 
 [shiny_db]
 db_type = "sqlite"
-db_path = "~/.annovarR.shiny.sqlite"
+db_path = "~/.annovarR/annovarR.shiny.sqlite"
 db_username = ""
 db_password = ""
 db_port = 3306
@@ -15,8 +15,18 @@ user_talbe_colnames = ["uid", "username", "password"]
 # data_table for storing the uploaded files information
 upload_data_table_name = "upload_data"
 upload_data_table_colnames = ["file_name", "file_path", "file_size", "file_type", "genome_version", "upload_time", "md5", "description"]
+task_table_name = "task_info"
+task_table_admin_key = "annovarR_admin"
 
 [shiny_upload]
 supported_file_type = ["txt", "txt.gz", "csv.gz", "csv", "vcf", "vcf.gz", "avinput", "avinput.gz"]
 supported_genome_version = ["hg19", "hg38", "mm10", "mm9"]
 upload_dir = "~/.annovarR/upload"
+
+[shiny_download]
+download_dir = "~/.annovarR/db"
+
+[shiny_queue]
+name = "annovarR_shiny"
+queue_db = "~/.annovarR/annovarR.shiny.queue.sqlite"
+log_dir = "~/.annovarR/log"

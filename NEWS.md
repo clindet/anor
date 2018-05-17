@@ -1,3 +1,9 @@
+# annovarR 1.1.0
+
+## New features
+
+* Shiny app for maftools and gvmap
+
 # annovarR 1.0.0
 
 ## New features

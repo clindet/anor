@@ -3,23 +3,13 @@ server_upload_file <- function(input, output, session) {
   # File viewr section
   render_files_info_DT <- function() {
     output$files_info_DT <- DT::renderDataTable({
-      con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
-      sql <- sprintf("SELECT * FROM %s", upload_table)
-      if (!upload_table %in% DBI::dbListTables(con)) {
-        info <- matrix(data = NA, nrow = 1, ncol = length(upload_table_colnames))
-        info <- as.data.frame(info)
-        colnames(info) <- upload_table_colnames
-        info <- info[-1, ]
-      } else {
-        info <- dbGetQuery(con, sql)
-      }
+      info <- featch_files()
       colnames(info)[1] <- "ID"
       Action <- sprintf("<button id = 'files_view_%s' name = 'files_view_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>View</button>",
                         info[, 1], info[, 1])
       Action <- sprintf("%s <button id = 'files_del_%s' name = 'files_del_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'>Del</button>",
                         Action, info[, 1], info[, 1])
       info <- cbind(info[1], Action, info[2:ncol(info)])
-      DBI::dbDisconnect(con)
       return(info)
     }, rownames = FALSE, editable = FALSE, caption = "All files stored in annovarR shinyapp Web service",
     escape = FALSE, extensions = c("Buttons", "FixedColumns", "Scroller"),
@@ -27,7 +17,7 @@ server_upload_file <- function(input, output, session) {
                    searchHighlight = TRUE, scrollX = TRUE, lengthMenu = list(list(5,
                    10, 25, 50, -1), list(5, 10, 25, 50, "All")), buttons = c("copy",
                    "csv", "excel", "pdf", "print"), columnDefs = list(list(width = "100px",
-                   targets = "_all")), initComplete = JS("function(settings, json) {",
+                   targets = "_all")), initComplete = DT::JS("function(settings, json) {",
                    "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
                    "}")), selection = "none")
   }
@@ -53,7 +43,7 @@ server_upload_file <- function(input, output, session) {
         }, rownames = FALSE, editable = FALSE, caption = "All files stored in annovarR shinyapp Web service",
           escape = FALSE, extensions = c("Buttons", "Scroller"), options = list(dom = "Bfrtlip",
           searchHighlight = TRUE, scrollX = TRUE, buttons = c("copy", "csv",
-            "excel", "pdf", "print"), initComplete = JS("function(settings, json) {",
+            "excel", "pdf", "print"), initComplete = DT::JS("function(settings, json) {",
             "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
             "}")), selection = "single")
       })
@@ -117,26 +107,18 @@ server_upload_file <- function(input, output, session) {
 
     if (db_type == "sqlite") {
       con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
-      if (upload_table %in% DBI::dbListTables(con)) {
-        sql <- sprintf("select id from %s", upload_table)
-        ids <- DBI::dbGetQuery(con, sql)
-        print(ids)
-        if (nrow(ids) == 0) {
-          id <- 1
-        } else {
-          id <- as.numeric(max(ids[, 1])) + 1
-        }
-        print(ids)
-      } else {
+      sql <- sprintf("select id from %s", upload_table)
+      ids <- DBI::dbGetQuery(con, sql)
+      if (nrow(ids) == 0) {
         id <- 1
-        sql <- system.file("extdata", "sql/upload_table.sql", package = "annovarR")
-        sql2sqlite(sql, dbname = db_path)
+      } else {
+        id <- RSQLite::dbGetQuery(con, 
+                  sprintf("SELECT seq from sqlite_sequence where name = '%s'",
+                          upload_table))
+        id <- as.numeric(id) + 1
       }
       assign(upload_table_colnames[1], input$upload.file$name)
       destfile <- sprintf("%s/%s", upload_dir, id)
-      if (!dir.exists(upload_dir)) {
-        dir.create(upload_dir, recursive = TRUE)
-      }
       assign(upload_table_colnames[7], tools::md5sum(input$upload.file$datapath))
       tryCatch(file.rename(input$upload.file$datapath, destfile),
         warning = function(w) {

@@ -1,3 +1,4 @@
+source("config.R")
 parse_buildver_object <- function(download.name, download.version) {
     buildver_object <- annovarR::download.database(download.name,
                       version = download.version,
@@ -7,6 +8,11 @@ parse_buildver_object <- function(download.name, download.version) {
 }
 
 download_section_server <- function(input, output) {
+  output$database.dir.input <- renderUI(
+    textInput("database.dir", "Directory stored databases",
+              download_dir)
+    )
+
   observeEvent(input$download_run, {
     req(input$download.name)
     req(input$download.version)
@@ -35,13 +41,25 @@ download_section_server <- function(input, output) {
                        verbose = TRUE, version = version, buildver = buildver)
         params <- config.list.merge(params, extra.params)
         progress <- shiny::Progress$new()
-        for (i in 1:100) progress$set(message = "Running download.database function,  waiting please...",
+        for (i in 1:100) progress$set(message = "Submitting task...",
                                       value = i/100)
         Sys.sleep(2)
         on.exit(progress$close())
-        print(params)
-        require(annovarR)
-        messg <- capture.output(string <- do.call("download.database", params))
+        params$qqcommand <- "annovarR::download.database"
+        params$qqkey <- stringi::stri_rand_strings(1, 50)
+        params$qqcommand_type <- "R"
+        msg <- jsonlite::toJSON(params)
+        queue <- liteq::ensure_queue(shiny_queue_name, db = queue_db)
+        liteq::publish(queue, title = "Download", message = msg)
+        output <- dashbord_section_server(input, output)
+        output$task_submit_modal <- renderUI({
+          text <- paste0(readLines("www/modal.html"), collapse = "\n")
+          text <- str_replace_all(text, '\\{\\{task_title\\}\\}', "Downloader")
+          text <- str_replace_all(text, '\\{\\{task_key\\}\\}', params$qqkey)
+          text <- str_replace_all(text, '\\{\\{task_msg\\}\\}', msg)
+          text <- sprintf("%s<script>$('#myModal').modal('show')</script>", text)
+          HTML(text)
+        })
       }
   })
   observeEvent(input$download.name, {

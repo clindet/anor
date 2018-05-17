@@ -1,11 +1,5 @@
 [gvmap.ui.sections]
 order = ["readfiles", "heatmap_1", "heatmap_2", "heatmap_3", "heatmap_4"]
-[gvmap.ui.sections.show]
-readfiles = true
-heatmap_1 = true
-heatmap_2 = true
-heatmap_3 = true
-heatmap_4 = true
 [gvmap.ui.sections.ui_basic]
 readfiles = "title = 'Input files', solidHeader = TRUE, status = 'primary', width = 12, collapsed = FALSE, collapsible = TRUE"
 heatmap_1 = "title = 'Output of gvmap demo 1', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
@@ -47,7 +41,7 @@ input_id = ["input_gvmap_het_fn"]
 type = ["shiny::selectInput"]
 label = ["Heatmap data file (heatmap_file)"]
 [gvmap.paramters.readfiles.input.single_input.choices] 
-heatmap_file = "@>@system.file('extdata', 'heatmap.txt', package = 'gvmap')@<@"
+heatmap_file = "!!glue {c(system.file('extdata', 'heatmap.txt', package = 'gvmap'), featch_files('txt')$file_path)}"
 [gvmap.paramters.readfiles.input.single_input.selected] 
 heatmap_file = "@>@system.file('extdata', 'heatmap.txt', package = 'gvmap')@<@"
 

@@ -1,5 +1,4 @@
 generate_server_object <- function(input, output, ui_server_config, toolname, pkgs = NULL) {
-  if (!is.null(pkgs)) {sapply(pkgs, function(x){require(x, character.only = TRUE)})}
   ui.sections <- ui_server_config[[toolname]]$ui$sections
   params <- ui_server_config[[toolname]]$paramters
   total_box_num <- length(ui.sections$order)
@@ -8,11 +7,19 @@ generate_server_object <- function(input, output, ui_server_config, toolname, pk
   }
   start_trigger <- sprintf("start_%s_analysis", toolname)
   observeEvent(input[[start_trigger]], {
-    shinyjs::disable(start_trigger)
     progress <- shiny::Progress$new()
+    if (!is.null(pkgs) && input[[start_trigger]] == 1) {sapply(pkgs, function(x){
+      msg <- sprintf("Loading %s ...", x)
+      for (i in 1:100) {
+        progress$set(message = msg, value = i/100)
+        Sys.sleep(0.02)
+      }
+      require(x, character.only = TRUE)
+    })}
+    shinyjs::disable(start_trigger)
     msg <- sprintf("Running %s analysis steps,  waiting please...", toolname)
     for (i in 1:100) {
-      progress$set(message = msg, value = i/100)
+      progress$set(message = msg, value = 1)
       Sys.sleep(0.02)
     }
     on.exit({
@@ -36,7 +43,9 @@ generate_server_object <- function(input, output, ui_server_config, toolname, pk
         if (is.null(cmd)) {
           cmd <- clean_parsed_item(params[[item]][["rcmd_last"]], req_eval)
         }
-        eval(parse(text = cmd), envir = globalenv())
+        tryCatch(eval(parse(text = cmd), envir = globalenv()),
+                 error = function(e) {shiny::showNotification(e$message, type = "error")},
+                 warning = function(w){shiny::showNotification(w$message, type = "warning")})
       }
       for (rcmd in c("rcmd_preprocess")) {
         if (rcmd %in% names(params[[item]])) {
@@ -46,7 +55,9 @@ generate_server_object <- function(input, output, ui_server_config, toolname, pk
             req_eval_2 <- !is.null(check_sprintf_2) && check_sprintf_2
             cmd <- clean_parsed_item(params[[item]][[rcmd]], req_eval_2)
           }
-          eval(parse(text = cmd), envir = globalenv())
+          tryCatch(eval(parse(text = cmd), envir = globalenv()),
+                   error = function(e) {shiny::showNotification(e$message, type = "error")},
+                   warning = function(w){shiny::showNotification(w$message, type = "warning")})
         }
       }
       render_type <- params[[item]]$render_type
@@ -57,10 +68,14 @@ generate_server_object <- function(input, output, ui_server_config, toolname, pk
           if (is.null(cmd)) {
             cmd <- clean_parsed_item(params[[item]][["rcmd_last"]], req_eval)
           }
-          render_dat <- eval(parse(text = cmd))
+          render_dat <- tryCatch(eval(parse(text = cmd), envir = globalenv()),
+                                 error = function(e) {shiny::showNotification(e$message, type = "error")},
+                                 warning = function(w){shiny::showNotification(w$message, type = "warning")})
           cmd <- sprintf("output$%s <- %s({render_dat}, options = DT_opt)",
             params[[item]]$render_id, render_type)
-          eval(parse(text = cmd), envir = globalenv())
+          tryCatch(eval(parse(text = cmd)),
+                   error = function(e) {shiny::showNotification(e$message, type = "error")},
+                   warning = function(w){shiny::showNotification(w$message, type = "warning")})
 
           output <- update_hander_from_params(input, output, toolname, params, item, update_hander_DT_func,
                                               other_object = list(DT_opt = DT_opt))
@@ -78,7 +93,9 @@ generate_server_object <- function(input, output, ui_server_config, toolname, pk
           } else {
             cmd <- sprintf("%s({%s}%s)", params[[item]]$render_type, cmd, render_params)
           }
-          output[[params[[item]]$render_id]] <- eval(parse(text = cmd), envir = globalenv())
+          tryCatch(output[[params[[item]]$render_id]] <- eval(parse(text = cmd), envir = globalenv()),
+                   error = function(e) {shiny::showNotification(e$message, type = "error")},
+                   warning = function(w){shiny::showNotification(w$message, type = "warning")})
           export_id <- paste0("export_", params[[item]]$render_id)
           output <- download_hander_from_params(input, output, params, item, req_eval)
           output <- update_hander_from_params(input, output, toolname, params, item, update_hander_pdf_func)
@@ -105,16 +122,28 @@ download_hander_from_params <- function(input, output, params, item, req_eval) {
        make_pdf <- function(filename){
          export_dev_param$width <- input[[paste0(export_id, "_width")]]
          export_dev_param$height <- input[[paste0(export_id, "_height")]]
-         export_dev_param$file <- filename
          cmd <- clean_parsed_item(input[[paste0("lastcmd_", params[[item]]$render_id)]], FALSE)
          if (is.null(cmd)) {
            cmd <- clean_parsed_item(params[[item]]$rcmd_last, req_eval)
          }
          if (export_dev == "link") {
-           obj_list <- eval(parse(text = cmd), envir = globalenv())
+           obj_list <- tryCatch(eval(parse(text = cmd), envir = globalenv()),
+                                error = function(e) {shiny::showNotification(e$message, type = "error")},
+                                warning = function(w){shiny::showNotification(w$message, type = "warning")})
            file.copy(obj_list$src, filename)
-         }  else {
-           base::do.call(eval(parse(text = export_dev)), export_dev_param)
+         } else if (export_dev == "ggsave") {
+           export_dev_param$filename <- filename
+           export_dev_param$device <- export_dev_param$type
+           export_dev_param$type <- NULL
+           tryCatch(base::do.call(eval(parse(text = export_dev)), export_dev_param),
+                    error = function(e) {shiny::showNotification(e$message, type = "error")},
+                    warning = function(w){shiny::showNotification(w$message, type = "warning")})
+           eval(parse(text = cmd), envir = globalenv())
+         } else {
+           export_dev_param$file <- filename
+           tryCatch(base::do.call(eval(parse(text = export_dev)), export_dev_param),
+                    error = function(e) {shiny::showNotification(e$message, type = "error")},
+                    warning = function(w){shiny::showNotification(w$message, type = "warning")})
            eval(parse(text = cmd), envir = globalenv())
            dev.off()
          }
@@ -133,11 +162,15 @@ download_hander_from_params <- function(input, output, params, item, req_eval) {
 
 update_hander_pdf_func <- function(input, output, params, item, render_type, render_id, other_object = NULL) {
   cmd <- clean_parsed_item(input[[paste0("rcmd_preprocess_", render_id)]], FALSE)
-  print(cmd)
+  render_params <- params[[item]]$render_params
+  if (is.null(render_params))  render_params <- ""
+  else render_params <- paste0(', ', render_params)
   if (!is.null(cmd)) eval(parse(text = cmd), envir = globalenv())
   cmd <- clean_parsed_item(input[[paste0("lastcmd_", render_id)]], FALSE)
-  cmd <- sprintf("%s({%s})", render_type, cmd)
-  output[[render_id]] <- eval(parse(text = cmd), envir = globalenv())
+  cmd <- sprintf("%s({%s}%s)", render_type, cmd, render_params)
+  tryCatch(output[[render_id]] <- eval(parse(text = cmd)),
+           error = function(e) {shiny::showNotification(e$message, type = "error")},
+           warning = function(w){shiny::showNotification(w$message, type = "warning")})
   return(output)
 }
 
@@ -146,10 +179,14 @@ update_hander_DT_func <- function(input, output, params, item, render_type, rend
   cmd <- clean_parsed_item(input[[paste0("rcmd_preprocess_", render_id)]], FALSE)
   if (!is.null(cmd)) eval(parse(text = cmd), envir = globalenv())
   cmd <- clean_parsed_item(input[[paste0("lastcmd_", render_id)]], FALSE)
-  render_dat <- eval(parse(text = cmd), envir = globalenv())
+  render_dat <- tryCatch(eval(parse(text = cmd), envir = globalenv()),
+                         error = function(e) {shiny::showNotification(e$message, type = "error")},
+                         warning = function(w){shiny::showNotification(w$message, type = "warning")})
 
-  cmd <- sprintf("%s({%s}, options = DT_opt)", render_type, cmd)
-  output[[render_id]] <- eval(parse(text = cmd))
+  cmd <- sprintf("%s({render_dat}, options = DT_opt)", render_type, cmd)
+  output[[render_id]] <- tryCatch(eval(parse(text = cmd)),
+                                  error = function(e) {shiny::showNotification(e$message, type = "error")},
+                                  warning = function(w){shiny::showNotification(w$message, type = "warning")})
   return(output)
 }
 
@@ -217,5 +254,9 @@ maftools_server <- function(input, output, pkgs = "maftools"){
 
 gvmap_server <- function(input, output, pkgs = "gvmap"){
   output <- generate_server_object(input, output, config.gvmap, "gvmap", pkgs)
+}
+
+clusterProfiler_server <- function(input, output, pkgs = c("clusterProfiler", "org.Hs.eg.db")){
+  output <- generate_server_object(input, output, config.clusterProfiler, "clusterProfiler", pkgs)
 }
 

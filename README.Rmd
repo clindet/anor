@@ -1,4 +1,5 @@
 ---
+title : annovarR
 output: github_document
 ---
 
@@ -218,7 +219,7 @@ There are still plenty of places to go for this tool. More annotation tools and 
 
 ## Shiny App
 
-A annovarR shiny APP is being developed. You can use a single function `web` to run the shiny APP. In the future, graphical interface of annovarR may get better.
+We developed a shiny App to provide a local and cloud WEB interface (development status) to annotate and visulize NGS data. Now, we have integrated the [maftools](https://github.com/PoisonAlien/maftools) and [gvmap](https://github.com/ytdai/gvmap) to draw the mutation and heatmap. Now, serveral useful WEB functions, such as upload, plot and export PDF/SVG, have been provided.
 
 ```r
 web()

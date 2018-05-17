@@ -6,30 +6,6 @@ order_bak = ["readfiles", "getFields", "getSampleSummary", "getGeneSummary", "ge
 "oncoplot_default", "oncoplot_with_cnv", "oncoplot_advanced", "plotTiTv", "lollipopPlot", "lollipopPlot2", "tcgaCompare", "plotVaf", 
 "gisticChromPlot", "gisticBubblePlot", "gisticOncoPlot", "somaticInteractions", "oncostrip", "plotOncodrive", 
 "mafSurvival", "plotEnrichmentResults", "plotClusters"]
-[maftools.ui.sections.show]
-readfiles = true
-getFields = true
-getSampleSummary = true
-getGeneSummary = true
-getClinicalData = true
-plotmafSummary = true
-oncoplot_default = true
-oncoplot_with_cnv = true
-oncoplot_advanced = true
-plotTiTv = true
-lollipopPlot = true
-lollipopPlot2 = true
-tcgaCompare = true
-plotVaf = true
-gisticChromPlot = true
-gisticBubblePlot = true
-gisticOncoPlot = true
-somaticInteractions = true
-oncostrip = true
-plotOncodrive = true
-mafSurvival = true
-plotEnrichmentResults = true
-plotClusters = true
 [maftools.ui.sections.ui_basic]
 readfiles = "title = 'Input files', solidHeader = TRUE, status = 'primary', width = 12, collapsed = FALSE, collapsible = TRUE"
 getFields = "title = 'Output of maftools fields summary', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
@@ -80,9 +56,9 @@ input_id = ["input_maf", "input_clin", "input_mutsig"]
 type = ["shiny::selectInput", "shiny::selectInput", "shiny::selectInput"]
 label = ["MAF file (laml_maf)", "Clincal annotation file (laml_clin)", "MutSig reusults (laml_mutsig)"]
 [maftools.paramters.readfiles.input.single_input.choices] 
-laml_maf = "@>@system.file('extdata', 'tcga_laml.maf.gz', package = 'maftools')@<@"
-laml_clin = "@>@system.file('extdata', 'tcga_laml_annot.tsv', package = 'maftools')@<@"
-laml_mutsig = "@>@system.file('extdata', 'LAML_sig_genes.txt.gz', package = 'maftools')@<@"
+laml_maf = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(maf)', full.names = TRUE), featch_files(c('maf', 'maf.gz'))$file_path)}"
+laml_clin = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(txt)|(tsv)', full.names = TRUE), featch_files(c('tsv', 'txt', 'txt.gz', 'tsv.gz'))$file_path)}"
+laml_mutsig = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(txt)|(tsv)', full.names = TRUE), featch_files(c('tsv', 'txt', 'txt.gz', 'tsv.gz'))$file_path)}"
 [maftools.paramters.readfiles.input.single_input.selected] 
 laml_maf = "@>@system.file('extdata', 'tcga_laml.maf.gz', package = 'maftools')@<@"
 laml_clin = "@>@system.file('extdata', 'tcga_laml_annot.tsv', package = 'maftools')@<@"
@@ -97,10 +73,10 @@ type = ["shiny::selectInput", "shiny::selectInput", "shiny::selectInput", "shiny
 label = ["Gistic all lesions file (all_lesions):", "Gistic amp genes file (amp_genes)", 
                       "Gistic del genes file (del_genes)", "Gistic score file (scores_gis)"]
 [maftools.paramters.readfiles.input.cnv_input.choices] 
-all_lesions = "@>@system.file('extdata', 'all_lesions.conf_99.txt', package = 'maftools')@<@"
-amp_genes = "@>@system.file('extdata', 'amp_genes.conf_99.txt', package = 'maftools')@<@"
-del_genes = "@>@system.file('extdata', 'del_genes.conf_99.txt', package = 'maftools')@<@"
-scores_gis = "@>@system.file('extdata', 'scores.gistic', package = 'maftools')@<@"
+all_lesions = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(txt)|(tsv)', full.names = TRUE), featch_files(c('txt', 'txt.gz'))$file_path)}"
+amp_genes = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(txt)|(tsv)', full.names = TRUE), featch_files(c('txt', 'txt.gz'))$file_path)}"
+del_genes = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(txt)|(tsv)', full.names = TRUE), featch_files(c('txt', 'txt.gz'))$file_path)}"
+scores_gis = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(gistic)', full.names = TRUE), featch_files(c('txt', 'txt.gz', 'gistic'))$file_path)}"
 [maftools.paramters.readfiles.input.cnv_input.selected] 
 all_lesions = "@>@system.file('extdata', 'all_lesions.conf_99.txt', package = 'maftools')@<@"
 amp_genes = "@>@system.file('extdata', 'amp_genes.conf_99.txt', package = 'maftools')@<@"
@@ -115,8 +91,8 @@ input_id = ["input_primary_maf", "input_relapse_maf"]
 type = ["shiny::selectInput", "shiny::selectInput"]
 label = ["Cohort 1 maf file (primary_maf)", "Cohort 2 maf file (relapse_maf)"]
 [maftools.paramters.readfiles.input.comparsion_input.choices] 
-primary_maf = "@>@system.file('extdata', 'APL_primary.maf.gz', package = 'maftools')@<@"
-relapse_maf = "@>@system.file('extdata', 'APL_relapse.maf.gz', package = 'maftools')@<@"
+primary_maf = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(maf)', full.names = TRUE), featch_files(c('maf', 'maf.gz'))$file_path)}"
+relapse_maf = "!!glue {c(list.files(system.file('extdata', package = 'maftools'), '(maf)', full.names = TRUE), featch_files(c('maf', 'maf.gz'))$file_path)}"
 [maftools.paramters.readfiles.input.comparsion_input.selected] 
 primary_maf = "@>@system.file('extdata', 'APL_primary.maf.gz', package = 'maftools')@<@"
 relapse_maf = "@>@system.file('extdata', 'APL_relapse.maf.gz', package = 'maftools')@<@"
@@ -188,11 +164,6 @@ progressbar_message = "Maftools getClinicalData"
 [maftools.paramters.plotmafSummary]
 section_type = "output"
 render_type = "shiny::renderPlot"
-render_DT_options = """
-    list(pageLength = 10,
-         lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-         dom = 'Bfrtlip',
-         buttons = c('copy', 'csv', 'excel', 'pdf', 'print'))"""
 render_id = "maftools_plot_maf_summary"
 output_type = "shiny::plotOutput"
 export_engine = "Cairo"

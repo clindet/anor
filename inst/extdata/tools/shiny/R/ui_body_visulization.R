@@ -1,3 +1,4 @@
+source("config.R")
 clean_parsed_item <- function(item, req_parse = FALSE) {
   if (is.null(item)) {
     return(NULL)
@@ -48,18 +49,23 @@ generate_boxes_object <- function(config, tool_name) {
           "buttonLabel", "placeholder", "value", "height", "rows", "cols",
           "resize")) {
             if (param_name %in% names(input_section_dat)) {
-              if (is.null(names(input_section_dat[[param_name]])))
-              var <- id_index
+              if (is.null(names(input_section_dat[[param_name]]))) var <- id_index
               param_value <- input_section_dat[[param_name]][[var]]
-              if (is.null(param_value)) {
-              next
-              }
-              if (is.character(param_value)) {
-              advanced_params <- sprintf("%s, %s=\"%s\"", advanced_params,
-                param_name, input_section_dat[[param_name]][[var]])
+              if (is.null(param_value)) next
+              if (is.character(param_value) && length(param_value) == 1) {
+                advanced_params <- sprintf("%s, %s='%s'", advanced_params,
+                  param_name, input_section_dat[[param_name]][[var]])
+              } else if (length(param_value) == 1) {
+                advanced_params <- sprintf("%s, %s=%s", advanced_params,
+                  param_name, input_section_dat[[param_name]][[var]])
+              } else if (is.character(param_value)) {
+                val_paste <- paste0(input_section_dat[[param_name]][[var]], collapse = "','")
+                advanced_params <- sprintf("%s, %s=c('%s')", advanced_params,
+                  param_name, val_paste)
               } else {
-              advanced_params <- sprintf("%s, %s=%s", advanced_params,
-                param_name, input_section_dat[[param_name]][[var]])
+                val_paste <- paste0(input_section_dat[[param_name]][[var]], collapse = ',')
+                advanced_params <- sprintf("%s, %s=c(%s)", advanced_params,
+                                           param_name, val_paste)
               }
             }
           }
@@ -110,25 +116,34 @@ generate_boxes_object <- function(config, tool_name) {
     return(cmd)
   })
 }
-
 # Generate maftools UI
 config.maftools <- configr::read.config(system.file("extdata", "config/shiny.maftools.parameters.toml",
-  package = "annovarR"), rcmd.parse = TRUE, file.type = "toml")
+  package = "annovarR"), rcmd.parse = TRUE, glue.parse = TRUE, file.type = "toml")
 maftools_boxes <- generate_boxes_object(config.maftools, "maftools")
+
 config.gvmap <- configr::read.config(system.file("extdata", "config/shiny.gvmap.parameters.toml",
-                   package = "annovarR"), rcmd.parse = TRUE, file.type = "toml")
+                   package = "annovarR"), rcmd.parse = TRUE, glue.parse = TRUE, file.type = "toml")
 gvmap_boxes <- generate_boxes_object(config.gvmap, "gvmap")
 
-cmd <- sprintf(paste0("body_visulization_tabItem <- tabItem('dashboard',",
+config.clusterProfiler <- configr::read.config(system.file("extdata",
+                                                 "config/shiny.clusterProfiler.parameters.toml",
+                                                 package = "annovarR"), rcmd.parse = TRUE, glue.parse = TRUE, file.type = "toml")
+clusterProfiler_boxes <- generate_boxes_object(config.clusterProfiler, "clusterProfiler")
+
+cmd <- sprintf(paste0("body_visulization_tabItem <- tabItem('visulization',",
                    "tabsetPanel(type = 'pills',",
                       "tabPanel('maftools',",
                         "fluidRow( %s )",
                       "),",
                       "tabPanel('gvmap',",
                         "fluidRow( %s )",
+                      "),",
+                      "tabPanel('clusterProfiler',",
+                        "fluidRow( %s )",
                       ")",
                    ")",
                   ")"), paste0(unname(maftools_boxes), collapse = ","),
-               paste0(unname(gvmap_boxes), collapse = ","))
+               paste0(unname(gvmap_boxes), collapse = ","),
+               paste0(unname(clusterProfiler_boxes), collapse = ","))
 
 body_visulization_tabItem <- eval(parse(text = cmd))

@@ -8,7 +8,7 @@ web(appDir = system.file("extdata", "tools/shiny/R", package = "annovarR"),
   ...)
 }
 \arguments{
-\item{appDir}{The application to run. 
+\item{appDir}{The application to run.
 Default is system.file('extdata', 'tools/shiny/R', package = 'annovarR')}
 
 \item{...}{Other parameters pass to \code{\link[shiny]{runApp}}}

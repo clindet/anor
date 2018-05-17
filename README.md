@@ -30,7 +30,8 @@ The main development motivation of annovarR is to increase the supported
 database and facilitate the variants annotation work. There are already
 too many tools and databases available and the usage is quite different.
 annovarR will integrate these annotation tools and get the merged
-annotation result in R.
+annotation result in
+R.
 
 <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/annovarR_package-1.jpg" align="center" />
 
@@ -49,7 +50,8 @@ sequencing variant database. [The Genome Analysis Toolkit
 [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from
 the RNA-seq data (Database called BRVar). This work can help us to
 screen candidate systematic sequencing bias and evaluate variant calling
-trait from B-ALL RNA-seq.
+trait from B-ALL
+RNA-seq.
 
 <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/BRVar_databases-1.jpg" align="center" />
 
@@ -247,9 +249,11 @@ can provide some help for your variants annotation work.
 
 ## Shiny App
 
-A annovarR shiny APP is being developed. You can use a single function
-`web` to run the shiny APP. In the future, graphical interface of
-annovarR may get better.
+We developed a shiny App to provide a local or cloud WEB interface
+(development status) to annotate and visulize NGS data. Now, we have
+integrated the maftools and gvmap to draw the mutation and heatmap. Now,
+serveral useful WEB functions, such as upload, plot and export PDF/SVG,
+have been provided.
 
 ``` r
 web()

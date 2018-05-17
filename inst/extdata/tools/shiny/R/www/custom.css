@@ -281,3 +281,34 @@
 .maftools-input-section-p {
   font-size:18px;
 }
+
+.progress .bar {
+    -webkit-transition: width 2s ease-in-out;
+    -moz-transition: width 2s ease-in-out;
+    -ms-transition: width 2s ease-in-out;
+    -o-transition: width 2s ease-in-out;
+    transition: width 2s ease-in-out;
+}
+
+.pointer-text {
+	font-size:14px;
+	font-weight:600;
+	color:#000000;
+	z-index:10;
+}
+.progress {
+    text-align:center;
+}
+.progress-value {
+    position:absolute;
+    right:0;
+    left:0;
+}
+
+.modal-header {
+  background: #3f8cbc;
+}
+
+.modal-title {
+  color: #FFFFFF;
+}
