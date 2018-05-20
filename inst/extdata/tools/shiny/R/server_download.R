@@ -50,15 +50,22 @@ download_section_server <- function(input, output) {
         params$qqcommand_type <- "R"
         msg <- jsonlite::toJSON(params)
         queue <- liteq::ensure_queue(shiny_queue_name, db = queue_db)
-        liteq::publish(queue, title = "Download", message = msg)
+        while(TRUE) {
+          tryCatch({liteq::publish(queue, title = "Download", message = msg);break},
+                   error = function(e) {})
+        }
         output <- dashbord_section_server(input, output)
         output$task_submit_modal <- renderUI({
-          text <- paste0(readLines("www/modal.html"), collapse = "\n")
-          text <- str_replace_all(text, '\\{\\{task_title\\}\\}', "Downloader")
-          text <- str_replace_all(text, '\\{\\{task_key\\}\\}', params$qqkey)
-          text <- str_replace_all(text, '\\{\\{task_msg\\}\\}', msg)
-          text <- sprintf("%s<script>$('#myModal').modal('show')</script>", text)
-          HTML(text)
+          html_text <- tryCatch(get("html_text_task_submit_modal", envir = globalenv()), error = function(e) {
+            html_text <- paste0(readLines("www/modal.html"), collapse = "\n")
+            assign("html_text_task_submit_modal", html_text, envir = globalenv())
+            return(html_text)
+          })
+          html_text <- str_replace_all(html_text, '\\{\\{task_title\\}\\}', "Downloader")
+          html_text <- str_replace_all(html_text, '\\{\\{task_key\\}\\}', params$qqkey)
+          html_text <- str_replace_all(html_text, '\\{\\{task_msg\\}\\}', msg)
+          html_text <- sprintf("%s<script>$('#myModal').modal('show')</script>", html_text)
+          HTML(html_text)
         })
       }
   })

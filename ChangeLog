@@ -1,3 +1,11 @@
+2018-05-21 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* Annotation tabitem UI
+		* shiny tableout to DT tableout
+		* vcfanno, vep, annovar change cmd 'print' to message
+		* set solidHeader = FALSE in shiny box
+		* add upload filetypes
+
 2018-05-20 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* support background workers to process long time R commands

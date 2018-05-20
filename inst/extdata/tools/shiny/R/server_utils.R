@@ -62,7 +62,7 @@ generate_server_object <- function(input, output, ui_server_config, toolname, pk
       }
       render_type <- params[[item]]$render_type
       cmd <- clean_parsed_item(input[[paste0("lastcmd_", params[[item]]$render_id)]], FALSE)
-      if (!is.null(render_type) && render_type == "shiny::renderDataTable") {
+      if (!is.null(render_type) && render_type == "DT::renderDataTable") {
         render_tool_DT <- function(item) {
           DT_opt <- set_DT_opt(params, item)
           if (is.null(cmd)) {
@@ -71,7 +71,7 @@ generate_server_object <- function(input, output, ui_server_config, toolname, pk
           render_dat <- tryCatch(eval(parse(text = cmd), envir = globalenv()),
                                  error = function(e) {shiny::showNotification(e$message, type = "error")},
                                  warning = function(w){shiny::showNotification(w$message, type = "warning")})
-          cmd <- sprintf("output$%s <- %s({render_dat}, options = DT_opt)",
+          cmd <- sprintf("output$%s <- %s({render_dat}, caption = 'Output table', rownames = FALSE, editable = FALSE, options = DT_opt, escape = FALSE, selection = 'none', extensions = c('Buttons', 'FixedColumns', 'Scroller'))",
             params[[item]]$render_id, render_type)
           tryCatch(eval(parse(text = cmd)),
                    error = function(e) {shiny::showNotification(e$message, type = "error")},
@@ -191,11 +191,13 @@ update_hander_DT_func <- function(input, output, params, item, render_type, rend
 }
 
 set_DT_opt <- function(params, item) {
-  DT_opt <- params[[item]]$render_DT_options
-  DT_opt <- eval(parse(text = clean_parsed_item(DT_opt)))
-  DT_opt <- list(pageLength = 10, lengthMenu = list(list(5, 10, 25,
-    50, -1), list(5, 10, 25, 50, "All")), dom = "Bfrtlip", buttons = c("copy",
-             "csv", "excel", "pdf", "print"))
+  DT_opt <- list(autoWidth = TRUE, dom = "Bfrtlip", deferRender = TRUE,
+                 searchHighlight = TRUE, scrollX = TRUE, lengthMenu = list(list(5,
+                 10, 25, 50, -1), list(5, 10, 25, 50, "All")), buttons = c("copy",
+                 "csv", "excel", "pdf", "print"), columnDefs = list(list(width = "100px",
+                 targets = "_all")), initComplete = DT::JS("function(settings, json) {",
+                 "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+                 "}"))
 }
 
 update_hander_from_params <- function(input, output, toolname = "maftools", params, item, eval_func, other_object = NULL) {

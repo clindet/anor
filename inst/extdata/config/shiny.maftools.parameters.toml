@@ -7,29 +7,29 @@ order_bak = ["readfiles", "getFields", "getSampleSummary", "getGeneSummary", "ge
 "gisticChromPlot", "gisticBubblePlot", "gisticOncoPlot", "somaticInteractions", "oncostrip", "plotOncodrive", 
 "mafSurvival", "plotEnrichmentResults", "plotClusters"]
 [maftools.ui.sections.ui_basic]
-readfiles = "title = 'Input files', solidHeader = TRUE, status = 'primary', width = 12, collapsed = FALSE, collapsible = TRUE"
-getFields = "title = 'Output of maftools fields summary', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-getSampleSummary = "title = 'Output of maftools sample summary', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-getGeneSummary = "title = 'Output of maftools gene summary', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-getClinicalData = "title = 'Output of maftools clinical data summary', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-plotmafSummary = "title = 'Output of maftools MAF summary', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-oncoplot_default = "title = 'Output of maftools oncoplots', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-oncoplot_with_cnv = "title = 'Output of maftools oncoplots with copy number data', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-oncoplot_advanced = "title = 'Output of maftools oncoplots with advanced', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-plotTiTv = "title = 'Output of maftools transition and transversions', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-lollipopPlot = "title = 'Output of maftools Lollipop plots for amino acid changes', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-lollipopPlot2 = "title = 'Output of maftools Lollipop2 plots for amino acid changes', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-tcgaCompare = "title = 'Output of maftools comparing mutation load', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-plotVaf = "title = 'Output of maftools VAF boxplot', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-gisticChromPlot = "title = 'Output of maftools gistic genome plot', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-gisticBubblePlot = "title = 'Output of maftools gistic bubble plot', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-gisticOncoPlot = "title = 'Output of maftools gistic oncoplot plot', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-somaticInteractions = "title = 'Output of maftools somatic interactions', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-oncostrip = "title = 'Output of maftools somatic interactions (oncostrip)', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-plotOncodrive = "title = 'Output of maftools driver based on positional clustering', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-mafSurvival = "title = 'Output of maftools Survival', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-plotEnrichmentResults = "title = 'Output of maftools Clinical enrichment analysis', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
-plotClusters = "title = 'Output of maftools heterogeneity analysis', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+readfiles = "title = 'Input files', status = 'primary', width = 12, collapsed = FALSE, collapsible = TRUE"
+getFields = "title = 'Output of maftools fields summary', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+getSampleSummary = "title = 'Output of maftools sample summary', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+getGeneSummary = "title = 'Output of maftools gene summary', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+getClinicalData = "title = 'Output of maftools clinical data summary', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+plotmafSummary = "title = 'Output of maftools MAF summary', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+oncoplot_default = "title = 'Output of maftools oncoplots', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+oncoplot_with_cnv = "title = 'Output of maftools oncoplots with copy number data', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+oncoplot_advanced = "title = 'Output of maftools oncoplots with advanced', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+plotTiTv = "title = 'Output of maftools transition and transversions', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+lollipopPlot = "title = 'Output of maftools Lollipop plots for amino acid changes', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+lollipopPlot2 = "title = 'Output of maftools Lollipop2 plots for amino acid changes', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+tcgaCompare = "title = 'Output of maftools comparing mutation load', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+plotVaf = "title = 'Output of maftools VAF boxplot', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+gisticChromPlot = "title = 'Output of maftools gistic genome plot', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+gisticBubblePlot = "title = 'Output of maftools gistic bubble plot', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+gisticOncoPlot = "title = 'Output of maftools gistic oncoplot plot', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+somaticInteractions = "title = 'Output of maftools somatic interactions', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+oncostrip = "title = 'Output of maftools somatic interactions (oncostrip)', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+plotOncodrive = "title = 'Output of maftools driver based on positional clustering', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+mafSurvival = "title = 'Output of maftools Survival', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+plotEnrichmentResults = "title = 'Output of maftools Clinical enrichment analysis', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
+plotClusters = "title = 'Output of maftools heterogeneity analysis', status = 'primary', width = 12, collapsed = TRUE, height='auto', collapsible = TRUE"
 
 [maftools.paramters.readfiles]
 # For reading annovarR shiny APP maftools tool input files  
@@ -125,39 +125,24 @@ progressbar_message = "Maftools getFields"
 [maftools.paramters.getSampleSummary]
 section_type = "output"
 rcmd_last = "getSampleSummary(laml)"
-render_type = "shiny::renderDataTable"
-render_DT_options = """
-    list(pageLength = 10,
-         lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-         dom = 'Bfrtlip',
-         buttons = c('copy', 'csv', 'excel', 'pdf', 'print'))"""
+render_type = "DT::renderDataTable"
 render_id = "maftools_sample_summary"
-output_type = "shiny::dataTableOutput"
+output_type = "DT::dataTableOutput"
 progressbar_message = "Maftools getSampleSummary"
 
 [maftools.paramters.getGeneSummary]
 section_type = "output"
 rcmd_last = "getGeneSummary(laml)"
-render_type = "shiny::renderDataTable"
-render_DT_options = """
-    list(pageLength = 10,
-         lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-         dom = 'Bfrtlip',
-         buttons = c('copy', 'csv', 'excel', 'pdf', 'print'))"""
+render_type = "DT::renderDataTable"
 render_id = "maftools_gene_summary"
-output_type = "shiny::dataTableOutput"
+output_type = "DT::dataTableOutput"
 progressbar_message = "Maftools getGeneSummary"
 
 [maftools.paramters.getClinicalData]
 section_type = "output"
-render_type = "shiny::renderDataTable"
-render_DT_options = """
-    list(pageLength = 10,
-         lengthMenu = list(list(5, 10, 25, 50, -1), list(5, 10 , 25, 50, "All")),
-         dom = 'Bfrtlip',
-         buttons = c('copy', 'csv', 'excel', 'pdf', 'print'))"""
+render_type = "DT::renderDataTable"
 render_id = "maftools_clinical_data"
-output_type = "shiny::dataTableOutput"
+output_type = "DT::dataTableOutput"
 rcmd_last = "getClinicalData(laml)"
 progressbar_message = "Maftools getClinicalData"
 

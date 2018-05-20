@@ -11,6 +11,7 @@ shiny_queue_name <- config$shiny_queue$name
 log_dir <- config$shiny_queue$log_dir
 
 while (TRUE) {
+  queue <- NULL
   tryCatch(queue <- liteq::ensure_queue(shiny_queue_name, queue_db),
            error = function(e) {})
   if (is.list(queue)) {

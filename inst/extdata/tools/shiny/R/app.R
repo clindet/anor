@@ -18,7 +18,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(id = "navbar_tabs",
     menuItem("Introduction", tabName = "introduction", icon = icon("home")),
     menuItem("Dashbord", tabName = "dashboard", icon = icon("dashboard")),
-    menuItem("Visulization", tabName = "visulization", icon = icon("paint-brush")),
+    menuItem("Annotation", tabName = "annotation", icon = icon("leaf")),
+    menuItem("Visulization", tabName = "visulization", icon = icon("bar-chart")),
     menuItem("File Viewer", tabName = "file_viewer", icon = icon("file")),
     menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
     menuItem("Downloader", icon = icon("cloud-download"), tabName = "download"),
@@ -39,6 +40,7 @@ body <- dashboardBody(
              body_dashbord_tabItem,
              body_file_viewer_tabItem,
              body_visulization_tabItem,
+             body_annotation_tabItem,
              body_upload_tabItem,
              body_download_tabItem
     )

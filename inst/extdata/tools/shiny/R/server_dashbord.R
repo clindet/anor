@@ -61,7 +61,7 @@ custom_render_DT <- function(output, input_id, cmd = NULL, func = NULL, caption 
                    "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
                    "}")), selection = "none")
   return(output)
-  }
+}
 
 update_system_monitor <- function(input, output) {
   output$system_monitor <- renderUI({
@@ -70,11 +70,16 @@ update_system_monitor <- function(input, output) {
     disk.used <- disk.usage.values[2]
     if (stringr::str_detect(version$os, 'darwin')){
       disk.total <- disk.usage.values[3]
+      disk.used <- disk.used / 2
     } else {
       disk.total <- disk.usage.values[1]
     }
     ratio <- round(disk.used/disk.total, 2) * 100
-    html_text <- paste0(readLines("./www/system_monitor.html"), collapse = "\n")
+    html_text <- tryCatch(get("html_text_update_system_monitor", envir = globalenv()), error = function(e) {
+      html_text <- paste0(readLines("./www/system_monitor.html"), collapse = "\n")
+      assign("html_text_update_system_monitor", html_text, envir = globalenv())
+      return(html_text)
+    })
     span_text <- sprintf("%s%% (%s/%s)", ratio, convertkb2size(disk.used),
                          convertkb2size(disk.total))
 
@@ -94,7 +99,15 @@ update_system_monitor <- function(input, output) {
     html_text <- sprintf("%s\n%s", html_text,
                          set_monitor_progress_bar("memory-monitor", ratio, span_text))
     # tasks monitor
-    queue_obj <- ensure_queue(shiny_queue_name, db = queue_db)
+    while(TRUE) {
+      queue_obj <- tryCatch({
+        ensure_queue(shiny_queue_name, db = queue_db)
+      }, error = function(e) {
+        FALSE
+      })
+      if (!is.logical(queue_obj)) break
+    }
+
     tasks_tb <- list_messages(queue_obj)
     tasks.total <- nrow(tasks_tb)
     tasks.queue <- nrow(tasks_tb[tasks_tb$status == "READY",])
@@ -119,7 +132,7 @@ update_system_monitor <- function(input, output) {
 
 dashbord_section_server <- function(input, output) {
 
-  update_system_monitor(input, output)
+  output <- update_system_monitor(input, output)
 
   output$r_session_info_monitor <- renderPrint({
     print(sessionInfo())

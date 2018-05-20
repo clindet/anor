@@ -1,11 +1,11 @@
 [gvmap.ui.sections]
 order = ["readfiles", "heatmap_1", "heatmap_2", "heatmap_3", "heatmap_4"]
 [gvmap.ui.sections.ui_basic]
-readfiles = "title = 'Input files', solidHeader = TRUE, status = 'primary', width = 12, collapsed = FALSE, collapsible = TRUE"
-heatmap_1 = "title = 'Output of gvmap demo 1', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-heatmap_2 = "title = 'Output of gvmap demo 2', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-heatmap_3 = "title = 'Output of gvmap demo 3', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
-heatmap_4 = "title = 'Output of gvmap demo 4', solidHeader = TRUE, status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+readfiles = "title = 'Input files', status = 'primary', width = 12, collapsed = FALSE, collapsible = TRUE"
+heatmap_1 = "title = 'Output of gvmap demo 1', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+heatmap_2 = "title = 'Output of gvmap demo 2', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+heatmap_3 = "title = 'Output of gvmap demo 3', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
+heatmap_4 = "title = 'Output of gvmap demo 4', status = 'primary', width = 12, collapsed = TRUE, collapsible = TRUE"
 
 [gvmap.paramters.readfiles]
 # For reading annovarR shiny APP gvmap tool input files  

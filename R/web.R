@@ -37,7 +37,7 @@ check_shiny_dep <- function(install = FALSE) {
   github_urls <- list(gvmap = "ytdai/gvmap", maftools = "PoisonAlien/maftools")
 
   bioc_pkgs <- c("clusterProfiler", "org.Hs.eg.db", "GSEABase")
-  bioc_lowest_version <- list(clusterProfiler = "3.8.1")
+  bioc_lowest_version <- list()
 
   req.pkgs <- c()
   for(pkg in cran_pkgs) {
