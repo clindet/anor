@@ -18,7 +18,7 @@ sidebar <- dashboardSidebar(
   sidebarMenu(id = "navbar_tabs",
     menuItem("Introduction", tabName = "introduction", icon = icon("home")),
     menuItem("Dashbord", tabName = "dashboard", icon = icon("dashboard")),
-    #menuItem("Annotation", tabName = "annotation", icon = icon("leaf")),
+    menuItem("Annotation", tabName = "annotation", icon = icon("leaf")),
     menuItem("Visulization", tabName = "visulization", icon = icon("bar-chart")),
     menuItem("File Viewer", tabName = "file_viewer", icon = icon("file")),
     menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
@@ -61,6 +61,10 @@ server <- function(input, output, session) {
   output <- maftools_server(input, output)
   output <- gvmap_server(input, output)
   output <- clusterProfiler_server(input, output)
+  output <- annovar_server(input, output)
+  output <- vcfanno_server(input, output)
+  output <- annovarR_server(input, output)
+
   out <- server_upload_file(input, output, session)
   output <- out$output
   session <- out$session

@@ -23,7 +23,9 @@ while (TRUE) {
   task <- liteq::try_consume(queue)
   if (!is.null(task)) {
     params <- jsonlite::fromJSON(task$message)
-    for (item in c("qqcommand", "qqkey", "qqcommand_type")) {
+    for (item in c("qqcommand", "qqkey", "qqcommand_type", "req_pkgs",
+                   "input2var", "input", "boxes", "toolname",
+                   "last_cmd")) {
       assign(item, params[[item]])
       params[[item]] <- NULL
     }
@@ -55,10 +57,31 @@ while (TRUE) {
       log_con <- file(log_file)
       sink(log_con, append = TRUE)
       sink(log_con, append = TRUE, type = "message")
-      status <- tryCatch(do.call(eval(parse(text = qqcommand)), params),
-                         error = function(e) {
-                           FALSE
-                         })
+      worker_do_env <- new.env()
+      cmd <- 'sapply(req_pkgs, function(x){require(x, character.only = TRUE)})'
+      if (qqcommand != "") {
+        status <- tryCatch({
+          eval(parse(text = cmd), envir = worker_do_env)
+          do.call(eval(parse(text = qqcommand), envir = worker_do_env), params,
+                  envir = worker_do_env)},
+                           error = function(e) {
+                             message(e$message)
+                             FALSE
+                           })
+      } else {
+        status <- tryCatch({
+         eval(parse(text = cmd), envir = worker_do_env)
+         sapply(1:length(input2var), function(x) {
+           message(sprintf("%s => ", names(input2var)[[x]]))
+           print(input[[input2var[[x]]]])
+           assign(names(input2var)[[x]], input[[input2var[[x]]]], envir = worker_do_env)
+         })
+         sapply(1:length(last_cmd), function(x){
+           message(last_cmd[[x]])
+           eval(parse(text = last_cmd[[x]]), envir = worker_do_env)
+         })
+        }, error = function(e) {message(e$message)})
+      }
       sink()
       sink(type = "message")
     }

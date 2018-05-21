@@ -160,8 +160,10 @@ dashbord_section_server <- function(input, output) {
     output <- custom_render_DT(output, "task_table_DT", func = func)
     output$task_table_log <- renderPrint({
       for(fn in eval(func)$log) {
-         cat(sprintf("\n\n-------------------------- %s ------------------------\n", fn))
-         cat(paste0(readLines(fn), collapse = '\n'))
+         if (file.exists(fn)) {
+           cat(sprintf("\n\n-------------------------- %s ------------------------\n", fn))
+           cat(paste0(readLines(fn), collapse = '\n'))
+         }
       }
     })
   })

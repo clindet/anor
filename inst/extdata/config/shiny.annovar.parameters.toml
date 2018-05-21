@@ -1,0 +1,59 @@
+[annovar.ui.sections]
+order = ["readfiles"]
+[annovar.ui.sections.ui_basic]
+readfiles = "title = 'Input files', status = 'primary', width = 12, collapsed = FALSE, collapsible = TRUE"
+
+[annovar.paramters.readfiles]
+# For reading annovarR shiny APP annovar tool input files
+section_type = "input"
+rcmd_last = """
+if (in_text != "") {
+  in_file = tempfile()
+  cat(in_text, file = in_file)
+}
+
+in_anno_names <- stringr::str_replace(in_anno_names, 'perl_annovar_', '')
+
+#qqkey is also the query key
+out_key <- qqkey
+annovarR::annotation(anno.name = "perl_annovar_merge",
+input.file = in_file, annovar.anno.names = in_anno_names,
+buildver = in_reffa, database.dir = '@>@db_dir@<@', 
+annovar.dir = '@>@annovarR_shiny_tools_path$annovar@<@', 
+out = sprintf("~/.annovarR/output/%s/%s.vcf", out_key, basename(in_file)))
+"""
+progressbar_message = ""
+render_id = "annovar_readfiles"
+
+#!!!!! input_ui_order required related section
+input_ui_order = ["single_input", "start_analysis"]
+
+[annovar.paramters.readfiles.input.single_input]
+title = "Demo input:"
+title_control = "class = 'input-section-p'"
+varname = ["in_file", "in_text", "in_reffa",
+"in_file_type", "in_anno_names"]
+input_id = ["annovar_input_file", "annovar_input_file_area", "annovar_input_file_genome",
+"annovar_input_file_type", "annovar_input_annotation_items"]
+type = ["shiny::selectInput", "shiny::textAreaInput", "shiny::selectInput",
+"shiny::selectInput", "shiny::selectInput"]
+label = ["Input File (in_file)", "or Paste Variant Calls (in_text)", "Reference Genome (in_reffa)",
+"Input Format (in_file_type)", "Annotaion Databases (in_anno_names)"]
+[annovar.paramters.readfiles.input.single_input.choices]
+in_file = "!!glue {featch_files()$file_path}"
+in_reffa = ["hg19", "hg38", "mm9", "mm10"]
+in_file_type = ["vcf", "vcf_old", "tsv", "avinput", "solid_gff3", "complete_genomics_masterVar"]
+in_anno_names = "!!glue {c('all', annovar_annotation_names)}"
+[annovar.paramters.readfiles.input.single_input.selected]
+in_reffa = "hg19"
+in_file_type = "avinput"
+in_anno_names = "all"
+[annovar.paramters.readfiles.input.single_input.multiple]
+in_anno_names = true
+[annovar.paramters.readfiles.input.single_input.rows]
+in_text = 15
+
+[annovar.paramters.readfiles.input.start_analysis]
+input_id = "start_annovar_analysis"
+type = "shiny::actionButton"
+label = "Submit"

@@ -50,7 +50,7 @@ input_ui_order = ["single_input", "cnv_input", "comparsion_input", "other_params
 
 [maftools.paramters.readfiles.input.single_input]
 title = "Single sample anlayais:"
-title_control = "class = 'maftools-input-section-p'"
+title_control = "class = 'input-section-p'"
 varname = ["laml_maf", "laml_clin", "laml_mutsig"]
 input_id = ["input_maf", "input_clin", "input_mutsig"]
 type = ["shiny::selectInput", "shiny::selectInput", "shiny::selectInput"]
@@ -66,7 +66,7 @@ laml_mutsig = "@>@system.file('extdata', 'LAML_sig_genes.txt.gz', package = 'maf
 
 [maftools.paramters.readfiles.input.cnv_input]
 title = "CNV related analyais:"
-title_control = "class = 'maftools-input-section-p'"
+title_control = "class = 'input-section-p'"
 varname = ["all_lesions", "amp_genes", "del_genes", "scores_gis"]
 input_id = ["input_gistic_all_lesions", "input_gistic_amp", "input_gistic_del", "input_gistic_score"]
 type = ["shiny::selectInput", "shiny::selectInput", "shiny::selectInput", "shiny::selectInput"]
@@ -85,7 +85,7 @@ scores_gis = "@>@system.file('extdata', 'scores.gistic', package = 'maftools')@<
 
 [maftools.paramters.readfiles.input.comparsion_input]
 title = "Comparsion between different cohort:"
-title_control = "class = 'maftools-input-section-p'"
+title_control = "class = 'input-section-p'"
 varname = ["primary_maf", "relapse_maf"]
 input_id = ["input_primary_maf", "input_relapse_maf"]
 type = ["shiny::selectInput", "shiny::selectInput"]
@@ -99,7 +99,7 @@ relapse_maf = "@>@system.file('extdata', 'APL_relapse.maf.gz', package = 'maftoo
 
 [maftools.paramters.readfiles.input.other_params]
 title = "Other paramters"
-title_control = "class = 'maftools-input-section-p'"
+title_control = "class = 'input-section-p'"
 varname = ["is_tcga"]
 input_id = ["maftools_is_tcga"]
 type = ["shiny::checkboxInput"]

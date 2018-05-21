@@ -45,6 +45,7 @@ download_section_server <- function(input, output) {
                                       value = i/100)
         Sys.sleep(2)
         on.exit(progress$close())
+        params$req_pkgs <- "annovarR"
         params$qqcommand <- "annovarR::download.database"
         params$qqkey <- stringi::stri_rand_strings(1, 50)
         params$qqcommand_type <- "R"
@@ -61,9 +62,9 @@ download_section_server <- function(input, output) {
             assign("html_text_task_submit_modal", html_text, envir = globalenv())
             return(html_text)
           })
-          html_text <- str_replace_all(html_text, '\\{\\{task_title\\}\\}', "Downloader")
-          html_text <- str_replace_all(html_text, '\\{\\{task_key\\}\\}', params$qqkey)
-          html_text <- str_replace_all(html_text, '\\{\\{task_msg\\}\\}', msg)
+          html_text <- stringr::str_replace_all(html_text, '\\{\\{task_title\\}\\}', "Downloader")
+          html_text <- stringr::str_replace_all(html_text, '\\{\\{task_key\\}\\}', params$qqkey)
+          html_text <- stringr::str_replace_all(html_text, '\\{\\{task_msg\\}\\}', msg)
           html_text <- sprintf("%s<script>$('#myModal').modal('show')</script>", html_text)
           HTML(html_text)
         })
@@ -74,7 +75,7 @@ download_section_server <- function(input, output) {
       selectInput("download.version", "Version of Database",
                   choices = annovarR::download.database(input$download.name, show.all.versions = TRUE), multiple = TRUE)
     })
-    observeEvent(input$download.version, {
+  observeEvent(input$download.version, {
       output$download.buildver.selector <- shiny::renderUI({
         selectInput("download.buildver", "Buildver version of Database",
                     choices = parse_buildver_object(download.name = input$download.name,

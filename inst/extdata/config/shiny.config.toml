@@ -61,3 +61,10 @@ log_dir = "~/.annovarR/log"
 [shiny_output]
 out_dir = "~/.annovarR/output"
 
+[shiny_tools]
+visulization = ["maftools", "gvmap", "clusterProfiler"]
+annotation = ["annovar", "vcfanno", "annovarR"]
+[shiny_tools_path]
+annovar = "~/.annovarR/tools/annovar"
+vcfanno = "~/.annovarR/tools/vcfanno"
+

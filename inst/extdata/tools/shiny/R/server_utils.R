@@ -233,8 +233,7 @@ render_input_command <- function (input, output, params, item){
   check_sprintf <- params[[item]][["rcmd_last_sprintf"]]
   req_eval <- !is.null(check_sprintf) && check_sprintf
   cmd <- clean_parsed_item(params[[item]][["rcmd_last"]], req_eval)
-  label = "R commands for plot"
-  if (params[[item]]$section_type == "input") label <- "R commands for reading files"
+  label = "R commands for task"
   output[[paste0("lastcmd_ui_", render_id)]] <- renderUI({
     shiny::textAreaInput(inputId = paste0("lastcmd_", render_id), label = label,
                          value = cmd, rows = stringr::str_count(cmd, "\n") * 1.5, resize = "vertical")
@@ -260,5 +259,85 @@ gvmap_server <- function(input, output, pkgs = "gvmap"){
 
 clusterProfiler_server <- function(input, output, pkgs = c("clusterProfiler", "org.Hs.eg.db")){
   output <- generate_server_object(input, output, config.clusterProfiler, "clusterProfiler", pkgs)
+}
+
+
+generate_submit_server_object <- function(input, output, ui_server_config, toolname, pkgs = NULL) {
+  ui.sections <- ui_server_config[[toolname]]$ui$sections
+  ui_params <- ui_server_config[[toolname]]$paramters
+  total_box_num <- length(ui.sections$order)
+  for(item in ui.sections$order) {
+    output <- render_input_command(input, output, ui_params, item)
+  }
+  start_trigger <- sprintf("start_%s_analysis", toolname)
+  observeEvent(input[[start_trigger]], {
+    progress <- shiny::Progress$new()
+    msg <- sprintf("Submiting task.")
+    for (i in 1:100) {
+      progress$set(message = msg, value = i/100)
+      Sys.sleep(0.02)
+    }
+    needed.var <- c()
+    needed.input_id <- c()
+    for(box in ui.sections$order) {
+      for(input_section in names(ui_params[[box]]$input)) {
+        needed.var <- c(needed.var, ui_params[[box]]$input[[input_section]]$varname)
+        needed.input_id <- c(needed.input_id, ui_params[[box]]$input[[input_section]]$input_id)
+      }
+    }
+    names(needed.input_id) <- needed.var
+    needed.input_id <- needed.input_id[!is.na(names(needed.input_id))]
+    params.1 <- as.list(needed.input_id)
+    params.2 <- reactiveValuesToList(input)
+    params.2 <- params.2[names(params.2) %in% needed.input_id]
+    params <- configr::config.list.merge(list(input2var = params.1),
+                                         list(input=params.2))
+    on.exit(progress$close())
+    params$req_pkgs <- pkgs
+    params$qqcommand <- ""
+    params$qqkey <- stringi::stri_rand_strings(1, 50)
+    params$qqcommand_type <- "R"
+    params$boxes <- ui.sections$order
+    params$toolname <- ui.sections$toolname
+    for(box in ui.sections$order) {
+      if (!is.null(input[[sprintf("lastcmd_%s_%s", toolname, box)]]))
+        params$last_cmd[[box]] <- input[[sprintf("lastcmd_%s_%s", toolname, box)]]
+    }
+
+    msg <- jsonlite::toJSON(params)
+    queue <- liteq::ensure_queue(shiny_queue_name, db = queue_db)
+    while(TRUE) {
+      tryCatch({liteq::publish(queue, title = "Annotation", message = msg);break},
+                 error = function(e) {})
+    }
+    output <- dashbord_section_server(input, output)
+    output$task_submit_modal <- renderUI({
+      html_text <- tryCatch(get("html_text_task_submit_modal", envir = globalenv()), error = function(e) {
+        html_text <- paste0(readLines("www/modal.html"), collapse = "\n")
+        assign("html_text_task_submit_modal", html_text, envir = globalenv())
+        return(html_text)
+      })
+      html_text <- stringr::str_replace_all(html_text, '\\{\\{task_title\\}\\}', "Downloader")
+      html_text <- stringr::str_replace_all(html_text, '\\{\\{task_key\\}\\}', params$qqkey)
+      html_text <- stringr::str_replace_all(html_text, '\\{\\{task_msg\\}\\}', encodeString(msg))
+      html_text <- sprintf("%s<script>$('#myModal').modal('show')</script>", html_text)
+      HTML(html_text)
+    })
+
+  })
+  return(output)
+}
+
+
+annovar_server <- function(input, output){
+  output <- generate_submit_server_object(input, output, config.annovar, "annovar", "annovarR")
+}
+
+vcfanno_server <- function(input, output){
+  output <- generate_submit_server_object(input, output, config.vcfanno, "vcfanno", "annovarR")
+}
+
+annovarR_server <- function(input, output){
+  output <- generate_submit_server_object(input, output, config.annovarR, "annovarR", "annovarR")
 }
 

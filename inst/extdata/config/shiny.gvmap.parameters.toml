@@ -35,7 +35,7 @@ input_ui_order = ["single_input", "start_analysis"]
 
 [gvmap.paramters.readfiles.input.single_input]
 title = "Demo input:"
-title_control = "class = 'gvmap-input-section-p'"
+title_control = "class = 'input-section-p'"
 varname = ["heatmap_file"]
 input_id = ["input_gvmap_het_fn"]
 type = ["shiny::selectInput"]
