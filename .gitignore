@@ -26,3 +26,4 @@ vignettes/*.pdf
 .Rproj.user
 
 pre-db
+_gsdata_

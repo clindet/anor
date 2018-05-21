@@ -31,7 +31,7 @@ supported_file_type = ["auto", "ab1", "acedb", "affybatch", "afg", "arff", "asn1
 "geecee", "genbank", "genetrack", "gff", "gff3", "gg", "gif", "gtf", "gz", "h5", "hardklor", "hdt", "helixturnhelix", 
 "hennig86", "hlf", "hmm2", "hmm3", "hmoment", "html", "idpdb", "idxml", "ig", "im", "inchi", "interval", "ipynb", 
 "isochore", "jackknifer", "jackknifernon", "jpg", "json", "jsonld", "kronik", "laj", "lav", "ldindep", "len", "linecount", 
-"lped", "maf", "mafcustomtrack", "malist", "markx0", "markx1", "markx10", "markx2", "markx3", "mascotdat", "match", "mega", 
+"lped", "maf", "maf.gz", "mafcustomtrack", "malist", "markx0", "markx1", "markx10", "markx2", "markx3", "mascotdat", "match", "mega", 
 "meganon", "memexml", "mgf", "mol", "mol2", "motif", "mrxs", "ms2", "msp", "mzdata", "mzid", "mzml", "mzq", "mzxml", "n3", 
 "nametable", "ncbi", "ndpi", "needle", "neostore", "netcdf", "newcpgreport", "newcpgseek", "nex", "nexus", "nexusnon", 
 "nhdr", "nhx", "noreturn", "nrrd", "nt", "obfs", "obo", "owl", "oxlicg", "oxligl", "oxling", "oxliss", "oxlist", "oxlits", 
@@ -60,3 +60,4 @@ log_dir = "~/.annovarR/log"
 
 [shiny_output]
 out_dir = "~/.annovarR/output"
+

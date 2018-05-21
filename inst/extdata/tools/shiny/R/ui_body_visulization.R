@@ -42,34 +42,8 @@ generate_boxes_object <- function(config, tool_name) {
         for (id_index in 1:length(input_id)) {
 
           var <- varname[id_index]
-          advanced_params <- sprintf("%s, %s(inputId='%s', label = '%s'",
-          advanced_params, section_type[id_index], input_id[id_index],
-          label[id_index])
-          for (param_name in c("choices", "selected", "width", "multiple",
-          "buttonLabel", "placeholder", "value", "height", "rows", "cols",
-          "resize")) {
-            if (param_name %in% names(input_section_dat)) {
-              if (is.null(names(input_section_dat[[param_name]]))) var <- id_index
-              param_value <- input_section_dat[[param_name]][[var]]
-              if (is.null(param_value)) next
-              if (is.character(param_value) && length(param_value) == 1) {
-                advanced_params <- sprintf("%s, %s='%s'", advanced_params,
-                  param_name, input_section_dat[[param_name]][[var]])
-              } else if (length(param_value) == 1) {
-                advanced_params <- sprintf("%s, %s=%s", advanced_params,
-                  param_name, input_section_dat[[param_name]][[var]])
-              } else if (is.character(param_value)) {
-                val_paste <- paste0(input_section_dat[[param_name]][[var]], collapse = "','")
-                advanced_params <- sprintf("%s, %s=c('%s')", advanced_params,
-                  param_name, val_paste)
-              } else {
-                val_paste <- paste0(input_section_dat[[param_name]][[var]], collapse = ',')
-                advanced_params <- sprintf("%s, %s=c(%s)", advanced_params,
-                                           param_name, val_paste)
-              }
-            }
-          }
-          advanced_params <- sprintf("%s)", advanced_params)
+          advanced_params <- sprintf("%s, uiOutput(outputId = '%s_ui_output')", advanced_params,
+                                     input_id[id_index])
         }
       }
       advanced_params <- sprintf("%s, hr(), shiny::uiOutput('lastcmd_ui_%s')",
@@ -117,17 +91,12 @@ generate_boxes_object <- function(config, tool_name) {
   })
 }
 # Generate maftools UI
-config.maftools <- configr::read.config(system.file("extdata", "config/shiny.maftools.parameters.toml",
-  package = "annovarR"), rcmd.parse = TRUE, glue.parse = TRUE, file.type = "toml")
+
+update_configuration_files()
 maftools_boxes <- generate_boxes_object(config.maftools, "maftools")
 
-config.gvmap <- configr::read.config(system.file("extdata", "config/shiny.gvmap.parameters.toml",
-                   package = "annovarR"), rcmd.parse = TRUE, glue.parse = TRUE, file.type = "toml")
 gvmap_boxes <- generate_boxes_object(config.gvmap, "gvmap")
 
-config.clusterProfiler <- configr::read.config(system.file("extdata",
-                                                 "config/shiny.clusterProfiler.parameters.toml",
-                                                 package = "annovarR"), rcmd.parse = TRUE, glue.parse = TRUE, file.type = "toml")
 clusterProfiler_boxes <- generate_boxes_object(config.clusterProfiler, "clusterProfiler")
 
 cmd <- sprintf(paste0("body_visulization_tabItem <- tabItem('visulization',",

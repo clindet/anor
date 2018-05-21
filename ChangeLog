@@ -5,6 +5,7 @@
 		* vcfanno, vep, annovar change cmd 'print' to message
 		* set solidHeader = FALSE in shiny box
 		* add upload filetypes
+		* improve input UI render method (render_input_box_ui)
 
 2018-05-20 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 

@@ -77,6 +77,8 @@ server_upload_file <- function(input, output, session) {
     print(status)
     shinyjs::alert("Delete successful!")
     render_files_info_DT()
+    output <- update_configuration_files()
+    output <- render_input_box_ui(input, output)
   })
 
   # Upload section
@@ -112,7 +114,7 @@ server_upload_file <- function(input, output, session) {
       if (nrow(ids) == 0) {
         id <- 1
       } else {
-        id <- RSQLite::dbGetQuery(con, 
+        id <- RSQLite::dbGetQuery(con,
                   sprintf("SELECT seq from sqlite_sequence where name = '%s'",
                           upload_table))
         id <- as.numeric(id) + 1
@@ -126,7 +128,22 @@ server_upload_file <- function(input, output, session) {
       })
       assign(upload_table_colnames[2], destfile)
       assign(upload_table_colnames[3], file.size(destfile))
-      assign(upload_table_colnames[4], input$upload.file.type)
+      print(input$upload.file.type)
+      if (input$upload.file.type != "auto") {
+        assign(upload_table_colnames[4], input$upload.file.type)
+      } else {
+        supported_file_type <- config$shiny_upload$supported_file_type
+        supported_file_type <- c(supported_file_type, paste0(supported_file_type, 'gz'))
+        supported_file_type <- supported_file_type[supported_file_type != "auto"]
+        index <- stringr::str_detect(input$upload.file$name,
+                   sprintf("%s$", supported_file_type))
+        if (sum(index) == 0) {upload.file.type <- "unknown"} else {
+          upload.file.type <- supported_file_type[index][
+            max.col(matrix(stringr::str_length(supported_file_type[index]), nrow = 1))
+          ]
+        }
+        assign(upload_table_colnames[4], upload.file.type)
+      }
       assign(upload_table_colnames[5], input$upload.genome.version)
       assign(upload_table_colnames[6], format(Sys.time(), "%Y %H:%M:%S"))
       assign(upload_table_colnames[8], input$upload.file.description)
@@ -152,6 +169,8 @@ server_upload_file <- function(input, output, session) {
       delete_file_item(id)
       # Chose the navbar
       updateNavbarPage(session, "navbar_tabs", selected = "file_viewer")
+      output <- update_configuration_files()
+      output <- render_input_box_ui(input, output)
     }
   })
   return(list(output = output, session = session))
