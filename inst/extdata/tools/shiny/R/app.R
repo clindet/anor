@@ -1,5 +1,6 @@
 pkgs.shiny <- c("shinycssloaders", "Cairo", "shinydashboard", "configr",
-                "data.table", "shinyjs", "liteq", "DT", "ggplot2", "benchmarkme")
+                "data.table", "shinyjs", "liteq", "DT", "ggplot2", "benchmarkme",
+                "stringr")
 sapply(pkgs.shiny, function(x) {
   require(x, character.only = TRUE)
 })
@@ -57,6 +58,7 @@ server <- function(input, output, session) {
   for (i in files) {
     source(i)
   }
+
   output <- render_input_box_ui(input, output)
   output <- maftools_server(input, output)
   output <- gvmap_server(input, output)
@@ -64,7 +66,6 @@ server <- function(input, output, session) {
   output <- annovar_server(input, output)
   output <- vcfanno_server(input, output)
   output <- annovarR_server(input, output)
-
   out <- server_upload_file(input, output, session)
   output <- out$output
   session <- out$session

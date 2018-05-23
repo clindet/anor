@@ -9,6 +9,79 @@ queue_db <- normalizePath(config$shiny_queue$queue_db, mustWork = FALSE)
 task_table <- config$shiny_db_table$task_table_name
 shiny_queue_name <- config$shiny_queue$name
 log_dir <- config$shiny_queue$log_dir
+output_file_table_name <- config$shiny_db_table$output_file_table_name
+shiny_output_dir <- config$shiny_output$out_dir
+get_start_id <- function(con, table_name) {
+  sql <- sprintf("select id from %s", table_name)
+  ids <- DBI::dbGetQuery(con, sql)
+  if (nrow(ids) == 0) {
+    id <- 1
+  } else {
+    id <- RSQLite::dbGetQuery(con,
+                              sprintf("SELECT seq from sqlite_sequence where name = '%s'",
+                                      table_name))
+    id <- as.numeric(id) + 1
+  }
+  return(id)
+}
+convertbyte2size <- function(sizes) {
+  results <- sapply(sizes, function(size){
+    kb <- 1024
+    mb <- 1024*1024
+    gb <- 1024*1024*1024
+    tb <- 1024*1024*1024*1024
+    pb <- 1024*1024*1024*1024*1024
+    eb <- 1024*1024*1024*1024*1024*1024
+    zb <- 1024*1024*1024*1024*1024*1024*1024
+    yb <- 1024*1024*1024*1024*1024*1024*1024*1024
+
+    if(size < kb){
+      return(paste0(round(size,2), "B"))
+    } else if(size < mb){
+      return(paste0(round(size/kb,2), "KB"))
+    } else if(size < gb){
+      return(paste0(round(size/mb,2), "MB"))
+    } else if(size < tb){
+      return(paste0(round(size/gb,2), "GB"))
+    } else if(size < pb){
+      return(paste0(round(size/tb,2), "TB"))
+    } else if(size < eb){
+      return(paste0(round(size/pb,2), "PB"))
+    } else if(size < zb){
+      return(paste0(round(size/eb,2), "EB"))
+    } else if(size < yb){
+      return(paste0(round(size/zb,2), "ZB"))
+    }
+  })
+}
+
+convertkb2size <- function (size) {
+  kb <- 1
+  mb <- 1024
+  gb <- 1024*1024
+  tb <- 1024*1024*1024
+  pb <- 1024*1024*1024*1024
+  eb <- 1024*1024*1024*1024*1024
+  zb <- 1024*1024*1024*1024*1024*1024
+  yb <- 1024*1024*1024*1024*1024*1024*1024
+
+  if(size < mb){
+    return(paste0(round(size/kb,2), "KB"))
+  } else if(size < gb){
+    return(paste0(round(size/mb,2), "MB"))
+  } else if(size < tb){
+    return(paste0(round(size/gb,2), "GB"))
+  } else if(size < pb){
+    return(paste0(round(size/tb,2), "TB"))
+  } else if(size < eb){
+    return(paste0(round(size/pb,2), "PB"))
+  } else if(size < zb){
+    return(paste0(round(size/eb,2), "EB"))
+  } else if(size < yb){
+    return(paste0(round(size/zb,2), "ZB"))
+  }
+}
+
 
 while (TRUE) {
   queue <- NULL
@@ -92,6 +165,25 @@ while (TRUE) {
       DBI::dbSendQuery(con, sprintf("UPDATE %s SET status = \"FINISHED\" WHERE key = \"%s\";",
                                     task_table, qqkey))
     }
+
+    if (dir.exists(sprintf("%s/%s", shiny_output_dir, qqkey))) {
+      files <- list.files(sprintf("%s/%s", shiny_output_dir, qqkey))
+      if (!length(files) == 0) {
+        files <- sprintf("%s/%s/%s", shiny_output_dir, qqkey, files)
+        filesinfo <- file.info(files)
+        id <- get_start_id(con, output_file_table_name)
+        if (length(id) != 1)
+          id = id:(id+length(files))
+        result <- data.frame(id = id, file_basename = basename(files),
+                             file_dir = dirname(files),
+                             file_size = convertbyte2size(filesinfo$size),
+                             file_mtime = format(filesinfo$mtime, "%Y-%m-%d %H:%M:%S"),
+                             key = rep(qqkey, length(files)))
+        DBI::dbWriteTable(con, output_file_table_name,
+                          result, append = TRUE, row.names = FALSE)
+      }
+    }
+
     DBI::dbDisconnect(con)
     liteq::ack(task)
     liteq::remove_failed_messages(queue)

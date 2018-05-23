@@ -1,4 +1,11 @@
 source("config.R")
+featch_all_keys <- function() {
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+  sql <- sprintf("SELECT key from %s", task_table)
+  result <- DBI::dbGetQuery(con, sql)
+  DBI::dbDisconnect(con)
+  return(result[,1])
+}
 body_dashbord_tabItem <- tabItem("dashboard",
     fluidRow(
       box(
@@ -14,10 +21,16 @@ body_dashbord_tabItem <- tabItem("dashboard",
         status = "primary",
         collapsible = TRUE,
         collapsed = FALSE,
-        textInput("task_table_key", "Key"),
+        textInput("task_table_key", "Key", value = task_table_admin_key),
         actionButton("task_table_button", "Query"),
-        hr(),
+        uiOutput("task_table_hr1"),
         DT::dataTableOutput("task_table_DT"),
+        uiOutput("task_table_hr2"),
+        DT::dataTableOutput("task_table_output_DT"),
+        uiOutput("task_table_hr4"),
+        DT::dataTableOutput("task_table_output_preview_DT"),
+        actionButton("outfn_delete_confirmed", "", class = "btn btn-primary", style = "display:none"),
+        uiOutput("task_table_hr3"),
         verbatimTextOutput("task_table_log")
 
       ),

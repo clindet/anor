@@ -19,14 +19,18 @@ task_table <- config$shiny_db_table$task_table_name
 task_table_admin_key <- config$shiny_db_table$task_table_admin_key
 queue_db <- normalizePath(config$shiny_queue$queue_db, mustWork = FALSE)
 if (!dir.exists(dirname(queue_db))) dir.create(dirname(queue_db), recursive = TRUE)
-shiny_queue_name = config$shiny_queue$name
+shiny_queue_name <- config$shiny_queue$name
 log_dir = config$shiny_queue$log_dir
 if (!dir.exists(log_dir)) dir.create(log_dir, recursive = TRUE)
+shiny_output_dir <- config$shiny_output$out_dir
+if (!dir.exists(shiny_output_dir)) dir.create(shiny_output_dir, recursive = TRUE)
+output_file_table_name <- config$shiny_db_table$output_file_table_name
+
+shiny_preview <- config$shiny_preview
 
 annovarR_shiny_tools <- unname(unlist(config$shiny_tools))
 annovarR_shiny_tools_list <- config$shiny_tools
 annovarR_shiny_tools_path <- config$shiny_tools_path
-
 
 options(shiny.maxRequestSize = 30000 * 1024^2)
 
@@ -216,5 +220,82 @@ generate_boxes_object <- function(config, tool_name) {
 
     cmd <- sprintf("box(%s%s)", basic_params, advanced_params)
     return(cmd)
+  })
+}
+
+get_start_id <- function(con, table_name) {
+  sql <- sprintf("select id from %s", table_name)
+  ids <- DBI::dbGetQuery(con, sql)
+  if (nrow(ids) == 0) {
+    id <- 1
+  } else {
+    id <- RSQLite::dbGetQuery(con,
+                              sprintf("SELECT seq from sqlite_sequence where name = '%s'",
+                                      table_name))
+    id <- as.numeric(id) + 1
+  }
+  return(id)
+}
+
+delete_file_item <- function(id, id_prefix = "files_del_", dt_id = "files_info_DT",
+                             query_string = "?delete_id=", confimed_id = "delete_confirmed") {
+  shinyjs::onclick(sprintf("%s%s", id_prefix, id), function(event) {
+    shinyjs::runjs(sprintf("
+                           if(!confirm('Confirm to delete？')){
+                           window.event.returnValue = false;
+                           } else {
+                           var tb_id = $('#%s :first').attr('id').replace('_wrapper', '')
+                           tb_id = eval(tb_id)
+                           tb_id.deleteRow($('#%s%s').closest('tr').index() + 1);
+                           $('#%s').click();
+                           };", dt_id, id_prefix, id, confimed_id))
+        updateQueryString(sprintf("%s%s", query_string, id), mode = "push")
+  })
+}
+
+set_preview <- function(id, id_prefix = "files_view_", dt_id = "file_preview_DT",
+                        output = "", con = "") {
+  shinyjs::onclick(sprintf("%s%s", id_prefix, id), function(event) {
+    shinyjs::reset(dt_id)
+    tryCatch({
+      output[[dt_id]] <- DT::renderDataTable({
+        sql <- sprintf("SELECT file_path,file_type FROM %s where id=%s",
+                       upload_table, id)
+        upload_table_data <- DBI::dbGetQuery(con, sql)
+        file_content <- fread(upload_table_data$file_path)
+        return(file_content)
+      }, rownames = FALSE, editable = FALSE, caption = "All files stored in annovarR shinyapp Web service",
+      escape = FALSE, extensions = c("Buttons", "Scroller"), options = list(dom = "Bfrtlip",
+      searchHighlight = TRUE, scrollX = TRUE, buttons = c("copy", "csv",
+      "excel", "pdf", "print"), initComplete = DT::JS("function(settings, json) {",
+      "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+      "}")), selection = "single")
+    }, error = function(e){})
+  })
+}
+
+set_preview_2 <- function(id, id_prefix = "output_files_view_", dt_id = "task_table_output_preview_DT",
+                        output = "") {
+  shinyjs::onclick(sprintf("%s%s", id_prefix, id), function(event) {
+    output$task_table_hr4 <- renderUI(hr())
+    con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+    shinyjs::reset(dt_id)
+    tryCatch({
+      output[[dt_id]] <- DT::renderDataTable({
+        sql <- sprintf("SELECT file_basename,file_dir FROM %s where id=%s",
+                       output_file_table_name, id)
+        output_file_table_dat <- DBI::dbGetQuery(con, sql)
+        DBI::dbDisconnect(con)
+        tryCatch({
+          file_content <- fread(sprintf("%s/%s", output_file_table_dat$file_dir,
+                                        output_file_table_dat$file_basename))
+        }, error = function(e){})
+      }, rownames = FALSE, editable = FALSE, caption = "Output files preview",
+      escape = FALSE, extensions = c("Buttons", "Scroller", "FixedColumns"), options = list(dom = "Bfrtlip",
+      searchHighlight = TRUE, scrollX = TRUE, buttons = c("copy", "csv",
+      "excel", "pdf", "print"), initComplete = DT::JS("function(settings, json) {",
+      "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+      "}")), selection = "single")
+    }, error = function(e){})
   })
 }

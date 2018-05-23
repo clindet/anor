@@ -1,5 +1,37 @@
 source("config.R")
+convertbyte2size <- function(sizes) {
+  results <- sapply(sizes, function(size){
+    kb <- 1024
+    mb <- 1024*1024
+    gb <- 1024*1024*1024
+    tb <- 1024*1024*1024*1024
+    pb <- 1024*1024*1024*1024*1024
+    eb <- 1024*1024*1024*1024*1024*1024
+    zb <- 1024*1024*1024*1024*1024*1024*1024
+    yb <- 1024*1024*1024*1024*1024*1024*1024*1024
+
+    if(size < kb){
+      return(paste0(round(size,2), "B"))
+    } else if(size < mb){
+      return(paste0(round(size/kb,2), "KB"))
+    } else if(size < gb){
+      return(paste0(round(size/mb,2), "MB"))
+    } else if(size < tb){
+      return(paste0(round(size/gb,2), "GB"))
+    } else if(size < pb){
+      return(paste0(round(size/tb,2), "TB"))
+    } else if(size < eb){
+      return(paste0(round(size/pb,2), "PB"))
+    } else if(size < zb){
+      return(paste0(round(size/eb,2), "EB"))
+    } else if(size < yb){
+      return(paste0(round(size/zb,2), "ZB"))
+    }
+  })
+}
+
 convertkb2size <- function (size) {
+  kb <- 1
   mb <- 1024
   gb <- 1024*1024
   tb <- 1024*1024*1024
@@ -44,7 +76,15 @@ set_monitor_progress_bar <- function(id, ratio, span_text) {
           id, id, ratio, id, span_text)
 }
 
-custom_render_DT <- function(output, input_id, cmd = NULL, func = NULL, caption = "") {
+custom_render_DT <- function(output, input_id, cmd = NULL, func = NULL, caption = "",
+                             columnDefs = list(list(width = "100px", targets = "_all")),
+                             initComplete = DT::JS("function(settings, json) {",
+                                                   "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
+                                                   "}"),
+                             lengthMenu = list(list(5,10, 25, 50, -1),
+                                               list(5, 10, 25, 50, "All")),
+                             buttons = c("copy", "csv", "excel", "pdf", "print"),
+                             extensions = c("Buttons", "FixedColumns", "Scroller")) {
     output[[input_id]] <- DT::renderDataTable({
       if (!is.null(cmd)){
         eval(parse(text = cmd))
@@ -52,14 +92,11 @@ custom_render_DT <- function(output, input_id, cmd = NULL, func = NULL, caption 
         func
       }
     }, rownames = FALSE, editable = FALSE, caption = caption,
-    escape = FALSE, extensions = c("Buttons", "FixedColumns", "Scroller"),
+    escape = FALSE, extensions = extensions,
     options = list(autoWidth = TRUE, dom = "Bfrtlip", deferRender = TRUE,
-                   searchHighlight = TRUE, scrollX = TRUE, lengthMenu = list(list(5,
-                   10, 25, 50, -1), list(5, 10, 25, 50, "All")), buttons = c("copy",
-                   "csv", "excel", "pdf", "print"), columnDefs = list(list(width = "100px",
-                   targets = "_all")), initComplete = DT::JS("function(settings, json) {",
-                   "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
-                   "}")), selection = "none")
+                   searchHighlight = TRUE, scrollX = TRUE, lengthMenu = lengthMenu,
+                   buttons = buttons, columnDefs = columnDefs,
+                   initComplete = initComplete), selection = "none")
   return(output)
 }
 
@@ -155,11 +192,64 @@ dashbord_section_server <- function(input, output) {
     DBI::dbDisconnect(con)
     return(result)
   }
+  render_task_output_table <- function() {
+    req(input$task_table_key)
+    con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+    result <- NULL
+    if (input$task_table_key == task_table_admin_key) {
+      sql <- sprintf("SELECT * FROM %s", output_file_table_name)
+      result <- DBI::dbGetQuery(con, sql)
+    } else {
+      sql <- sprintf("SELECT * FROM %s WHERE key = '%s'", output_file_table_name, input$task_table_key)
+      result <- DBI::dbGetQuery(con, sql)
+    }
+    file_dir <- stringr::str_extract(result[, 3], '/output/.*')
+    Action <- sprintf("<button id = 'output_files_view_%s' name = 'output_files_view_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'><i class='fa fa-eye'></i></button>",
+                      result[, 1], result[, 1])
+    Action <- sprintf("%s <button id = 'output_files_del_%s' name = 'output_files_del_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'><i class='fa fa-trash'></i></button>",
+                      Action, result[, 1], result[, 1])
+    Action <- sprintf("%s <a id = 'output_files_download_%s' name = 'output_files_download_%s' type='button' class = 'btn btn-primary' href = '%s/%s', download><i class='fa fa-download'></i></a>",
+                      Action, result[, 1], result[, 1], file_dir, result[, 2])
+    result <- data.frame(result[1], Action, result[2:ncol(result)])
+    for(id in result[,1]) {
+      delete_file_item(id, "output_files_del_", "task_table_output_DT",
+                       "?file_delete_id=", "outfn_delete_confirmed")
+      set_preview_2(id, output = output)
+    }
+    DBI::dbDisconnect(con)
+
+    return(result)
+  }
+
+  observeEvent(input$outfn_delete_confirmed, {
+    con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+    id <- getQueryString()
+    status <- DBI::dbSendQuery(con, sprintf("DELETE FROM %s WHERE id=%s", output_file_table_name,
+                                            id))
+    print(status)
+    shinyjs::alert("Delete successful!")
+    output <- update_configuration_files()
+    output <- render_input_box_ui(input, output)
+    DBI::dbDisconnect(con)
+  })
+
   observeEvent(input$task_table_button, {
-    func <- render_task_table()
-    output <- custom_render_DT(output, "task_table_DT", func = func)
+    output$task_table_hr1 <- renderUI(hr())
+    output$task_table_hr2 <- renderUI(hr())
+    output$task_table_hr3 <- renderUI(hr())
+    func1 <- render_task_table()
+    output <- custom_render_DT(output, "task_table_DT", func = func1,
+                               caption = "Task information")
+
+    func2 <- render_task_output_table()
+    output <- custom_render_DT(output, "task_table_output_DT", func = func2,
+                               caption = "Output files",
+                               columnDefs = list(list(width = "150px",
+                               targets = c(1,5))))
+    output$task_table_output_preview_DT <- renderDataTable(NULL)
+    output$task_table_hr4 <- renderUI(NULL)
     output$task_table_log <- renderPrint({
-      for(fn in eval(func)$log) {
+      for(fn in eval(func1)$log) {
          if (file.exists(fn)) {
            cat(sprintf("\n\n-------------------------- %s ------------------------\n", fn))
            cat(paste0(readLines(fn), collapse = '\n'))

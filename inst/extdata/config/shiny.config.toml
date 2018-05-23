@@ -17,6 +17,7 @@ upload_data_table_name = "upload_data"
 upload_data_table_colnames = ["file_name", "file_path", "file_size", "file_type", "genome_version", "upload_time", "md5", "description"]
 task_table_name = "task_info"
 task_table_admin_key = "annovarR_admin"
+output_file_table_name = "output_files"
 
 [shiny_upload]
 supported_file_type = ["auto", "ab1", "acedb", "affybatch", "afg", "arff", "asn1", "avinput", "avinput.gz", 
@@ -67,4 +68,6 @@ annotation = ["annovar", "vcfanno", "annovarR"]
 [shiny_tools_path]
 annovar = "~/.annovarR/tools/annovar"
 vcfanno = "~/.annovarR/tools/vcfanno"
+[shiny_preview]
+fread = ["csv", "txt", "avinput"]
 

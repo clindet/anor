@@ -11,9 +11,14 @@ if (db_type == "sqlite") {
     sql <- system.file("extdata", "sql/task_table.sql", package = "annovarR")
     annovarR::sql2sqlite(sql, dbname = db_path)
   }
+  if (!output_file_table_name %in% DBI::dbListTables(con)) {
+    sql <- system.file("extdata", "sql/output_file_table.sql", package = "annovarR")
+    annovarR::sql2sqlite(sql, dbname = db_path)
+  }
   DBI::dbDisconnect(con)
 }
-
+addResourcePath('output', shiny_output_dir)
+addResourcePath('upload', upload_dir)
 update_configuration_files()
 
 
