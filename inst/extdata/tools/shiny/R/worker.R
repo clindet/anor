@@ -12,16 +12,10 @@ log_dir <- config$shiny_queue$log_dir
 output_file_table_name <- config$shiny_db_table$output_file_table_name
 shiny_output_dir <- config$shiny_output$out_dir
 get_start_id <- function(con, table_name) {
-  sql <- sprintf("select id from %s", table_name)
-  ids <- DBI::dbGetQuery(con, sql)
-  if (nrow(ids) == 0) {
-    id <- 1
-  } else {
     id <- RSQLite::dbGetQuery(con,
                               sprintf("SELECT seq from sqlite_sequence where name = '%s'",
                                       table_name))
-    id <- as.numeric(id) + 1
-  }
+    if (nrow(id) == 0) {id <- 1} else {id <- as.numeric(id[,1]) + 1}
   return(id)
 }
 convertbyte2size <- function(sizes) {
@@ -172,8 +166,10 @@ while (TRUE) {
         files <- sprintf("%s/%s/%s", shiny_output_dir, qqkey, files)
         filesinfo <- file.info(files)
         id <- get_start_id(con, output_file_table_name)
-        if (length(id) != 1)
-          id = id:(id+length(files))
+        print(id)
+        print(files)
+        if (length(files) != 1)
+          id = id:(id+(length(files) - 1))
         result <- data.frame(id = id, file_basename = basename(files),
                              file_dir = dirname(files),
                              file_size = convertbyte2size(filesinfo$size),

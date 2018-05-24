@@ -24,6 +24,7 @@ log_dir = config$shiny_queue$log_dir
 if (!dir.exists(log_dir)) dir.create(log_dir, recursive = TRUE)
 shiny_output_dir <- config$shiny_output$out_dir
 if (!dir.exists(shiny_output_dir)) dir.create(shiny_output_dir, recursive = TRUE)
+shiny_output_dir <- normalizePath(shiny_output_dir, mustWork = FALSE)
 output_file_table_name <- config$shiny_db_table$output_file_table_name
 
 shiny_preview <- config$shiny_preview
@@ -256,12 +257,14 @@ delete_file_item <- function(id, id_prefix = "files_del_", dt_id = "files_info_D
 set_preview <- function(id, id_prefix = "files_view_", dt_id = "file_preview_DT",
                         output = "", con = "") {
   shinyjs::onclick(sprintf("%s%s", id_prefix, id), function(event) {
+    con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
     shinyjs::reset(dt_id)
     tryCatch({
       output[[dt_id]] <- DT::renderDataTable({
         sql <- sprintf("SELECT file_path,file_type FROM %s where id=%s",
                        upload_table, id)
         upload_table_data <- DBI::dbGetQuery(con, sql)
+        DBI::dbDisconnect(con)
         file_content <- fread(upload_table_data$file_path)
         return(file_content)
       }, rownames = FALSE, editable = FALSE, caption = "All files stored in annovarR shinyapp Web service",
@@ -272,12 +275,13 @@ set_preview <- function(id, id_prefix = "files_view_", dt_id = "file_preview_DT"
       "}")), selection = "single")
     }, error = function(e){})
   })
+  return(output)
 }
 
 set_preview_2 <- function(id, id_prefix = "output_files_view_", dt_id = "task_table_output_preview_DT",
                         output = "") {
   shinyjs::onclick(sprintf("%s%s", id_prefix, id), function(event) {
-    output$task_table_hr4 <- renderUI(hr())
+    output$task_table_hr4 <- renderUI(HTML(paste0(h4("Output of preview"), hr())))
     con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
     shinyjs::reset(dt_id)
     tryCatch({
@@ -298,4 +302,5 @@ set_preview_2 <- function(id, id_prefix = "output_files_view_", dt_id = "task_ta
       "}")), selection = "single")
     }, error = function(e){})
   })
+  return(output)
 }

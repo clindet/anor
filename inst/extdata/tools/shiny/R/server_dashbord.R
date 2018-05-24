@@ -203,7 +203,7 @@ dashbord_section_server <- function(input, output) {
       sql <- sprintf("SELECT * FROM %s WHERE key = '%s'", output_file_table_name, input$task_table_key)
       result <- DBI::dbGetQuery(con, sql)
     }
-    file_dir <- stringr::str_extract(result[, 3], '/output/.*')
+    file_dir <- stringr::str_extract(result[, 3], 'output/.*')
     Action <- sprintf("<button id = 'output_files_view_%s' name = 'output_files_view_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'><i class='fa fa-eye'></i></button>",
                       result[, 1], result[, 1])
     Action <- sprintf("%s <button id = 'output_files_del_%s' name = 'output_files_del_%s' type='button' class = 'btn btn-primary action-button shiny-bound-input'><i class='fa fa-trash'></i></button>",
@@ -214,7 +214,7 @@ dashbord_section_server <- function(input, output) {
     for(id in result[,1]) {
       delete_file_item(id, "output_files_del_", "task_table_output_DT",
                        "?file_delete_id=", "outfn_delete_confirmed")
-      set_preview_2(id, output = output)
+      output <- set_preview_2(id, output = output)
     }
     DBI::dbDisconnect(con)
 
@@ -234,9 +234,9 @@ dashbord_section_server <- function(input, output) {
   })
 
   observeEvent(input$task_table_button, {
-    output$task_table_hr1 <- renderUI(hr())
-    output$task_table_hr2 <- renderUI(hr())
-    output$task_table_hr3 <- renderUI(hr())
+    output$task_table_hr1 <- renderUI(HTML(paste0(br(), h4("Task information"), hr())))
+    output$task_table_hr2 <- renderUI(HTML(paste0(br(), h4("Output of output files"), hr())))
+    output$task_table_hr3 <- renderUI(HTML(paste0(h4("Output of log"),hr())))
     func1 <- render_task_table()
     output <- custom_render_DT(output, "task_table_DT", func = func1,
                                caption = "Task information")

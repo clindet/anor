@@ -29,9 +29,9 @@ body_dashbord_tabItem <- tabItem("dashboard",
         DT::dataTableOutput("task_table_output_DT"),
         uiOutput("task_table_hr4"),
         DT::dataTableOutput("task_table_output_preview_DT"),
-        actionButton("outfn_delete_confirmed", "", class = "btn btn-primary", style = "display:none"),
         uiOutput("task_table_hr3"),
-        verbatimTextOutput("task_table_log")
+        verbatimTextOutput("task_table_log"),
+        actionButton("outfn_delete_confirmed", "", class = "btn btn-primary", style = "display:none")
 
       ),
       box(

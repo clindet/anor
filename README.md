@@ -1,3 +1,5 @@
+annovarR
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -249,11 +251,15 @@ can provide some help for your variants annotation work.
 
 ## Shiny App
 
-We developed a shiny App to provide a local or cloud WEB interface
+We developed a shiny App to provide a local and cloud WEB interface
 (development status) to annotate and visulize NGS data. Now, we have
-integrated the maftools and gvmap to draw the mutation and heatmap. Now,
-serveral useful WEB functions, such as upload, plot and export PDF/SVG,
-have been provided.
+integrated the [maftools](https://github.com/PoisonAlien/maftools) and
+[gvmap](https://github.com/ytdai/gvmap) to draw the mutation and
+heatmap. Now, serveral useful WEB functions, such as upload, plot and
+export PDF/SVG, have been
+provided.
+
+<img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/shiny_app.jpg" align="center" />
 
 ``` r
 web()

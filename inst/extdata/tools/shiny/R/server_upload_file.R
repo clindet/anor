@@ -47,7 +47,7 @@ server_upload_file <- function(input, output, session) {
     upload_table_data <- DBI::dbGetQuery(con, sql)
     files_ids <- upload_table_data[, 1]
     for (i in files_ids) {
-      set_preview(i, output = output, con = con)
+      output <- set_preview(i, output = output)
       delete_file_item(i)
     }
   }
@@ -137,7 +137,7 @@ server_upload_file <- function(input, output, session) {
       shinyjs::toggleState(id = "upload_save")
       # update file view UI and ovserve the preview and delete event
       render_files_info_DT()
-      set_preview(id, output = output, con = con)
+      output <- set_preview(id, output = output)
       delete_file_item(id)
       DBI::dbDisconnect(con)
       # Chose the navbar
