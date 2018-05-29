@@ -77,30 +77,30 @@ R function to run ANNOVAR.
 \examples{
 # original ANNOVAR download.database
 down.dbname <- 'refGene'
-annovar('perl', cmd.used = 'script1.downdb', down.dbname = 'avsnp147', 
+annovar('perl', cmd.used = 'script1.downdb', down.dbname = 'avsnp147',
         annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR gene-based annotation
-annovar('perl', cmd.used = 'script1.gene.based', input.file = 'example.avinput', 
+annovar('perl', cmd.used = 'script1.gene.based', input.file = 'example.avinput',
         annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR gene-based annotation
-annovar('perl', cmd.used = 'script1.region.based', anno.names = 'cytoBand', 
+annovar('perl', cmd.used = 'script1.region.based', anno.names = 'cytoBand',
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
-# ANNOVAR filter-based annotation 
-annovar('perl', cmd.used = 'script1.filter.based', anno.names = 'avsnp147', 
+# ANNOVAR filter-based annotation
+annovar('perl', cmd.used = 'script1.filter.based', anno.names = 'avsnp147',
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR table_annovar.pl
-anno.names <- c('refGene','cytoBand','genomicSuperDups','esp6500siv2_all', 
-'1000g2015aug_all','1000g2015aug_afr','1000g2015aug_eas','1000g2015aug_eur', 
+anno.names <- c('refGene','cytoBand','genomicSuperDups','esp6500siv2_all',
+'1000g2015aug_all','1000g2015aug_afr','1000g2015aug_eas','1000g2015aug_eur',
 'snp138','avsnp142','avsnp144','avsnp147','ljb26_all','cosmic70','cosmic81')
-annovar('perl', cmd.used = 'script2', 
-        anno.names = anno.names, 
+annovar('perl', cmd.used = 'script2',
+        anno.names = anno.names,
         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 
 # ANNOVAR convert2annovar.pl
-annovar('perl', cmd.used = 'script3', input.file = 'example.vcf', format = 'vcf4old', 
+annovar('perl', cmd.used = 'script3', input.file = 'example.vcf', format = 'vcf4old',
         convert.out = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 }

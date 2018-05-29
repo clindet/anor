@@ -1,5 +1,4 @@
 ---
-title : annovarR
 output: github_document
 ---
 

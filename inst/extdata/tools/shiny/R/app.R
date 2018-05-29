@@ -8,7 +8,7 @@ sapply(pkgs.shiny, function(x) {
 files <- list.files(".", "^ui_")
 files <- files[!files %in% c("app.R", "config.R")]
 for (i in files) {
-  source(i)
+  source(i, encoding = "UTF-8")
 }
 
 header <- dashboardHeader(title = "annovarR Shiny APP", messages, notifications,
@@ -56,7 +56,7 @@ server <- function(input, output, session) {
   # Visulization section (maftools)
   files <- c("server_utils.R", "server_download.R", "server_upload_file.R", "server_dashbord.R")
   for (i in files) {
-    source(i)
+    source(i, encoding = "UTF-8")
   }
 
   output <- render_input_box_ui(input, output)

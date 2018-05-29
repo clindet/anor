@@ -12,42 +12,42 @@ vep(vep = Sys.which("vep"), cache = TRUE, cache_version = 91,
 \arguments{
 \item{vep}{Executable file of vep}
 
-\item{cache}{Enables use of the cache. Add --refseq or 
+\item{cache}{Enables use of the cache. Add --refseq or
 --merged to use the refseq or merged cache, (if installed).}
 
-\item{cache_version}{Use a different cache version than the assumed default (the VEP version). 
-This should be used with Ensembl Genomes caches since their version numbers do not 
-match Ensembl versions. For example, the VEP/Ensembl version may be 88 and the 
+\item{cache_version}{Use a different cache version than the assumed default (the VEP version).
+This should be used with Ensembl Genomes caches since their version numbers do not
+match Ensembl versions. For example, the VEP/Ensembl version may be 88 and the
 Ensembl Genomes version 35. Not used by default}
 
-\item{offline}{Enable offline mode. No database connections will be made, 
-and a cache file or GFF/GTF file is required for annotation. 
+\item{offline}{Enable offline mode. No database connections will be made,
+and a cache file or GFF/GTF file is required for annotation.
 Add --refseq to use the refseq cache (if installed). Not used by default}
 
-\item{buildver}{Select the assembly version to use if more than one available. 
-If using the cache, you must have the appropriate assembly's cache file installed. 
-If not specified and you have only 1 assembly version installed, this will be chosen by default. 
+\item{buildver}{Select the assembly version to use if more than one available.
+If using the cache, you must have the appropriate assembly's cache file installed.
+If not specified and you have only 1 assembly version installed, this will be chosen by default.
 Default = use found assembly version (GRch37)}
 
 \item{dir}{Specify the base cache/plugin directory to use. Default = '$HOME/.vep/'}
 
 \item{input.file}{Input file name. If not specified, the script will attempt to read from STDIN.}
 
-\item{out}{Output file name. The script can write to STDOUT by 
-specifying STDOUT as the output file name - this will force quiet mode. 
+\item{out}{Output file name. The script can write to STDOUT by
+specifying STDOUT as the output file name - this will force quiet mode.
 Default = 'variant_effect_output.txt'}
 
-\item{fasta}{Specify a FASTA file or a directory containing FASTA files to use to look up reference sequence. 
-The first time you run the script with this parameter an index will be built 
-which can take a few minutes. This is required if fetching HGVS annotations (--hgvs) 
-or checking reference sequences (--check_ref) in offline mode (--offline), 
-and optional with some performance increase in cache mode (--cache). 
+\item{fasta}{Specify a FASTA file or a directory containing FASTA files to use to look up reference sequence.
+The first time you run the script with this parameter an index will be built
+which can take a few minutes. This is required if fetching HGVS annotations (--hgvs)
+or checking reference sequences (--check_ref) in offline mode (--offline),
+and optional with some performance increase in cache mode (--cache).
 See documentation for more details. Not used by default}
 
 \item{everything}{Shortcut flag to switch on all of the following:
---sift b, --polyphen b, --ccds, --uniprot, --hgvs, --symbol, --numbers, 
---domains, --regulatory, --canonical, --protein, --biotype, --uniprot, 
---tsl, --appris, --gene_phenotype --af, --af_1kg, --af_esp, --af_gnomad, 
+--sift b, --polyphen b, --ccds, --uniprot, --hgvs, --symbol, --numbers,
+--domains, --regulatory, --canonical, --protein, --biotype, --uniprot,
+--tsl, --appris, --gene_phenotype --af, --af_1kg, --af_esp, --af_gnomad,
 --max_af, --pubmed, --variant_class}
 
 \item{extra.params}{Extra paramters in vep command}

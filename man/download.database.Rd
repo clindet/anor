@@ -11,18 +11,18 @@ download.database(download.name = NULL, database.dir = tempdir(),
   show.all.buildvers = FALSE, verbose = FALSE, ...)
 }
 \arguments{
-\item{download.name}{Download name, default is NULL and get value from database.cfg 
+\item{download.name}{Download name, default is NULL and get value from database.cfg
 dependence_db}
 
 \item{database.dir}{Destination directory to store databases}
 
-\item{version}{Version of download database, supported version can be get by 
+\item{version}{Version of download database, supported version can be get by
 download.database('db_annovar_avsnp', show.all.versions = TRUE)}
 
 \item{buildver}{Genome version, e.g hg19, hg38, mm10}
 
-\item{download.cfg}{Configuration file for download, most of annovarR database 
-resources can be found in system.file('extdata', 
+\item{download.cfg}{Configuration file for download, most of annovarR database
+resources can be found in system.file('extdata',
 'config/db/db_annovar.toml', package = 'BioInstaller')}
 
 \item{show.all.versions}{Logical indicating wheather show all avaliable versions}
@@ -39,6 +39,6 @@ resources can be found in system.file('extdata',
 Download annovarR databases
 }
 \examples{
-download.database('db_annovar_avsnp', database.dir = sprintf('\%s/databases/', tempdir()), 
+download.database('db_annovar_avsnp', database.dir = sprintf('\%s/databases/', tempdir()),
 show.all.versions = TRUE)
 }

@@ -13,7 +13,7 @@ vcfanno(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")),
 \arguments{
 \item{vcfanno}{Executable file of vcfanno (Download from https://github.com/brentp/vcfanno/releases)}
 
-\item{vcfanno.database.cfg}{vcfanno required database configuration file 
+\item{vcfanno.database.cfg}{vcfanno required database configuration file
 (Not the annovarR database.cfg)}
 
 \item{base_path}{Optional base_path to prepend to annotation files in the config}
@@ -28,7 +28,7 @@ vcfanno(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")),
 
 \item{thread}{number of processes to use. (default 2)}
 
-\item{permissive_overlap}{annotate with an overlapping variant even it doesn't share the same ref and alt alleles. 
+\item{permissive_overlap}{annotate with an overlapping variant even it doesn't share the same ref and alt alleles.
 Default is to require exact match between variants.}
 
 \item{debug}{If set TRUE, only print the command}

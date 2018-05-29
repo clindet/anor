@@ -1,4 +1,4 @@
-source("global_var.R")
+source("global_var.R", encoding = "UTF-8")
 # initial upload_table in sqlite database
 
 if (db_type == "sqlite") {

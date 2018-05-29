@@ -2,7 +2,7 @@
 % Please edit documentation in R/download.R
 \name{get.download.name}
 \alias{get.download.name}
-\title{Use annotation name to get download.name that can be used 
+\title{Use annotation name to get download.name that can be used
 to download the database use \code{download.database}}
 \usage{
 get.download.name(anno.name = "", database.cfg = system.file("extdata",
@@ -14,7 +14,7 @@ get.download.name(anno.name = "", database.cfg = system.file("extdata",
 \item{database.cfg}{Configuration file of annovarR databases infomation}
 }
 \description{
-Use annotation name to get download.name that can be used 
+Use annotation name to get download.name that can be used
 to download the database use \code{download.database}
 }
 \examples{
