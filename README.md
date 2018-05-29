@@ -252,11 +252,13 @@ can provide some help for your variants annotation work.
 ## Shiny App
 
 We developed a shiny App to provide a local and cloud WEB interface
-(development status) to annotate and visulize NGS data. Now, we have
-integrated the [maftools](https://github.com/PoisonAlien/maftools) and
-[gvmap](https://github.com/ytdai/gvmap) to draw the mutation and
-heatmap. Now, serveral useful WEB functions, such as upload, plot and
-export PDF/SVG, have been
+(development status) to annotate and visulize genetic variants data
+using various public and in-house tools, such as
+[ANNOVAR](http://annovar.openbioinformatics.org/en/latest/),
+[vcfanno](https://github.com/brentp/vcfanno),
+[maftools](https://github.com/PoisonAlien/maftools),
+[gvmap](https://github.com/ytdai/gvmap), and so on. Besides, serveral
+useful cloud computing functions also have been
 provided.
 
 <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/shiny_app.jpg" align="center" />
