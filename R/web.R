@@ -2,6 +2,7 @@
 #'
 #' @param appDir The application to run.
 #' Default is system.file('extdata', 'tools/shiny/R', package = 'annovarR')
+#' @param opencpu_extra Paramers to start a opencpu service
 #' @param ... Other parameters pass to \code{\link[shiny]{runApp}}
 #' @export
 #'
@@ -10,7 +11,7 @@
 #'   web()
 #' }
 web <- function(appDir = system.file("extdata", "tools/shiny/R", package = "annovarR"),
-  ...) {
+    ...) {
   check_shiny_dep(install = TRUE)
   params <- list(...)
   params <- config.list.merge(list(appDir), params)
@@ -30,7 +31,7 @@ check_shiny_dep <- function(install = FALSE) {
   pkgs_meta[,2] <- as.character(pkgs_meta[,2])
   cran_pkgs <- c("shinycssloaders", "Cairo", "shinydashboard", "configr",
                  "data.table", "shinyjs", "DT", "stringr", "liteq", "ggplot2",
-                 "benchmarkme")
+                 "benchmarkme", "rmarkdown", "markdown")
   cran_lowest_version <- list(configr = "0.3.2", data.table = "1.11.2")
   github_pkgs <- c("gvmap", "maftools")
   github_lowest_version <- list(gvmap = "0.1.5", maftools = "1.7.05")
@@ -79,7 +80,7 @@ check_shiny_dep <- function(install = FALSE) {
     }
     if ((!is.installed || lower_version) && install) {
       source("https://bioconductor.org/biocLite.R")
-      biocLite(pkg)
+      eval(parse(text = 'biocLite(pkg, ask = FALSE)'))
     } else if (!is.installed || lower_version) {
       req.pkgs <- c(req.pkgs, pkg)
     }

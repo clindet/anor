@@ -7,12 +7,12 @@ server_upload_file <- function(input, output, session) {
                    upload_table, id)
     result <- DBI::dbGetQuery(con, sql)
     result <- as.data.frame(result)
-    path <- stringr::str_extract(result$file_path, 'upload/.*')
+    path <- stringr::str_extract(result$file_path, 'upload/.*|upload\\\\.*')
     path <- stringr::str_replace(path, basename(result$file_path),
                         sprintf("%s", result$file_name))
-    suppressWarnings(file.link(result$file_path, sprintf("%s/%s",
+    suppressWarnings(file.link(normalizePath(result$file_path), normalizePath(sprintf("%s/%s",
               dirname(result$file_path),
-              result$file_name)))
+              result$file_name), mustWork = FALSE)))
     return(path)
   }
   # File viewr section
@@ -94,6 +94,8 @@ server_upload_file <- function(input, output, session) {
       id <- get_start_id(con, upload_table)
       assign(upload_table_colnames[1], input$upload.file$name)
       destfile <- sprintf("%s/%s", upload_dir, id)
+      destfile <- normalizePath(destfile, mustWork = FALSE, winslash = "/")
+      print(destfile)
       assign(upload_table_colnames[7], tools::md5sum(input$upload.file$datapath))
       tryCatch(file.rename(input$upload.file$datapath, destfile),
         warning = function(w) {

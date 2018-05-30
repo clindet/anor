@@ -1,3 +1,8 @@
+2018-05-31 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* Update Dockerfile
+		* Opencpu package REST API
+
 2018-05-24 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* fix download.database warning message (newest ini)

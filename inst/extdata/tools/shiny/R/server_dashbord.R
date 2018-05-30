@@ -103,27 +103,32 @@ custom_render_DT <- function(output, input_id, cmd = NULL, func = NULL, caption 
 update_system_monitor <- function(input, output) {
   output$system_monitor <- renderUI({
     # disk monitor
-    disk.usage.values <- disk.usage()
-    disk.used <- disk.usage.values[2]
-    if (stringr::str_detect(version$os, 'darwin')){
-      disk.total <- disk.usage.values[3]
-      disk.used <- disk.used / 2
-    } else {
-      disk.total <- disk.usage.values[1]
-    }
-    ratio <- round(disk.used/disk.total, 2) * 100
+    disk.usage.values <- tryCatch(disk.usage(), error = function(e) {
+      NULL
+    })
     html_text <- tryCatch(get("html_text_update_system_monitor", envir = globalenv()), error = function(e) {
       html_text <- paste0(readLines("./www/system_monitor.html"), collapse = "\n")
       assign("html_text_update_system_monitor", html_text, envir = globalenv())
       return(html_text)
     })
-    span_text <- sprintf("%s%% (%s/%s)", ratio, convertkb2size(disk.used),
-                         convertkb2size(disk.total))
+    if (!is.null(disk.usage.values)) {
+      disk.used <- disk.usage.values[2]
+      if (stringr::str_detect(version$os, 'darwin')){
+        disk.total <- disk.usage.values[3]
+        disk.used <- disk.used / 2
+      } else {
+        disk.total <- disk.usage.values[1]
+      }
+      ratio <- round(disk.used/disk.total, 2) * 100
+      span_text <- sprintf("%s%% (%s/%s)", ratio, convertkb2size(disk.used),
+                           convertkb2size(disk.total))
 
-    html_text <- sprintf('%s\n<script>%s',
-                         html_text,
-                         set_monitor_progress_bar("diskmonitor", ratio, span_text))
-
+      html_text <- sprintf('%s\n<script>%s',
+                           html_text,
+                           set_monitor_progress_bar("diskmonitor", ratio, span_text))
+    } else {
+      html_text <- sprintf('%s\n<script>', html_text)
+    }
     # memory monitor
 
     memory.info <- as.data.frame(gc())

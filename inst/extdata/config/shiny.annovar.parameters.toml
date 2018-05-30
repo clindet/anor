@@ -16,11 +16,14 @@ in_anno_names <- stringr::str_replace(in_anno_names, 'perl_annovar_', '')
 
 #qqkey is also the query key
 out_key <- qqkey
+out <- sprintf("~/.annovarR/output/%s/%s.vcf", out_key, basename(in_file))
+out = normalizePath(out, mustWork = FALSE)
 annovarR::annotation(anno.name = "perl_annovar_merge",
 input.file = in_file, annovar.anno.names = in_anno_names,
-buildver = in_reffa, database.dir = '@>@db_dir@<@', 
-annovar.dir = '@>@annovarR_shiny_tools_path$annovar@<@', 
-out = sprintf("~/.annovarR/output/%s/%s.vcf", out_key, basename(in_file)))
+buildver = in_reffa, database.dir = '@>@normalizePath(db_dir, mustWork = FALSE)@<@',
+annovar.dir = '@>@normalizePath(annovarR_shiny_tools_path$annovar, mustWork = FALSE)@<@',
+out = out)
+
 """
 progressbar_message = ""
 render_id = "annovar_readfiles"
