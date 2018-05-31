@@ -270,7 +270,8 @@ set_preview <- function(id, id_prefix = "files_view_", dt_id = "file_preview_DT"
       }, rownames = FALSE, editable = FALSE, caption = "All files stored in annovarR shinyapp Web service",
       escape = FALSE, extensions = c("Buttons", "Scroller"), options = list(dom = "Bfrtlip",
       searchHighlight = TRUE, scrollX = TRUE, buttons = c("copy", "csv",
-      "excel", "pdf", "print"), initComplete = DT::JS("function(settings, json) {",
+      "excel", "pdf", "print"), lengthMenu = list(list(5, 10, 25, 50, -1),
+      list(5, 10 , 25, 50, "All")), initComplete = DT::JS("function(settings, json) {",
       "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
       "}")), selection = "single")
     }, error = function(e){})
@@ -297,7 +298,8 @@ set_preview_2 <- function(id, id_prefix = "output_files_view_", dt_id = "task_ta
       }, rownames = FALSE, editable = FALSE, caption = "Output files preview",
       escape = FALSE, extensions = c("Buttons", "Scroller", "FixedColumns"), options = list(dom = "Bfrtlip",
       searchHighlight = TRUE, scrollX = TRUE, buttons = c("copy", "csv",
-      "excel", "pdf", "print"), initComplete = DT::JS("function(settings, json) {",
+      "excel", "pdf", "print"), lengthMenu = list(list(5, 10, 25, 50, -1),
+          list(5, 10 , 25, 50, "All")), initComplete = DT::JS("function(settings, json) {",
       "$(this.api().table().header()).css({'background-color': '#487ea5', 'color': '#fff'});",
       "}")), selection = "single")
     }, error = function(e){})

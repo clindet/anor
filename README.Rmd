@@ -231,8 +231,7 @@ web()
 You can use the annovarR in Docker.
 
 ```bash
-docker pull bioinstaller/annovarr:develop
-docker run -it -v /tmp/db:/tmp/db -v /tmp/input:/tmp/input bioinstaller/annovarr:develop R
+docker run -it -v /tmp/db:/tmp/db -v /tmp/input:/tmp/input -v /home/user/.annovarR:/home/opencpu/.annovarR -p 80:80 bioinstaller/annovarr
 ```
 
 ## How to contribute?

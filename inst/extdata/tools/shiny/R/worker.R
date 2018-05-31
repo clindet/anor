@@ -161,7 +161,7 @@ while (TRUE) {
     }
 
     if (dir.exists(sprintf("%s/%s", shiny_output_dir, qqkey))) {
-      files <- list.files(sprintf("%s/%s", shiny_output_dir, qqkey))
+      files <- list.files(sprintf("%s/%s", shiny_output_dir, qqkey), recursive = TRUE)
       if (!length(files) == 0) {
         files <- sprintf("%s/%s/%s", shiny_output_dir, qqkey, files)
         filesinfo <- file.info(files)

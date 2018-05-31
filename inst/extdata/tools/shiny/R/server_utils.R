@@ -249,19 +249,6 @@ render_input_command <- function (input, output, params, item){
   return(output)
 }
 
-maftools_server <- function(input, output, pkgs = "maftools"){
-  output <- generate_server_object(input, output, config.maftools, "maftools", pkgs)
-}
-
-gvmap_server <- function(input, output, pkgs = "gvmap"){
-  output <- generate_server_object(input, output, config.gvmap, "gvmap", pkgs)
-}
-
-clusterProfiler_server <- function(input, output, pkgs = c("clusterProfiler", "org.Hs.eg.db")){
-  output <- generate_server_object(input, output, config.clusterProfiler, "clusterProfiler", pkgs)
-}
-
-
 generate_submit_server_object <- function(input, output, ui_server_config, toolname, pkgs = NULL) {
   ui.sections <- ui_server_config[[toolname]]$ui$sections
   ui_params <- ui_server_config[[toolname]]$paramters
@@ -328,6 +315,17 @@ generate_submit_server_object <- function(input, output, ui_server_config, tooln
   return(output)
 }
 
+maftools_server <- function(input, output, pkgs = "maftools"){
+  output <- generate_server_object(input, output, config.maftools, "maftools", pkgs)
+}
+
+gvmap_server <- function(input, output, pkgs = "gvmap"){
+  output <- generate_server_object(input, output, config.gvmap, "gvmap", pkgs)
+}
+
+clusterProfiler_server <- function(input, output, pkgs = c("clusterProfiler", "org.Hs.eg.db")){
+  output <- generate_server_object(input, output, config.clusterProfiler, "clusterProfiler", pkgs)
+}
 
 annovar_server <- function(input, output){
   output <- generate_submit_server_object(input, output, config.annovar, "annovar", "annovarR")
@@ -341,3 +339,6 @@ annovarR_server <- function(input, output){
   output <- generate_submit_server_object(input, output, config.annovarR, "annovarR", "annovarR")
 }
 
+CEMiTool_server <- function(input, output){
+  output <- generate_submit_server_object(input, output, config.CEMiTool, "CEMiTool", "CEMiTool")
+}

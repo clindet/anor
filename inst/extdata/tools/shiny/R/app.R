@@ -21,6 +21,7 @@ sidebar <- dashboardSidebar(
     menuItem("Dashbord", tabName = "dashboard", icon = icon("dashboard")),
     menuItem("Annotation", tabName = "annotation", icon = icon("leaf")),
     menuItem("Visulization", tabName = "visulization", icon = icon("bar-chart")),
+    menuItem("Pipeline", tabName = "pipeline", icon = icon("diamond")),
     menuItem("File Viewer", tabName = "file_viewer", icon = icon("file")),
     menuItem("Upload", tabName = "upload", icon = icon("cloud-upload")),
     menuItem("Downloader", icon = icon("cloud-download"), tabName = "download"),
@@ -42,6 +43,7 @@ body <- dashboardBody(
              body_file_viewer_tabItem,
              body_visulization_tabItem,
              body_annotation_tabItem,
+             body_pipeline_tabItem,
              body_upload_tabItem,
              body_download_tabItem
     )
@@ -66,6 +68,7 @@ server <- function(input, output, session) {
   output <- annovar_server(input, output)
   output <- vcfanno_server(input, output)
   output <- annovarR_server(input, output)
+  output <- CEMiTool_server(input, output)
   out <- server_upload_file(input, output, session)
   output <- out$output
   session <- out$session

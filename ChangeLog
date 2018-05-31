@@ -1,3 +1,7 @@
+2018-06-01 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* add pipeline tabitem
+
 2018-05-31 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* Update Dockerfile and fix websocket connection
