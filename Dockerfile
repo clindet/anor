@@ -24,9 +24,15 @@ Run apt-get update \
     && chown -R opencpu /var/log/shiny-server \
     && chown -R opencpu /opt/shiny-server \
     && ln -s /usr/local/lib/R/site-library/annovarR/extdata/tools/shiny/R /srv/shiny-server/annovarR \
-    && echo "shiny-server &" >> /tmp/start_shiny_server
+    && echo "shiny-server &" >> /tmp/start_shiny_server \
+    && a2enmod rewrite\
+    && a2enmod proxy_http \
+    && a2enmod proxy_wstunnel \
+    && rm /tmp/shiny-server-1.5.7.907-amd64.deb \
+    && apt autoclean \
+    && apt clean
 
 ADD ./inst/docker/shiny-server.conf /etc/shiny-server/shiny-server.conf
-ADD ./inst/docker/shiny-apache.conf /etc/apache2/sites-enabled/shiny-apache.conf
+ADD ./inst/docker/shiny-apache.conf /etc/apache2/sites-enabled/000-default.conf
 
 CMD service cron start && /usr/lib/rstudio-server/bin/rserver && sh /tmp/start_shiny_server && apachectl -DFOREGROUND
