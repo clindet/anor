@@ -17,6 +17,8 @@ navbar:
     menu:
     - text: Database in annovarR
       href: articles/database_in_annovarR.html
+    - text: Shiny app of annovarR
+      href: articles/shiny_of_annovarR.html
   - text: News
     href: news/index.html
   right:
