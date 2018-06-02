@@ -2,7 +2,6 @@
 #'
 #' @param appDir The application to run.
 #' Default is system.file('extdata', 'tools/shiny/R', package = 'annovarR')
-#' @param opencpu_extra Paramers to start a opencpu service
 #' @param ... Other parameters pass to \code{\link[shiny]{runApp}}
 #' @export
 #'
@@ -27,6 +26,7 @@ web <- function(appDir = system.file("extdata", "tools/shiny/R", package = "anno
 #' check_shiny_dep()
 #' }
 check_shiny_dep <- function(install = FALSE) {
+
   pkgs_meta <- as.data.frame(installed.packages())[,c(1,3)]
   pkgs_meta[,2] <- as.character(pkgs_meta[,2])
   cran_pkgs <- c("shinycssloaders", "Cairo", "shinydashboard", "configr",

@@ -262,7 +262,15 @@ provided.
 <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/shiny_app.jpg" align="center" />
 
 ``` r
-web()
+# Install R packages required by annovarR shiny app (required if run through shiny::runGitHub)
+# We will provides a standalone installation script in the future
+annovarR::check_shiny_dep()
+
+# Running by R pakcage API
+annovarR::web()
+
+# Running by Github resource
+shiny::runGitHub("JhuangLab/annovarR", subdir = "inst/extdata/tools/shiny/R")
 ```
 
 ## Docker

@@ -9,3 +9,4 @@
 ^Makefile$
 ^Dockerfile$
 ^README.Rmd$
+^_gsdata_$
