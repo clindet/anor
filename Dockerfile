@@ -27,10 +27,10 @@ Run apt update && apt install -y \
     && Rscript -e "devtools::install_github('Miachol/configr', ref = 'develop')" \
     && Rscript -e "devtools::install_github('JhuangLab/ngstk', ref = 'develop')" \
     && Rscript -e "devtools::install_github('JhuangLab/BioInstaller', ref = 'develop')" \
-    && Rscript -e "source('https://bioconductor.org/biocLite.R');biocLite(ask = FALSE)" \
-    && Rscript -e "devtools::install_url('http://www.bioconductor.org/packages/release/bioc/src/contrib/CEMiTool_1.4.0.tar.gz')" \ 
+    && Rscript -e "source('https://bioconductor.org/biocLite.R');biocLite(ask = FALSE);" \
     && Rscript -e "devtools::install('.')" \ 
     && Rscript -e "annovarR::check_shiny_dep(TRUE)" \
+    && Rscript -e "devtools::install_url('http://www.bioconductor.org/packages/release/bioc/src/contrib/CEMiTool_1.4.0.tar.gz')" \ 
     && ln -s /usr/local/lib/R/site-library/annovarR/extdata/tools/shiny/R /srv/shiny-server/annovarR \
     && mkdir -p /home/opencpu/.annovarR/tools/ \
     && mkdir -p /home/opencpu/.annovarR/db/ \
