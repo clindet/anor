@@ -59,7 +59,7 @@ server_upload_file <- function(input, output, session) {
     print(status)
     shinyjs::alert("Delete successful!")
     render_files_info_DT()
-    output <- update_configuration_files()
+    update_configuration_files()
     output <- render_input_box_ui(input, output)
   })
 
@@ -144,7 +144,7 @@ server_upload_file <- function(input, output, session) {
       DBI::dbDisconnect(con)
       # Chose the navbar
       updateNavbarPage(session, "navbar_tabs", selected = "file_viewer")
-      output <- update_configuration_files()
+      update_configuration_files()
       output <- render_input_box_ui(input, output)
     }
   })

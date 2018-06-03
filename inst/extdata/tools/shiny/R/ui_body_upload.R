@@ -1,5 +1,5 @@
-source("config.R")
-body_upload_tabItem <- tabItem("upload",
+get_upload_tabItem_ui <- function() {
+  body_upload_tabItem <- tabItem("upload",
             fluidRow(
               box(
                 title = "Upload",
@@ -26,3 +26,4 @@ body_upload_tabItem <- tabItem("upload",
                 )
             )
     )
+}

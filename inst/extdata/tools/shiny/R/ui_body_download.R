@@ -1,4 +1,5 @@
-body_download_tabItem <- tabItem("download",
+get_download_tabItem_ui <- function(){
+  body_download_tabItem <- tabItem("download",
             fluidRow(
               box(
                 title = "Downloader for databases",
@@ -14,3 +15,4 @@ body_download_tabItem <- tabItem("download",
               )
             )
     )
+}

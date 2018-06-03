@@ -6,9 +6,20 @@ sapply(pkgs.shiny, function(x) {
 })
 # source UI required code config.R sourced in the body_upload_ui.R
 files <- list.files(".", "^ui_")
-files <- files[!files %in% c("app.R", "config.R")]
+files <- c(files, "config.R")
 for (i in files) {
   source(i, encoding = "UTF-8")
+}
+
+get_tabItems <- function () {
+  source("config.R")
+  items <- c("introduction", "dashbord",
+             "file_viewer", "visulization",
+             "annotation", "pipeline",
+             "upload", "download")
+  body_items <- sprintf("get_%s_tabItem_ui()", items)
+  cmd <- sprintf("tabItems(%s)", paste0(body_items, collapse = ", "))
+  eval(parse(text = cmd))
 }
 
 header <- dashboardHeader(title = "annovarR Shiny APP", messages, notifications,
@@ -35,32 +46,20 @@ body <- dashboardBody(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
     tags$link(type = "text/javascript", src = "custom.js")),
-    shiny::uiOutput("task_submit_modal"),
-    shiny::actionButton("dashbord_auto_update", label = "dashbord_auto_update",
+  shiny::uiOutput("task_submit_modal"),
+  shiny::actionButton("dashbord_auto_update", label = "dashbord_auto_update",
                         style = "display:none;"),
-    tabItems(body_introduction_tabItem,
-             body_dashbord_tabItem,
-             body_file_viewer_tabItem,
-             body_visulization_tabItem,
-             body_annotation_tabItem,
-             body_pipeline_tabItem,
-             body_upload_tabItem,
-             body_download_tabItem
-    )
-  )
+  get_tabItems()
+)
 
 # Defined shiny UI
-ui <- function(request) {
-  dashboardPage(header, sidebar, body, skin = skin)
-}
+ui <- dashboardPage(header, sidebar, body, skin = skin)
 
 server <- function(input, output, session) {
-  # Visulization section (maftools)
   files <- c("server_utils.R", "server_download.R", "server_upload_file.R", "server_dashbord.R")
   for (i in files) {
     source(i, encoding = "UTF-8")
   }
-
   output <- render_input_box_ui(input, output)
   output <- maftools_server(input, output)
   output <- gvmap_server(input, output)

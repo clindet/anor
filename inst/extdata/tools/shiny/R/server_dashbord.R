@@ -114,7 +114,7 @@ update_system_monitor <- function(input, output) {
     if (!is.null(disk.usage.values)) {
       disk.used <- disk.usage.values[2]
       if (stringr::str_detect(version$os, 'darwin')){
-        disk.total <- disk.usage.values[3]
+        disk.total <- disk.usage.values[1] /2
         disk.used <- disk.used / 2
       } else {
         disk.total <- disk.usage.values[1]
@@ -233,7 +233,7 @@ dashbord_section_server <- function(input, output) {
                                             id))
     print(status)
     shinyjs::alert("Delete successful!")
-    output <- update_configuration_files()
+    update_configuration_files()
     output <- render_input_box_ui(input, output)
     DBI::dbDisconnect(con)
   })

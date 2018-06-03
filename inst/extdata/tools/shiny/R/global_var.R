@@ -306,3 +306,25 @@ set_preview_2 <- function(id, id_prefix = "output_files_view_", dt_id = "task_ta
   })
   return(output)
 }
+
+update_ui_coices <- function() {
+  tools <- unname(unlist(config$shiny_tools))
+  for(tool in tools) {
+    config.tmp <- get(sprintf("config.%s", tool))
+    config.tmp <- config.tmp[[tool]]$paramters
+    box_names <- names(config.tmp)
+    for(box in box_names) {
+      if ("input" %in% names(config.tmp[[box]])) {
+        for(input_item in names(config.tmp[[box]]$input)) {
+          if ("choices" %in% names(config.tmp[[box]]$input[[input_item]])) {
+            choices <- config.tmp[[box]]$input[[input_item]]$choices
+            varname <- config.tmp[[box]]$input[[input_item]]$varname
+            input_id <- config.tmp[[box]]$input[[input_item]]$input_id
+            #shinyjs::runjs("")
+          }
+        }
+
+      }
+    }
+  }
+}

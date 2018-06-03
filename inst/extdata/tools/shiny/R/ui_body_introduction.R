@@ -1,4 +1,5 @@
-body_introduction_tabItem <- tabItem("introduction",
+get_introduction_tabItem_ui <- function(){
+  body_introduction_tabItem <- tabItem("introduction",
             fluidRow(
               box(
                 title = "Introduction",
@@ -10,3 +11,4 @@ body_introduction_tabItem <- tabItem("introduction",
               )
             )
     )
+}
