@@ -61,13 +61,9 @@ server <- function(input, output, session) {
     source(i, encoding = "UTF-8")
   }
   output <- render_input_box_ui(input, output)
-  output <- maftools_server(input, output)
-  output <- gvmap_server(input, output)
-  output <- clusterProfiler_server(input, output)
-  output <- annovar_server(input, output)
-  output <- vcfanno_server(input, output)
-  output <- annovarR_server(input, output)
-  output <- CEMiTool_server(input, output)
+  for(tool in unlist(annovarR_shiny_tools_list)) {
+    eval(parse(text = sprintf('output <- %s_server(input, output)', tool)))
+  }
   out <- server_upload_file(input, output, session)
   output <- out$output
   session <- out$session

@@ -21,7 +21,9 @@ out = sprintf("~/.annovarR/output/%s/%s.Rdata", out_key, basename(in_file))
 dir.create(dirname(out), recursive = TRUE)
 
 result <- annovarR::annotation.merge(dat = input.dat, anno.name = in_anno_names,
-buildver = in_reffa, database.dir = '@>@db_dir@<@')
+buildver = in_reffa, database.dir = '@>@db_dir@<@', 
+vcfanno = '@>@normalizePath(annovarR_shiny_tools_path$vcfanno, mustWork = FALSE)@<@', 
+annovar.dir = '@>@normalizePath(annovarR_shiny_tools_path$annovar, mustWork = FALSE)@<@')
 save(result, file = out)
 """
 progressbar_message = ""

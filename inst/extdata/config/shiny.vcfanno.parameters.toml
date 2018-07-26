@@ -15,7 +15,7 @@ out_key <- qqkey
 annovarR::annotation(anno.name = "vcfanno_demo",
 input.file = in_file, buildver = in_reffa, 
 database.dir = '@>@db_dir@<@', 
-vcfanno = '@>@annovarR_shiny_tools_path$vcfanno@<@', 
+vcfanno = '@>@normalizePath(annovarR_shiny_tools_path$vcfanno, mustWork = FALSE)@<@', 
 out = sprintf("~/.annovarR/output/%s/%s.vcf", out_key, basename(in_file)))
 """
 progressbar_message = ""

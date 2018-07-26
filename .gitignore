@@ -27,3 +27,4 @@ vignettes/*.pdf
 
 pre-db
 _gsdata_
+.DS_Store

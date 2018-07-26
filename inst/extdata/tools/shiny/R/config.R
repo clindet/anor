@@ -5,15 +5,18 @@ if (db_type == "sqlite") {
   con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
   if (!upload_table %in% DBI::dbListTables(con)) {
     sql <- system.file("extdata", "sql/upload_table.sql", package = "annovarR")
-    annovarR::sql2sqlite(sql, dbname = db_path)
+    statements <- paste0(readLines(sql), collapse = '\n')
+    annovarR::sql2sqlite(statements = statements, dbname = db_path)
   }
   if (!task_table %in% DBI::dbListTables(con)) {
     sql <- system.file("extdata", "sql/task_table.sql", package = "annovarR")
-    annovarR::sql2sqlite(sql, dbname = db_path)
+    statements <- paste0(readLines(sql), collapse = '\n')
+    annovarR::sql2sqlite(statements = statements, dbname = db_path)
   }
   if (!output_file_table_name %in% DBI::dbListTables(con)) {
     sql <- system.file("extdata", "sql/output_file_table.sql", package = "annovarR")
-    annovarR::sql2sqlite(sql, dbname = db_path)
+    statements <- paste0(readLines(sql), collapse = '\n')
+    annovarR::sql2sqlite(statements = statements, dbname = db_path)
   }
   DBI::dbDisconnect(con)
 }

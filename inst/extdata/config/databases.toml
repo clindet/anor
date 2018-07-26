@@ -184,7 +184,7 @@ set.table.fun = "set.table"
 format.db.tb.fun = "format.db.tb"
 
 [clinvar]
-versions = ["clinvar_20170130"]
+versions = ["clinvar_20170130", "clinvar_20170501", "clinvar_20170905", "clinvar_20180603"]
 func = "annotation.auto"
 default.dbtype = ["sqlite"]
 dependence_db = "db_annovar_clinvar_sqlite"
