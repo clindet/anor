@@ -4,8 +4,8 @@
 \alias{web}
 \title{Function to run annovarR shiny APP service}
 \usage{
-web(appDir = system.file("extdata", "tools/shiny/R", package = "annovarR"),
-  ...)
+web(appDir = system.file("extdata", "tools/shiny/R", package =
+  "annovarR"), ...)
 }
 \arguments{
 \item{appDir}{The application to run.

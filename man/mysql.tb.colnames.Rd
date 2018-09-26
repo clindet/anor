@@ -4,8 +4,8 @@
 \alias{mysql.tb.colnames}
 \title{Get colnames of table of database in mysql}
 \usage{
-mysql.tb.colnames(mysql.connect.params = list(host = "", dbname = "", user =
-  "", password = "", table.name = ""), ...)
+mysql.tb.colnames(mysql.connect.params = list(host = "", dbname = "",
+  user = "", password = "", table.name = ""), ...)
 }
 \arguments{
 \item{mysql.connect.params}{Mysql parameters, [host, dbname, table.name, user, password etc.]}

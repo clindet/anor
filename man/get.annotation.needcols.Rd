@@ -5,8 +5,8 @@
 \title{Get annovarR annotation needed colnames according the anno.name}
 \usage{
 get.annotation.needcols(anno.name = "",
-  database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"))
+  database.cfg = system.file("extdata", "config/databases.toml", package
+  = "annovarR"))
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}

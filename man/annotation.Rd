@@ -5,11 +5,12 @@
 \title{Annotation function (single name)}
 \usage{
 annotation(dat = data.table(), anno.name = "", buildver = "hg19",
-  annovar.anno.names = "", database.dir = Sys.getenv("annovarR_DB_DIR", ""),
-  db.type = NULL, database.cfg = system.file("extdata",
+  annovar.anno.names = "", database.dir = Sys.getenv("annovarR_DB_DIR",
+  ""), db.type = NULL, database.cfg = system.file("extdata",
   "config/databases.toml", package = "annovarR"), func = NULL,
-  mysql.connect.params = list(host = "", dbname = "", table.name = "", user =
-  "", password = ""), sqlite.connect.params = list(dbname = ""), ...)
+  mysql.connect.params = list(host = "", dbname = "", table.name = "",
+  user = "", password = ""), sqlite.connect.params = list(dbname = ""),
+  ...)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}

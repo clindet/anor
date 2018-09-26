@@ -5,13 +5,13 @@
 \title{Build annovarR database in mysql (auto from extdata/config/database.toml)}
 \usage{
 mysql.auto.build(anno.name = "", buildver = "hg19",
-  database.dir = "/path/", mysql.connect.params = list(user = "", password =
-  "", host = "localhost", port = "3306"), overwrite = FALSE, append = FALSE,
-  index = "chr_start_index", db.type = "mysql",
-  database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"), extra_fread_params = list(sep = "\\t", header = TRUE, return_1L
-  = FALSE), mysql.build.params = list(fread.params = list(sep = "\\t")),
-  batch_lines = 1e+07, start_index = 1, new.colnames = NULL,
+  database.dir = "/path/", mysql.connect.params = list(user = "",
+  password = "", host = "localhost", port = "3306"), overwrite = FALSE,
+  append = FALSE, index = "chr_start_index", db.type = "mysql",
+  database.cfg = system.file("extdata", "config/databases.toml", package
+  = "annovarR"), extra_fread_params = list(sep = "\\t", header = TRUE,
+  return_1L = FALSE), mysql.build.params = list(fread.params = list(sep =
+  "\\t")), batch_lines = 1e+07, start_index = 1, new.colnames = NULL,
   verbose = TRUE)
 }
 \arguments{

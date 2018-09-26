@@ -249,29 +249,35 @@ can provide some help for your variants annotation work.
 
 ## Shiny App
 
-We developed a shiny App to provide a local and cloud WEB interface
+Based on the [BioInstaller](https://github.com/JhuangLab/BioInstaller),
+we provided a shiny App as the local and cloud WEB interface
 (development status) to annotate and visulize genetic variants data
 using various public and in-house tools, such as
 [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/),
 [vcfanno](https://github.com/brentp/vcfanno),
 [maftools](https://github.com/PoisonAlien/maftools),
-[gvmap](https://github.com/ytdai/gvmap), and so on. Besides, serveral
-useful cloud computing functions also have been
-provided.
-
-<img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/shiny_app.jpg" align="center" />
+[gvmap](https://github.com/ytdai/gvmap), and so
+on.
 
 ``` r
-web()
+# Install R packages required by annovarR shiny app (required if run through shiny::runGitHub)
+# We will provides a standalone installation script in the future
+annovarR::check_shiny_dep()
+
+# Running by R pakcage API
+annovarR::web()
+
+# Running by Github resource
+shiny::runGitHub("JhuangLab/annovarR", subdir = "inst/extdata/tools/shiny/R")
 ```
 
 ## Docker
 
-You can use the annovarR in Docker.
+You can use the annovarR in
+Docker.
 
 ``` bash
-docker pull bioinstaller/annovarr:develop
-docker run -it -v /tmp/db:/tmp/db -v /tmp/input:/tmp/input bioinstaller/annovarr:develop R
+docker run -it -v /tmp/db:/tmp/db -v /tmp/input:/tmp/input -v /home/user/.annovarR:/home/opencpu/.annovarR -p 80:80 bioinstaller/annovarr
 ```
 
 ## How to contribute?

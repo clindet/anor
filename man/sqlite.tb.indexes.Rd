@@ -4,7 +4,8 @@
 \alias{sqlite.tb.indexes}
 \title{Get sqlite table indexes}
 \usage{
-sqlite.tb.indexes(sqlite.connect.params = list(dbname = "", table.name = ""))
+sqlite.tb.indexes(sqlite.connect.params = list(dbname = "", table.name =
+  ""))
 }
 \arguments{
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}

@@ -5,10 +5,11 @@
 \title{Index annovarR database in mysql (auto from extdata/config/database.toml)}
 \usage{
 mysql.auto.index(anno.name = "", buildver = "hg19",
-  database.dir = "/path/", mysql.connect.params = list(user = "", password =
-  "", host = "localhost", port = "3306"), index = "chr_start_index",
-  db.type = "mysql", database.cfg = system.file("extdata",
-  "config/databases.toml", package = "annovarR"), verbose = TRUE)
+  database.dir = "/path/", mysql.connect.params = list(user = "",
+  password = "", host = "localhost", port = "3306"),
+  index = "chr_start_index", db.type = "mysql",
+  database.cfg = system.file("extdata", "config/databases.toml", package
+  = "annovarR"), verbose = TRUE)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}

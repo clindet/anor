@@ -4,8 +4,8 @@
 \alias{drop.sqlite.index}
 \title{Drop search index of annovarR database table in sqlite}
 \usage{
-drop.sqlite.index(sqlite.connect.params = list(dbname = "", table.name = ""),
-  index = "", verbose = FALSE, ...)
+drop.sqlite.index(sqlite.connect.params = list(dbname = "", table.name =
+  ""), index = "", verbose = FALSE, ...)
 }
 \arguments{
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname]}

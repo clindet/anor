@@ -7,11 +7,11 @@
 sqlite.auto.build(anno.name = "", buildver = "hg19",
   database.dir = "/path/", overwrite = FALSE, append = FALSE,
   index = "chr_start_index", db.type = "sqlite",
-  database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"), extra_fread_params = list(sep = "\\t", header = TRUE, return_1L
-  = FALSE), sqlite.build.params = list(fread.params = list(sep = "\\t")),
-  batch_lines = 1e+07, start_index = 1, new.colnames = NULL,
-  verbose = TRUE)
+  database.cfg = system.file("extdata", "config/databases.toml", package
+  = "annovarR"), extra_fread_params = list(sep = "\\t", header = TRUE,
+  return_1L = FALSE), sqlite.build.params = list(fread.params = list(sep
+  = "\\t")), batch_lines = 1e+07, start_index = 1,
+  new.colnames = NULL, verbose = TRUE)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}

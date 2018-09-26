@@ -4,8 +4,9 @@
 \alias{get.annotation.dbtype}
 \title{Get annovarR default databases type [sqlite, txt]}
 \usage{
-get.annotation.dbtype(anno.name = "", database.cfg = system.file("extdata",
-  "config/databases.toml", package = "annovarR"))
+get.annotation.dbtype(anno.name = "",
+  database.cfg = system.file("extdata", "config/databases.toml", package
+  = "annovarR"))
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}

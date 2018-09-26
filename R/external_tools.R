@@ -51,29 +51,29 @@
 #' # ANNOVAR convert2annovar.pl
 #' annovar('perl', cmd.used = 'script3', input.file = 'example.vcf', format = 'vcf4old',
 #'         convert.out = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
-annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = paste(c("{perl}",
-  "{script}{extra.params}", "-downdb", "{buildver}", "{webfrom}", "{down.dbname}",
-  "{database.dir}"), collapse = " "), script1.gene.based = paste(c("{perl}", "{script}{extra.params}",
-  "{buildver}", "{input.file}", "{database.dir}"), collapse = " "), script1.region.based = paste(c("{perl}",
-  "{script}", " -regionanno{extra.params}", "{buildver}", "{anno.names}", "{input.file}",
-  "{database.dir}"), collapse = " "), script1.filter.based = paste(c("{perl}",
-  "{script}", "-filter{extra.params}", "{buildver}", "{anno.names}", "{input.file}",
-  "{database.dir}"), collapse = " "), script2 = paste(c("{perl}", "{script}", "{input.file}",
-  "{database.dir}", "{buildver}", "{out}", "-remove{extra.params}", "-protocol {anno.names}",
-  "-operation", "{operation}", "{nastring}", "{otherinfo}", "{vcfinput}"), collapse = " "),
-  script3 = paste("{perl}", "{script}{extra.params}", "-format", "{format}", "{input.file}",
-    "> {convert.out}", collapse = " ")), cmd.used = "script1.downdb", down.dbname = "",
-  input.file = "", annovar.dir = "", buildver = "hg19", database.dir = "{annovar.dir}/humandb",
-  webfrom = "annovar", anno.names = "", out = "", convert.out = "", format = "vcf4",
-  operation.type = list(gene.based = c("refGene", "knownGene", "ensGene", "ccdsGene"),
-    region.based = c("cytoBand", "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver",
-    anno.names = "-dbtype", webfrom = "-webfrom", out = "-out", nastring = "-nastring"),
+annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = paste(c("{perl}", 
+  "{script}{extra.params}", "-downdb", "{buildver}", "{webfrom}", "{down.dbname}", 
+  "{database.dir}"), collapse = " "), script1.gene.based = paste(c("{perl}", "{script}{extra.params}", 
+  "{buildver}", "{input.file}", "{database.dir}"), collapse = " "), script1.region.based = paste(c("{perl}", 
+  "{script}", " -regionanno{extra.params}", "{buildver}", "{anno.names}", "{input.file}", 
+  "{database.dir}"), collapse = " "), script1.filter.based = paste(c("{perl}", 
+  "{script}", "-filter{extra.params}", "{buildver}", "{anno.names}", "{input.file}", 
+  "{database.dir}"), collapse = " "), script2 = paste(c("{perl}", "{script}", "{input.file}", 
+  "{database.dir}", "{buildver}", "{out}", "-remove{extra.params}", "-protocol {anno.names}", 
+  "-operation", "{operation}", "{nastring}", "{otherinfo}", "{vcfinput}"), collapse = " "), 
+  script3 = paste("{perl}", "{script}{extra.params}", "-format", "{format}", "{input.file}", 
+    "> {convert.out}", collapse = " ")), cmd.used = "script1.downdb", down.dbname = "", 
+  input.file = "", annovar.dir = "", buildver = "hg19", database.dir = "{annovar.dir}/humandb", 
+  webfrom = "annovar", anno.names = "", out = "", convert.out = "", format = "vcf4", 
+  operation.type = list(gene.based = c("refGene", "knownGene", "ensGene", "ccdsGene"), 
+    region.based = c("cytoBand", "genomicSuperDups")), cmd.profix.flag = list(buildver = "-buildver", 
+    anno.names = "-dbtype", webfrom = "-webfrom", out = "-out", nastring = "-nastring"), 
   otherinfo = FALSE, nastring = "NA", vcfinput = FALSE, extra.params = "", debug = FALSE) {
   operation <- ""
   annotate.variation.pl <- sprintf("%s/annotate_variation.pl", annovar.dir)
   table.annovar.pl <- sprintf("%s/table_annovar.pl", annovar.dir)
   convert2annovar.pl <- sprintf("%s/convert2annovar.pl", annovar.dir)
-  for (i in c("perl", "annovar.dir", "input.file", "convert.out", "annotate.variation.pl",
+  for (i in c("perl", "annovar.dir", "input.file", "convert.out", "annotate.variation.pl", 
     "table.annovar.pl", "convert2annovar.pl")) {
     assign(i, normalizePath(get(i), mustWork = FALSE))
   }
@@ -106,7 +106,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   if (length(perl) == 0) {
     perl <- "perl"
   }
-  if (cmd.used %in% c("script1.downdb", "script1.gene.based", "script1.filter.based",
+  if (cmd.used %in% c("script1.downdb", "script1.gene.based", "script1.filter.based", 
     "script1.region.based")) {
     script <- annotate.variation.pl
   } else if (cmd.used == "script2") {
@@ -136,10 +136,10 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
       assign(i, "")
     }
   }
-  extra.list = list(perl = perl, script = script, input.file = input.file, annovar.dir = annovar.dir,
-    down.dbname = down.dbname, buildver = buildver, database.dir = database.dir,
-    webfrom = webfrom, anno.names = anno.names, out = out, format = format, extra.params = extra.params,
-    down.dbname = down.dbname, operation = operation, convert.out = convert.out,
+  extra.list = list(perl = perl, script = script, input.file = input.file, annovar.dir = annovar.dir, 
+    down.dbname = down.dbname, buildver = buildver, database.dir = database.dir, 
+    webfrom = webfrom, anno.names = anno.names, out = out, format = format, extra.params = extra.params, 
+    down.dbname = down.dbname, operation = operation, convert.out = convert.out, 
     otherinfo = otherinfo, nastring = nastring, vcfinput = vcfinput)
   cmd <- glue(cmd.pool[[cmd.used]])
   message(cmd)
@@ -193,9 +193,9 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
 #' @export
 #' @examples
 #' vep(debug = TRUE)
-vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offline = TRUE,
-  buildver = "GRCh37", dir = file.path(Sys.getenv("HOME"), ".vep"), input.file = "",
-  out = "variant_effect_output.txt", fasta = "", everything = TRUE, extra.params = "",
+vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offline = TRUE, 
+  buildver = "GRCh37", dir = file.path(Sys.getenv("HOME"), ".vep"), input.file = "", 
+  out = "variant_effect_output.txt", fasta = "", everything = TRUE, extra.params = "", 
   debug = FALSE) {
   if (!file.exists(vep) & !debug) {
     stop("Please set correctly VEP path.")
@@ -247,9 +247,9 @@ vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offlin
 #' @export
 #' @examples
 #' vcfanno(debug = TRUE)
-vcfanno <- function(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")),
-  vcfanno.database.cfg = system.file("extdata", "demo/vcfanno_demo/conf.toml",
-    package = "annovarR"), base_path = "", lua = "", ends = FALSE, input.file = "input.vcf",
+vcfanno <- function(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")), 
+  vcfanno.database.cfg = system.file("extdata", "demo/vcfanno_demo/conf.toml", 
+    package = "annovarR"), base_path = "", lua = "", ends = FALSE, input.file = "input.vcf", 
   out = "output.vcf", thread = 2, permissive_overlap = FALSE, debug = FALSE) {
   vcfanno <- vcfanno[vcfanno != ""][1]
   if (!file.exists(vcfanno) && !debug) {

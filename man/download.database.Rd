@@ -5,10 +5,11 @@
 \title{Download annovarR databases}
 \usage{
 download.database(download.name = NULL, database.dir = tempdir(),
-  version = c(), buildver = "hg19", download.cfg = system.file("extdata",
-  "config/db/db_annovar.toml", package = "BioInstaller"),
-  show.all.versions = FALSE, show.all.names = FALSE,
-  show.all.buildvers = FALSE, verbose = FALSE, ...)
+  version = c(), buildver = "hg19",
+  download.cfg = system.file("extdata", "config/db/db_annovar.toml",
+  package = "BioInstaller"), show.all.versions = FALSE,
+  show.all.names = FALSE, show.all.buildvers = FALSE,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{download.name}{Download name, default is NULL and get value from database.cfg

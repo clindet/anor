@@ -6,8 +6,8 @@
 \usage{
 sqlite2sql(sqlite_bin = c(Sys.which("sqlite"), Sys.which("sqlite3")),
   dbname = "", out.sql = "",
-  cmd = "{sqlite_bin} {dbname} '.dump' | gzip > {out.sql}", debug = FALSE,
-  ...)
+  cmd = "{sqlite_bin} {dbname} '.dump' | gzip > {out.sql}",
+  debug = FALSE, ...)
 }
 \arguments{
 \item{sqlite_bin}{Sqlite executable file}

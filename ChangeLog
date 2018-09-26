@@ -1,3 +1,7 @@
+2018-09-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* fix cran check error
+
 2018-06-04 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* update input UI when upload and delete files

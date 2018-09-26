@@ -46,14 +46,6 @@ The followed R command `install.packages('shiny')` can be used to install it. Se
 
 In general, it is best choices of annovarR for in-house web service for genetic variants data annotation and visulization. We hope this shiny application can improve the interactivity of annovarR, and reduce its use difficulty for unprofessional. Meanwhile, we also provides a set of functions to build the simple cloud computing app for other purpose, such as variant calling, RNA-seq data analysis, etc.
 
-## Opencpu package for REST API
-
-[Opencpu](https://www.opencpu.org/) is a tool for R users to build the web service REST API. It is a good choice for those command line users to finish specific R tasks without the Rstudio GUI or web graphic interface.
-
-A simple API document can be found in [here](https://www.opencpu.org/api.html). annovarR will use the related API to provide the REST API.
-
-<img src="../man/figures/opencpu.jpg" align="center" />
-
 ## GUI of annovarR
 
 When you started a instance of annovarR shiny app in Rstudio or R client, it will shows the URL and port: `Listening on http://127.0.0.1:3234`. The port was random, and you can control the host and port of annovarR by parameteres `host` and `port` in `annovarR::web()` or `shiny::runApp()`.

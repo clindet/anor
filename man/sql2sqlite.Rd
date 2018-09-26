@@ -4,8 +4,8 @@
 \alias{sql2sqlite}
 \title{Convert sql file to sqlite database}
 \usage{
-sql2sqlite(sql.file = "", statements = "", dbname = "", verbose = FALSE,
-  ...)
+sql2sqlite(sql.file = "", statements = "", dbname = "",
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{sql.file}{SQL file of sqlite database dumped}

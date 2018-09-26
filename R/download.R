@@ -18,11 +18,11 @@
 #' @examples
 #' download.database('db_annovar_avsnp', database.dir = sprintf('%s/databases/', tempdir()),
 #' show.all.versions = TRUE)
-download.database <- function(download.name = NULL, database.dir = tempdir(), version = c(),
-  buildver = "hg19", download.cfg = system.file("extdata", "config/db/db_annovar.toml",
-    package = "BioInstaller"), show.all.versions = FALSE, show.all.names = FALSE,
+download.database <- function(download.name = NULL, database.dir = tempdir(), version = c(), 
+  buildver = "hg19", download.cfg = system.file("extdata", "config/db/db_annovar.toml", 
+    package = "BioInstaller"), show.all.versions = FALSE, show.all.names = FALSE, 
   show.all.buildvers = FALSE, verbose = FALSE, ...) {
-  if (!is.null(download.name) && str_detect(download.name, "^db_bioc_") && !show.all.names &&
+  if (!is.null(download.name) && str_detect(download.name, "^db_bioc_") && !show.all.names && 
     !show.all.versions) {
     download.name <- str_replace(download.name, "^db_bioc_", "")
     if (length(setdiff(download.name, rownames(installed.packages()))) > 0) {
@@ -34,9 +34,9 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
   }
   if (length(download.name) == 1 && length(version) > 1) {
     return(sapply(version, function(x) {
-      download.database(download.name = download.name, database.dir = database.dir,
-        version = x, buildver = buildver, download.cfg = download.cfg, show.all.versions = show.all.versions,
-        show.all.names = show.all.names, show.all.buildvers = show.all.buildvers,
+      download.database(download.name = download.name, database.dir = database.dir, 
+        version = x, buildver = buildver, download.cfg = download.cfg, show.all.versions = show.all.versions, 
+        show.all.names = show.all.names, show.all.buildvers = show.all.buildvers, 
         verbose = verbose, ...)
     }))
   }
@@ -63,14 +63,13 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
     return(buildvers)
   }
   github.cfg.null <- tempfile()
-  write.config(list(title = "empty github.cfg"), github.cfg.null,
-               write.type = 'json')
+  write.config(list(title = "empty github.cfg"), github.cfg.null, write.type = "json")
   if (show.all.names) {
-    all.names <- install.bioinfo(github.cfg = github.cfg.null, nongithub.cfg = download.cfg,
+    all.names <- install.bioinfo(github.cfg = github.cfg.null, nongithub.cfg = download.cfg, 
       show.all.names = TRUE, verbose = verbose)
     return(all.names)
   }
-  all.versions <- install.bioinfo(name = download.name, github.cfg = github.cfg.null,
+  all.versions <- install.bioinfo(name = download.name, github.cfg = github.cfg.null, 
     nongithub.cfg = download.cfg, show.all.versions = TRUE, verbose = FALSE)
   if (show.all.versions) {
     return(all.versions)
@@ -84,8 +83,8 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
       version = all.versions[1]
     }
   }
-  filenames <- mapply(get.finished.filename, download.name = download.name, version = version,
-    buildver = rep(buildver, length(version)), download.cfg = rep(download.cfg,
+  filenames <- mapply(get.finished.filename, download.name = download.name, version = version, 
+    buildver = rep(buildver, length(version)), download.cfg = rep(download.cfg, 
       length(version)))
   filenames <- sprintf("%s/%s", database.dir, filenames)
   index <- file.exists(filenames) & file.size(filenames) > 0
@@ -98,22 +97,22 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
   if (length(download.name) == 0) {
     return(TRUE)
   }
-  if (any(tolower(download.name) %in% c("db_annovar_brvar")) && (!"license" %in%
+  if (any(tolower(download.name) %in% c("db_annovar_brvar")) && (!"license" %in% 
     names(list(...)))) {
     stop("Please set licese code.")
   }
   temp.download.dir <- c()
   for (i in 1:length(download.name)) {
-    temp.download.dir = c(temp.download.dir, sprintf("%s/%s", database.dir[i],
+    temp.download.dir = c(temp.download.dir, sprintf("%s/%s", database.dir[i], 
       stringi::stri_rand_strings(1, 10)))
   }
   info.msg(sprintf("Setted download.name:%s", download.name), verbose = verbose)
   info.msg(sprintf("Setted version:%s", version), verbose = verbose)
   info.msg(sprintf("Setted buildver:%s", buildver), verbose = verbose)
   info.msg(sprintf("Setted database.dir:%s", database.dir), verbose = verbose)
-  params <- list(name = download.name, version = version, download.dir = temp.download.dir,
-    github.cfg = github.cfg.null, nongithub.cfg = download.cfg, download.only = FALSE,
-    extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose,
+  params <- list(name = download.name, version = version, download.dir = temp.download.dir, 
+    github.cfg = github.cfg.null, nongithub.cfg = download.cfg, download.only = FALSE, 
+    extra.list = list(buildver = buildver), save.to.db = FALSE, verbose = verbose, 
     ...)
   x <- do.call("install.bioinfo", params)
   if (x$fail.list != "") {
@@ -132,18 +131,18 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
   for (i in 1:length(temp.download.dir)) {
     files.and.dirs <- list.files(temp.download.dir[i], ".*")
     if (length(files.and.dirs) == 0) {
-      info.msg(sprintf("Download %s %s version %s database fail.", buildver[i],
+      info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], 
         version[i], download.name[i]), verbose = verbose)
       status_all_names <- c(status_all_names, FALSE)
     } else {
-      status <- file.rename(sprintf("%s/%s", temp.download.dir[i], files.and.dirs),
+      status <- file.rename(sprintf("%s/%s", temp.download.dir[i], files.and.dirs), 
         sprintf("%s/%s", database.dir[i], files.and.dirs))
       if (all(status)) {
-        info.msg(sprintf("Download %s %s version %s database successful.",
+        info.msg(sprintf("Download %s %s version %s database successful.", 
           buildver[i], version[i], download.name[i]), verbose = verbose)
         status_all_names <- c(status_all_names, TRUE)
       } else {
-        info.msg(sprintf("Download %s %s version %s database fail.", buildver[i],
+        info.msg(sprintf("Download %s %s version %s database fail.", buildver[i], 
           version[i], download.name[i]), verbose = verbose)
         status_all_names <- c(status_all_names, FALSE)
       }
@@ -160,20 +159,20 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
 #' @export
 #' @examples
 #' get.download.name('avsnp147')
-get.download.name <- function(anno.name = "", database.cfg = system.file("extdata",
+get.download.name <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
   download.name <- get.cfg.value.by.name(anno.name, database.cfg, key = "dependence_db")
   if (is.null(download.name) || is.na(download.name)) {
-    download.name <- get.cfg.value.by.name(anno.name, database.cfg, key = "dependence_db",
+    download.name <- get.cfg.value.by.name(anno.name, database.cfg, key = "dependence_db", 
       coincident = TRUE)
   }
   return(download.name)
 }
 
 # Get download and decomparessd filename
-get.finished.filename <- function(download.name = "", version = "", buildver = "hg38",
+get.finished.filename <- function(download.name = "", version = "", buildver = "hg38", 
   download.cfg = "") {
-  source_url <- eval.config("source_url", download.name, download.cfg, extra.list = list(buildver = buildver,
+  source_url <- eval.config("source_url", download.name, download.cfg, extra.list = list(buildver = buildver, 
     version = version))[1]
   filename <- basename(source_url)
   filename <- str_replace(filename, ".gz$", "")

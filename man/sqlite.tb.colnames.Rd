@@ -4,7 +4,8 @@
 \alias{sqlite.tb.colnames}
 \title{Get colnames of table of database in sqlite}
 \usage{
-sqlite.tb.colnames(sqlite.connect.params = list(dbname = "", table.name = ""))
+sqlite.tb.colnames(sqlite.connect.params = list(dbname = "", table.name =
+  ""))
 }
 \arguments{
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}

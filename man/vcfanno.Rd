@@ -4,11 +4,12 @@
 \alias{vcfanno}
 \title{R function to run vcfanno}
 \usage{
-vcfanno(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")),
-  vcfanno.database.cfg = system.file("extdata", "demo/vcfanno_demo/conf.toml",
-  package = "annovarR"), base_path = "", lua = "", ends = FALSE,
-  input.file = "input.vcf", out = "output.vcf", thread = 2,
-  permissive_overlap = FALSE, debug = FALSE)
+vcfanno(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx",
+  "vcfanno_linux64")), vcfanno.database.cfg = system.file("extdata",
+  "demo/vcfanno_demo/conf.toml", package = "annovarR"), base_path = "",
+  lua = "", ends = FALSE, input.file = "input.vcf",
+  out = "output.vcf", thread = 2, permissive_overlap = FALSE,
+  debug = FALSE)
 }
 \arguments{
 \item{vcfanno}{Executable file of vcfanno (Download from https://github.com/brentp/vcfanno/releases)}

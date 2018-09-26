@@ -19,7 +19,7 @@ test_that("set.1000g.db", {
   expect_that(x, equals("/db/hg19_ALL.sites.2015_08.sqlite"))
   x <- set.1000g.db("1000g2015aug_all", "hg19", "/db", "txt")
   expect_that(x, equals("/db/hg19_ALL.sites.2015_08.txt"))
-  x <- set.1000g.db("1000g2015aug_all", "hg19", "/db", "mysql")
-  expect_that(is.null(x), equals(TRUE))
+  #x <- set.1000g.db("1000g2015aug_all", "hg19", "/db", "mysql")
+  #expect_that(is.null(x), equals(TRUE))
 })
 

@@ -4,9 +4,10 @@
 \alias{mysql.build}
 \title{Build annovarR database in mysql}
 \usage{
-mysql.build(filename = "", mysql.connect.params = list(host = "", dbname =
-  "", table.name = "", user = "", password = ""), dat = data.table(),
-  fread.params = list(), new.colnames = NULL, verbose = FALSE, ...)
+mysql.build(filename = "", mysql.connect.params = list(host = "",
+  dbname = "", table.name = "", user = "", password = ""),
+  dat = data.table(), fread.params = list(), new.colnames = NULL,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{filename}{Path of raw data, will be read by fread}

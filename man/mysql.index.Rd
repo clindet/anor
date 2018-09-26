@@ -4,9 +4,9 @@
 \alias{mysql.index}
 \title{Generate search index of annovarR database table in mysql}
 \usage{
-mysql.index(mysql.connect.params = list(host = "", dbname = "", table.name =
-  "", user = "user", password = "password"), index = "", cols = c(),
-  verbose = FALSE, ...)
+mysql.index(mysql.connect.params = list(host = "", dbname = "",
+  table.name = "", user = "user", password = "password"), index = "",
+  cols = c(), verbose = FALSE, ...)
 }
 \arguments{
 \item{mysql.connect.params}{Mysql parameters, [host, dbname, table.name, user, password etc.]}

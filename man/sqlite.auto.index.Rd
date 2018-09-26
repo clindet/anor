@@ -5,9 +5,9 @@
 \title{Index annovarR database in sqlite (auto from extdata/config/database.toml)}
 \usage{
 sqlite.auto.index(anno.name = "", buildver = "hg19",
-  database.dir = "/path/", index = "chr_start_index", db.type = "sqlite",
-  database.cfg = system.file("extdata", "config/databases.toml", package =
-  "annovarR"), verbose = TRUE)
+  database.dir = "/path/", index = "chr_start_index",
+  db.type = "sqlite", database.cfg = system.file("extdata",
+  "config/databases.toml", package = "annovarR"), verbose = TRUE)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
