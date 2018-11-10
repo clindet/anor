@@ -5,7 +5,7 @@
 \title{R function to run vcfanno}
 \usage{
 vcfanno(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx",
-  "vcfanno_linux64")), vcfanno.database.cfg = system.file("extdata",
+  "vcfanno_linux64")), vcfanno_database_cfg = system.file("extdata",
   "demo/vcfanno_demo/conf.toml", package = "annovarR"), base_path = "",
   lua = "", ends = FALSE, input.file = "input.vcf",
   out = "output.vcf", thread = 2, permissive_overlap = FALSE,
@@ -14,7 +14,7 @@ vcfanno(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx",
 \arguments{
 \item{vcfanno}{Executable file of vcfanno (Download from https://github.com/brentp/vcfanno/releases)}
 
-\item{vcfanno.database.cfg}{vcfanno required database configuration file
+\item{vcfanno_database_cfg}{vcfanno required database configuration file
 (Not the annovarR database.cfg)}
 
 \item{base_path}{Optional base_path to prepend to annotation files in the config}

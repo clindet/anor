@@ -42,4 +42,3 @@ NULL
   Sys.setenv(R_TESTS = "")
   invisible()
 }
-

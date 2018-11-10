@@ -26,14 +26,14 @@ test_that("annotation.cols.match", {
   ref <- c("A", "A", "A")
   alt <- c("-", "-", "-")
   dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
-  x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147")
+  x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, return_col_names = "avSNP147")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("avSNP147"))
   x[, 1] <- as.character(x[, 1])
   expect_that(x[1, 1], equals("rs775809821"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
   expect_that(x[3, 1], equals("rs775809821"))
-  x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, return.col.names = "avSNP147", 
+  x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, return_col_names = "avSNP147", 
     db.type = "txt")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("avSNP147"))
@@ -72,7 +72,7 @@ test_that("annotation.1000g", {
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("1000g2015aug_all"))
   x <- annotation(dat = dat, anno.name = "1000g2015aug_all", database.dir = database.dir, 
-    return.col.names = "1000g2015aug_all_frq")
+    return_col_names = "1000g2015aug_all_frq")
   x <- as.data.frame(x)
   expect_that(colnames(x), equals("1000g2015aug_all_frq"))
 })

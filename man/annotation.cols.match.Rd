@@ -6,12 +6,12 @@
 \usage{
 annotation.cols.match(dat = data.table(), anno.name = "",
   buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", ""),
-  db.col.order = 1:5, index.cols = c("chr", "start"),
-  matched.cols = c("chr", "start", "end", "ref", "alt"),
-  return.col.index = 6, return.col.names = "",
-  return.col.names.profix = "", format.dat.fun = format.cols,
-  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db,
-  set.table.fun = set.table, format.db.tb.fun = format.db.tb,
+  db_col_order = 1:5, index_cols = c("chr", "start"),
+  matched_cols = c("chr", "start", "end", "ref", "alt"),
+  return_col_index = 6, return_col_names = "",
+  return_col_names.profix = "", format_dat_fun = format.cols,
+  dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db,
+  set_table_fun = set.table, format_db_tb_fun = format.db.tb,
   db.type = "sqlite", db.file.prefix = NULL,
   mysql.connect.params = list(), sqlite.connect.params = list(),
   fread.db.params = list(), verbose = FALSE)
@@ -25,31 +25,31 @@ annotation.cols.match(dat = data.table(), anno.name = "",
 
 \item{database.dir}{Dir of the databases (mysql no need)}
 
-\item{db.col.order}{Using the index, you can rename the database table, and can be matched using matched.cols.}
+\item{db_col_order}{Using the index, you can rename the database table, and can be matched using matched_cols.}
 
-\item{index.cols}{Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'}
+\item{index_cols}{Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'}
 
-\item{matched.cols}{Using the selected cols to match data with selected partial data by index.cols limited.}
+\item{matched_cols}{Using the selected cols to match data with selected partial data by index_cols limited.}
 
-\item{return.col.index}{Setting the colnums need be returned}
+\item{return_col_index}{Setting the colnums need be returned}
 
-\item{return.col.names}{Setting the returned colnum names}
+\item{return_col_names}{Setting the returned colnum names}
 
-\item{return.col.names.profix}{Setting the returned colnum names profix}
+\item{return_col_names.profix}{Setting the returned colnum names profix}
 
-\item{format.dat.fun}{A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)}
+\item{format_dat_fun}{A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)}
 
-\item{dbname.fixed}{Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
+\item{dbname_fixed}{Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb_fun 
 (Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)}
 
-\item{table.name.fixed}{Table name, default is NULL, and get from set.table.fun (Set value will fix the table.name)
+\item{table_name_fixed}{Table name, default is NULL, and get from set_table_fun (Set value will fix the table.name)
 (Set value will fix the table.name, and will be added in sqlite.connenct.params and mysql.connect.params)}
 
-\item{setdb.fun}{A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)}
+\item{setdb_fun}{A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)}
 
-\item{set.table.fun}{A function to process the name, buildver and get the final table name}
+\item{set_table_fun}{A function to process the name, buildver and get the final table name}
 
-\item{format.db.tb.fun}{A function to process the selected database table that can be used to matched with your data}
+\item{format_db_tb_fun}{A function to process the selected database table that can be used to matched with your data}
 
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
 
@@ -78,5 +78,5 @@ database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR
 database.dir <- dirname(database)
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
-return.col.names = 'avSNP147', db.type = 'txt')
+return_col_names = 'avSNP147', db.type = 'txt')
 }

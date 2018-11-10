@@ -4,980 +4,980 @@ Title = "annovarR database annotation configuration file"
 # All anno.name in this section will not to contain any software or programming language prefix
 [avsnp]
 versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp150"]
-default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_avsnp_sqlite"
 header = false
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "@>@str_replace('{{anno.name}}', 'avsnp', 'avSNP')@<@"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "@>@str_replace('{{anno.name}}', 'avsnp', 'avSNP')@<@"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [rs2pos]
 versions = ["rs2pos138", "rs2pos142", "rs2pos144", "rs2pos147", "rs2pos150"]
-default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite", "sqlite", "sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_avsnp_sqlite"
 header = false
 
-need.cols = ["rs"]
-return.col.names = ["chr", "start", "end", "ref", "alt"]
-db.col.order = 6
-index.cols = ["rs"]
-matched.cols = ["rs"]
-return.col.index = [1, 2, 3, 4, 5]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.rs2pos"
-set.table.fun = "set.table.rs2pos"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["rs"]
+return_col_names = ["chr", "start", "end", "ref", "alt"]
+db_col_order = 6
+index_cols = ["rs"]
+matched_cols = ["rs"]
+return_col_index = [1, 2, 3, 4, 5]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.rs2pos"
+set_table_fun = "set.table.rs2pos"
+format_db_tb_fun = "format.db.tb.unique"
 
 [cosmic]
 versions = ["cosmic70", "cosmic81", "cosmic82"]
 func = "annotation.auto"
-default.dbtype = ["sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite"]
 dependence_db = "db_annovar_cosmic_sqlite"
 header = false
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "@>@str_replace('{{anno.name}}', 'cosmic', 'COSMIC_')@<@"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "@>@str_replace('{{anno.name}}', 'cosmic', 'COSMIC_')@<@"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [1000g]
 versions = ["1000g2015aug_all", "1000g2015aug_afr", "1000g2015aug_amr", 
             "1000g2015aug_eas", "1000g2015aug_eur", "1000g2015aug_sas"]
 func = "annotation.auto"
-default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_1000g_sqlite"
 header = false
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 7
-format.dat.fun = "format.cols"
-setdb.fun = "set.1000g.db"
-set.table.fun = "set.1000g.table"
-format.db.tb.fun = "format.1000g.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 7
+format_dat_fun = "format.cols"
+setdb_fun = "set.1000g.db"
+set_table_fun = "set.1000g.table"
+format_db_tb_fun = "format.1000g.db.tb"
 
 [radar]
 versions = ["radar2"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_radar_sqlite"
 header = true
 
-need.cols = ["chr", "start"]
-return.col.names = "RADAR2.is.alu"
-db.col.order = [1, 2]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start"]
-return.col.index = 7
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.toupper"
-set.table.fun = "set.table.toupper"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start"]
+return_col_names = "RADAR2.is.alu"
+db_col_order = [1, 2]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start"]
+return_col_index = 7
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.toupper"
+set_table_fun = "set.table.toupper"
+format_db_tb_fun = "format.db.tb"
 
 [darned]
 versions = ["darned"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_darned_sqlite"
 header = true
 
-need.cols = ["chr", "start"]
-return.col.names = "DARNED.in.rna"
-db.col.order = [1, 2]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start"]
-return.col.index = 5
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.toupper"
-set.table.fun = "set.table.toupper"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start"]
+return_col_names = "DARNED.in.rna"
+db_col_order = [1, 2]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start"]
+return_col_index = 5
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.toupper"
+set_table_fun = "set.table.toupper"
+format_db_tb_fun = "format.db.tb"
 
 [rediportal]
 versions = ["REDIportal"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_rediportal_sqlite"
 header = false
 
-need.cols = ["chr", "start", "ref", "alt"]
-return.col.names = "REDIportal"
-db.col.order = [1, 2, 3, 4]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "ref", "alt"]
+return_col_names = "REDIportal"
+db_col_order = [1, 2, 3, 4]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [normal_pool_a]
 versions = ['2016sih_wes_ball', '2016sih_wes_tall', '2016sih_wes_nkt', '2016sih_wgs_nkt', '2016sih_wgs_dlbcl']
 func = "annotation.auto"
-default.dbtype = ["txt", "txt", "txt", "txt", "txt"]
+default_dbtype = ["txt", "txt", "txt", "txt", "txt"]
 dependence_db = "db_annovar_normal_pool"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.sih.normal.pool.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.sih.normal.pool.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [normal_pool_b]
 versions = ["2018sih_wgs_nkt_full"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = "db_annovar_normal_pool"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 8
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.sih.normal.pool.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 8
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.sih.normal.pool.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [normal_pool_sqlite]
 versions = ['2018sih_wgs_nkt_full_sqlite']
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_normal_pool_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 8
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.sih.normal.pool.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 8
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.sih.normal.pool.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [clinvar]
 versions = ["clinvar_20170130", "clinvar_20170501", "clinvar_20170905", "clinvar_20180603"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_clinvar_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [intervar]
 versions = ["intervar_20170202"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_intervar_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [cadd]
 versions = ["cadd", "caddgt10", "caddgt20", "cadd13", "cadd13gt10", "cadd13gt20"]
 func = "annotation.auto"
-default.dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite", "sqlite", "sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_cadd_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [nci60]
 versions = ["nci60"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = "db_annovar_nci60"
 header = false
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [icgc]
 versions = ["icgc21"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_icgc_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}_occurrence"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 7
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}_occurrence"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 7
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [dbnsfp]
 versions = ["dbnsfp30a", "dbnsfp31a_interpro", "dbnsfp33a"]
 func = "annotation.auto"
-default.dbtype = ["sqlite", "sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_dbnsfp_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [gme]
 versions = ["gme"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_gme_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [hrcr1]
 versions = ["hrcr1"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_hrcr1_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [revel]
 versions = ["revel"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_revel_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [mcap]
 versions = ["mcap"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_mcap_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [exac03]
 versions = ["exac03", "exac03nontcga", "exac03nonpsych"]
 func = "annotation.auto"
-default.dbtype = ["sqlite", "sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite", "sqlite"]
 dependence_db = "db_annovar_exac03_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [gnomad]
 versions = ["gnomad_exome", "gnomad_genome"]
 func = "annotation.auto"
-default.dbtype = ["sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite"]
 dependence_db = "db_annovar_gnomad_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [kaviar]
 versions = ["kaviar_20150923"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_kaviar_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [popfreq]
 versions = ["popfreq_max_20150413", "popfreq_all_20150413"]
 func = "annotation.auto"
-default.dbtype = ["sqlite", "sqlite"]
+default_dbtype = ["sqlite", "sqlite"]
 dependence_db = "db_annovar_popfreq_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [gwava]
 versions = ["gwava"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_gwava_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = ""
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = ""
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [eigen]
 versions = ["eigen"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_eigen_sqlite"
 header = false
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "Eigen"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "Eigen"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [refgene]
 versions = ["ucsc_refgene", "ens_refgene"]
 func = "annotation.auto"
-default.dbtype = ["txt", "txt"]
-is.region = true
+default_dbtype = ["txt", "txt"]
+is_region = true
 dependence_db = ["db_annovar_refgene"]
 header = false
 
-need.cols = ["chr", "start", "end"]
-return.col.names = ["Transcript","Gene"]
-db.col.order = [3, 5, 6]
-index.cols = ["chr", "start", "end"]
-full.matched.cols = "chr"
-inferior.col = "start"
-superior.col = "end"
-return.col.index = [2,13]
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.db.refgene"
-set.table.fun = "set.table.refgene"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["chr", "start", "end"]
+return_col_names = ["Transcript","Gene"]
+db_col_order = [3, 5, 6]
+index_cols = ["chr", "start", "end"]
+full.matched_cols = "chr"
+inferior_col = "start"
+superior_col = "end"
+return_col_index = [2,13]
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.db.refgene"
+set_table_fun = "set.table.refgene"
+format_db_tb_fun = "format.db.tb.unique"
 
 [cscd_main]
 versions = ["cscd_cancer_circrna", 
             "cscd_common_circrna", 
             "cscd_normal_circrna"]
 func = "annotation.auto"
-default.dbtype = ["!!glue {rep('sqlite', 3)}"]
-is.region = true
+default_dbtype = ["!!glue {rep('sqlite', 3)}"]
+is_region = true
 dependence_db = "db_annovar_cscd_sqlite"
 header = false
 
-need.cols = ["chr", "start", "end"]
-return.col.names = ["cscd_main_info","cscd_main_tissue"]
-db.col.order = [19, 20, 21]
-index.cols = ["chr", "start", "end"]
-full.matched.cols = "chr"
-inferior.col = "start"
-superior.col = "end"
-return.col.index = [1,7]
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["chr", "start", "end"]
+return_col_names = ["cscd_main_info","cscd_main_tissue"]
+db_col_order = [19, 20, 21]
+index_cols = ["chr", "start", "end"]
+full.matched_cols = "chr"
+inferior_col = "start"
+superior_col = "end"
+return_col_index = [1,7]
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb.unique"
 
 [epi_genes]
 versions = ["epi_genes_v1"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_epi_genes"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ["{{anno.name}}_type", "{{anno.name}}_pmid"]
-db.col.order = 1
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [2, 3]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["gene"]
+return_col_names = ["{{anno.name}}_type", "{{anno.name}}_pmid"]
+db_col_order = 1
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [2, 3]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb.unique"
 
 [varcards]
 versions = ["varcards"]
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 func = "annotation.auto"
 dependence_db = "db_annovar_varcards_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = [7, 8, 9, 10, 11]
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = [7, 8, 9, 10, 11]
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [hgnc_symbol_convert_1]
 versions = ["hgnc_coding_gene2alias"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_hgnc"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ["hgnc_alias_symbol", "hgnc_prev_name"]
-db.col.order = 2
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [9, 11]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.hgnc.alias"
-set.table.fun = "set.table.hgnc.alias"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["gene"]
+return_col_names = ["hgnc_alias_symbol", "hgnc_prev_name"]
+db_col_order = 2
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [9, 11]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.hgnc.alias"
+set_table_fun = "set.table.hgnc.alias"
+format_db_tb_fun = "format.db.tb.unique"
 
 [hgnc_symbol_convert_2]
 versions = ["hgnc_coding_pre2gene"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_hgnc"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ["hgnc_prev_name", "hgnc_alias_symbol"]
-db.col.order = 11
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [2, 9]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.hgnc.alias"
-set.table.fun = "set.table.hgnc.alias"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["gene"]
+return_col_names = ["hgnc_prev_name", "hgnc_alias_symbol"]
+db_col_order = 11
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [2, 9]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.hgnc.alias"
+set_table_fun = "set.table.hgnc.alias"
+format_db_tb_fun = "format.db.tb.unique"
 
 [brvar]
 versions = ["brvar_v1_core", "brvar_v1_extra"]
-default.dbtype = ["txt", "txt"]
+default_dbtype = ["txt", "txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_brvar"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}_frq"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}_frq"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [tmcsnpdb]
 versions = "tmcsnpdb"
-default.dbtype = "txt"
+default_dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_tmcsnpdb"
 header = false
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = "{{anno.name}}"
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = "{{anno.name}}"
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [loftool_scores]
 versions = "loftool_scores"
-default.dbtype = "txt"
+default_dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_loftool_scores"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-db.col.order = [1]
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = 2
-format.dat.fun = "format.cols"
-dbname.fixed = "LoFtool_scores" 
-table.name.fixed = "LoFtool_scores"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["gene"]
+return_col_names = ""
+db_col_order = [1]
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = 2
+format_dat_fun = "format.cols"
+dbname_fixed = "LoFtool_scores" 
+table_name_fixed = "LoFtool_scores"
+format_db_tb_fun = "format.db.tb"
 
 [gdi_score]
 versions = "gdi_score_full_10282015"
-default.dbtype = "txt"
+default_dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_gdi_score"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-db.col.order = [1]
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [2,3]
-format.dat.fun = "format.cols"
-dbname.fixed = "GDI_full_10282015" 
-table.name.fixed = "GDI_full_10282015"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["gene"]
+return_col_names = ""
+db_col_order = [1]
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [2,3]
+format_dat_fun = "format.cols"
+dbname_fixed = "GDI_full_10282015" 
+table_name_fixed = "GDI_full_10282015"
+format_db_tb_fun = "format.db.tb"
 
 [rvis_esv_score]
 versions = "rvis_exac_4kw"
-default.dbtype = "txt"
+default_dbtype = "txt"
 func = "annotation.auto"
 dependence_db = "db_annovar_rvis_esv_score"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-db.col.order = [1]
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [6,7]
-format.dat.fun = "format.cols"
-dbname.fixed = "RVIS_ExAC_4KW"
-table.name.fixed = "RVIS_ExAC_4KW"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["gene"]
+return_col_names = ""
+db_col_order = [1]
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [6,7]
+format_dat_fun = "format.cols"
+dbname_fixed = "RVIS_ExAC_4KW"
+table_name_fixed = "RVIS_ExAC_4KW"
+format_db_tb_fun = "format.db.tb"
 
 [dhs_gene_connectivity]
 versions = ["dhs_gene_connectivity_2012"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
-is.region = true
+default_dbtype = ["txt"]
+is_region = true
 dependence_db = ["db_annovar_dhs_gene_connectivity"]
 header = true
 
-need.cols = ["chr", "start", "end"]
-return.col.names = ""
-db.col.order = [1, 2, 3]
-index.cols = ["chr", "start", "end"]
-full.matched.cols = "chr"
-inferior.col = "start"
-superior.col = "end"
-return.col.index = [4]
-format.dat.fun = "format.cols.plus.chr"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end"]
+return_col_names = ""
+db_col_order = [1, 2, 3]
+index_cols = ["chr", "start", "end"]
+full.matched_cols = "chr"
+inferior_col = "start"
+superior_col = "end"
+return_col_index = [4]
+format_dat_fun = "format.cols.plus.chr"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [seeqtl_rs2qvalue]
 versions = ["seeqtl_qvalue_hapmap3_cis", "seeqtl_qvalue_hapmap3_trans", "seeqtl_qvalue_myers_cis", "seeqtl_qvalue_myers_trans"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = ["db_annovar_seeqtl"]
 header = true
 
-need.cols = ["rs"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = [1]
-index.cols = ["rs"]
-matched.cols = ["rs"]
-return.col.index = [6]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["rs"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = [1]
+index_cols = ["rs"]
+matched_cols = ["rs"]
+return_col_index = [6]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [gtex_eqtl_egenes]
 versions = ["gtex_adipose_subcutaneous.v7.egenes", "gtex_adipose_visceral_omentum.v7.egenes", "gtex_adrenal_gland.v7.egenes", "gtex_artery_aorta.v7.egenes", "gtex_artery_coronary.v7.egenes", "gtex_artery_tibial.v7.egenes", "gtex_brain_amygdala.v7.egenes", "gtex_brain_anterior_cingulate_cortex_ba24.v7.egenes", "gtex_brain_caudate_basal_ganglia.v7.egenes", "gtex_brain_cerebellar_hemisphere.v7.egenes", "gtex_brain_cerebellum.v7.egenes", "gtex_brain_cortex.v7.egenes", "gtex_brain_frontal_cortex_ba9.v7.egenes", "gtex_brain_hippocampus.v7.egenes", "gtex_brain_hypothalamus.v7.egenes", "gtex_brain_nucleus_accumbens_basal_ganglia.v7.egenes", "gtex_brain_putamen_basal_ganglia.v7.egenes", "gtex_brain_spinal_cord_cervical_c_1.v7.egenes", "gtex_brain_substantia_nigra.v7.egenes", "gtex_breast_mammary_tissue.v7.egenes", "gtex_cells_ebv_transformed_lymphocytes.v7.egenes", "gtex_cells_transformed_fibroblasts.v7.egenes", "gtex_colon_sigmoid.v7.egenes", "gtex_colon_transverse.v7.egenes", "gtex_esophagus_gastroesophageal_junction.v7.egenes", "gtex_esophagus_mucosa.v7.egenes", "gtex_esophagus_muscularis.v7.egenes", "gtex_heart_atrial_appendage.v7.egenes", "gtex_heart_left_ventricle.v7.egenes", "gtex_liver.v7.egenes", "gtex_lung.v7.egenes", "gtex_minor_salivary_gland.v7.egenes", "gtex_muscle_skeletal.v7.egenes", "gtex_nerve_tibial.v7.egenes", "gtex_ovary.v7.egenes", "gtex_pancreas.v7.egenes", "gtex_pituitary.v7.egenes", "gtex_prostate.v7.egenes", "gtex_skin_not_sun_exposed_suprapubic.v7.egenes", "gtex_skin_sun_exposed_lower_leg.v7.egenes", "gtex_small_intestine_terminal_ileum.v7.egenes", "gtex_spleen.v7.egenes", "gtex_stomach.v7.egenes", "gtex_testis.v7.egenes", "gtex_thyroid.v7.egenes", "gtex_uterus.v7.egenes", "gtex_vagina.v7.egenes", "gtex_whole_blood.v7.egenes"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = ["db_annovar_gtex_eqtl_egenes"]
 header = true
 
-need.cols = ["rs"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = [19]
-index.cols = ["rs"]
-matched.cols = ["rs"]
-return.col.index = [29]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["rs"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = [19]
+index_cols = ["rs"]
+matched_cols = ["rs"]
+return_col_index = [29]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [rddpred]
 versions = ["rddpred_mes"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_rddpred_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = 6
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = 6
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [lncediting]
 versions = ["lncediting"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_lncediting_sqlite"
 header = true
 
-need.cols = ["chr", "start"]
-return.col.names = ""
-db.col.order = [1, 2]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start"]
-return.col.index = [4, 5]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["chr", "start"]
+return_col_names = ""
+db_col_order = [1, 2]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start"]
+return_col_index = [4, 5]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb.unique"
 
 [civic_gene_summaries]
 versions = ["nightly_civic_gene_summaries"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_civic_gene_summaries"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = 3
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [1, 2, 5]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.sync.version"
-set.table.fun = "set.table.sync.version"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["gene"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = 3
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [1, 2, 5]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.sync.version"
+set_table_fun = "set.table.sync.version"
+format_db_tb_fun = "format.db.tb.unique"
 
 [omim_genemap2_symbol2phenotype]
 versions = ["omim_genemap2_symbol2phenotype"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_omim_genemap2"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-return.col.names.profix = "omim_"
-db.col.order = 9
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [13]
-format.dat.fun = "format.cols"
-dbname.fixed = "omim_genemap2" 
-table.name.fixed = "omim_genemap2"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["gene"]
+return_col_names = ""
+return_col_names.profix = "omim_"
+db_col_order = 9
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [13]
+format_dat_fun = "format.cols"
+dbname_fixed = "omim_genemap2" 
+table_name_fixed = "omim_genemap2"
+format_db_tb_fun = "format.db.tb.unique"
 
 [omim_genemap2_entrez_gene_id2phenotype]
 versions = ["omim_genemap2_entrez_gene_id2phenotype"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_omim_genemap2"
 header = true
 
-need.cols = ["entrez_gene_id"]
-return.col.names = ""
-return.col.names.profix = "omim_"
-db.col.order = 10
-index.cols = ["entrez_gene_id"]
-matched.cols = ["entrez_gene_id"]
-return.col.index = [13]
-format.dat.fun = "format.cols"
-dbname.fixed = "omim_genemap2" 
-table.name.fixed = "omim_genemap2"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["entrez_gene_id"]
+return_col_names = ""
+return_col_names.profix = "omim_"
+db_col_order = 10
+index_cols = ["entrez_gene_id"]
+matched_cols = ["entrez_gene_id"]
+return_col_index = [13]
+format_dat_fun = "format.cols"
+dbname_fixed = "omim_genemap2" 
+table_name_fixed = "omim_genemap2"
+format_db_tb_fun = "format.db.tb.unique"
 
 [omim_genemap2_ensembl_gene_id2phenotype]
 versions = ["omim_genemap2_ensembl_gene_id2phenotype"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_omim_genemap2"
 header = true
 
-need.cols = ["ensemble_gene_id"]
-return.col.names = ""
-return.col.names.profix = "omim_"
-db.col.order = 11
-index.cols = ["ensemble_gene_id"]
-matched.cols = ["ensemble_gene_id"]
-return.col.index = [13]
-format.dat.fun = "format.cols"
-dbname.fixed = "omim_genemap2" 
-table.name.fixed = "omim_genemap2"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["ensemble_gene_id"]
+return_col_names = ""
+return_col_names.profix = "omim_"
+db_col_order = 11
+index_cols = ["ensemble_gene_id"]
+matched_cols = ["ensemble_gene_id"]
+return_col_index = [13]
+format_dat_fun = "format.cols"
+dbname_fixed = "omim_genemap2" 
+table_name_fixed = "omim_genemap2"
+format_db_tb_fun = "format.db.tb.unique"
 
 [tall_somatic_genes]
 versions = ["tall_somatic_genes_20171206"]
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 func = "annotation.auto"
 dependence_db = "db_annovar_tall_somatic_genes"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = 1
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [2]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.sync.version"
-set.table.fun = "set.table.sync.version"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["gene"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = 1
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [2]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.sync.version"
+set_table_fun = "set.table.sync.version"
+format_db_tb_fun = "format.db.tb.unique"
 
 [dbscsnv]
 versions = ["dbscsnv11"]
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_dbscsnv_sqlite"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4, 5]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = [7, 8]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4, 5]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = [7, 8]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [intogen]
 versions = "intogen_20180119"
 func = "annotation.auto"
-default.dbtype = ["sqlite"]
+default_dbtype = ["sqlite"]
 dependence_db = "db_annovar_intogen_sqlite"
 header = true
 
-need.cols = ["chr", "start", "ref", "alt"]
-return.col.names = ""
-db.col.order = [1, 2, 3, 4]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "ref", "alt"]
-return.col.index = [10]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "ref", "alt"]
+return_col_names = ""
+db_col_order = [1, 2, 3, 4]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "ref", "alt"]
+return_col_index = [10]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [docm]
 versions = "docm_3.2"
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = "db_annovar_docm"
 header = true
 
-need.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = [2, 3, 4, 5, 6]
-index.cols = ["chr", "start"]
-matched.cols = ["chr", "start", "end", "ref", "alt"]
-return.col.index = [11]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db"
-set.table.fun = "set.table"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = [2, 3, 4, 5, 6]
+index_cols = ["chr", "start"]
+matched_cols = ["chr", "start", "end", "ref", "alt"]
+return_col_index = [11]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db"
+set_table_fun = "set.table"
+format_db_tb_fun = "format.db.tb"
 
 [disgenet_gene]
 versions = ["disgenet_gene_disease", "disgenet_befree_gene_disease", "disgenet_curated_gene_disease"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = "db_annovar_disgenet"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = [2]
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [4]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.sync.version"
-set.table.fun = "set.table.sync.version"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["gene"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = [2]
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [4]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.sync.version"
+set_table_fun = "set.table.sync.version"
+format_db_tb_fun = "format.db.tb.unique"
 
 [disgenet_rs]
 versions = ["disgenet_rs_disease", "disgenet_befree_rs_disease", "disgenet_curated_rs_disease", "disgenet_pubannotator_rs_disease"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = "db_annovar_disgenet"
 header = true
 
-need.cols = ["rs"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = [1]
-index.cols = ["rs"]
-matched.cols = ["rs"]
-return.col.index = [3]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.sync.version"
-set.table.fun = "set.table.sync.version"
-format.db.tb.fun = "format.db.tb.unique"
+need_cols = ["rs"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = [1]
+index_cols = ["rs"]
+matched_cols = ["rs"]
+return_col_index = [3]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.sync.version"
+set_table_fun = "set.table.sync.version"
+format_db_tb_fun = "format.db.tb.unique"
 
 [cancer_hotspots]
 versions = ["cancer_hotspots_v2"]
 func = "annotation.auto"
-default.dbtype = ["txt"]
+default_dbtype = ["txt"]
 dependence_db = "db_annovar_cancer_hotspots"
 header = true
 
-need.cols = ["gene"]
-return.col.names = ""
-return.col.names.profix = "{{anno.name}}_"
-db.col.order = [1]
-index.cols = ["gene"]
-matched.cols = ["gene"]
-return.col.index = [4, 6]
-format.dat.fun = "format.cols"
-setdb.fun = "set.db.sync.version"
-set.table.fun = "set.table.sync.version"
-format.db.tb.fun = "format.db.tb"
+need_cols = ["gene"]
+return_col_names = ""
+return_col_names.profix = "{{anno.name}}_"
+db_col_order = [1]
+index_cols = ["gene"]
+matched_cols = ["gene"]
+return_col_index = [4, 6]
+format_dat_fun = "format.cols"
+setdb_fun = "set.db.sync.version"
+set_table_fun = "set.table.sync.version"
+format_db_tb_fun = "format.db.tb"
 
 # ANNOVAR section
 # annovar_supported_gene_anno is a single anno.name mode
@@ -998,26 +998,26 @@ versions = ["perl_annovar_refGene", "perl_annovar_ensGene", "perl_annovar_knownG
             "perl_annovar_exac03nonpsych", "perl_annovar_exac03nontcga", "perl_annovar_exac03", 
             "perl_annovar_cg69", "perl_annovar_cg46", "perl_annovar_intervar_20170202",
             "perl_annovar_dbscsnv11"]
-need.cols = ["chr", "start", "end", "ref", "alt"]
+need_cols = ["chr", "start", "end", "ref", "alt"]
 func = "annovar.auto"
-cmd.used = 'script2'
+cmd_used = 'script2'
 
 [annovar_supported_mege]
 versions = "perl_annovar_merge"
-need.cols = ["chr", "start", "end", "ref", "alt"]
+need_cols = ["chr", "start", "end", "ref", "alt"]
 func = "annovar.auto"
-cmd.used = 'script2'
+cmd_used = 'script2'
 
 # BioConductior section
 # Now only support org.hs.eg.db by AnnotationDbi
 [bioc_org_hs_eg]
-need.cols = ""
+need_cols = ""
 versions = "bioc_org_hs_eg"
 func = "bioc.auto"
 dependence_db = "db_bioc_org.Hs.eg.db"
 
 [bioc_org_hs_eg_gene2entrez_gene_id]
-need.cols = "gene"
+need_cols = "gene"
 versions = "bioc_gene2entrez_gene_id"
 func = "bioc.auto"
 keytype = "SYMBOL"
@@ -1025,7 +1025,7 @@ columns = "ENTREZID"
 dependence_db = "db_bioc_org.Hs.eg.db"
 
 [bioc_org_hs_eg_gene2alias]
-need.cols = "gene"
+need_cols = "gene"
 versions = "bioc_gene2alias"
 func = "bioc.auto"
 keytype = "SYMBOL"
@@ -1033,7 +1033,7 @@ columns = "ALIAS"
 dependence_db = "db_bioc_org.Hs.eg.db"
 
 [bioc_org_hs_eg_gene2ensembl_gene_id]
-need.cols = "gene"
+need_cols = "gene"
 versions = "bioc_gene2ensembl_gene_id"
 func = "bioc.auto"
 keytype = "SYMBOL"
@@ -1041,7 +1041,7 @@ columns = "ENSEMBL"
 dependence_db = "db_bioc_org.Hs.eg.db"
 
 [bioc_org_hs_eg_gene2gene_full_name]
-need.cols = "gene"
+need_cols = "gene"
 versions = "bioc_gene2gene_full_name"
 func = "bioc.auto"
 keytype = "SYMBOL"
@@ -1049,7 +1049,7 @@ columns = "GENENAME"
 dependence_db = "db_bioc_org.Hs.eg.db"
 
 [bioc_org_hs_eg_gene2]
-need.cols = "gene"
+need_cols = "gene"
 versions = "bioc_gene2"
 func = "bioc.auto"
 keytype = "SYMBOL"
@@ -1071,7 +1071,8 @@ dependence_db = "db_vep"
 [vcfanno_default]
 versions = "vcfanno_demo"
 func = "vcfanno.auto"
-vcfanno.database.cfg = "@>@system.file('extdata', 'demo/vcfanno_demo/conf.toml', package = 'annovarR')@<@"
+vcfanno_database_cfg = "@>@system.file('extdata', 'demo/vcfanno_demo/conf.toml', package = 'annovarR')@<@"
 base_path = "@>@system.file('extdata', 'demo/vcfanno_demo/', package = 'annovarR')@<@"
 lua = "@>@system.file('extdata', 'demo/vcfanno_demo/custom.lua', package = 'annovarR')@<@"
 dependence_db = "db_vcfanno_demo"
+

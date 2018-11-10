@@ -1,3 +1,8 @@
+2018-10-10 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* major change (for latest RcppTOML) in database.toml and 
+		related parameters name (. => _)
+
 2018-09-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* fix cran check error
