@@ -4,20 +4,20 @@
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases (mysql no need)
-#' @param db.col.order Using the index, you can rename the database table, and can be matched using matched.cols. 
-#' @param index.cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
-#' @param matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
-#' @param return.col.index Setting the colnums need be returned
-#' @param return.col.names Setting the returned colnum names
-#' @param return.col.names.profix Setting the returned colnum names profix
-#' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
-#' @param dbname.fixed Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
+#' @param db_col_order Using the index, you can rename the database table, and can be matched using matched_cols. 
+#' @param index_cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
+#' @param matched_cols Using the selected cols to match data with selected partial data by index_cols limited.
+#' @param return_col_index Setting the colnums need be returned
+#' @param return_col_names Setting the returned colnum names
+#' @param return_col_names_profix Setting the returned colnum names profix
+#' @param format_dat_fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
+#' @param dbname_fixed Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb_fun 
 #' (Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)
-#' @param table.name.fixed Table name, default is NULL, and get from set.table.fun (Set value will fix the table.name)
+#' @param table_name_fixed Table name, default is NULL, and get from set_table_fun (Set value will fix the table.name)
 #' (Set value will fix the table.name, and will be added in sqlite.connenct.params and mysql.connect.params)
-#' @param setdb.fun A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)
-#' @param set.table.fun A function to process the name, buildver and get the final table name
-#' @param format.db.tb.fun A function to process the selected database table that can be used to matched with your data
+#' @param setdb_fun A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)
+#' @param set_table_fun A function to process the name, buildver and get the final table name
+#' @param format_db_tb_fun A function to process the selected database table that can be used to matched with your data
 #' @param db.type Setting the database type (sqlite, txt or mysql)
 #' @param db.file.prefix Only be setted when db.type is local databae like sqlite or txt
 #' @param mysql.connect.params Connect MySQL database other parameters, 
@@ -37,20 +37,20 @@
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
-#' return.col.names = 'avSNP147', db.type = 'txt')
+#' return_col_names = 'avSNP147', db.type = 'txt')
 annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:5, index.cols = c("chr", 
-    "start"), matched.cols = c("chr", "start", "end", "ref", "alt"), return.col.index = 6, 
-  return.col.names = "", return.col.names.profix = "", format.dat.fun = format.cols, 
-  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
-  format.db.tb.fun = format.db.tb, db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), 
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db_col_order = 1:5, index_cols = c("chr", 
+    "start"), matched_cols = c("chr", "start", "end", "ref", "alt"), return_col_index = 6, 
+  return_col_names = "", return_col_names_profix = "", format_dat_fun = format.cols, 
+  dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db, set_table_fun = set.table, 
+  format_db_tb_fun = format.db.tb, db.type = "sqlite", db.file.prefix = NULL, mysql.connect.params = list(), 
   sqlite.connect.params = list(), fread.db.params = list(), verbose = FALSE) {
   
   returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
-    buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
-    index.cols = index.cols, matched.cols = matched.cols, format.dat.fun = format.dat.fun, 
-    dbname.fixed = dbname.fixed, table.name.fixed = table.name.fixed, setdb.fun = setdb.fun, 
-    set.table.fun = set.table.fun, db.type = db.type, db.file.prefix = db.file.prefix, 
+    buildver = buildver, database.dir = database.dir, db_col_order = db_col_order, 
+    index_cols = index_cols, matched_cols = matched_cols, format_dat_fun = format_dat_fun, 
+    dbname_fixed = dbname_fixed, table_name_fixed = table_name_fixed, setdb_fun = setdb_fun, 
+    set_table_fun = set_table_fun, db.type = db.type, db.file.prefix = db.file.prefix, 
     mysql.connect.params = mysql.connect.params, sqlite.connect.params = sqlite.connect.params, 
     verbose = verbose))
   dat <- returned.list$dat
@@ -58,19 +58,19 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
   table.name <- returned.list$table.name
   tb.colnames <- returned.list$tb.colnames
   tb.colnames.raw <- returned.list$tb.colnames.raw
-  index.cols.order <- returned.list$index.cols.order
-  matched.cols.order <- returned.list$matched.cols.order
+  index_cols.order <- returned.list$index_cols.order
+  matched_cols.order <- returned.list$matched_cols.order
   dat.names <- returned.list$dat.names
   params <- returned.list$params
   rm(returned.list)
   gc()
   # Select data from database
-  selected.db.tb <- select.dat.full.match(database.con, table.name, tb.colnames[index.cols.order], 
+  selected.db.tb <- select.dat.full.match(database.con, table.name, tb.colnames[index_cols.order], 
     params = params, db.type = db.type, fread.db.params = fread.db.params, verbose = verbose)
   return(do.call(after.query.steps, list(dat = dat, selected.db.tb = selected.db.tb, 
-    format.db.tb.fun = format.db.tb.fun, return.col.index = return.col.index, 
-    matched.cols = matched.cols, tb.matched.cols = tb.colnames[matched.cols.order], 
-    db.col.order = db.col.order, return.col.names = return.col.names, return.col.names.profix = return.col.names.profix, 
+    format_db_tb_fun = format_db_tb_fun, return_col_index = return_col_index, 
+    matched_cols = matched_cols, tb.matched_cols = tb.colnames[matched_cols.order], 
+    db_col_order = db_col_order, return_col_names = return_col_names, return_col_names_profix = return_col_names_profix, 
     tb.colnames = tb.colnames, tb.colnames.raw = tb.colnames.raw, database.con = database.con, 
     db.type = db.type, dat.names = dat.names, get.final.table.fun = get.full.match.final.table, 
     query.type = "full", verbose = verbose)))
@@ -82,22 +82,22 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases (mysql no need)
-#' @param db.col.order Using the index, you can rename the database table, and can be matched using matched.cols. 
-#' @param index.cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
-#' @param full.matched.cols Using the selected cols to match data with selected partial data by index.cols limited.
-#' @param inferior.col Inferior limit col, e.g. start
-#' @param superior.col Superior limit col, e.g. end
-#' @param return.col.index Setting the colnums need be returned
-#' @param return.col.names Setting the returned colnum names
-#' @param return.col.names.profix Setting the returned colnum names profix
-#' @param format.dat.fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
-#' @param dbname.fixed Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
+#' @param db_col_order Using the index, you can rename the database table, and can be matched using matched_cols. 
+#' @param index_cols Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'
+#' @param full.matched_cols Using the selected cols to match data with selected partial data by index_cols limited.
+#' @param inferior_col Inferior limit col, e.g. start
+#' @param superior_col Superior limit col, e.g. end
+#' @param return_col_index Setting the colnums need be returned
+#' @param return_col_names Setting the returned colnum names
+#' @param return_col_names_profix Setting the returned colnum names profix
+#' @param format_dat_fun A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)
+#' @param dbname_fixed Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb_fun 
 #' (Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)
-#' @param table.name.fixed Table name, default is NULL, and get from set.table.fun (Set value will fix the table.name)
+#' @param table_name_fixed Table name, default is NULL, and get from set_table_fun (Set value will fix the table.name)
 #' (Set value will fix the table.name, and will be added in sqlite.connenct.params and mysql.connect.params)
-#' @param setdb.fun A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)
-#' @param set.table.fun A function to process the name, buildver and get the final table name
-#' @param format.db.tb.fun A function to process the selected database table that can be used to matched with your data
+#' @param setdb_fun A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)
+#' @param set_table_fun A function to process the name, buildver and get the final table name
+#' @param format_db_tb_fun A function to process the selected database table that can be used to matched with your data
 #' @param db.type Setting the database type (sqlite, txt or mysql)
 #' @param db.file.prefix Only be setted when db.type is local databae like sqlite or txt
 #' @param mysql.connect.params Connect MySQL database other parameters, 
@@ -118,24 +118,24 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 #' dat <- data.table(chr = chr, start = start, end = end)
 #' \dontrun{
 #' x <- annotation.region.match(dat = dat, database.dir = tempdir(),
-#' dbname.fixed = bed.sqlite, table.name.fixed = 'bed', 
-#' db.type = 'sqlite', format.dat.fun = function(...) {
+#' dbname_fixed = bed.sqlite, table_name_fixed = 'bed', 
+#' db.type = 'sqlite', format_dat_fun = function(...) {
 #' params = list(...);return(params[[1]])})
 #' }
 #' file.remove(bed.sqlite)
 annotation.region.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.col.order = 1:3, index.cols = c("chr", 
-    "start", "end"), full.matched.cols = "chr", inferior.col = "start", superior.col = "end", 
-  return.col.index = 4, return.col.names = "", return.col.names.profix = "", format.dat.fun = format.cols, 
-  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db, set.table.fun = set.table, 
-  format.db.tb.fun = format.db.region.tb, db.type = "sqlite", db.file.prefix = NULL, 
+  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db_col_order = 1:3, index_cols = c("chr", 
+    "start", "end"), full.matched_cols = "chr", inferior_col = "start", superior_col = "end", 
+  return_col_index = 4, return_col_names = "", return_col_names_profix = "", format_dat_fun = format.cols, 
+  dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db, set_table_fun = set.table, 
+  format_db_tb_fun = format.db.region.tb, db.type = "sqlite", db.file.prefix = NULL, 
   mysql.connect.params = list(), sqlite.connect.params = list(), fread.db.params = list(), 
   verbose = FALSE) {
   returned.list <- do.call(before.query.steps, list(dat = dat, anno.name = anno.name, 
-    buildver = buildver, database.dir = database.dir, db.col.order = db.col.order, 
-    index.cols = index.cols, matched.cols = c(full.matched.cols, inferior.col, 
-      superior.col), format.dat.fun = format.dat.fun, dbname.fixed = dbname.fixed, 
-    table.name.fixed = table.name.fixed, setdb.fun = setdb.fun, set.table.fun = set.table.fun, 
+    buildver = buildver, database.dir = database.dir, db_col_order = db_col_order, 
+    index_cols = index_cols, matched_cols = c(full.matched_cols, inferior_col, 
+      superior_col), format_dat_fun = format_dat_fun, dbname_fixed = dbname_fixed, 
+    table_name_fixed = table_name_fixed, setdb_fun = setdb_fun, set_table_fun = set_table_fun, 
     db.type = db.type, db.file.prefix = db.file.prefix, mysql.connect.params = mysql.connect.params, 
     sqlite.connect.params = sqlite.connect.params, verbose = verbose))
   dat <- returned.list$dat
@@ -143,7 +143,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   table.name <- returned.list$table.name
   tb.colnames <- returned.list$tb.colnames
   tb.colnames.raw <- returned.list$tb.colnames.raw
-  index.cols.order <- returned.list$index.cols.order
+  index_cols.order <- returned.list$index_cols.order
   dat.names <- returned.list$dat.names
   params <- returned.list$params
   dbname <- returned.list$params
@@ -151,27 +151,27 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
   gc()
   
   # Sync matched colsnames with reference database
-  full.matched.cols.raw <- full.matched.cols
-  inferior.col.raw <- inferior.col
-  superior.col.raw <- superior.col
-  for (i in c("full.matched.cols", "inferior.col", "superior.col")) {
+  full.matched_cols.raw <- full.matched_cols
+  inferior_col.raw <- inferior_col
+  superior_col.raw <- superior_col
+  for (i in c("full.matched_cols", "inferior_col", "superior_col")) {
     index <- match(colnames(dat), eval(parse(text = i)))
     text <- sprintf("%s <- '%s'", i, colnames(params)[!is.na(index)])
     eval(parse(text = text))
   }
   
   # Select data from database
-  select.params <- list(db = database.con, table.name = table.name, full.matched.cols = full.matched.cols, 
-    inferior.col = inferior.col, superior.col = superior.col, params = params, 
+  select.params <- list(db = database.con, table.name = table.name, full.matched_cols = full.matched_cols, 
+    inferior_col = inferior_col, superior_col = superior_col, params = params, 
     db.type = db.type, fread.db.params = fread.db.params, verbose = verbose)
   selected.db.tb <- do.call(select.dat.region.match, select.params)
-  matched.cols = c(full.matched.cols.raw, inferior.col.raw, superior.col.raw)
+  matched_cols = c(full.matched_cols.raw, inferior_col.raw, superior_col.raw)
   return(do.call(after.query.steps, list(dat = dat, selected.db.tb = selected.db.tb, 
-    format.db.tb.fun = format.db.tb.fun, return.col.index = return.col.index, 
-    full.matched.cols = full.matched.cols, full.matched.cols.raw = full.matched.cols.raw, 
-    inferior.col = inferior.col, inferior.col.raw = inferior.col.raw, superior.col = superior.col, 
-    superior.col.raw = superior.col.raw, db.col.order = db.col.order, params = params, 
-    return.col.names = return.col.names, return.col.names.profix = return.col.names.profix, 
+    format_db_tb_fun = format_db_tb_fun, return_col_index = return_col_index, 
+    full.matched_cols = full.matched_cols, full.matched_cols.raw = full.matched_cols.raw, 
+    inferior_col = inferior_col, inferior_col.raw = inferior_col.raw, superior_col = superior_col, 
+    superior_col.raw = superior_col.raw, db_col_order = db_col_order, params = params, 
+    return_col_names = return_col_names, return_col_names_profix = return_col_names_profix, 
     tb.colnames = tb.colnames, tb.colnames.raw = tb.colnames.raw, database.con = database.con, 
     db.type = db.type, dat.names = dat.names, get.final.table.fun = get.region.match.final.table, 
     dbname = dbname, query.type = "region", verbose = verbose)))
@@ -205,7 +205,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation(dat, 'avsnp147', database.dir = database.dir, 
-#' return.col.names = 'avSNP147', db.type = 'txt')
+#' return_col_names = 'avSNP147', db.type = 'txt')
 annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", annovar.anno.names = "", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL, database.cfg = system.file("extdata", 
     "config/databases.toml", package = "annovarR"), func = NULL, mysql.connect.params = list(host = "", 

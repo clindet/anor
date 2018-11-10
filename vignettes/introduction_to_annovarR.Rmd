@@ -176,7 +176,7 @@ ref <- c("A", "A", "A")
 alt <- c("-", "-", "-")
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation.cols.match(dat, "avsnp147", database.dir = database.dir, 
-  return.col.names = "avSNP147", db.type = "sqlite")
+  return_col_names = "avSNP147", db.type = "sqlite")
 x
 
 # Region match mode
@@ -189,9 +189,9 @@ dat <- data.table(chr = chr, start = start, end = end)
 # format.cols.plus.chr will add "chr" in chr colum 
 # if your input chr colum not contain string 'chr'
 # format.db.region.tb will process the region matched data
-x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.file, 
-  table.name.fixed = "bed", db.type = "txt", format.dat.fun = "format.cols.plus.chr", 
-  format.db.tb.fun = "format.db.region.tb")
+x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname_fixed = bed.file, 
+  table_name_fixed = "bed", db.type = "txt", format_dat_fun = "format.cols.plus.chr", 
+  format_db_tb_fun = "format.db.region.tb")
 x
 ```
 

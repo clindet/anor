@@ -71,12 +71,12 @@ get.annotation.names <- function(database.cfg = system.file("extdata", "config/d
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
-  dbtype <- tryCatch(get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype"), 
+  dbtype <- tryCatch(get.cfg.value.by.name(anno.name, database.cfg, key = "default_dbtype"), 
     error = function(e) {
       return("txt")
     })
   if (is.null(dbtype)) {
-    dbtype <- tryCatch(get.cfg.value.by.name(anno.name, database.cfg, key = "default.dbtype", 
+    dbtype <- tryCatch(get.cfg.value.by.name(anno.name, database.cfg, key = "default_dbtype", 
       coincident = TRUE)[1], error = function(e) {
       return("txt")
     })
@@ -93,9 +93,9 @@ get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("ex
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.needcols <- function(anno.name = "", database.cfg = system.file("extdata", 
   "config/databases.toml", package = "annovarR")) {
-  need.cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need.cols", 
+  need_cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need_cols", 
     coincident = TRUE)
-  return(need.cols)
+  return(need_cols)
 }
 
 #' Get colnames of table of database in sqlite
@@ -333,18 +333,18 @@ select.dat.full.match <- function(db = NULL, table.name = NULL, cols = c(), para
 }
 
 # Region match from txt file (eg. gff, gtf, bed)
-select.dat.region.match.sqlite <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
-  inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", verbose = FALSE, 
+select.dat.region.match.sqlite <- function(db = NULL, table.name = NULL, full.matched_cols = c(), 
+  inferior_col = c(), superior_col = c(), params = list(), select.cols = "*", verbose = FALSE, 
   ...) {
-  sql.operator <- c(rep("==", length(full.matched.cols)), "<=", ">=")
-  params$superior.col <- params$inferior.col
-  result <- select.dat.full.match.sqlite(db, table.name, c(full.matched.cols, inferior.col, 
-    superior.col), params, select.cols, sql.operator, verbose)
+  sql.operator <- c(rep("==", length(full.matched_cols)), "<=", ">=")
+  params$superior_col <- params$inferior_col
+  result <- select.dat.full.match.sqlite(db, table.name, c(full.matched_cols, inferior_col, 
+    superior_col), params, select.cols, sql.operator, verbose)
   result <- result[!duplicated(result), ]
 }
 # Region match from txt file (eg. gff, gtf, bed)
-select.dat.region.match.txt <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
-  inferior.col = c(), superior.col = c(), params = list(), select.cols = "*", fread.db.params = list(), 
+select.dat.region.match.txt <- function(db = NULL, table.name = NULL, full.matched_cols = c(), 
+  inferior_col = c(), superior_col = c(), params = list(), select.cols = "*", fread.db.params = list(), 
   verbose = FALSE, ...) {
   fread.params <- list(input = db)
   if ("logical01" %in% formalArgs(fread)) {
@@ -352,8 +352,8 @@ select.dat.region.match.txt <- function(db = NULL, table.name = NULL, full.match
   }
   fread.params <- config.list.merge(fread.params, fread.db.params)
   suppressWarnings(ref.dat <- do.call(fread, fread.params))
-  result.list <- full.foverlaps(ref.dat, params, full.matched.cols, inferior.col, 
-    superior.col)
+  result.list <- full.foverlaps(ref.dat, params, full.matched_cols, inferior_col, 
+    superior_col)
   ref.dat <- result.list$ref.dat
   index.table <- result.list$index.table
   index <- index.table$yid[!is.na(index.table$yid)]
@@ -362,8 +362,8 @@ select.dat.region.match.txt <- function(db = NULL, table.name = NULL, full.match
 }
 
 # Read GFF and BED file or database
-select.dat.region.match <- function(db = NULL, table.name = NULL, full.matched.cols = c(), 
-  inferior.col = c(), superior.col = c(), params = list(), db.type = "txt", select.cols = "*", 
+select.dat.region.match <- function(db = NULL, table.name = NULL, full.matched_cols = c(), 
+  inferior_col = c(), superior_col = c(), params = list(), db.type = "txt", select.cols = "*", 
   fread.db.params = list(), verbose = FALSE, ...) {
   params <- lapply(params, function(x) {
     if (!is.character(x)) {
@@ -374,30 +374,30 @@ select.dat.region.match <- function(db = NULL, table.name = NULL, full.matched.c
   })
   params.length <- length(params)
   if (db.type == "sqlite") {
-    result <- select.dat.region.match.sqlite(db, table.name, full.matched.cols, 
-      inferior.col, superior.col, params, select.cols, verbose)
+    result <- select.dat.region.match.sqlite(db, table.name, full.matched_cols, 
+      inferior_col, superior_col, params, select.cols, verbose)
   } else if (db.type == "txt") {
-    result <- select.dat.region.match.txt(db, table.name, full.matched.cols, 
-      inferior.col, superior.col, params, select.cols, fread.db.params, verbose)
+    result <- select.dat.region.match.txt(db, table.name, full.matched_cols, 
+      inferior_col, superior_col, params, select.cols, fread.db.params, verbose)
   }
   return(result)
 }
 
-full.foverlaps <- function(ref.dat = NULL, input.dat = NULL, full.matched.cols = NULL, 
-  inferior.col = NULL, superior.col = NULL) {
+full.foverlaps <- function(ref.dat = NULL, input.dat = NULL, full.matched_cols = NULL, 
+  inferior_col = NULL, superior_col = NULL) {
   ref.dat <- as.data.table(ref.dat)
   ref.dat.colnames.raw <- colnames(ref.dat)
   input.dat <- as.data.table(input.dat)
   index <- match(names(input.dat), colnames(ref.dat))
   index <- index[!is.na(index)]
   colnames(ref.dat)[index] <- names(input.dat)
-  texts <- sprintf("ref.dat$%s <- as.numeric(ref.dat$%s)", inferior.col, inferior.col)
-  texts <- c(texts, sprintf("input.dat$%s <- as.numeric(input.dat$%s)", inferior.col, 
-    inferior.col))
-  texts <- c(texts, sprintf("ref.dat$%s <- as.numeric(ref.dat$%s)", superior.col, 
-    superior.col))
-  texts <- c(texts, sprintf("input.dat$%s <- as.numeric(input.dat$%s)", superior.col, 
-    superior.col))
+  texts <- sprintf("ref.dat$%s <- as.numeric(ref.dat$%s)", inferior_col, inferior_col)
+  texts <- c(texts, sprintf("input.dat$%s <- as.numeric(input.dat$%s)", inferior_col, 
+    inferior_col))
+  texts <- c(texts, sprintf("ref.dat$%s <- as.numeric(ref.dat$%s)", superior_col, 
+    superior_col))
+  texts <- c(texts, sprintf("input.dat$%s <- as.numeric(input.dat$%s)", superior_col, 
+    superior_col))
   for (i in texts) {
     eval(parse(text = i))
   }

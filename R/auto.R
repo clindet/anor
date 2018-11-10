@@ -32,28 +32,28 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
   batch_lines = 1e+07, start_index = 1, new.colnames = NULL, verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
-  auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
-    "index.cols", "header", "dbname.fixed", "table.name.fixed")
+  auto.parameters <- c("need_cols", "db_col_order", "setdb_fun", "set_table_fun", 
+    "index_cols", "header", "dbname_fixed", "table_name_fixed")
   default.pars <- list()
   for (item in auto.parameters) {
     default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
       coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  dbname.fixed <- unlist(default.pars["dbname.fixed"])
-  table.name.fixed <- unlist(default.pars["table.name.fixed"])
-  if (is.null(dbname.fixed)) {
-    filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
+  dbname_fixed <- unlist(default.pars["dbname_fixed"])
+  table_name_fixed <- unlist(default.pars["table_name_fixed"])
+  if (is.null(dbname_fixed)) {
+    filename <- do.call(default.pars[["setdb_fun"]], list(anno.name = anno.name, 
       buildver = buildver, database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
     filename <- normalizePath(filename)
   } else {
-    filename <- dbname.fixed
+    filename <- dbname_fixed
   }
   dbname <- str_replace(filename, "txt$", "sqlite")
-  if (is.null(table.name.fixed)) {
-    table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
+  if (is.null(table_name_fixed)) {
+    table.name <- do.call(default.pars[["set_table_fun"]], list(anno.name = anno.name, 
       buildver = buildver))
   } else {
-    table.name <- table.name.fixed
+    table.name <- table_name_fixed
   }
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   if (is.logical(default.pars[["header"]])) {
@@ -86,8 +86,8 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
     extra_params = list(new.colnames = new.colnames, sqlite.connect.params = sqlite.connect.params), 
     extra_fread_params = extra_fread_params, start_index = start_index)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
-  db.colnames <- db.colnames[default.pars[["db.col.order"]]]
-  order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])
+  db.colnames <- db.colnames[default.pars[["db_col_order"]]]
+  order <- match(default.pars[["index_cols"]], default.pars[["need_cols"]])
   cols <- db.colnames[order]
   sqlite.index(sqlite.connect.params = sqlite.connect.params, cols = cols, index = index, 
     verbose = verbose)
@@ -122,33 +122,33 @@ sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = 
     "config/databases.toml", package = "annovarR"), verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
-  auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
-    "index.cols", "dbname.fixed", "table.name.fixed")
+  auto.parameters <- c("need_cols", "db_col_order", "setdb_fun", "set_table_fun", 
+    "index_cols", "dbname_fixed", "table_name_fixed")
   default.pars <- list()
   for (item in auto.parameters) {
     default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
       coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  dbname.fixed <- unlist(default.pars["dbname.fixed"])
-  table.name.fixed <- unlist(default.pars["table.name.fixed"])
-  if (is.null(dbname.fixed)) {
-    filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
+  dbname_fixed <- unlist(default.pars["dbname_fixed"])
+  table_name_fixed <- unlist(default.pars["table_name_fixed"])
+  if (is.null(dbname_fixed)) {
+    filename <- do.call(default.pars[["setdb_fun"]], list(anno.name = anno.name, 
       buildver = buildver, database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
     filename <- normalizePath(filename)
   } else {
-    filename <- dbname.fixed
+    filename <- dbname_fixed
   }
   dbname <- str_replace(filename, "txt$", "sqlite")
-  if (is.null(table.name.fixed)) {
-    table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
+  if (is.null(table_name_fixed)) {
+    table.name <- do.call(default.pars[["set_table_fun"]], list(anno.name = anno.name, 
       buildver = buildver))
   } else {
-    table.name <- table.name.fixed
+    table.name <- table_name_fixed
   }
   sqlite.connect.params <- list(dbname = dbname, table.name = table.name)
   db.colnames <- sqlite.tb.colnames(sqlite.connect.params)
-  db.colnames <- db.colnames[default.pars[["db.col.order"]]]
-  order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])
+  db.colnames <- db.colnames[default.pars[["db_col_order"]]]
+  order <- match(default.pars[["index_cols"]], default.pars[["need_cols"]])
   cols <- db.colnames[order]
   status <- sqlite.index(sqlite.connect.params = sqlite.connect.params, cols = cols, 
     index = index, verbose = verbose)
@@ -199,31 +199,31 @@ mysql.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "
   info.msg(sprintf("Auto build database %s %s in mysql database [host:%s, port:%s]", 
     buildver, anno.name, mysql.connect.params$host, mysql.connect.params$port), 
     verbose = verbose)
-  auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
-    "index.cols", "header", "dbname.fixed", "table.name.fixed")
+  auto.parameters <- c("need_cols", "db_col_order", "setdb_fun", "set_table_fun", 
+    "index_cols", "header", "dbname_fixed", "table_name_fixed")
   default.pars <- list()
   for (item in auto.parameters) {
     default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
       coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  dbname.fixed <- unlist(default.pars["dbname.fixed"])
-  table.name.fixed <- unlist(default.pars["table.name.fixed"])
-  if (is.null(dbname.fixed)) {
-    filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
+  dbname_fixed <- unlist(default.pars["dbname_fixed"])
+  table_name_fixed <- unlist(default.pars["table_name_fixed"])
+  if (is.null(dbname_fixed)) {
+    filename <- do.call(default.pars[["setdb_fun"]], list(anno.name = anno.name, 
       buildver = buildver, database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
     filename <- normalizePath(filename)
   } else {
-    filename <- dbname.fixed
+    filename <- dbname_fixed
   }
-  if (is.null(table.name.fixed)) {
-    table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
+  if (is.null(table_name_fixed)) {
+    table.name <- do.call(default.pars[["set_table_fun"]], list(anno.name = anno.name, 
       buildver = buildver))
   } else {
-    table.name <- table.name.fixed
+    table.name <- table_name_fixed
   }
-  dbname <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, buildver = buildver, 
+  dbname <- do.call(default.pars[["setdb_fun"]], list(anno.name = anno.name, buildver = buildver, 
     db.type = db.type, mysql.connect.params = mysql.connect.params))
-  table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
+  table.name <- do.call(default.pars[["set_table_fun"]], list(anno.name = anno.name, 
     buildver = buildver))
   mysql.connect.params <- config.list.merge(mysql.connect.params, list(dbname = dbname, 
     table.name = table.name))
@@ -257,8 +257,8 @@ mysql.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "
     extra_params = list(new.colnames = new.colnames, mysql.connect.params = mysql.connect.params), 
     extra_fread_params = extra_fread_params, start_index = start_index)
   db.colnames <- mysql.tb.colnames(mysql.connect.params)
-  db.colnames <- db.colnames[default.pars[["db.col.order"]]]
-  order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])
+  db.colnames <- db.colnames[default.pars[["db_col_order"]]]
+  order <- match(default.pars[["index_cols"]], default.pars[["need_cols"]])
   cols <- db.colnames[order]
   mysql.index(mysql.connect.params = mysql.connect.params, cols = cols, index = index, 
     verbose = verbose)
@@ -296,35 +296,35 @@ mysql.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = "
   info.msg(sprintf("Auto index database %s %s in mysql database [host:%s, port:%s]", 
     buildver, anno.name, mysql.connect.params$host, mysql.connect.params$port), 
     verbose = verbose)
-  auto.parameters <- c("need.cols", "db.col.order", "setdb.fun", "set.table.fun", 
-    "index.cols", "dbname.fixed", "table.name.fixed")
+  auto.parameters <- c("need_cols", "db_col_order", "setdb_fun", "set_table_fun", 
+    "index_cols", "dbname_fixed", "table_name_fixed")
   default.pars <- list()
   for (item in auto.parameters) {
     default.pars[[item]] <- get.cfg.value.by.name(anno.name, database.cfg, key = item, 
       coincident = TRUE, extra.list = list(anno.name = anno.name), rcmd.parse = TRUE)
   }
-  dbname.fixed <- unlist(default.pars["dbname.fixed"])
-  table.name.fixed <- unlist(default.pars["table.name.fixed"])
-  if (is.null(dbname.fixed)) {
-    filename <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, 
+  dbname_fixed <- unlist(default.pars["dbname_fixed"])
+  table_name_fixed <- unlist(default.pars["table_name_fixed"])
+  if (is.null(dbname_fixed)) {
+    filename <- do.call(default.pars[["setdb_fun"]], list(anno.name = anno.name, 
       buildver = buildver, database.dir = database.dir, db.type = "txt", db.file.prefix = "txt"))
     filename <- normalizePath(filename)
   } else {
-    filename <- dbname.fixed
+    filename <- dbname_fixed
   }
-  if (is.null(table.name.fixed)) {
-    table.name <- do.call(default.pars[["set.table.fun"]], list(anno.name = anno.name, 
+  if (is.null(table_name_fixed)) {
+    table.name <- do.call(default.pars[["set_table_fun"]], list(anno.name = anno.name, 
       buildver = buildver))
   } else {
-    table.name <- table.name.fixed
+    table.name <- table_name_fixed
   }
-  dbname <- do.call(default.pars[["setdb.fun"]], list(anno.name = anno.name, buildver = buildver, 
+  dbname <- do.call(default.pars[["setdb_fun"]], list(anno.name = anno.name, buildver = buildver, 
     db.type = db.type, mysql.connect.params = mysql.connect.params))
   mysql.connect.params <- config.list.merge(mysql.connect.params, list(dbname = dbname, 
     table.name = table.name))
   db.colnames <- mysql.tb.colnames(mysql.connect.params)
-  db.colnames <- db.colnames[default.pars[["db.col.order"]]]
-  order <- match(default.pars[["index.cols"]], default.pars[["need.cols"]])
+  db.colnames <- db.colnames[default.pars[["db_col_order"]]]
+  order <- match(default.pars[["index_cols"]], default.pars[["need_cols"]])
   cols <- db.colnames[order]
   status <- mysql.index(mysql.connect.params = mysql.connect.params, cols = cols, 
     index = index, verbose = verbose)
@@ -337,12 +337,12 @@ mysql.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = "
 }
 
 # Auto to annotation accodring the database.cfg annovarR supported anno.names
-annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NULL, 
-  return.col.names.profix = NULL, return.col.index = NULL, db.col.order = NULL, 
-  index.cols = NULL, matched.cols = NULL, full.matched.cols = NULL, inferior.col = NULL, 
-  superior.col = NULL, dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = NULL, 
-  set.table.fun = NULL, format.db.tb.fun = NULL, format.dat.fun = NULL, db.file.prefix = NULL, 
-  is.region = NULL, database.cfg = NULL, ...) {
+annotation.auto <- function(dat = NULL, anno.name = NULL, return_col_names = NULL, 
+  return_col_names_profix = NULL, return_col_index = NULL, db_col_order = NULL, 
+  index_cols = NULL, matched_cols = NULL, full.matched_cols = NULL, inferior_col = NULL, 
+  superior_col = NULL, dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = NULL, 
+  set_table_fun = NULL, format_db_tb_fun = NULL, format_dat_fun = NULL, db.file.prefix = NULL, 
+  is_region = NULL, database.cfg = NULL, ...) {
   
   used.names.1 <- formalArgs(annotation.cols.match)
   used.names.2 <- formalArgs(annotation.region.match)
@@ -350,7 +350,7 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
   params <- list(...)
   params[!names(params) %in% used.names] <- NULL
   # dat.need.names <- get.cfg.value.by.name(anno.name, database.cfg, key =
-  # 'need.cols', coincident = TRUE, extra.list = list(anno.name = anno.name),
+  # 'need_cols', coincident = TRUE, extra.list = list(anno.name = anno.name),
   # rcmd.parse = TRUE)
   
   # dat <- dat[, colnames(dat) %in% dat.need.names, with = FALSE]
@@ -361,10 +361,10 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
       anno.name, database.cfg))
   }
   
-  auto.parameters <- c("return.col.names", "return.col.index", "db.col.order", 
-    "index.cols", "matched.cols", "setdb.fun", "set.table.fun", "format.db.tb.fun", 
-    "format.dat.fun", "db.file.prefix", "full.matched.cols", "inferior.col", 
-    "superior.col", "is.region", "dbname.fixed", "table.name.fixed", "return.col.names.profix")
+  auto.parameters <- c("return_col_names", "return_col_index", "db_col_order", 
+    "index_cols", "matched_cols", "setdb_fun", "set_table_fun", "format_db_tb_fun", 
+    "format_dat_fun", "db.file.prefix", "full.matched_cols", "inferior_col", 
+    "superior_col", "is_region", "dbname_fixed", "table_name_fixed", "return_col_names_profix")
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
     if (is.null(item.value)) {
@@ -374,18 +374,18 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return.col.names = NUL
       params[[item]] <- item.value
     }
   }
-  is.region <- params[["is.region"]]
-  params$is.region <- NULL
-  if (is.null(is.region) || !is.region) {
+  is_region <- params[["is_region"]]
+  params$is_region <- NULL
+  if (is.null(is_region) || !is_region) {
     do.call("annotation.cols.match", config.list.merge(params, list(dat = dat, 
-      anno.name = anno.name, setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
-      set.table.fun = eval.parse.null(params[["set.table.fun"]]), format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), 
-      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]))))
+      anno.name = anno.name, setdb_fun = eval.parse.null(params[["setdb_fun"]]), 
+      set_table_fun = eval.parse.null(params[["set_table_fun"]]), format_db_tb_fun = eval.parse.null(params[["format_db_tb_fun"]]), 
+      format_dat_fun = eval.parse.null(params[["format_dat_fun"]]))))
   } else {
     do.call("annotation.region.match", config.list.merge(params, list(dat = dat, 
-      anno.name = anno.name, setdb.fun = eval.parse.null(params[["setdb.fun"]]), 
-      set.table.fun = eval.parse.null(params[["set.table.fun"]]), format.db.tb.fun = eval.parse.null(params[["format.db.tb.fun"]]), 
-      format.dat.fun = eval.parse.null(params[["format.dat.fun"]]))))
+      anno.name = anno.name, setdb_fun = eval.parse.null(params[["setdb_fun"]]), 
+      set_table_fun = eval.parse.null(params[["set_table_fun"]]), format_db_tb_fun = eval.parse.null(params[["format_db_tb_fun"]]), 
+      format_dat_fun = eval.parse.null(params[["format_dat_fun"]]))))
   }
 }
 
@@ -416,11 +416,11 @@ eval.parse.null <- function(text = "") {
 }
 
 # Function to annotate variants use ANNOVAR
-annovar.auto <- function(anno.name = NULL, cmd.used = NULL, database.cfg = NULL, 
+annovar.auto <- function(anno.name = NULL, cmd_used = NULL, database.cfg = NULL, 
   annovar.anno.names = "", ...) {
   params <- list(...)
   used.names <- formalArgs(annovar)
-  auto.parameters <- c("cmd.used")
+  auto.parameters <- c("cmd_used")
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
     if (is.null(item.value)) {
@@ -535,10 +535,10 @@ vep.auto <- function(anno.name = NULL, database.cfg = NULL, ...) {
 
 vcfanno.auto <- function(anno.name = NULL, database.cfg = NULL, ...) {
   params <- list(...)
-  vcfanno.database.cfg <- NULL
+  vcfanno_database_cfg <- NULL
   base_path <- NULL
   lua <- NULL
-  auto.parameters <- c("vcfanno.database.cfg", "base_path", "lua")
+  auto.parameters <- c("vcfanno_database_cfg", "base_path", "lua")
   for (item in auto.parameters) {
     item.value <- eval(parse(text = item))
     if (is.null(item.value)) {

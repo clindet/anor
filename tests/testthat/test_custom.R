@@ -10,10 +10,10 @@ test_that("rs2genomic", {
   set.table.custom <- function(x) {
     return(x)
   }
-  x <- annotation.cols.match(dat = data.table(snp.id = snp.id), dbname.fixed = txt.db, 
-    table.name.fixed = "hg19_avsnp147", db.col.order = 6, index.cols = "snp.id", 
-    matched.cols = "snp.id", return.col.index = c(1, 2, 3, 4, 5), set.table.fun = set.table.custom, 
-    verbose = FALSE, database.dir = database.dir, format.db.tb.fun = format.db.tb.unique, 
+  x <- annotation.cols.match(dat = data.table(snp.id = snp.id), dbname_fixed = txt.db, 
+    table_name_fixed = "hg19_avsnp147", db_col_order = 6, index_cols = "snp.id", 
+    matched_cols = "snp.id", return_col_index = c(1, 2, 3, 4, 5), set_table_fun = set.table.custom, 
+    verbose = FALSE, database.dir = database.dir, format_db_tb_fun = format.db.tb.unique, 
     db.type = "txt")
   expect_that(colnames(x), equals(paste0("V", 1:5)))
   x <- as.data.frame(x)
@@ -21,10 +21,10 @@ test_that("rs2genomic", {
   expect_that(x[1, 2], equals("10019//10020"))
   expect_that(x[1, 4], equals("TA//A"))
   expect_that(x[1, 5], equals("T//-"))
-  x <- annotation.cols.match(dat = data.table(snp.id = snp.id), dbname.fixed = sqlite.db, 
-    table.name.fixed = "hg19_avsnp147", db.col.order = 6, index.cols = "snp.id", 
-    matched.cols = "snp.id", return.col.index = c(1, 2, 3, 4, 5), set.table.fun = set.table.custom, 
-    verbose = FALSE, database.dir = database.dir, format.db.tb.fun = format.db.tb.unique, 
+  x <- annotation.cols.match(dat = data.table(snp.id = snp.id), dbname_fixed = sqlite.db, 
+    table_name_fixed = "hg19_avsnp147", db_col_order = 6, index_cols = "snp.id", 
+    matched_cols = "snp.id", return_col_index = c(1, 2, 3, 4, 5), set_table_fun = set.table.custom, 
+    verbose = FALSE, database.dir = database.dir, format_db_tb_fun = format.db.tb.unique, 
     db.type = "sqlite")
   expect_that(colnames(x), equals(paste0("V", 1:5)))
   x <- as.data.frame(x)

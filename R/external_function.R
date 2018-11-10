@@ -1,4 +1,4 @@
-# annovarR default function: setdb.fun, set.table.fun, format.db.tb.fun You can
+# annovarR default function: setdb_fun, set_table_fun, format_db_tb_fun You can
 # re-write this R source file
 format.cols <- function(dat.input = "") {
   dat.input <- dat.input
@@ -101,40 +101,40 @@ format.db.tb.unique <- function(...) {
   if (nrow(db.tb) == 0) {
     return(db.tb)
   }
-  tb.matched.cols <- params$tb.matched.cols
-  if (is.null(tb.matched.cols)) {
-    stop("Error in format.db.tb.unique: not set matched.cols using database colnames.")
+  tb.matched_cols <- params$tb.matched_cols
+  if (is.null(tb.matched_cols)) {
+    stop("Error in format.db.tb.unique: not set matched_cols using database colnames.")
   }
-  tb.matched.cols.raw <- tb.matched.cols
+  tb.matched_cols.raw <- tb.matched_cols
   
-  need.cols <- colnames(db.tb)
-  is.region <- !is.null(params$input.dat) && !is.null(params$inferior.col)
-  if (is.region) {
+  need_cols <- colnames(db.tb)
+  is_region <- !is.null(params$input.dat) && !is.null(params$inferior_col)
+  if (is_region) {
     # region match, according xid to merge mulitple row to one
-    index.table <- full.foverlaps(db.tb, params$input.dat, params$full.matched.cols, 
-      params$inferior.col, params$superior.col)$index.table
+    index.table <- full.foverlaps(db.tb, params$input.dat, params$full.matched_cols, 
+      params$inferior_col, params$superior_col)$index.table
     db.tb <- db.tb[index.table$yid, ]
     db.tb <- cbind(db.tb, index.table[, 1])
     db.tb <- cbind(db.tb, index.table[, 2])
-    tb.matched.cols <- "xid"
+    tb.matched_cols <- "xid"
   }
-  need.cols <- need.cols[!need.cols %in% tb.matched.cols.raw]
-  keys <- paste0(tb.matched.cols, collapse = "\", \"")
+  need_cols <- need_cols[!need_cols %in% tb.matched_cols.raw]
+  keys <- paste0(tb.matched_cols, collapse = "\", \"")
   text <- sprintf("setkey(db.tb, \"%s\")", keys)
   eval(parse(text = text))
-  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(tb.matched.cols, collapse = ", "))
+  text <- sprintf("db.tb[, new:=paste0(%s)]", paste0(tb.matched_cols, collapse = ", "))
   eval(parse(text = text))
   rs.frq <- table(db.tb$new)
   rs.frq <- as.data.table(rs.frq)
   for (i in rs.frq$V1[rs.frq$N > 1]) {
     first.line <- which(db.tb$new == i)[1]
-    for (j in need.cols) {
+    for (j in need_cols) {
       db.tb[[j]][first.line] <- paste0(db.tb[[j]][db.tb$new == i], collapse = "//")
     }
   }
   text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
   eval(parse(text = text))
-  if (is.region) {
+  if (is_region) {
     text <- sprintf("db.tb <- db.tb[,-%s]", ncol(db.tb))
     eval(parse(text = text))
   }
@@ -144,8 +144,8 @@ format.db.tb.unique <- function(...) {
 format.db.region.tb <- function(...) {
   params <- list(...)
   db.tb <- params$db.tb
-  index.table <- full.foverlaps(db.tb, params$input.dat, params$full.matched.cols, 
-    params$inferior.col, params$superior.col)$index.table
+  index.table <- full.foverlaps(db.tb, params$input.dat, params$full.matched_cols, 
+    params$inferior_col, params$superior_col)$index.table
   db.tb <- db.tb[index.table$yid, ]
   db.tb <- cbind(db.tb, index.table[, 1])
   return(db.tb)

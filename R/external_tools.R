@@ -2,7 +2,7 @@
 #'
 #' @param perl Executable file of perl
 #' @param cmd.pool Un-parsed commands of ANNOVAR
-#' @param cmd.used Name in cmd.pool that used to parse final run command
+#' @param cmd_used Name in cmd.pool that used to parse final run command
 #' @param down.dbname Need to download database name, e.g. avsnp147,cosmic70,1000g2015aug
 #' @param input.file Input file name, e.g. example.avinput, example.vcf
 #' @param annovar.dir ANNOVAR source code directory
@@ -25,31 +25,31 @@
 #' @examples
 #' # original ANNOVAR download.database
 #' down.dbname <- 'refGene'
-#' annovar('perl', cmd.used = 'script1.downdb', down.dbname = 'avsnp147',
+#' annovar('perl', cmd_used = 'script1.downdb', down.dbname = 'avsnp147',
 #'         annovar.dir = '/opt/annovar', debug = TRUE)
 #'
 #' # ANNOVAR gene-based annotation
-#' annovar('perl', cmd.used = 'script1.gene.based', input.file = 'example.avinput',
+#' annovar('perl', cmd_used = 'script1.gene.based', input.file = 'example.avinput',
 #'         annovar.dir = '/opt/annovar', debug = TRUE)
 #'
 #' # ANNOVAR gene-based annotation
-#' annovar('perl', cmd.used = 'script1.region.based', anno.names = 'cytoBand',
+#' annovar('perl', cmd_used = 'script1.region.based', anno.names = 'cytoBand',
 #'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 #'
 #' # ANNOVAR filter-based annotation
-#' annovar('perl', cmd.used = 'script1.filter.based', anno.names = 'avsnp147',
+#' annovar('perl', cmd_used = 'script1.filter.based', anno.names = 'avsnp147',
 #'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 #'
 #' # ANNOVAR table_annovar.pl
 #' anno.names <- c('refGene','cytoBand','genomicSuperDups','esp6500siv2_all',
 #' '1000g2015aug_all','1000g2015aug_afr','1000g2015aug_eas','1000g2015aug_eur',
 #' 'snp138','avsnp142','avsnp144','avsnp147','ljb26_all','cosmic70','cosmic81')
-#' annovar('perl', cmd.used = 'script2',
+#' annovar('perl', cmd_used = 'script2',
 #'         anno.names = anno.names,
 #'         input.file = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 #'
 #' # ANNOVAR convert2annovar.pl
-#' annovar('perl', cmd.used = 'script3', input.file = 'example.vcf', format = 'vcf4old',
+#' annovar('perl', cmd_used = 'script3', input.file = 'example.vcf', format = 'vcf4old',
 #'         convert.out = 'example.avinput', annovar.dir = '/opt/annovar', debug = TRUE)
 annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = paste(c("{perl}", 
   "{script}{extra.params}", "-downdb", "{buildver}", "{webfrom}", "{down.dbname}", 
@@ -62,7 +62,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   "{database.dir}", "{buildver}", "{out}", "-remove{extra.params}", "-protocol {anno.names}", 
   "-operation", "{operation}", "{nastring}", "{otherinfo}", "{vcfinput}"), collapse = " "), 
   script3 = paste("{perl}", "{script}{extra.params}", "-format", "{format}", "{input.file}", 
-    "> {convert.out}", collapse = " ")), cmd.used = "script1.downdb", down.dbname = "", 
+    "> {convert.out}", collapse = " ")), cmd_used = "script1.downdb", down.dbname = "", 
   input.file = "", annovar.dir = "", buildver = "hg19", database.dir = "{annovar.dir}/humandb", 
   webfrom = "annovar", anno.names = "", out = "", convert.out = "", format = "vcf4", 
   operation.type = list(gene.based = c("refGene", "knownGene", "ensGene", "ccdsGene"), 
@@ -77,7 +77,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     "table.annovar.pl", "convert2annovar.pl")) {
     assign(i, normalizePath(get(i), mustWork = FALSE))
   }
-  if (cmd.used == "script2") {
+  if (cmd_used == "script2") {
     operation <- c()
     for (i in anno.names) {
       if (i %in% operation.type$gene.based) {
@@ -91,7 +91,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     operation <- paste0(operation, collapse = ",")
   }
   for (i in names(cmd.profix.flag)) {
-    if (cmd.used == "script2" && i == "anno.names") {
+    if (cmd_used == "script2" && i == "anno.names") {
       next
     }
     if (!is.null(get(i)) && get(i) != "") {
@@ -106,12 +106,12 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
   if (length(perl) == 0) {
     perl <- "perl"
   }
-  if (cmd.used %in% c("script1.downdb", "script1.gene.based", "script1.filter.based", 
+  if (cmd_used %in% c("script1.downdb", "script1.gene.based", "script1.filter.based", 
     "script1.region.based")) {
     script <- annotate.variation.pl
-  } else if (cmd.used == "script2") {
+  } else if (cmd_used == "script2") {
     script <- table.annovar.pl
-  } else if (cmd.used == "script3") {
+  } else if (cmd_used == "script3") {
     script <- convert2annovar.pl
   }
   if (!file.exists(script) && !debug) {
@@ -141,7 +141,7 @@ annovar <- function(perl = Sys.which("perl"), cmd.pool = list(script1.downdb = p
     webfrom = webfrom, anno.names = anno.names, out = out, format = format, extra.params = extra.params, 
     down.dbname = down.dbname, operation = operation, convert.out = convert.out, 
     otherinfo = otherinfo, nastring = nastring, vcfinput = vcfinput)
-  cmd <- glue(cmd.pool[[cmd.used]])
+  cmd <- glue(cmd.pool[[cmd_used]])
   message(cmd)
   if (!debug) {
     os <- Sys.info()["sysname"][[1]]
@@ -233,7 +233,7 @@ vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offlin
 #' R function to run vcfanno
 #'
 #' @param vcfanno Executable file of vcfanno (Download from https://github.com/brentp/vcfanno/releases)
-#' @param vcfanno.database.cfg vcfanno required database configuration file
+#' @param vcfanno_database_cfg vcfanno required database configuration file
 #' (Not the annovarR database.cfg)
 #' @param base_path Optional base_path to prepend to annotation files in the config
 #' @param lua Optional path to a file containing custom javascript functions to be used as ops
@@ -248,7 +248,7 @@ vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offlin
 #' @examples
 #' vcfanno(debug = TRUE)
 vcfanno <- function(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")), 
-  vcfanno.database.cfg = system.file("extdata", "demo/vcfanno_demo/conf.toml", 
+  vcfanno_database_cfg = system.file("extdata", "demo/vcfanno_demo/conf.toml", 
     package = "annovarR"), base_path = "", lua = "", ends = FALSE, input.file = "input.vcf", 
   out = "output.vcf", thread = 2, permissive_overlap = FALSE, debug = FALSE) {
   vcfanno <- vcfanno[vcfanno != ""][1]
@@ -277,7 +277,7 @@ vcfanno <- function(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_lin
       cmd <- paste0(cmd, " -", i)
     }
   }
-  cmd <- sprintf("%s %s %s > %s", cmd, vcfanno.database.cfg, input.file, out)
+  cmd <- sprintf("%s %s %s > %s", cmd, vcfanno_database_cfg, input.file, out)
   message(cmd)
   if (debug) {
     return(cmd)

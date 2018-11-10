@@ -66,9 +66,9 @@ test_that("annotation.region.match", {
   start <- c("100188904", "100185955")
   end <- c("100188904", "100185955")
   dat <- data.table(chr = chr, start = start, end = end)
-  x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.sqlite, 
-    table.name.fixed = "bed", db.type = "sqlite", format.dat.fun = format.cols.plus.chr, 
-    format.db.tb.fun = format.db.region.tb)
+  x <- annotation.region.match(dat = dat, database.dir = tempdir(), dbname_fixed = bed.sqlite, 
+    table_name_fixed = "bed", db.type = "sqlite", format_dat_fun = format.cols.plus.chr, 
+    format_db_tb_fun = format.db.region.tb)
   x <- as.data.frame(x)
   expect_that(x[1, 1], equals("HPS1"))
   expect_that(is.na(x[2, 1]), equals(TRUE))
@@ -79,18 +79,18 @@ test_that("annotation.region.match:refgene", {
   start <- c("89057522", "89224732", "52471419")
   end <- c("89057522", "89224732", "52471419")
   dat <- data.table(chr = chr, start = start, end = end)
-  x <- annotation.region.match(dat = dat, dbname.fixed = refGene.file, table.name.fixed = "hg19_refGene", 
-    db.col.order = c(3, 5, 6), full.matched.col = "chr", inferior.col = "start", 
-    format.dat.fun = format.cols.plus.chr, superior.col = "end", return.col.index = 13, 
-    return.col.names = "Gene", verbose = FALSE, db.type = "txt")
+  x <- annotation.region.match(dat = dat, dbname_fixed = refGene.file, table_name_fixed = "hg19_refGene", 
+    db_col_order = c(3, 5, 6), full.matched.col = "chr", inferior_col = "start", 
+    format_dat_fun = format.cols.plus.chr, superior_col = "end", return_col_index = 13, 
+    return_col_names = "Gene", verbose = FALSE, db.type = "txt")
   x <- as.data.frame(x)
   expect_that(x[1, 1], equals("NOX4"))
   expect_that(x[2, 1], equals("NOX4"))
   expect_that(x[3, 1], equals("C14orf166"))
-  x <- annotation.region.match(dat = dat, dbname.fixed = refGene.sqlite, table.name.fixed = "hg19_refGene", 
-    db.col.order = c(3, 5, 6), full.matched.col = "chr", inferior.col = "start", 
-    format.dat.fun = format.cols.plus.chr, superior.col = "end", return.col.index = 13, 
-    return.col.names = "Gene", verbose = FALSE, db.type = "sqlite")
+  x <- annotation.region.match(dat = dat, dbname_fixed = refGene.sqlite, table_name_fixed = "hg19_refGene", 
+    db_col_order = c(3, 5, 6), full.matched.col = "chr", inferior_col = "start", 
+    format_dat_fun = format.cols.plus.chr, superior_col = "end", return_col_index = 13, 
+    return_col_names = "Gene", verbose = FALSE, db.type = "sqlite")
   x <- as.data.frame(x)
   expect_that(x[1, 1], equals("NOX4"))
   expect_that(x[2, 1], equals("NOX4"))

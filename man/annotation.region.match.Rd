@@ -6,12 +6,12 @@
 \usage{
 annotation.region.match(dat = data.table(), anno.name = "",
   buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", ""),
-  db.col.order = 1:3, index.cols = c("chr", "start", "end"),
-  full.matched.cols = "chr", inferior.col = "start",
-  superior.col = "end", return.col.index = 4, return.col.names = "",
-  return.col.names.profix = "", format.dat.fun = format.cols,
-  dbname.fixed = NULL, table.name.fixed = NULL, setdb.fun = set.db,
-  set.table.fun = set.table, format.db.tb.fun = format.db.region.tb,
+  db_col_order = 1:3, index_cols = c("chr", "start", "end"),
+  full.matched_cols = "chr", inferior_col = "start",
+  superior_col = "end", return_col_index = 4, return_col_names = "",
+  return_col_names_profix = "", format_dat_fun = format.cols,
+  dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db,
+  set_table_fun = set.table, format_db_tb_fun = format.db.region.tb,
   db.type = "sqlite", db.file.prefix = NULL,
   mysql.connect.params = list(), sqlite.connect.params = list(),
   fread.db.params = list(), verbose = FALSE)
@@ -25,35 +25,35 @@ annotation.region.match(dat = data.table(), anno.name = "",
 
 \item{database.dir}{Dir of the databases (mysql no need)}
 
-\item{db.col.order}{Using the index, you can rename the database table, and can be matched using matched.cols.}
+\item{db_col_order}{Using the index, you can rename the database table, and can be matched using matched_cols.}
 
-\item{index.cols}{Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'}
+\item{index_cols}{Using the selected cols to match data with sqlite database. eg. c('chr', 'start'), 'rs'}
 
-\item{full.matched.cols}{Using the selected cols to match data with selected partial data by index.cols limited.}
+\item{full.matched_cols}{Using the selected cols to match data with selected partial data by index_cols limited.}
 
-\item{inferior.col}{Inferior limit col, e.g. start}
+\item{inferior_col}{Inferior limit col, e.g. start}
 
-\item{superior.col}{Superior limit col, e.g. end}
+\item{superior_col}{Superior limit col, e.g. end}
 
-\item{return.col.index}{Setting the colnums need be returned}
+\item{return_col_index}{Setting the colnums need be returned}
 
-\item{return.col.names}{Setting the returned colnum names}
+\item{return_col_names}{Setting the returned colnum names}
 
-\item{return.col.names.profix}{Setting the returned colnum names profix}
+\item{return_col_names_profix}{Setting the returned colnum names profix}
 
-\item{format.dat.fun}{A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)}
+\item{format_dat_fun}{A function to process input data. eg. as.numeric(dat$start); as.character(dat$chr)}
 
-\item{dbname.fixed}{Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb.fun 
+\item{dbname_fixed}{Database path (txt, sqlite) or name (MySQL), default is NULL, and get from setdb_fun 
 (Set value will fix the dbname, and will be added in sqlite.connenct.params and mysql.connect.params)}
 
-\item{table.name.fixed}{Table name, default is NULL, and get from set.table.fun (Set value will fix the table.name)
+\item{table_name_fixed}{Table name, default is NULL, and get from set_table_fun (Set value will fix the table.name)
 (Set value will fix the table.name, and will be added in sqlite.connenct.params and mysql.connect.params)}
 
-\item{setdb.fun}{A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)}
+\item{setdb_fun}{A function to process the name, buildver, database.dir and get the database path (MySQL return NULL)}
 
-\item{set.table.fun}{A function to process the name, buildver and get the final table name}
+\item{set_table_fun}{A function to process the name, buildver and get the final table name}
 
-\item{format.db.tb.fun}{A function to process the selected database table that can be used to matched with your data}
+\item{format_db_tb_fun}{A function to process the selected database table that can be used to matched with your data}
 
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
 
@@ -83,8 +83,8 @@ end <- c('100188904', '100185955')
 dat <- data.table(chr = chr, start = start, end = end)
 \dontrun{
 x <- annotation.region.match(dat = dat, database.dir = tempdir(),
-dbname.fixed = bed.sqlite, table.name.fixed = 'bed', 
-db.type = 'sqlite', format.dat.fun = function(...) {
+dbname_fixed = bed.sqlite, table_name_fixed = 'bed', 
+db.type = 'sqlite', format_dat_fun = function(...) {
 params = list(...);return(params[[1]])})
 }
 file.remove(bed.sqlite)
