@@ -57,7 +57,7 @@ mysql.head <- function(mysql.connect.params = list(host = "", dbname = "", table
 #' get.annotation.names(cfg) 
 get.annotation.names <- function(database.cfg = system.file("extdata", "config/databases.toml", 
   package = "annovarR")) {
-  config <- configr::read.config(file = database.cfg)
+  config <- configr::read.config(file = database.cfg, rcmd.parse = TRUE, glue.parse = TRUE)
   config <- config[names(config) != "Title"]
   return(unname(unlist(lapply(config, function(x) x["versions"]))))
 }
@@ -81,6 +81,7 @@ get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("ex
       return("txt")
     })
   }
+  if (is.na(dbtype)) dbtype <- "sqlite"
   return(dbtype)
 }
 

@@ -396,7 +396,7 @@ get.annotation.func <- function(anno.name = "", database.cfg = system.file("extd
   if (!(anno.name %in% all.supported.db)) {
     stop(sprintf("%s not be supported.", anno.name))
   }
-  config <- configr::read.config(database.cfg)
+  config <- configr::read.config(database.cfg, rcmd.parse = TRUE, glue.parse = TRUE)
   config <- config[names(config) != "Title"]
   index <- lapply(config, function(x) {
     anno.name %in% x[["versions"]]

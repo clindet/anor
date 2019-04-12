@@ -94,6 +94,14 @@ format.db.tb <- function(...) {
   return(params$db.tb)
 }
 
+format.db.tb.clinvar <- function(...) {
+  params <- list(...)
+  clnsig <- which(colnames(params$db.tb) == "CLNSIG")
+  index <- c(1:5, clnsig)
+  params$db.tb <- params$db.tb[, ..index]
+  return(params$db.tb)
+}
+
 # Format selected data table family: rs2pos
 format.db.tb.unique <- function(...) {
   params <- list(...)
