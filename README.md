@@ -249,36 +249,7 @@ can provide some help for your variants annotation work.
 
 ## Shiny App
 
-Based on the [BioInstaller](https://github.com/JhuangLab/BioInstaller),
-we provided a shiny App as the local and cloud WEB interface
-(development status) to annotate and visulize genetic variants data
-using various public and in-house tools, such as
-[ANNOVAR](http://annovar.openbioinformatics.org/en/latest/),
-[vcfanno](https://github.com/brentp/vcfanno),
-[maftools](https://github.com/PoisonAlien/maftools),
-[gvmap](https://github.com/ytdai/gvmap), and so
-on.
-
-``` r
-# Install R packages required by annovarR shiny app (required if run through shiny::runGitHub)
-# We will provides a standalone installation script in the future
-annovarR::check_shiny_dep()
-
-# Running by R pakcage API
-annovarR::web()
-
-# Running by Github resource
-shiny::runGitHub("JhuangLab/annovarR", subdir = "inst/extdata/tools/shiny/R")
-```
-
-## Docker
-
-You can use the annovarR in
-Docker.
-
-``` bash
-docker run -it -v /tmp/db:/tmp/db -v /tmp/input:/tmp/input -v /home/user/.annovarR:/home/opencpu/.annovarR -p 80:80 bioinstaller/annovarr
-```
+The shiny application of annovarR was migrated to [bioshiny](https://github.com/openbiox/bioshiny).
 
 ## How to contribute?
 

@@ -114,11 +114,6 @@ suppressWarnings(
 # you can use download.database to download database using the download.name.
 download.name <- get.download.name('avsnp147')
 ```
-
-Notably, annovarR is not a command-line program, and only provides the R function and an shiny APP (dev) to do the annotation steps. 
-
-But, compared with [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/), both R object and external file were supported to input in annovarR. and you can get the required columns of matched database by `get.annotation.needcols()`. 
-
 ```{r}
 # Database configuration file
 database.cfg <- system.file('extdata', 'config/databases.toml', package = "annovarR")
