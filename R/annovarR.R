@@ -29,7 +29,6 @@
 #' @importFrom ngstk split_list split_row_file batch_file
 #' @importFrom AnnotationDbi select
 #' @importFrom vcfR read.vcfR INFO2df getID getINFO getCHROM getPOS getFILTER getALT getFIX
-#' @importFrom shiny runApp
 #' @importFrom devtools install_github
 #'
 NULL

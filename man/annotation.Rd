@@ -51,7 +51,9 @@ ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
 database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 database.dir <- dirname(database)
+\dontrun{
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation(dat, 'avsnp147', database.dir = database.dir, 
 return_col_names = 'avSNP147', db.type = 'txt')
+}
 }

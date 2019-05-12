@@ -98,7 +98,7 @@ format.db.tb.clinvar <- function(...) {
   params <- list(...)
   clnsig <- which(colnames(params$db.tb) == "CLNSIG")
   index <- c(1:5, clnsig)
-  params$db.tb <- params$db.tb[, ..index]
+  params$db.tb <- params$db.tb[, index, with = FALSE]
   return(params$db.tb)
 }
 

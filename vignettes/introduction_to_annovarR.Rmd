@@ -141,7 +141,7 @@ Function `annotation` is the main interface to access various annotation system 
 
 For example, if the `anno.name` contains `perl_annovar`, it will use the external `ANNOVAR` to finish the annotation step and read the output file (VCF by [vcfR](https://CRAN.R-project.org/package=vcfR )) as the `data.table` object.
 
-```{r}
+```{r eval=FALSE}
 # use the defined rule to annotate 1000 Genome Project frequency
 database.dir <- tempdir()
 chr <- c("chr1", "chr2", "chr1")
@@ -160,7 +160,7 @@ x
 
 Excepting the predetermined shortcut `anno.name`, annovarR also provides the austomizable functions `annotation.cols.match` and `annotation.region.match` for the full match and region match respectively. 
 
-```{r}
+```{r eval = FALSE}
 # Do annotation using full match function (default to use chr, start to select data 
 # and use chr, start, end, ref, and alt to match data)
 # Use `?annotation.cols.match` to see more detail about `annotation.cols.match`
@@ -192,7 +192,7 @@ x
 
 Other various small annotation functions/script also be provided, and the number of the annotation function will continue to increase. 
 
-```{r}
+```{r eval=FALSE}
 # Demo of `convert dbsnp rs number to genomic location` and `alias of human gene symbol`.
 # rs2pos: convert snp rs number to genomic location
 snp.id <- c("rs775809821", "rs768019142")

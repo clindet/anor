@@ -83,7 +83,10 @@ for(i in 1:length(config)) {
     if (is.null(config[[i]][[1]])) config[[i]][[1]] <- ""
     desc.tmp <- unlist(config[[i]][[1]])
     index <- match(names(desc.tmp), config[[i]][[2]])
-    tmp <- data.frame(names(config)[i], config[[i]][[2]], desc.tmp[index])
+    desc.tmp_fil <- desc.tmp[index]
+    names(desc.tmp_fil)[is.na(desc.tmp_fil)] <- "NA"
+    tmp <- data.frame(names(config)[i], config[[i]][[2]], desc.tmp_fil)
+    rownames(tmp)[rownames(tmp)== "NA"] <- tmp[rownames(tmp)== "NA",2]
     colnames(tmp) <- c("Database", "Version", "Description")
     db.desc.tbl <- rbind(db.desc.tbl, tmp)
   } else if (!"description" %in% names(config[[i]])){

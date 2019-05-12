@@ -36,8 +36,10 @@
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+#' \dontrun{
 #' x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
 #' return_col_names = 'avSNP147', db.type = 'txt')
+#' }
 annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db_col_order = 1:5, index_cols = c("chr", 
     "start"), matched_cols = c("chr", "start", "end", "ref", "alt"), return_col_index = 6, 
@@ -203,9 +205,11 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' alt <- c('-', '-', '-')
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 #' database.dir <- dirname(database)
+#' \dontrun{
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation(dat, 'avsnp147', database.dir = database.dir, 
 #' return_col_names = 'avSNP147', db.type = 'txt')
+#' }
 annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", annovar.anno.names = "", 
   database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL, database.cfg = system.file("extdata", 
     "config/databases.toml", package = "annovarR"), func = NULL, mysql.connect.params = list(host = "", 
@@ -216,7 +220,7 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", an
   }
   result <- NULL
   if (is.null(db.type)) {
-    db.type <- get.annotation.dbtype(anno.name, database.cfg = database.cfg)
+    db.type <- get.annotation.dbtype(anno.name = anno.name, database.cfg = database.cfg)
   }
   needcols <- get.annotation.needcols(anno.name = anno.name, database.cfg = database.cfg)
   if (dim(dat) > 1 && length(colnames(dat)) > 0) {
@@ -249,8 +253,10 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", an
 #' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
+#' \dontrun{
 #' x <- annotation.merge(dat = dat, anno.names = c('avsnp147'), 
 #' database.dir = database.dir, db.type = 'txt')
+#' }
 annotation.merge <- function(anno.names, ...) {
   perl_annovar_names <- anno.names[str_detect(anno.names, "perl_annovar_")]
   other_names <- anno.names[!anno.names %in% perl_annovar_names]

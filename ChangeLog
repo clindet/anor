@@ -1,3 +1,7 @@
+2019-05-12 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* migrated Shiny application
+
 2018-10-10 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
 
 		* major change (for latest RcppTOML) in database.toml and 
