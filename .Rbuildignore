@@ -10,3 +10,5 @@
 ^Dockerfile$
 ^README.Rmd$
 ^_gsdata_$
+.circleci
+.editorconfig

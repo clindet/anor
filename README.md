@@ -1,65 +1,28 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # annovarR <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/logo.png" align="right" />
 
-[![CRAN](http://www.r-pkg.org/badges/version/annovarR)](https://cran.r-project.org/package=annovarR)
-[![Downloads](http://cranlogs.r-pkg.org/badges/annovarR?color=brightgreen)](http://www.r-pkg.org/pkg/annovarR)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://en.wikipedia.org/wiki/MIT_License)
-[![codecov](https://codecov.io/github/JhuangLab/annovarR/branch/master/graphs/badge.svg)](https://codecov.io/github/JhuangLab/annovarR)
+[![Build
+Status](https://img.shields.io/circleci/project/github/JhuangLab/annovarR/master.svg)](https://circleci.com/gh/JhuangLab/annovarR/tree/master)
+[![CRAN](http://www.r-pkg.org/badges/version/annovarR)](https://cran.r-project.org/package=annovarR) [![Downloads](http://cranlogs.r-pkg.org/badges/annovarR?color=brightgreen)](http://www.r-pkg.org/pkg/annovarR) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://en.wikipedia.org/wiki/MIT_License) [![codecov](https://codecov.io/github/JhuangLab/annovarR/branch/master/graphs/badge.svg)](https://codecov.io/github/JhuangLab/annovarR) 
 
 ## Introduction
 
-The [annovarR](https://life2cloud.com/tools/annovarR) package provides R
-functions as well as database resources which offer an integrated
-framework to annotate genetic variants from genome and transcriptome
-data. The wrapper functions of annovarR unified the interface of many
-published annotation tools, such as
-[VEP](http://asia.ensembl.org/info/docs/tools/vep/index.html),
-[ANNOVAR](http://annovar.openbioinformatics.org/),
-[vcfanno](https://github.com/brentp/vcfanno) and
-[AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html).
+The [annovarR](https://life2cloud.com/tools/annovarR) package provides R functions as well as database resources which offer an integrated framework to annotate genetic variants from genome and transcriptome data. The wrapper functions of annovarR unified the interface of many published annotation tools, such as [VEP](http://asia.ensembl.org/info/docs/tools/vep/index.html), [ANNOVAR](http://annovar.openbioinformatics.org/), [vcfanno](https://github.com/brentp/vcfanno) and [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html). 
 
-It also simplified the use of some of the external annotation tools in
-R. Besides, massive published genetic variants annotation databases were
-integrated into annovarR.
+It also simplified the use of some of the external annotation tools in R. Besides, massive published genetic variants annotation databases were integrated into annovarR.
 
-The main development motivation of annovarR is to increase the supported
-database and facilitate the variants annotation work. There are already
-too many tools and databases available and the usage is quite different.
-annovarR will integrate these annotation tools and get the merged
-annotation result in
-R.
+The main development motivation of annovarR is to increase the supported database and facilitate the variants annotation work. There are already too many tools and databases available and the usage is quite different. annovarR will integrate these annotation tools and get the merged annotation result in R.
 
 <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/annovarR_package-1.jpg" align="center" />
 
-annovarR will not only provides annotation functions (both internal and
-external) but also hope to establish a shared annotation database
-resources. In fact, we have made some efforts in the relevant direction
-that massive scattered databases can easily to be download via using
-[BioInstaller](https://github.com/JhuangLab/BioInstaller) R package.
+annovarR will not only provides annotation functions (both internal and external) but also hope to establish a shared annotation database resources. In fact, we have made some efforts in the relevant direction that massive scattered databases can easily to be download via using [BioInstaller](https://github.com/JhuangLab/BioInstaller) R package.
 
-Besides, we collected total 1,285 cases public B-progenitor acute
-lymphoblastic leukemia (B-ALL) transcriptome data from five different
-published datasets and built a novel large-scale transcript level
-sequencing variant database. [The Genome Analysis Toolkit
-(GATK)](https://software.broadinstitute.org/gatk/),
-[VarScan2](http://massgenomics.org/varscan) and
-[LoFreq](http://csb5.github.io/lofreq/) be used to call variants from
-the RNA-seq data (Database called BRVar). This work can help us to
-screen candidate systematic sequencing bias and evaluate variant calling
-trait from B-ALL
-RNA-seq.
+Besides, we collected total 1,285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data from five different published datasets and built a novel large-scale transcript level sequencing variant database. [The Genome Analysis Toolkit (GATK)](https://software.broadinstitute.org/gatk/), [VarScan2](http://massgenomics.org/varscan) and [LoFreq](http://csb5.github.io/lofreq/) be used to call variants from the RNA-seq data (Database called BRVar). This work can help us to screen candidate systematic sequencing bias and evaluate variant calling trait from B-ALL RNA-seq.
 
 <img src="https://github.com/JhuangLab/annovarR/raw/master/man/figures/BRVar_databases-1.jpg" align="center" />
 
-If you want to download the 1,285 RNA-seq variants frequency database,
-you need click [here](http://bioinfo.rjh.com.cn/labs/jhuang/contact.php)
-and send us a short application message (Whether it is for commercial
-use?). If the application is applied, we will reply you within 24 hours
-with a download required license code.
+If you want to download the 1,285 RNA-seq variants frequency database, you need click [here](http://bioinfo.rjh.com.cn/labs/jhuang/contact.php) and send us a short application message (Whether it is for commercial use?). If the application is applied, we will reply you within 24 hours with a download required license code.
 
-``` r
+```r
 # Download BRVar database
 # You must input the applied license code
 library(annovarR)
@@ -70,25 +33,23 @@ download.database("db_annovar_brvar", "/path/annovar.dir",  license = "licence_c
 
 annovarR annotation system:
 
-  - [R](https://cran.r-project.org/) \>=
-    3.3.0
-  - [perl](http://strawberryperl.com/)
-  - [SQLite](http://www.sqlite.org/download.html)
-  - [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html)
+- [R](https://cran.r-project.org/) >= 3.3.0
+- [perl](http://strawberryperl.com/)
+- [SQLite](http://www.sqlite.org/download.html)
+- [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html)
 
 ANNOVAR annotation system:
 
-  - [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/)
+- [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/)
 
 VEP annotation system
 
-  - [perl](http://strawberryperl.com/)
-  - [VEP](http://asia.ensembl.org/info/docs/tools/vep/index.html)
+- [perl](http://strawberryperl.com/)
+- [VEP](http://asia.ensembl.org/info/docs/tools/vep/index.html)
 
-vcfanno annotationo
-system
+vcfanno annotationo system
 
-  - [vcfanno](https://github.com/brentp/vcfanno)
+- [vcfanno](https://github.com/brentp/vcfanno)
 
 ## Installation
 
@@ -136,15 +97,14 @@ download.database('db_annovar_avsnp147_sqlite', database.dir = database.dir, bui
 
 ## Support Summary
 
-  - [ANNOVAR
-    databases](http://annovar.openbioinformatics.org/en/latest/)
-  - 1285 cases B-ALL RNA-seq variants
-  - Public RNA-editing databases
-  - Other public database
+-   [ANNOVAR databases](http://annovar.openbioinformatics.org/en/latest/)
+-   1285 cases B-ALL RNA-seq variants 
+-   Public RNA-editing databases
+-   Other public database
 
 ## Basic Usage
 
-``` r
+```r
 # View the vignettes in annovarR package
 browseVignettes("annovarR")
 
@@ -239,21 +199,54 @@ x <- annotation(dat = gene, anno.name = "bioc_gene2alias")
 library(org.Hs.eg.db)
 library(AnnotationDbi)
 select(keys = gene, keytype = "SYMBOL", columns = "ALIAS")
+
 ```
 
-There are still plenty of places to go for this tool. More annotation
-tools and annotation databases are being integrated. We hope this tool
-can provide some help for your variants annotation work.
+There are still plenty of places to go for this tool. More annotation tools and annotation databases are being integrated. We hope this tool can provide some help for your variants annotation work.
 
 ## Shiny App
 
-The shiny application of annovarR was migrated to [bioshiny](https://github.com/openbiox/bioshiny).
+In the [BoInstaller](https://github.com/JhuangLab/BioInstaller) bioshiny application, we developed several bioshiny plugins, such as  [ANNOVAR](http://annovar.openbioinformatics.org/en/latest/), [vcfanno](https://github.com/brentp/vcfanno), [maftools](https://github.com/PoisonAlien/maftools), [gvmap](https://github.com/ytdai/gvmap), and so on.
+
+```bash
+echo 'export BIO_SOFTWARES_DB_ACTIVE="~/.bioshiny/info.yaml" >> ~/.bashrc'
+echo 'export BIOSHINY_CONFIG="~/.bioshiny/shiny.config.yaml" >> ~/.bashrc'
+. ~/.bashrc
+
+# Start the standalone Shiny application
+wget https://raw.githubusercontent.com/openbiox/bioshiny/master/bin/bioshiny_deps_r
+wget https://raw.githubusercontent.com/openbiox/bioshiny/master/bin/bioshiny_deps_3rd
+wget https://raw.githubusercontent.com/openbiox/bioshiny/master/bin/bioshiny_start
+chmod a+x bioshiny_deps_r
+chmod a+x bioshiny_deps_3rd
+chmod a+x bioshiny_start
+./bioshiny_deps_r
+./bioshiny_deps_3rd
+
+# Start Shiny application workers
+Rscript -e "bioshiny::set_shiny_workers(1)"
+./bioshiny_start
+
+# or use yarn
+yarn global add bioshiny
+bioshiny_deps_r
+bioshiny_deps_3rd
+Rscript -e "bioshiny::set_shiny_workers(1)"
+bioshiny_start
+
+```
+
+## Docker
+
+You can use the annovarR in Docker.
+
+```bash
+docker run -it -v /tmp/db:/tmp/db -v /tmp/input:/tmp/input -v /home/user/.annovarR:/home/opencpu/.annovarR -p 80:80 bioinstaller/annovarr
+```
 
 ## How to contribute?
 
-Please fork the [GitHub annovarR
-repository](https://github.com/JhuangLab/annovarR), modify it, and
-submit a pull request to us.
+Please fork the [GitHub annovarR repository](https://github.com/JhuangLab/annovarR), modify it, and submit a pull request to us. 
 
 ## Maintainer
 
@@ -267,6 +260,5 @@ R package:
 
 Related Other Resources:
 
-[Creative Commons Attribution-NonCommercial-NoDerivatives 4.0
-International
-License](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License
+

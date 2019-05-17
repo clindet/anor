@@ -81,11 +81,9 @@ chr <- c('chr10', 'chr1')
 start <- c('100188904', '100185955')
 end <- c('100188904', '100185955')
 dat <- data.table(chr = chr, start = start, end = end)
-\dontrun{
 x <- annotation.region.match(dat = dat, database.dir = tempdir(),
 dbname_fixed = bed.sqlite, table_name_fixed = 'bed', 
 db.type = 'sqlite', format_dat_fun = function(...) {
 params = list(...);return(params[[1]])})
-}
 file.remove(bed.sqlite)
 }
