@@ -15,4 +15,4 @@ jobs:
       - checkout
         
       # run tests!
-      - run: source /etc/profile && make && Rscript -e "pacman::p_load(covr);codecov()"
+      - run: ln -s /home/opencpu/.Renviron ~/ && source /etc/profile && make && Rscript -e "pacman::p_load(covr);codecov()"
