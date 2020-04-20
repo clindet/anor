@@ -1,4 +1,4 @@
-#' Download annovarR databases
+#' Download anor databases
 #'
 #' @param download.name Download name, default is NULL and get value from database.cfg
 #' dependence_db
@@ -6,7 +6,7 @@
 #' @param version Version of download database, supported version can be get by
 #' download.database('db_annovar_avsnp', show.all.versions = TRUE)
 #' @param buildver Genome version, e.g hg19, hg38, mm10
-#' @param download.cfg Configuration file for download, most of annovarR database
+#' @param download.cfg Configuration file for download, most of anor database
 #' resources can be found in system.file('extdata',
 #' 'config/db/db_annovar.toml', package = 'BioInstaller')
 #' @param show.all.versions Logical indicating wheather show all avaliable versions
@@ -155,12 +155,12 @@ download.database <- function(download.name = NULL, database.dir = tempdir(), ve
 #' Use annotation name to get download.name that can be used
 #' to download the database use \code{download.database}
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @export
 #' @examples
 #' get.download.name('avsnp147')
 get.download.name <- function(anno.name = "", database.cfg = system.file("extdata", 
-  "config/databases.toml", package = "annovarR")) {
+  "config/databases.toml", package = "anor")) {
   download.name <- get.cfg.value.by.name(anno.name, database.cfg, key = "dependence_db")
   if (is.null(download.name) || is.na(download.name)) {
     download.name <- get.cfg.value.by.name(anno.name, database.cfg, key = "dependence_db", 

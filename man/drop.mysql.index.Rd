@@ -2,11 +2,15 @@
 % Please edit documentation in R/build.R
 \name{drop.mysql.index}
 \alias{drop.mysql.index}
-\title{Drop search index of annovarR database table in mysql}
+\title{Drop search index of anor database table in mysql}
 \usage{
-drop.mysql.index(mysql.connect.params = list(host = "", dbname = "",
-  table.name = "", user = "user", password = "password"), index = "",
-  verbose = FALSE, ...)
+drop.mysql.index(
+  mysql.connect.params = list(host = "", dbname = "", table.name = "", user = "user",
+    password = "password"),
+  index = "",
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{mysql.connect.params}{Mysql parameters, [host, dbname, table.name, user, password etc.]}
@@ -18,10 +22,10 @@ drop.mysql.index(mysql.connect.params = list(host = "", dbname = "",
 \item{...}{Other parameters be used in dbSendQuery}
 }
 \description{
-Drop search index of annovarR database table in mysql
+Drop search index of anor database table in mysql
 }
 \examples{
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 \dontrun{
 drop.mysql.index(list(host = 'host', dbname = 'db', user = 'user', password = 'password'), 
 index = 'index_name')

@@ -1,6 +1,6 @@
 test_that("sqlite.head", {
   test.sqlite <- sprintf("%s/snp.test.sqlite", tempdir())
-  test.dat <- system.file("extdata", "demo/sqlite.dat.txt", package = "annovarR")
+  test.dat <- system.file("extdata", "demo/sqlite.dat.txt", package = "anor")
   x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, table.name = "snp_test"))
   dat <- sqlite.head(list(dbname = test.sqlite, table.name = "snp_test"), n = 5)
   expect_that(nrow(dat), equals(5))
@@ -8,7 +8,7 @@ test_that("sqlite.head", {
 })
 
 test_that("get.cfg", {
-  cfg <- system.file("extdata", "config/config.toml", package = "annovarR")
+  cfg <- system.file("extdata", "config/config.toml", package = "anor")
   x <- get.annotation.names()
   expect_that("avsnp138" %in% x, equals(TRUE))
   

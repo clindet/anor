@@ -4,17 +4,32 @@
 \alias{annotation.region.match}
 \title{A regeion annotation utils that can be used to write a yourself annotation function}
 \usage{
-annotation.region.match(dat = data.table(), anno.name = "",
-  buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", ""),
-  db_col_order = 1:3, index_cols = c("chr", "start", "end"),
-  full.matched_cols = "chr", inferior_col = "start",
-  superior_col = "end", return_col_index = 4, return_col_names = "",
-  return_col_names_profix = "", format_dat_fun = format.cols,
-  dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db,
-  set_table_fun = set.table, format_db_tb_fun = format.db.region.tb,
-  db.type = "sqlite", db.file.prefix = NULL,
-  mysql.connect.params = list(), sqlite.connect.params = list(),
-  fread.db.params = list(), verbose = FALSE)
+annotation.region.match(
+  dat = data.table(),
+  anno.name = "",
+  buildver = "hg19",
+  database.dir = Sys.getenv("anor_DB_DIR", ""),
+  db_col_order = 1:3,
+  index_cols = c("chr", "start", "end"),
+  full.matched_cols = "chr",
+  inferior_col = "start",
+  superior_col = "end",
+  return_col_index = 4,
+  return_col_names = "",
+  return_col_names_profix = "",
+  format_dat_fun = format.cols,
+  dbname_fixed = NULL,
+  table_name_fixed = NULL,
+  setdb_fun = set.db,
+  set_table_fun = set.table,
+  format_db_tb_fun = format.db.region.tb,
+  db.type = "sqlite",
+  db.file.prefix = NULL,
+  mysql.connect.params = list(),
+  sqlite.connect.params = list(),
+  fread.db.params = list(),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -73,7 +88,7 @@ A regeion annotation utils that can be used to write a yourself annotation funct
 }
 \examples{
 library(data.table)
-bed.file <- system.file('extdata', 'demo/example.bed', package = 'annovarR')
+bed.file <- system.file('extdata', 'demo/example.bed', package = 'anor')
 bed.sqlite <- sprintf('\%s/\%s.sqlite', tempdir(), basename(bed.file))
 connect.params <- list(dbname = bed.sqlite, table.name = 'bed')
 sqlite.build(bed.file, connect.params)

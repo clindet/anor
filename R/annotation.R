@@ -33,13 +33,13 @@
 #' end <- c('10020', '10020', '10020')
 #' ref <- c('A', 'A', 'A')
 #' alt <- c('-', '-', '-')
-#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
+#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'anor')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 
 #' return_col_names = 'avSNP147', db.type = 'txt')
 annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db_col_order = 1:5, index_cols = c("chr", 
+  database.dir = Sys.getenv("anor_DB_DIR", ""), db_col_order = 1:5, index_cols = c("chr", 
     "start"), matched_cols = c("chr", "start", "end", "ref", "alt"), return_col_index = 6, 
   return_col_names = "", return_col_names_profix = "", format_dat_fun = format.cols, 
   dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db, set_table_fun = set.table, 
@@ -108,7 +108,7 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 #' @export
 #' @examples
 #' library(data.table)
-#' bed.file <- system.file('extdata', 'demo/example.bed', package = 'annovarR')
+#' bed.file <- system.file('extdata', 'demo/example.bed', package = 'anor')
 #' bed.sqlite <- sprintf('%s/%s.sqlite', tempdir(), basename(bed.file))
 #' connect.params <- list(dbname = bed.sqlite, table.name = 'bed')
 #' sqlite.build(bed.file, connect.params)
@@ -122,7 +122,7 @@ annotation.cols.match <- function(dat = data.table(), anno.name = "", buildver =
 #' params = list(...);return(params[[1]])})
 #' file.remove(bed.sqlite)
 annotation.region.match <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db_col_order = 1:3, index_cols = c("chr", 
+  database.dir = Sys.getenv("anor_DB_DIR", ""), db_col_order = 1:3, index_cols = c("chr", 
     "start", "end"), full.matched_cols = "chr", inferior_col = "start", superior_col = "end", 
   return_col_index = 4, return_col_names = "", return_col_names_profix = "", format_dat_fun = format.cols, 
   dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db, set_table_fun = set.table, 
@@ -184,7 +184,7 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' the names can be found on the http://annovar.openbioinformatics.org/en/latest/user-guide/download/
 #' @param database.dir Dir of the databases
 #' @param db.type Setting the database type (sqlite or txt)
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @param func Function to anntate the dat data, default is to search the function in extdata/database.toml
 #' @param mysql.connect.params Connect MySQL database other parameters, 
 #' e.g. list(host='11.11.11.1', port = '3306', user = '', password = '123456')
@@ -199,14 +199,14 @@ annotation.region.match <- function(dat = data.table(), anno.name = "", buildver
 #' end <- c('10020', '10020', '10020')
 #' ref <- c('A', 'A', 'A')
 #' alt <- c('-', '-', '-')
-#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
+#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'anor')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation(dat, 'avsnp147', database.dir = database.dir, 
 #' return_col_names = 'avSNP147', db.type = 'txt')
 annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", annovar.anno.names = "", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db.type = NULL, database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), func = NULL, mysql.connect.params = list(host = "", 
+  database.dir = Sys.getenv("anor_DB_DIR", ""), db.type = NULL, database.cfg = system.file("extdata", 
+    "config/databases.toml", package = "anor"), func = NULL, mysql.connect.params = list(host = "", 
     dbname = "", table.name = "", user = "", password = ""), sqlite.connect.params = list(dbname = ""), 
   ...) {
   if (length(anno.name) > 1) {
@@ -244,7 +244,7 @@ annotation <- function(dat = data.table(), anno.name = "", buildver = "hg19", an
 #' end <- c('10020', '10020', '10020')
 #' ref <- c('A', 'A', 'A')
 #' alt <- c('-', '-', '-')
-#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
+#' database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'anor')
 #' database.dir <- dirname(database)
 #' dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 #' x <- annotation.merge(dat = dat, anno.names = c('avsnp147'), 
@@ -262,7 +262,7 @@ annotation.merge <- function(anno.names, ...) {
     })
     names(result.list.2) <- perl_annovar_names
     if (length(result.list.1) != 0) {
-      return(list(annovarR = as.data.table(result.list.1), annovar = result.list.2))
+      return(list(anor = as.data.table(result.list.1), annovar = result.list.2))
     } else {
       return(list(annovar = result.list.2))
     }

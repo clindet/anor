@@ -10,17 +10,17 @@ navbar:
   type: default
   left:
   - text: Get started
-    href: articles/introduction_to_annovarR.html
+    href: articles/introduction_to_anor.html
   - text: Reference
     href: reference/index.html
   - text: Articles
     menu:
-    - text: Database in annovarR
-      href: articles/database_in_annovarR.html
-    - text: Shiny app of annovarR
-      href: articles/shiny_of_annovarR.html
+    - text: Database in anor
+      href: articles/database_in_anor.html
+    - text: Shiny app of anor
+      href: articles/shiny_of_anor.html
   - text: News
     href: news/index.html
   right:
   - icon: fa-github fa-lg
-    href: https://github.com/JhuangLab/annovarR
+    href: https://github.com/JhuangLab/anor

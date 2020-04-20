@@ -2,10 +2,14 @@
 % Please edit documentation in R/build.R
 \name{drop.sqlite.index}
 \alias{drop.sqlite.index}
-\title{Drop search index of annovarR database table in sqlite}
+\title{Drop search index of anor database table in sqlite}
 \usage{
-drop.sqlite.index(sqlite.connect.params = list(dbname = "", table.name =
-  ""), index = "", verbose = FALSE, ...)
+drop.sqlite.index(
+  sqlite.connect.params = list(dbname = "", table.name = ""),
+  index = "",
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname]}
@@ -17,11 +21,11 @@ drop.sqlite.index(sqlite.connect.params = list(dbname = "", table.name =
 \item{...}{Other parameters be used in dbSendQuery}
 }
 \description{
-Drop search index of annovarR database table in sqlite
+Drop search index of anor database table in sqlite
 }
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))
 x <- sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), 

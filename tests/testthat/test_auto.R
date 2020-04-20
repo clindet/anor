@@ -1,6 +1,6 @@
 test_that("sqlite.auto.build", {
   i <- "hg19_avsnp147"
-  database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
+  database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "anor")
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
   x <- sqlite.auto.build("avsnp147", "hg19", database.dir = tempdir(), verbose = FALSE)
   expect_that(x, equals(TRUE))

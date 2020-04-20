@@ -1,6 +1,6 @@
 
 test_that("select.dat.full.match", {
-  database <- system.file("extdata", "demo/hg19_cosmic81.txt", package = "annovarR")
+  database <- system.file("extdata", "demo/hg19_cosmic81.txt", package = "anor")
   sqlite.db <- sprintf("%s/hg19_cosmic81.sqlite", tempdir())
   txt.db <- sprintf("%s/hg19_cosmic81.txt", tempdir())
   file.copy(database, txt.db)
@@ -19,7 +19,7 @@ test_that("select.dat.full.match", {
   
   # MySQL service if (mysqlHasDefault()) { database <- dbConnect(RMySQL::MySQL(),
   # dbname = 'annovarr') database <- system.file('extdata',
-  # 'demo/hg19_cosmic81.txt', package = 'annovarR') y <- system.time(x <-
+  # 'demo/hg19_cosmic81.txt', package = 'anor') y <- system.time(x <-
   # select.dat.full.match(database, 'disease', 'symbol', list(symbol = rep('AML',
   # 10000)), verbose = FALSE, db.type = 'mysql')) }
 })
@@ -32,7 +32,7 @@ test_that("get.annotation.func", {
 
 
 test_that("get.cfg.value.by.name", {
-  cfg <- system.file("extdata", "config/databases.toml", package = "annovarR")
+  cfg <- system.file("extdata", "config/databases.toml", package = "anor")
   x <- get.cfg.value.by.name("avsnp138", cfg, key = "return_col_names", coincident = TRUE, 
     extra.list = list(anno.name = "avsnp138"), rcmd.parse = TRUE)
   expect_that(x, equals("avSNP138"))

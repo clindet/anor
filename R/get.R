@@ -8,7 +8,7 @@
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
 #' sqlite.head(list(dbname = test.sqlite, table.name = 'snp_test'))
@@ -48,29 +48,29 @@ mysql.head <- function(mysql.connect.params = list(host = "", dbname = "", table
   return(nlines)
 }
 
-#' Get all annovarR supported databases 
+#' Get all anor supported databases 
 #'
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @export
 #' @examples
-#' cfg <- system.file('extdata', 'config/config.toml', package = 'annovarR')
+#' cfg <- system.file('extdata', 'config/config.toml', package = 'anor')
 #' get.annotation.names(cfg) 
 get.annotation.names <- function(database.cfg = system.file("extdata", "config/databases.toml", 
-  package = "annovarR")) {
+  package = "anor")) {
   config <- configr::read.config(file = database.cfg, rcmd.parse = TRUE, glue.parse = TRUE)
   config <- config[names(config) != "Title"]
   return(unname(unlist(lapply(config, function(x) x["versions"]))))
 }
 
-#' Get annovarR default databases type [sqlite, txt]
+#' Get anor default databases type [sqlite, txt]
 #'
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @export
 #' @examples
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("extdata", 
-  "config/databases.toml", package = "annovarR")) {
+  "config/databases.toml", package = "anor")) {
   dbtype <- tryCatch(get.cfg.value.by.name(name = anno.name, database.cfg = database.cfg, 
     key = "default_dbtype"), error = function(e) {
     return("txt")
@@ -86,15 +86,15 @@ get.annotation.dbtype <- function(anno.name = "", database.cfg = system.file("ex
   return(dbtype)
 }
 
-#' Get annovarR annotation needed colnames according the anno.name
+#' Get anor annotation needed colnames according the anno.name
 #'
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @export
 #' @examples
 #' get.annotation.dbtype('avsnp147') 
 get.annotation.needcols <- function(anno.name = "", database.cfg = system.file("extdata", 
-  "config/databases.toml", package = "annovarR")) {
+  "config/databases.toml", package = "anor")) {
   need_cols <- get.cfg.value.by.name(anno.name, database.cfg, key = "need_cols", 
     coincident = TRUE)
   return(need_cols)
@@ -106,7 +106,7 @@ get.annotation.needcols <- function(anno.name = "", database.cfg = system.file("
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
 #' sqlite.tb.colnames(list(dbname = test.sqlite, table.name = 'snp_test'))
@@ -147,7 +147,7 @@ mysql.tb.colnames <- function(mysql.connect.params = list(host = "", dbname = ""
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' params <- list(dbname = test.sqlite,
 #' table.name = 'snp_test')
 #' x <- sqlite.build(filename = test.dat, params)

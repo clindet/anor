@@ -5,13 +5,15 @@
 \title{Use annotation name to get download.name that can be used
 to download the database use \code{download.database}}
 \usage{
-get.download.name(anno.name = "", database.cfg = system.file("extdata",
-  "config/databases.toml", package = "annovarR"))
+get.download.name(
+  anno.name = "",
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor")
+)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
 
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of anor databases infomation}
 }
 \description{
 Use annotation name to get download.name that can be used

@@ -2,10 +2,15 @@
 % Please edit documentation in R/build.R
 \name{sqlite.index}
 \alias{sqlite.index}
-\title{Generate search index of annovarR database table in sqlite}
+\title{Generate search index of anor database table in sqlite}
 \usage{
-sqlite.index(sqlite.connect.params = list(dbname = "", table.name = ""),
-  index = "", cols = c(), verbose = FALSE, ...)
+sqlite.index(
+  sqlite.connect.params = list(dbname = "", table.name = ""),
+  index = "",
+  cols = c(),
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}
@@ -19,11 +24,11 @@ sqlite.index(sqlite.connect.params = list(dbname = "", table.name = ""),
 \item{...}{Other parameters be used in dbSendQuery}
 }
 \description{
-Generate search index of annovarR database table in sqlite
+Generate search index of anor database table in sqlite
 }
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))
 x <- sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), 

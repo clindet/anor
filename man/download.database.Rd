@@ -2,14 +2,21 @@
 % Please edit documentation in R/download.R
 \name{download.database}
 \alias{download.database}
-\title{Download annovarR databases}
+\title{Download anor databases}
 \usage{
-download.database(download.name = NULL, database.dir = tempdir(),
-  version = c(), buildver = "hg19",
-  download.cfg = system.file("extdata", "config/db/db_annovar.toml",
-  package = "BioInstaller"), show.all.versions = FALSE,
-  show.all.names = FALSE, show.all.buildvers = FALSE,
-  verbose = FALSE, ...)
+download.database(
+  download.name = NULL,
+  database.dir = tempdir(),
+  version = c(),
+  buildver = "hg19",
+  download.cfg = system.file("extdata", "config/db/db_annovar.toml", package =
+    "BioInstaller"),
+  show.all.versions = FALSE,
+  show.all.names = FALSE,
+  show.all.buildvers = FALSE,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{download.name}{Download name, default is NULL and get value from database.cfg
@@ -22,7 +29,7 @@ download.database('db_annovar_avsnp', show.all.versions = TRUE)}
 
 \item{buildver}{Genome version, e.g hg19, hg38, mm10}
 
-\item{download.cfg}{Configuration file for download, most of annovarR database
+\item{download.cfg}{Configuration file for download, most of anor database
 resources can be found in system.file('extdata',
 'config/db/db_annovar.toml', package = 'BioInstaller')}
 
@@ -37,7 +44,7 @@ resources can be found in system.file('extdata',
 \item{...}{Other parameters pass to \code{\link[BioInstaller]{install.bioinfo}}}
 }
 \description{
-Download annovarR databases
+Download anor databases
 }
 \examples{
 download.database('db_annovar_avsnp', database.dir = sprintf('\%s/databases/', tempdir()),

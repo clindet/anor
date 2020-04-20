@@ -1,4 +1,4 @@
-filename = system.file("extdata", "demo/hg19_ALL.sites.2015_08.txt", package = "annovarR")
+filename = system.file("extdata", "demo/hg19_ALL.sites.2015_08.txt", package = "anor")
 
 test_that("format.1000g.db.tb", {
   x <- format.1000g.db.tb(filename = filename)

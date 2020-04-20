@@ -2,12 +2,18 @@
 % Please edit documentation in R/build.R
 \name{mysql.build}
 \alias{mysql.build}
-\title{Build annovarR database in mysql}
+\title{Build anor database in mysql}
 \usage{
-mysql.build(filename = "", mysql.connect.params = list(host = "",
-  dbname = "", table.name = "", user = "", password = ""),
-  dat = data.table(), fread.params = list(), new.colnames = NULL,
-  verbose = FALSE, ...)
+mysql.build(
+  filename = "",
+  mysql.connect.params = list(host = "", dbname = "", table.name = "", user = "",
+    password = ""),
+  dat = data.table(),
+  fread.params = list(),
+  new.colnames = NULL,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{filename}{Path of raw data, will be read by fread}
@@ -25,10 +31,10 @@ mysql.build(filename = "", mysql.connect.params = list(host = "",
 \item{...}{Other parameters be used in dbWriteTable}
 }
 \description{
-Build annovarR database in mysql
+Build anor database in mysql
 }
 \examples{
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 \dontrun{
 mysql.build(test.dat, list(host = 'host', dbname = 'db', 
 table.name = 'table', user = 'user', password = 'password'))

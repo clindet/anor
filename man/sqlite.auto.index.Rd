@@ -2,12 +2,17 @@
 % Please edit documentation in R/auto.R
 \name{sqlite.auto.index}
 \alias{sqlite.auto.index}
-\title{Index annovarR database in sqlite (auto from extdata/config/database.toml)}
+\title{Index anor database in sqlite (auto from extdata/config/database.toml)}
 \usage{
-sqlite.auto.index(anno.name = "", buildver = "hg19",
-  database.dir = "/path/", index = "chr_start_index",
-  db.type = "sqlite", database.cfg = system.file("extdata",
-  "config/databases.toml", package = "annovarR"), verbose = TRUE)
+sqlite.auto.index(
+  anno.name = "",
+  buildver = "hg19",
+  database.dir = "/path/",
+  index = "chr_start_index",
+  db.type = "sqlite",
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor"),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
@@ -20,16 +25,16 @@ sqlite.auto.index(anno.name = "", buildver = "hg19",
 
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
 
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of anor databases infomation}
 
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 }
 \description{
-Index annovarR database in sqlite (auto from extdata/config/database.toml)
+Index anor database in sqlite (auto from extdata/config/database.toml)
 }
 \examples{
 i <- 'hg19_avsnp147'
-database <- system.file('extdata', sprintf('demo/\%s.txt', i), package = 'annovarR')
+database <- system.file('extdata', sprintf('demo/\%s.txt', i), package = 'anor')
 file.copy(database, sprintf('\%s/\%s.txt', tempdir(), i))
 sqlite.auto.build('avsnp147', 'hg19', database.dir = tempdir(), verbose = TRUE)
 sqlite.auto.index('avsnp147', 'hg19', database.dir = tempdir(), index = 'chr_start_index2',

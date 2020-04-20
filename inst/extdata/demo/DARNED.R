@@ -1,6 +1,6 @@
 options(stringsAsFactors = F)
 library(stringr)
-library(annovarR)
+library(anor)
 i <- "hg19_DARNED.txt"
 cat(sprintf('File:%s', i), sep = "\n")
 db <- str_replace(i, fixed(".txt"), "")

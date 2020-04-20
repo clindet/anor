@@ -1,4 +1,4 @@
-#' Build annovarR database in sqlite (auto from extdata/config/database.toml)
+#' Build anor database in sqlite (auto from extdata/config/database.toml)
 #'
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
@@ -8,7 +8,7 @@
 #' default is FALSE
 #' @param index Index name in sqlite 
 #' @param db.type Setting the database type (sqlite, txt or mysql)
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @param extra_fread_params Pass to \code{\link[ngstk]{batch_file}}, 
 #' default is to get value from database.cfg
 #' @param sqlite.build.params Extra params pass to \code{\link{sqlite.build}}
@@ -20,14 +20,14 @@
 #' @export
 #' @examples
 #' i <- 'hg19_avsnp147'
-#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'annovarR')
+#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'anor')
 #' file.copy(database, sprintf('%s/%s.txt', tempdir(), i))
 #' sqlite.auto.build('avsnp147', 'hg19', database.dir = tempdir(), verbose = TRUE)
 #' unlink(sprintf('%s/%s.txt', tempdir(), i))
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
 sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
   overwrite = FALSE, append = FALSE, index = "chr_start_index", db.type = "sqlite", 
-  database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor"), 
   extra_fread_params = list(sep = "\t", header = TRUE, return_1L = FALSE), sqlite.build.params = list(fread.params = list(sep = "\t")), 
   batch_lines = 1e+07, start_index = 1, new.colnames = NULL, verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
@@ -99,18 +99,18 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
   }
 }
 
-#' Index annovarR database in sqlite (auto from extdata/config/database.toml)
+#' Index anor database in sqlite (auto from extdata/config/database.toml)
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases
 #' @param index Index name in sqlite 
 #' @param db.type Setting the database type (sqlite, txt or mysql)
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @param verbose Logical indicating wheather print the extra log infomation
 #' @export
 #' @examples
 #' i <- 'hg19_avsnp147'
-#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'annovarR')
+#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'anor')
 #' file.copy(database, sprintf('%s/%s.txt', tempdir(), i))
 #' sqlite.auto.build('avsnp147', 'hg19', database.dir = tempdir(), verbose = TRUE)
 #' sqlite.auto.index('avsnp147', 'hg19', database.dir = tempdir(), index = 'chr_start_index2',
@@ -119,7 +119,7 @@ sqlite.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = 
 #' unlink(sprintf('%s/%s.sqlite', tempdir(), i))
 sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
   index = "chr_start_index", db.type = "sqlite", database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), verbose = TRUE) {
+    "config/databases.toml", package = "anor"), verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in %s", buildver, anno.name, database.dir), 
     verbose = verbose)
   auto.parameters <- c("need_cols", "db_col_order", "setdb_fun", "set_table_fun", 
@@ -160,7 +160,7 @@ sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = 
   }
 }
 
-#' Build annovarR database in mysql (auto from extdata/config/database.toml)
+#' Build anor database in mysql (auto from extdata/config/database.toml)
 #'
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
@@ -171,7 +171,7 @@ sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = 
 #' default is FALSE
 #' @param index Index name in sqlite 
 #' @param db.type Setting the database type (sqlite, txt or mysql)
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @param extra_fread_params Pass to \code{\link[ngstk]{batch_file}}, 
 #' default is to get value from database.cfg
 #' @param mysql.build.params Extra params pass to \code{\link{mysql.build}}
@@ -183,17 +183,17 @@ sqlite.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = 
 #' @export
 #' @examples
 #' i <- 'hg19_avsnp147'
-#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'annovarR')
+#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'anor')
 #' file.copy(database, sprintf('%s/%s.txt', tempdir(), i))
 #' \dontrun{
 #'  mysql.auto.build(anno.name = 'avsnp147', database.dir = tempdir(), 
 #'  mysql.connect.params = list(user = 'username', password = 'password', 
-#'  host = 'localhost', port = 3306, dbname = 'annovarR'))
+#'  host = 'localhost', port = 3306, dbname = 'anor'))
 #' }
 mysql.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
   mysql.connect.params = list(user = "", password = "", host = "localhost", port = "3306"), 
   overwrite = FALSE, append = FALSE, index = "chr_start_index", db.type = "mysql", 
-  database.cfg = system.file("extdata", "config/databases.toml", package = "annovarR"), 
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor"), 
   extra_fread_params = list(sep = "\t", header = TRUE, return_1L = FALSE), mysql.build.params = list(fread.params = list(sep = "\t")), 
   batch_lines = 1e+07, start_index = 1, new.colnames = NULL, verbose = TRUE) {
   info.msg(sprintf("Auto build database %s %s in mysql database [host:%s, port:%s]", 
@@ -270,29 +270,29 @@ mysql.auto.build <- function(anno.name = "", buildver = "hg19", database.dir = "
   }
 }
 
-#' Index annovarR database in mysql (auto from extdata/config/database.toml)
+#' Index anor database in mysql (auto from extdata/config/database.toml)
 #' @param anno.name Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all
 #' @param buildver Genome version, hg19, hg38, mm10 and others
 #' @param database.dir Dir of the databases (mysql no need)
 #' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
 #' @param index Index name in sqlite 
 #' @param db.type Setting the database type (sqlite, txt or mysql)
-#' @param database.cfg Configuration file of annovarR databases infomation
+#' @param database.cfg Configuration file of anor databases infomation
 #' @param verbose Logical indicating wheather print the extra log infomation
 #' @export
 #' @examples
 #' i <- 'hg19_avsnp147'
-#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'annovarR')
+#' database <- system.file('extdata', sprintf('demo/%s.txt', i), package = 'anor')
 #' file.copy(database, sprintf('%s/%s.txt', tempdir(), i))
 #' \dontrun{
 #'  mysql.auto.index(anno.name = 'avsnp147', database.dir = tempdir(), 
 #'  mysql.connect.params = list(user = 'username', password = 'password', 
-#'  host = 'localhost', port = 3306, dbname = 'annovarR'))
+#'  host = 'localhost', port = 3306, dbname = 'anor'))
 #' }
 mysql.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = "/path/", 
   mysql.connect.params = list(user = "", password = "", host = "localhost", port = "3306"), 
   index = "chr_start_index", db.type = "mysql", database.cfg = system.file("extdata", 
-    "config/databases.toml", package = "annovarR"), verbose = TRUE) {
+    "config/databases.toml", package = "anor"), verbose = TRUE) {
   info.msg(sprintf("Auto index database %s %s in mysql database [host:%s, port:%s]", 
     buildver, anno.name, mysql.connect.params$host, mysql.connect.params$port), 
     verbose = verbose)
@@ -336,7 +336,7 @@ mysql.auto.index <- function(anno.name = "", buildver = "hg19", database.dir = "
   }
 }
 
-# Auto to annotation accodring the database.cfg annovarR supported anno.names
+# Auto to annotation accodring the database.cfg anor supported anno.names
 annotation.auto <- function(dat = NULL, anno.name = NULL, return_col_names = NULL, 
   return_col_names_profix = NULL, return_col_index = NULL, db_col_order = NULL, 
   index_cols = NULL, matched_cols = NULL, full.matched_cols = NULL, inferior_col = NULL, 
@@ -391,7 +391,7 @@ annotation.auto <- function(dat = NULL, anno.name = NULL, return_col_names = NUL
 
 # A auto recognition function to get the annotation function from database.cfg
 get.annotation.func <- function(anno.name = "", database.cfg = system.file("extdata", 
-  "config/databases.toml", package = "annovarR")) {
+  "config/databases.toml", package = "anor")) {
   all.supported.db <- get.annotation.names(database.cfg)
   if (!(anno.name %in% all.supported.db)) {
     stop(sprintf("%s not be supported.", anno.name))

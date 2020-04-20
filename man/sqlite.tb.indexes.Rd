@@ -4,8 +4,7 @@
 \alias{sqlite.tb.indexes}
 \title{Get sqlite table indexes}
 \usage{
-sqlite.tb.indexes(sqlite.connect.params = list(dbname = "", table.name =
-  ""))
+sqlite.tb.indexes(sqlite.connect.params = list(dbname = "", table.name = ""))
 }
 \arguments{
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}
@@ -15,7 +14,7 @@ Get sqlite table indexes
 }
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 params <- list(dbname = test.sqlite,
 table.name = 'snp_test')
 x <- sqlite.build(filename = test.dat, params)

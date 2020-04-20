@@ -1,6 +1,6 @@
-Title = "annovarR database annotation configuration file"
+Title = "anor database annotation configuration file"
 
-# Section of annovarR text, SQLite and MySQL format mode (Now only support R data.frame or data.table object)
+# Section of anor text, SQLite and MySQL format mode (Now only support R data.frame or data.table object)
 # All anno.name in this section will not to contain any software or programming language prefix
 [avsnp]
 versions = ["avsnp138", "avsnp142", "avsnp144", "avsnp147", "avsnp150"]
@@ -1070,12 +1070,12 @@ dependence_db = "db_vep"
 # vcfanno section
 # vcfanno_default dependence_db now is demo status
 # Will be supported in the BioInstaller next release
-# In the future, annovarR can as the database resource manager
+# In the future, anor can as the database resource manager
 [vcfanno_default]
 versions = "vcfanno_demo"
 func = "vcfanno.auto"
-vcfanno_database_cfg = "@>@system.file('extdata', 'demo/vcfanno_demo/conf.toml', package = 'annovarR')@<@"
-base_path = "@>@system.file('extdata', 'demo/vcfanno_demo/', package = 'annovarR')@<@"
-lua = "@>@system.file('extdata', 'demo/vcfanno_demo/custom.lua', package = 'annovarR')@<@"
+vcfanno_database_cfg = "@>@system.file('extdata', 'demo/vcfanno_demo/conf.toml', package = 'anor')@<@"
+base_path = "@>@system.file('extdata', 'demo/vcfanno_demo/', package = 'anor')@<@"
+lua = "@>@system.file('extdata', 'demo/vcfanno_demo/custom.lua', package = 'anor')@<@"
 dependence_db = "db_vcfanno_demo"
 

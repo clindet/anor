@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 588 672" style="enable-background:new 0 0 588 672;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;}
+	.st1{fill:#231815;}
+	.st2{fill:url(#SVGID_1_);stroke:#231F20;stroke-width:15;stroke-miterlimit:10;}
+	.st3{font-family:'Helvetica-Bold';}
+	.st4{font-size:65px;}
+	.st5{opacity:0.4;fill:url(#SVGID_2_);enable-background:new    ;}
+	.st6{fill:#2D2424;}
+	.st7{fill:#AA4A33;}
+	.st8{fill:#D8642A;}
+	.st9{fill:#FC784F;}
+	.st10{font-family:'BodoniOrnamentsITCTT';}
+	.st11{font-size:200.3801px;}
+	.st12{font-size:346.5741px;}
+	.st13{font-size:109.8409px;}
+</style>
+<pattern  y="672" width="48" height="48" patternUnits="userSpaceOnUse" id="_x36__dpi_10_x25_" viewBox="1.2 -49.2 48 48" style="overflow:visible;">
+	<g>
+		<rect x="1.2" y="-49.2" class="st0" width="48" height="48"/>
+		<g>
+			<rect x="1.2" y="-49.2" class="st0" width="48" height="48"/>
+			<g>
+				<circle class="st1" cx="25.2" cy="-49.2" r="1.2"/>
+				<circle class="st1" cx="49.2" cy="-49.2" r="1.2"/>
+				<circle class="st1" cx="25.2" cy="-25.2" r="1.2"/>
+				<circle class="st1" cx="49.2" cy="-25.2" r="1.2"/>
+				<circle class="st1" cx="37.2" cy="-37.2" r="1.2"/>
+				<circle class="st1" cx="13.2" cy="-37.2" r="1.2"/>
+				<circle class="st1" cx="37.2" cy="-13.2" r="1.2"/>
+				<circle class="st1" cx="13.2" cy="-13.2" r="1.2"/>
+			</g>
+			<g>
+				<circle class="st1" cx="1.2" cy="-49.2" r="1.2"/>
+				<ellipse class="st1" cx="1.2" cy="-25.2" rx="1.2" ry="1.2"/>
+			</g>
+			<g>
+				<circle class="st1" cx="25.2" cy="-1.2" r="1.2"/>
+				<circle class="st1" cx="49.2" cy="-1.2" r="1.2"/>
+			</g>
+			<g>
+				<ellipse class="st1" cx="1.2" cy="-1.2" rx="1.2" ry="1.2"/>
+			</g>
+		</g>
+	</g>
+</pattern>
+<g id="图层_3">
+	<pattern  id="SVGID_1_" xlink:href="#_x36__dpi_10_x25_" patternTransform="matrix(1 0 0 -1 -1176.2 -13041.9336)">
+	</pattern>
+	<polygon class="st2" points="295.4,658 15.2,497.4 14.2,174.4 293.4,12 573.6,172.6 574.6,495.6 	"/>
+</g>
+<g id="图层_6">
+	<text transform="matrix(1 0 0 1 154.2039 514.2923)" class="st3 st4">annovarR</text>
+</g>
+<g id="图层_2_1_">
+	<g>
+		
+			<radialGradient id="SVGID_2_" cx="-1257.3094" cy="-18846.9023" r="100.5656" gradientTransform="matrix(1.7033 0 0 -0.1319 2443.2751 -1945.1608)" gradientUnits="userSpaceOnUse">
+			<stop  offset="0" style="stop-color:#000000"/>
+			<stop  offset="4.301205e-02" style="stop-color:#131313"/>
+			<stop  offset="0.1924" style="stop-color:#515151"/>
+			<stop  offset="0.3406" style="stop-color:#868686"/>
+			<stop  offset="0.484" style="stop-color:#B1B1B1"/>
+			<stop  offset="0.6218" style="stop-color:#D3D3D3"/>
+			<stop  offset="0.7523" style="stop-color:#EBEBEB"/>
+			<stop  offset="0.8726" style="stop-color:#FAFAFA"/>
+			<stop  offset="0.9731" style="stop-color:#FFFFFF"/>
+		</radialGradient>
+		<path class="st5" d="M473,540.7c0,7.3-76.7,13.3-171.3,13.3s-171.3-5.9-171.3-13.3s76.7-13.3,171.3-13.3
+			C396.3,527.5,473,533.4,473,540.7z"/>
+	</g>
+</g>
+<g id="Layer_1">
+	<path class="st6" d="M418.6,164.4c-66.4-66.4-174.6-66.4-241,0s-66.4,174.6,0,241s174.6,66.4,241,0S485,230.7,418.6,164.4z"/>
+	<path class="st7" d="M303.6,435.7c86.5,0,157-70.6,157-157.1s-70.6-157.1-157-157.1c-86.5,0-157.1,70.6-157.1,157.1
+		S217.1,435.7,303.6,435.7z"/>
+	<path class="st8" d="M295.1,147.1c86.7,0,157.1,70.3,157.1,157.1c0,11.6-1.2,22.8-3.6,33.7h0.6c7.4-18.3,11.5-38.2,11.5-59.2
+		c0-86.7-70.3-157.1-157-157.1c-74.1,0-136.2,51.3-152.7,120.3C175,186.1,230.5,147.1,295.1,147.1z"/>
+	<path class="st9" d="M158.2,219.2c25.6-53.7,80.5-90.9,144-90.9c80.5,0,147,59.6,157.9,137c-6.8-80.5-74.2-143.7-156.5-143.7
+		C237.9,121.6,181.6,161.9,158.2,219.2z"/>
+	<text transform="matrix(9.233847e-02 -0.9957 0.9957 9.233847e-02 374.0183 175.9367)" class="st6 st10 st11">E</text>
+	<text transform="matrix(3.789909e-02 -0.9993 0.9993 3.789909e-02 369.6786 326.1844)" class="st6 st10 st12">7</text>
+	<text transform="matrix(-0.9996 2.676402e-02 -2.676402e-02 -0.9996 390.1031 325.0698)" class="st6 st10 st13">h</text>
+</g>
+<g id="图层_4">
+</g>
+<g id="图层_5">
+</g>
+<g id="图层_7">
+</g>
+</svg>

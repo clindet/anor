@@ -4,9 +4,15 @@
 \alias{del}
 \title{Delete table or database (text file, sqlite, mysql)}
 \usage{
-del(filename = "", sqlite.connect.params = list(),
-  mysql.connect.params = list(), del.type = "database",
-  db.type = "sqlite", verbose = FALSE, ...)
+del(
+  filename = "",
+  sqlite.connect.params = list(),
+  mysql.connect.params = list(),
+  del.type = "database",
+  db.type = "sqlite",
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{filename}{Path of text format data}
@@ -32,7 +38,7 @@ Delete table or database (text file, sqlite, mysql)
 db <- tempfile()
 file.create(db)
 del(db, del.type = 'file')
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))

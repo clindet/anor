@@ -4,13 +4,20 @@
 \alias{annotation}
 \title{Annotation function (single name)}
 \usage{
-annotation(dat = data.table(), anno.name = "", buildver = "hg19",
-  annovar.anno.names = "", database.dir = Sys.getenv("annovarR_DB_DIR",
-  ""), db.type = NULL, database.cfg = system.file("extdata",
-  "config/databases.toml", package = "annovarR"), func = NULL,
-  mysql.connect.params = list(host = "", dbname = "", table.name = "",
-  user = "", password = ""), sqlite.connect.params = list(dbname = ""),
-  ...)
+annotation(
+  dat = data.table(),
+  anno.name = "",
+  buildver = "hg19",
+  annovar.anno.names = "",
+  database.dir = Sys.getenv("anor_DB_DIR", ""),
+  db.type = NULL,
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor"),
+  func = NULL,
+  mysql.connect.params = list(host = "", dbname = "", table.name = "", user = "",
+    password = ""),
+  sqlite.connect.params = list(dbname = ""),
+  ...
+)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -27,7 +34,7 @@ the names can be found on the http://annovar.openbioinformatics.org/en/latest/us
 
 \item{db.type}{Setting the database type (sqlite or txt)}
 
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of anor databases infomation}
 
 \item{func}{Function to anntate the dat data, default is to search the function in extdata/database.toml}
 
@@ -49,7 +56,7 @@ start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
 ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
-database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
+database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'anor')
 database.dir <- dirname(database)
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation(dat, 'avsnp147', database.dir = database.dir, 

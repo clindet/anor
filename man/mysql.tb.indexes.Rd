@@ -4,8 +4,7 @@
 \alias{mysql.tb.indexes}
 \title{Get mysql table indexes}
 \usage{
-mysql.tb.indexes(mysql.connect.params = list(dbname = "", table.name =
-  ""))
+mysql.tb.indexes(mysql.connect.params = list(dbname = "", table.name = ""))
 }
 \arguments{
 \item{mysql.connect.params}{Connect to mysql database params [dbname, table.name, host, user, password]}

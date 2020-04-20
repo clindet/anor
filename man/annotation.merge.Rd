@@ -21,7 +21,7 @@ start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
 ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
-database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
+database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'anor')
 database.dir <- dirname(database)
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation.merge(dat = dat, anno.names = c('avsnp147'), 

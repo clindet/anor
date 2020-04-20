@@ -1,4 +1,4 @@
-#' Build annovarR database in sqlite
+#' Build anor database in sqlite
 #'
 #' @param filename Path of raw data, will be read by fread
 #' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
@@ -10,7 +10,7 @@
 #' @param ... Other parameters be used in dbWriteTable
 #' @export
 #' @examples
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
@@ -64,7 +64,7 @@ sqlite.build <- function(filename = NULL, sqlite.connect.params = list(dbname = 
   return(status)
 }
 
-#' Generate search index of annovarR database table in sqlite
+#' Generate search index of anor database table in sqlite
 #'
 #' @param sqlite.connect.params Connect to sqlite database params [dbname, table.name]
 #' @param index Index name in sqlite 
@@ -74,7 +74,7 @@ sqlite.build <- function(filename = NULL, sqlite.connect.params = list(dbname = 
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
 #' x <- sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), 
@@ -111,7 +111,7 @@ sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.name = 
   return(status)
 }
 
-#' Drop search index of annovarR database table in sqlite
+#' Drop search index of anor database table in sqlite
 #'
 #' @param sqlite.connect.params Connect to sqlite database params [dbname]
 #' @param index Index name in sqlite 
@@ -120,7 +120,7 @@ sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.name = 
 #' @export
 #' @examples
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
 #' x <- sqlite.index(list(dbname = test.sqlite, table.name = 'snp_test'), 
@@ -157,7 +157,7 @@ drop.sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.na
 }
 
 
-#' Build annovarR database in mysql
+#' Build anor database in mysql
 #'
 #' @param filename Path of raw data, will be read by fread
 #' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
@@ -168,7 +168,7 @@ drop.sqlite.index <- function(sqlite.connect.params = list(dbname = "", table.na
 #' @param ... Other parameters be used in dbWriteTable
 #' @export
 #' @examples
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' \dontrun{
 #' mysql.build(test.dat, list(host = 'host', dbname = 'db', 
 #' table.name = 'table', user = 'user', password = 'password'))
@@ -211,7 +211,7 @@ mysql.build <- function(filename = "", mysql.connect.params = list(host = "", db
   return(status)
 }
 
-#' Generate search index of annovarR database table in mysql
+#' Generate search index of anor database table in mysql
 #'
 #' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
 #' @param index Index name in mysql 
@@ -220,7 +220,7 @@ mysql.build <- function(filename = "", mysql.connect.params = list(host = "", db
 #' @param ... Other parameters be used in dbSendQuery
 #' @export
 #' @examples
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' \dontrun{
 #' mysql.index(list(host = 'host', dbname = 'db', table.name = 'table', 
 #' user = 'user', password = 'password'), index = 'index_name', cols = c('V1', 'V2'))
@@ -257,7 +257,7 @@ mysql.index <- function(mysql.connect.params = list(host = "", dbname = "", tabl
   return(status)
 }
 
-#' Drop search index of annovarR database table in mysql
+#' Drop search index of anor database table in mysql
 #'
 #' @param mysql.connect.params Mysql parameters, [host, dbname, table.name, user, password etc.]
 #' @param index Index name in mysql 
@@ -265,7 +265,7 @@ mysql.index <- function(mysql.connect.params = list(host = "", dbname = "", tabl
 #' @param ... Other parameters be used in dbSendQuery
 #' @export
 #' @examples
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' \dontrun{
 #' drop.mysql.index(list(host = 'host', dbname = 'db', user = 'user', password = 'password'), 
 #' index = 'index_name')
@@ -316,7 +316,7 @@ drop.mysql.index <- function(mysql.connect.params = list(host = "", dbname = "",
 #' db <- tempfile()
 #' file.create(db)
 #' del(db, del.type = 'file')
-#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+#' test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 #' test.sqlite <- sprintf('%s/snp.test.sqlite', tempdir())
 #' x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 #' table.name = 'snp_test'))
@@ -375,7 +375,7 @@ del <- function(filename = "", sqlite.connect.params = list(), mysql.connect.par
 #' @param ... Other parameters be used in dbSendQuery
 #' @export
 #' @examples
-#' sql.file <- system.file('extdata', 'demo/hg19_avsnp147.sqlite.sql', package = 'annovarR')
+#' sql.file <- system.file('extdata', 'demo/hg19_avsnp147.sqlite.sql', package = 'anor')
 #' out.sqlite <- tempfile()
 #' sqlite <- Sys.which(c('sqlite3', 'sqlite'))
 #' sqlite <- sqlite[sqlite != ''][1]

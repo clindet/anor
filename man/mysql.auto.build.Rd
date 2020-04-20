@@ -2,17 +2,26 @@
 % Please edit documentation in R/auto.R
 \name{mysql.auto.build}
 \alias{mysql.auto.build}
-\title{Build annovarR database in mysql (auto from extdata/config/database.toml)}
+\title{Build anor database in mysql (auto from extdata/config/database.toml)}
 \usage{
-mysql.auto.build(anno.name = "", buildver = "hg19",
-  database.dir = "/path/", mysql.connect.params = list(user = "",
-  password = "", host = "localhost", port = "3306"), overwrite = FALSE,
-  append = FALSE, index = "chr_start_index", db.type = "mysql",
-  database.cfg = system.file("extdata", "config/databases.toml", package
-  = "annovarR"), extra_fread_params = list(sep = "\\t", header = TRUE,
-  return_1L = FALSE), mysql.build.params = list(fread.params = list(sep =
-  "\\t")), batch_lines = 1e+07, start_index = 1, new.colnames = NULL,
-  verbose = TRUE)
+mysql.auto.build(
+  anno.name = "",
+  buildver = "hg19",
+  database.dir = "/path/",
+  mysql.connect.params = list(user = "", password = "", host = "localhost", port =
+    "3306"),
+  overwrite = FALSE,
+  append = FALSE,
+  index = "chr_start_index",
+  db.type = "mysql",
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor"),
+  extra_fread_params = list(sep = "\\t", header = TRUE, return_1L = FALSE),
+  mysql.build.params = list(fread.params = list(sep = "\\t")),
+  batch_lines = 1e+07,
+  start_index = 1,
+  new.colnames = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
@@ -32,7 +41,7 @@ default is FALSE}
 
 \item{db.type}{Setting the database type (sqlite, txt or mysql)}
 
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of anor databases infomation}
 
 \item{extra_fread_params}{Pass to \code{\link[ngstk]{batch_file}}, 
 default is to get value from database.cfg}
@@ -49,15 +58,15 @@ default is 10000000}
 \item{verbose}{Logical indicating wheather print the extra log infomation}
 }
 \description{
-Build annovarR database in mysql (auto from extdata/config/database.toml)
+Build anor database in mysql (auto from extdata/config/database.toml)
 }
 \examples{
 i <- 'hg19_avsnp147'
-database <- system.file('extdata', sprintf('demo/\%s.txt', i), package = 'annovarR')
+database <- system.file('extdata', sprintf('demo/\%s.txt', i), package = 'anor')
 file.copy(database, sprintf('\%s/\%s.txt', tempdir(), i))
 \dontrun{
  mysql.auto.build(anno.name = 'avsnp147', database.dir = tempdir(), 
  mysql.connect.params = list(user = 'username', password = 'password', 
- host = 'localhost', port = 3306, dbname = 'annovarR'))
+ host = 'localhost', port = 3306, dbname = 'anor'))
 }
 }

@@ -4,11 +4,20 @@
 \alias{vep}
 \title{R function to run VEP}
 \usage{
-vep(vep = Sys.which("vep"), cache = TRUE, cache_version = 91,
-  offline = TRUE, buildver = "GRCh37",
-  dir = file.path(Sys.getenv("HOME"), ".vep"), input.file = "",
-  out = "variant_effect_output.txt", fasta = "", everything = TRUE,
-  extra.params = "", debug = FALSE)
+vep(
+  vep = Sys.which("vep"),
+  cache = TRUE,
+  cache_version = 91,
+  offline = TRUE,
+  buildver = "GRCh37",
+  dir = file.path(Sys.getenv("HOME"), ".vep"),
+  input.file = "",
+  out = "variant_effect_output.txt",
+  fasta = "",
+  everything = TRUE,
+  extra.params = "",
+  debug = FALSE
+)
 }
 \arguments{
 \item{vep}{Executable file of vep}

@@ -2,19 +2,20 @@
 % Please edit documentation in R/get.R
 \name{get.annotation.needcols}
 \alias{get.annotation.needcols}
-\title{Get annovarR annotation needed colnames according the anno.name}
+\title{Get anor annotation needed colnames according the anno.name}
 \usage{
-get.annotation.needcols(anno.name = "",
-  database.cfg = system.file("extdata", "config/databases.toml", package
-  = "annovarR"))
+get.annotation.needcols(
+  anno.name = "",
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor")
+)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
 
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of anor databases infomation}
 }
 \description{
-Get annovarR annotation needed colnames according the anno.name
+Get anor annotation needed colnames according the anno.name
 }
 \examples{
 get.annotation.dbtype('avsnp147') 

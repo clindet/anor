@@ -2,19 +2,20 @@
 % Please edit documentation in R/get.R
 \name{get.annotation.dbtype}
 \alias{get.annotation.dbtype}
-\title{Get annovarR default databases type [sqlite, txt]}
+\title{Get anor default databases type [sqlite, txt]}
 \usage{
-get.annotation.dbtype(anno.name = "",
-  database.cfg = system.file("extdata", "config/databases.toml", package
-  = "annovarR"))
+get.annotation.dbtype(
+  anno.name = "",
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor")
+)
 }
 \arguments{
 \item{anno.name}{Annotation name, eg. avsnp138, avsnp147, 1000g2015aug_all}
 
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of anor databases infomation}
 }
 \description{
-Get annovarR default databases type [sqlite, txt]
+Get anor default databases type [sqlite, txt]
 }
 \examples{
 get.annotation.dbtype('avsnp147') 

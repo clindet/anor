@@ -4,8 +4,7 @@
 \alias{sqlite.tb.colnames}
 \title{Get colnames of table of database in sqlite}
 \usage{
-sqlite.tb.colnames(sqlite.connect.params = list(dbname = "", table.name =
-  ""))
+sqlite.tb.colnames(sqlite.connect.params = list(dbname = "", table.name = ""))
 }
 \arguments{
 \item{sqlite.connect.params}{Connect to sqlite database params [dbname, table.name]}
@@ -15,7 +14,7 @@ Get colnames of table of database in sqlite
 }
 \examples{
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))
 sqlite.tb.colnames(list(dbname = test.sqlite, table.name = 'snp_test'))

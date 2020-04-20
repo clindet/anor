@@ -4,10 +4,14 @@
 \alias{sqlite2sql}
 \title{Function to dump sqlite database (Now only use system version sqlite)}
 \usage{
-sqlite2sql(sqlite_bin = c(Sys.which("sqlite"), Sys.which("sqlite3")),
-  dbname = "", out.sql = "",
+sqlite2sql(
+  sqlite_bin = c(Sys.which("sqlite"), Sys.which("sqlite3")),
+  dbname = "",
+  out.sql = "",
   cmd = "{sqlite_bin} {dbname} '.dump' | gzip > {out.sql}",
-  debug = FALSE, ...)
+  debug = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sqlite_bin}{Sqlite executable file}

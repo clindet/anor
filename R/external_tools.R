@@ -234,7 +234,7 @@ vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offlin
 #'
 #' @param vcfanno Executable file of vcfanno (Download from https://github.com/brentp/vcfanno/releases)
 #' @param vcfanno_database_cfg vcfanno required database configuration file
-#' (Not the annovarR database.cfg)
+#' (Not the anor database.cfg)
 #' @param base_path Optional base_path to prepend to annotation files in the config
 #' @param lua Optional path to a file containing custom javascript functions to be used as ops
 #' @param ends Annotate the start and end as well as the interval itself.
@@ -249,7 +249,7 @@ vep <- function(vep = Sys.which("vep"), cache = TRUE, cache_version = 91, offlin
 #' vcfanno(debug = TRUE)
 vcfanno <- function(vcfanno = Sys.which(c("vcfanno", "vcfanno_osx", "vcfanno_linux64")), 
   vcfanno_database_cfg = system.file("extdata", "demo/vcfanno_demo/conf.toml", 
-    package = "annovarR"), base_path = "", lua = "", ends = FALSE, input.file = "input.vcf", 
+    package = "anor"), base_path = "", lua = "", ends = FALSE, input.file = "input.vcf", 
   out = "output.vcf", thread = 2, permissive_overlap = FALSE, debug = FALSE) {
   vcfanno <- vcfanno[vcfanno != ""][1]
   if (!file.exists(vcfanno) && !debug) {

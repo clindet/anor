@@ -4,8 +4,7 @@
 \alias{sql2sqlite}
 \title{Convert sql file to sqlite database}
 \usage{
-sql2sqlite(sql.file = "", statements = "", dbname = "",
-  verbose = FALSE, ...)
+sql2sqlite(sql.file = "", statements = "", dbname = "", verbose = FALSE, ...)
 }
 \arguments{
 \item{sql.file}{SQL file of sqlite database dumped}
@@ -22,7 +21,7 @@ sql2sqlite(sql.file = "", statements = "", dbname = "",
 Convert sql file to sqlite database
 }
 \examples{
-sql.file <- system.file('extdata', 'demo/hg19_avsnp147.sqlite.sql', package = 'annovarR')
+sql.file <- system.file('extdata', 'demo/hg19_avsnp147.sqlite.sql', package = 'anor')
 out.sqlite <- tempfile()
 sqlite <- Sys.which(c('sqlite3', 'sqlite'))
 sqlite <- sqlite[sqlite != ''][1]
@@ -32,7 +31,7 @@ if (!is.na(sqlite)) {
   verbose = FALSE)
   unlink(out.sqlite)
 }
-statements <- paste0(readLines(sql.file), collapse = '\\n')
+statements <- paste0(readLines(sql.file), collapse = '\n')
 sql2sqlite(statements = statements, dbname = out.sqlite, 
 verbose = FALSE)
 unlink(out.sqlite)

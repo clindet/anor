@@ -1,6 +1,6 @@
 # preprocess before to query with database
 before.query.steps <- function(dat = data.table(), anno.name = "", buildver = "hg19", 
-  database.dir = Sys.getenv("annovarR_DB_DIR", ""), db_col_order = 1:5, index_cols = c("chr", 
+  database.dir = Sys.getenv("anor_DB_DIR", ""), db_col_order = 1:5, index_cols = c("chr", 
     "start"), matched_cols = c("chr", "start", "end", "ref", "alt"), format_dat_fun = format.cols, 
   dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db, set_table_fun = set.table, 
   db.type = NULL, db.file.prefix = NULL, mysql.connect.params = list(), sqlite.connect.params = list(), 

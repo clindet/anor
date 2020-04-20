@@ -1,5 +1,5 @@
 test_that("return gnomad_genome colnames", {
-  database.dir <- system.file("extdata", "demo", package = "annovarR")
+  database.dir <- system.file("extdata", "demo", package = "anor")
   chr <- c("chr1", "chr2", "chr1")
   start <- c("10020", "10020", "10020")
   end <- c("10020", "10020", "10020")

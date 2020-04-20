@@ -8,11 +8,11 @@ for (i in c("hg19_avsnp147", "hg19_cosmic81", "hg19_ALL.sites.2015_08",
   "hg19_exac03nonpsych", "hg19_gnomad_exome", "hg19_gnomad_genome", "hg19_gwava", 
   "hg19_kaviar_20150923", "hg19_popfreq_all_20150413", "hg19_popfreq_max_20150413", 
   "hg19_eigen", "hg19_caddgt20")) {
-  database <- system.file("extdata", sprintf("demo/sqlite/%s.sqlite", i), package = "annovarR")
+  database <- system.file("extdata", sprintf("demo/sqlite/%s.sqlite", i), package = "anor")
   file.copy(database, sprintf("%s/%s.sqlite", tempdir(), i))
-  database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
+  database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "anor")
   file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
-  #database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "annovarR")
+  #database <- system.file("extdata", sprintf("demo/%s.txt", i), package = "anor")
   #sqlite.db <- sprintf("%s/%s.sqlite", tempdir(), i)
   #file.copy(database, sprintf("%s/%s.txt", tempdir(), i))
   #sqlite.build(database, sqlite.connect.params = list(dbname = sqlite.db, table.name = sprintf("%s", 

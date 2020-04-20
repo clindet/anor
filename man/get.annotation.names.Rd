@@ -2,18 +2,19 @@
 % Please edit documentation in R/get.R
 \name{get.annotation.names}
 \alias{get.annotation.names}
-\title{Get all annovarR supported databases}
+\title{Get all anor supported databases}
 \usage{
-get.annotation.names(database.cfg = system.file("extdata",
-  "config/databases.toml", package = "annovarR"))
+get.annotation.names(
+  database.cfg = system.file("extdata", "config/databases.toml", package = "anor")
+)
 }
 \arguments{
-\item{database.cfg}{Configuration file of annovarR databases infomation}
+\item{database.cfg}{Configuration file of anor databases infomation}
 }
 \description{
-Get all annovarR supported databases
+Get all anor supported databases
 }
 \examples{
-cfg <- system.file('extdata', 'config/config.toml', package = 'annovarR')
+cfg <- system.file('extdata', 'config/config.toml', package = 'anor')
 get.annotation.names(cfg) 
 }

@@ -2,11 +2,18 @@
 % Please edit documentation in R/build.R
 \name{sqlite.build}
 \alias{sqlite.build}
-\title{Build annovarR database in sqlite}
+\title{Build anor database in sqlite}
 \usage{
-sqlite.build(filename = NULL, sqlite.connect.params = list(dbname = "",
-  table.name = ""), dat = data.table(), fread.params = list(),
-  new.colnames = NULL, overwrite = TRUE, verbose = FALSE, ...)
+sqlite.build(
+  filename = NULL,
+  sqlite.connect.params = list(dbname = "", table.name = ""),
+  dat = data.table(),
+  fread.params = list(),
+  new.colnames = NULL,
+  overwrite = TRUE,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{filename}{Path of raw data, will be read by fread}
@@ -26,10 +33,10 @@ sqlite.build(filename = NULL, sqlite.connect.params = list(dbname = "",
 \item{...}{Other parameters be used in dbWriteTable}
 }
 \description{
-Build annovarR database in sqlite
+Build anor database in sqlite
 }
 \examples{
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 test.sqlite <- sprintf('\%s/snp.test.sqlite', tempdir())
 x <- sqlite.build(filename = test.dat, list(dbname = test.sqlite, 
 table.name = 'snp_test'))

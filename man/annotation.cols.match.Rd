@@ -4,17 +4,30 @@
 \alias{annotation.cols.match}
 \title{A position annotation utils that can be used to write a yourself annotation function}
 \usage{
-annotation.cols.match(dat = data.table(), anno.name = "",
-  buildver = "hg19", database.dir = Sys.getenv("annovarR_DB_DIR", ""),
-  db_col_order = 1:5, index_cols = c("chr", "start"),
+annotation.cols.match(
+  dat = data.table(),
+  anno.name = "",
+  buildver = "hg19",
+  database.dir = Sys.getenv("anor_DB_DIR", ""),
+  db_col_order = 1:5,
+  index_cols = c("chr", "start"),
   matched_cols = c("chr", "start", "end", "ref", "alt"),
-  return_col_index = 6, return_col_names = "",
-  return_col_names_profix = "", format_dat_fun = format.cols,
-  dbname_fixed = NULL, table_name_fixed = NULL, setdb_fun = set.db,
-  set_table_fun = set.table, format_db_tb_fun = format.db.tb,
-  db.type = "sqlite", db.file.prefix = NULL,
-  mysql.connect.params = list(), sqlite.connect.params = list(),
-  fread.db.params = list(), verbose = FALSE)
+  return_col_index = 6,
+  return_col_names = "",
+  return_col_names_profix = "",
+  format_dat_fun = format.cols,
+  dbname_fixed = NULL,
+  table_name_fixed = NULL,
+  setdb_fun = set.db,
+  set_table_fun = set.table,
+  format_db_tb_fun = format.db.tb,
+  db.type = "sqlite",
+  db.file.prefix = NULL,
+  mysql.connect.params = list(),
+  sqlite.connect.params = list(),
+  fread.db.params = list(),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dat}{A data.table including all of your data, eg. data.table(chr=c(1,2,3), start=c(1111,1112,1113))}
@@ -74,7 +87,7 @@ start <- c('10020', '10020', '10020')
 end <- c('10020', '10020', '10020')
 ref <- c('A', 'A', 'A')
 alt <- c('-', '-', '-')
-database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'annovarR')
+database <- system.file('extdata', 'demo/hg19_avsnp147.txt', package = 'anor')
 database.dir <- dirname(database)
 dat <- data.table(chr = chr, start = start, end = end, ref = ref, alt = alt)
 x <- annotation.cols.match(dat, 'avsnp147', database.dir = database.dir, 

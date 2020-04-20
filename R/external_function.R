@@ -1,4 +1,4 @@
-# annovarR default function: setdb_fun, set_table_fun, format_db_tb_fun You can
+# anor default function: setdb_fun, set_table_fun, format_db_tb_fun You can
 # re-write this R source file
 format.cols <- function(dat.input = "") {
   dat.input <- dat.input

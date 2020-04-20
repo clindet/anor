@@ -1,6 +1,6 @@
 test_that("rs2genomic", {
   snp.id <- c("rs775809821", "rs768019142")
-  raw.database <- system.file("extdata", "demo/hg19_avsnp147.txt", package = "annovarR")
+  raw.database <- system.file("extdata", "demo/hg19_avsnp147.txt", package = "anor")
   database.dir <- tempdir()
   sqlite.db <- sprintf("%s/hg19_avsnp147.sqlite", tempdir())
   txt.db <- sprintf("%s/hg19_avsnp147.txt", tempdir())

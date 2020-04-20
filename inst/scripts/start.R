@@ -1,1 +1,1 @@
-annovarR::set_shiny_workers(2)
+anor::set_shiny_workers(2)

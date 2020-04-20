@@ -2,11 +2,16 @@
 % Please edit documentation in R/build.R
 \name{mysql.index}
 \alias{mysql.index}
-\title{Generate search index of annovarR database table in mysql}
+\title{Generate search index of anor database table in mysql}
 \usage{
-mysql.index(mysql.connect.params = list(host = "", dbname = "",
-  table.name = "", user = "user", password = "password"), index = "",
-  cols = c(), verbose = FALSE, ...)
+mysql.index(
+  mysql.connect.params = list(host = "", dbname = "", table.name = "", user = "user",
+    password = "password"),
+  index = "",
+  cols = c(),
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{mysql.connect.params}{Mysql parameters, [host, dbname, table.name, user, password etc.]}
@@ -20,10 +25,10 @@ mysql.index(mysql.connect.params = list(host = "", dbname = "",
 \item{...}{Other parameters be used in dbSendQuery}
 }
 \description{
-Generate search index of annovarR database table in mysql
+Generate search index of anor database table in mysql
 }
 \examples{
-test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'annovarR')
+test.dat <- system.file('extdata', 'demo/sqlite.dat.txt', package = 'anor')
 \dontrun{
 mysql.index(list(host = 'host', dbname = 'db', table.name = 'table', 
 user = 'user', password = 'password'), index = 'index_name', cols = c('V1', 'V2'))

@@ -4,9 +4,14 @@
 \alias{mysql.head}
 \title{Show top n line of table of database in mysql database}
 \usage{
-mysql.head(mysql.connect.params = list(host = "", dbname = "", table.name
-  = "", user = "", password = ""), n = 10, extra.sql = NULL,
-  verbose = FALSE, ...)
+mysql.head(
+  mysql.connect.params = list(host = "", dbname = "", table.name = "", user = "",
+    password = ""),
+  n = 10,
+  extra.sql = NULL,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{mysql.connect.params}{Mysql parameters, [host, dbname, table.name, user, password etc.]}
